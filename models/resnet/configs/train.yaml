@@ -1,0 +1,63 @@
+device: "cpu"
+epochs: 300
+batch_size: 256
+
+model:
+    _target_: scripts.model.ResNet
+
+train_transform:
+    _target_: torchvision.transforms.Compose
+    transforms:
+        - _target_: torchvision.transforms.RandomResizedCrop
+          size: 224
+        - _target_: torchvision.transforms.RandomHorizontalFlip
+          p: 0.5
+        - _target_: torchvision.transforms.Normalize
+          mean: [0.485, 0.456, 0.406]
+          std: [0.229, 0.224, 0.225]
+        - _target_: torchvision.transforms.ToTensor
+
+train_set:
+    _target_: torchvision.datasets.ImageNet
+    root: "."
+    transform: ${train_transform}
+    train: True
+
+val_set:
+    _target_: torchvision.datasets.ImageNet
+    root: "."
+    transform: ${train_transform}
+    train: false
+
+train_loader:
+    _target_: torch.utils.data.DataLoader
+    train_set: ${train_set}
+    batch_size: ${batch_size}
+    shuffle: true
+
+val_loader:
+    _target_: torch.utils.data.DataLoader
+    train_set: ${val_set}
+    batch_size: 2*${batch_size}
+    shuffle: true
+
+optimizer:
+    _target_: torch.optim.AdamW
+    _partial_: true
+    lr: 0.001
+    weight_decay: 0.0
+
+scheduler:
+    _target_: torch.optim.lr_scheduler.CosineAnnealingLR
+    _partial_: true
+    T_max: ${epochs}
+
+loss:
+    _target_: torch.nn.CrossEntropyLoss
+
+val_metrics:
+    accuracy:
+        _target_: ignite.metrics.Accuracy
+    loss:
+        _target_: Loss
+        loss_fn: ${loss}
