@@ -1,11 +1,14 @@
 device: "cpu"
 epochs: 300
 batch_size: 256
+log_interval: 100
+max_epochs: 10
+n_saved_model: 2
 
 model:
-    _target_: scripts.model.ResNet
+    _target_: scripts.model.SVDResNet
 
-train_transform:
+data_transform:
     _target_: torchvision.transforms.Compose
     transforms:
         - _target_: torchvision.transforms.RandomResizedCrop
@@ -20,13 +23,13 @@ train_transform:
 train_set:
     _target_: torchvision.datasets.ImageNet
     root: "."
-    transform: ${train_transform}
+    transform: ${data_transform}
     train: True
 
 val_set:
     _target_: torchvision.datasets.ImageNet
     root: "."
-    transform: ${train_transform}
+    transform: ${data_transform}
     train: false
 
 train_loader:
@@ -55,9 +58,9 @@ scheduler:
 loss:
     _target_: torch.nn.CrossEntropyLoss
 
-val_metrics:
-    accuracy:
+val_metrics_accuracy:
         _target_: ignite.metrics.Accuracy
-    loss:
-        _target_: Loss
+
+val_metrics_loss:
+        _target_: ignite.metrics.Loss
         loss_fn: ${loss}
