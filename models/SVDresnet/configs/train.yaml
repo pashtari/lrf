@@ -1,17 +1,16 @@
 device: "cpu"
-epochs: 300
+num_epochs: 300
 batch_size: 64
 batch_size_val: 128  # ?? 2*${batch_size} is not working
 log_interval: 100
-max_epochs: 10
-n_saved_model: 2
+num_saved_model: 2
 compression_ratio: 5
 
 model:
     _target_: scripts.model.SVDResNet
     compression_ratio: ${compression_ratio}
 
-data_transform:
+train_transform:
     _target_: torchvision.transforms.Compose
     transforms:
         - _target_: torchvision.transforms.RandomResizedCrop
@@ -23,17 +22,25 @@ data_transform:
           mean: [0.485, 0.456, 0.406]
           std: [0.229, 0.224, 0.225]
 
+val_transform:
+    _target_: torchvision.transforms.Compose
+    transforms:
+        - _target_: torchvision.transforms.Normalize
+          mean: [0.485, 0.456, 0.406]
+          std: [0.229, 0.224, 0.225]
+        - _target_: torchvision.transforms.ToTensor
+
 train_set:
     _target_: torchvision.datasets.CIFAR10
     root: "."
-    transform: ${data_transform}
+    transform: ${train_transform}
     train: True
     download: True
 
 val_set:
     _target_: torchvision.datasets.CIFAR10
     root: "."
-    transform: ${data_transform}
+    transform: ${val_transform}
     train: false
     download: True
 
@@ -58,14 +65,14 @@ optimizer:
 scheduler:
     _target_: torch.optim.lr_scheduler.CosineAnnealingLR
     _partial_: true
-    T_max: ${epochs}
+    T_max: ${num_epochs}
 
 loss:
     _target_: torch.nn.CrossEntropyLoss
 
-val_metrics_accuracy: # ?? defining dictionary where each item needs to be instantiated is not working 
+val_metrics:
+    accuracy:
         _target_: ignite.metrics.Accuracy
-
-val_metrics_loss:
+    loss:
         _target_: ignite.metrics.Loss
         loss_fn: ${loss}
