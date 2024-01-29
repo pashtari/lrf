@@ -1,0 +1,71 @@
+device: "cpu"
+epochs: 300
+batch_size: 64
+batch_size_val: 128  # ?? 2*${batch_size} is not working
+log_interval: 100
+max_epochs: 10
+n_saved_model: 2
+compression_ratio: 5
+
+model:
+    _target_: scripts.model.SVDResNet
+    compression_ratio: ${compression_ratio}
+
+data_transform:
+    _target_: torchvision.transforms.Compose
+    transforms:
+        - _target_: torchvision.transforms.RandomResizedCrop
+          size: 224
+        - _target_: torchvision.transforms.RandomHorizontalFlip
+          p: 0.5
+        - _target_: torchvision.transforms.ToTensor
+        - _target_: torchvision.transforms.Normalize
+          mean: [0.485, 0.456, 0.406]
+          std: [0.229, 0.224, 0.225]
+
+train_set:
+    _target_: torchvision.datasets.CIFAR10
+    root: "."
+    transform: ${data_transform}
+    train: True
+    download: True
+
+val_set:
+    _target_: torchvision.datasets.CIFAR10
+    root: "."
+    transform: ${data_transform}
+    train: false
+    download: True
+
+train_loader:
+    _target_: torch.utils.data.DataLoader
+    dataset: ${train_set}
+    batch_size: ${batch_size}
+    shuffle: true
+
+val_loader:
+    _target_: torch.utils.data.DataLoader
+    dataset: ${val_set}
+    batch_size: ${batch_size_val}
+    shuffle: true
+
+optimizer:
+    _target_: torch.optim.AdamW
+    _partial_: true
+    lr: 0.001
+    weight_decay: 0.0
+
+scheduler:
+    _target_: torch.optim.lr_scheduler.CosineAnnealingLR
+    _partial_: true
+    T_max: ${epochs}
+
+loss:
+    _target_: torch.nn.CrossEntropyLoss
+
+val_metrics_accuracy: # ?? defining dictionary where each item needs to be instantiated is not working 
+        _target_: ignite.metrics.Accuracy
+
+val_metrics_loss:
+        _target_: ignite.metrics.Loss
+        loss_fn: ${loss}
