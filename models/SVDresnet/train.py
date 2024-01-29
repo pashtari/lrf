@@ -1,20 +1,11 @@
-from typing import Any, Dict, List, Optional, Tuple
-
-from omegaconf import DictConfig, OmegaConf
+from typing import Optional
+from omegaconf import DictConfig
 import hydra
-
-import torch
-from torch import nn
-from torch.utils.data import DataLoader
-from torchvision.datasets import MNIST, ImageNet
-from torchvision.transforms import Compose, Normalize, ToTensor, RandomResizedCrop, RandomHorizontalFlip
-
 from ignite.engine import (
     Events,
     create_supervised_trainer,
     create_supervised_evaluator,
 )
-from ignite.metrics import Accuracy, Loss
 from ignite.handlers import ModelCheckpoint
 from ignite.contrib.handlers import TensorboardLogger, global_step_from_engine
 
@@ -27,8 +18,8 @@ def main(cfg: DictConfig) -> Optional[float]:
     max_epochs = cfg.max_epochs
     n_saved_model = cfg.n_saved_model
 
-    # train_loader = hydra.utils.instantiate(cfg.train_loader)
-    # val_loader = hydra.utils.instantiate(cfg.val_loader)
+    train_loader = hydra.utils.instantiate(cfg.train_loader)
+    val_loader = hydra.utils.instantiate(cfg.val_loader)
 
     optimizer = hydra.utils.instantiate(cfg.optimizer)(params=model.parameters())
     loss = hydra.utils.instantiate(cfg.loss)

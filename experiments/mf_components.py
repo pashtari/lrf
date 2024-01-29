@@ -104,7 +104,7 @@ def get_svd_patches_components(x, compression_ratio=None, patch_size=8):
     return components
 
 
-def get_svd_patches_u(x, compression_ratio=None, patch_size=8):
+def get_svd_patches_u(x, compression_ratio=1, patch_size=8):
     # Convert the image to a PyTorch tensor
     x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
 
@@ -125,7 +125,7 @@ def get_svd_patches_u(x, compression_ratio=None, patch_size=8):
     return u_reshaped
 
 
-def get_svd_patches_v(x, compression_ratio=None, patch_size=8):
+def get_svd_patches_v(x, compression_ratio=1, patch_size=8):
     # Convert the image to a PyTorch tensor
     x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
 
