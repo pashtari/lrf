@@ -1,14 +1,13 @@
 device: "cpu"
-epochs: 300
 batch_size: 256
+num_epochs: 10
 log_interval: 100
-max_epochs: 10
-n_saved_model: 2
+num_saved_model: 2
 
 model:
-    _target_: scripts.model.SVDResNet
+    _target_: scripts.model.ResNet
 
-data_transform:
+train_transform:
     _target_: torchvision.transforms.Compose
     transforms:
         - _target_: torchvision.transforms.RandomResizedCrop
@@ -20,16 +19,24 @@ data_transform:
           std: [0.229, 0.224, 0.225]
         - _target_: torchvision.transforms.ToTensor
 
+val_transform:
+    _target_: torchvision.transforms.Compose
+    transforms:
+        - _target_: torchvision.transforms.Normalize
+          mean: [0.485, 0.456, 0.406]
+          std: [0.229, 0.224, 0.225]
+        - _target_: torchvision.transforms.ToTensor
+
 train_set:
     _target_: torchvision.datasets.ImageNet
     root: "."
-    transform: ${data_transform}
+    transform: ${train_transform}
     train: True
 
 val_set:
     _target_: torchvision.datasets.ImageNet
     root: "."
-    transform: ${data_transform}
+    transform: ${val_transform}
     train: false
 
 train_loader:
@@ -53,14 +60,14 @@ optimizer:
 scheduler:
     _target_: torch.optim.lr_scheduler.CosineAnnealingLR
     _partial_: true
-    T_max: ${epochs}
+    T_max: ${num_epochs}
 
 loss:
     _target_: torch.nn.CrossEntropyLoss
 
-val_metrics_accuracy:
+val_metrics:
+    accuracy:
         _target_: ignite.metrics.Accuracy
-
-val_metrics_loss:
+    loss:
         _target_: ignite.metrics.Loss
         loss_fn: ${loss}
