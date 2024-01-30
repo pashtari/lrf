@@ -55,7 +55,7 @@ train_loader:
 val_loader:
     _target_: torch.utils.data.DataLoader
     dataset: ${val_set}
-    batch_size: ${2*batch_size}
+    batch_size: ${2* batch_size}
     shuffle: true
 
 optimizer:
