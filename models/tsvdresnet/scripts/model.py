@@ -16,7 +16,10 @@ def get_patch_svd_components(x, patch_size=(8, 8), compression_ratio=1):
     patches = rearrange(x, "b c (h p1) (w p2) -> b (h w) (c p1 p2)", p1=p1, p2=p2)
 
     M, N = patches.shape[-2:]
-    R = math.floor(M * N // (compression_ratio * (M + N)))
+    # R = math.floor(M * N // (compression_ratio * (M + N)))
+    # ?? what about the following formula? Note that in the formula above, with compression_ratio=1, we don't get R=N (uncompressed version)
+    # in this SVD domain, given an image, we save u and v matrices. In this case: compression_ratio = [uncompressed size of (u + v)]/[compressed size of (u+v)]
+    R = math.floor(N // compression_ratio) 
 
     u, s, vt = torch.linalg.svd(patches, full_matrices=False)
     u = u[:, :, :R] @ torch.diag_embed(torch.sqrt(s[:, :R]))
@@ -69,7 +72,7 @@ class SVDResNet(nn.Module):
         cr = random.uniform(*self.compression_ratio)
         u, vt = get_patch_svd_components(x, self.patch_size, cr)
 
-        u = self.resnet(u)["features"]
+        u = self.resnet(u)["flatten"]
         u = self.linear_u(u)
         u = rearrange(u, "(b r) d -> b d r", b=batch_size)
 
