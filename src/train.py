@@ -9,7 +9,9 @@ from ignite.handlers import ModelCheckpoint
 from ignite.contrib.handlers import TensorboardLogger, global_step_from_engine
 
 
-@hydra.main(version_base=None, config_path="./configs", config_name="train.yaml")
+@hydra.main(
+    version_base=None, config_path="../models/tsvdresnet/configs", config_name="train"
+)
 def main(cfg: DictConfig) -> None:
     device = cfg.device
     model = hydra.utils.instantiate(cfg.model).to(device)

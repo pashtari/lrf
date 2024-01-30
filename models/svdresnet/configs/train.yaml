@@ -34,14 +34,14 @@ val_transform:
 
 train_set:
     _target_: torchvision.datasets.CIFAR10
-    root: "./datasets"
+    root: "."
     transform: ${train_transform}
     train: True
     download: True
 
 val_set:
     _target_: torchvision.datasets.CIFAR10
-    root: "./datasets"
+    root: "."
     transform: ${val_transform}
     train: false
     download: True
@@ -55,7 +55,7 @@ train_loader:
 val_loader:
     _target_: torch.utils.data.DataLoader
     dataset: ${val_set}
-    batch_size: ${batch_size} # ?? ${2 * batch_size} doesn't work for me!
+    batch_size: ${2* batch_size}
     shuffle: true
 
 optimizer:

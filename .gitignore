@@ -1,4 +1,6 @@
 __pycache__
-/outputs
-/tb-logger
-/datasets
+.DS_Store
+
+outputs
+tb-logger
+datasets

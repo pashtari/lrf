@@ -9,21 +9,15 @@ from torchvision.models.feature_extraction import create_feature_extractor
 from einops import rearrange
 
 
-def get_patch_svd_components(x, patch_size=(8, 8), compression_ratio=1):
+def get_patch_svd_components(x, patch_size=(8, 8)):
     # x: B × C × H × W
     p1, p2 = patch_size
     # Rearrange image to form columns of flattened patches
     patches = rearrange(x, "b c (h p1) (w p2) -> b (h w) (c p1 p2)", p1=p1, p2=p2)
 
-    M, N = patches.shape[-2:]
-    # R = math.floor(M * N // (compression_ratio * (M + N)))
-    # ?? what about the following formula? Note that in the formula above, with compression_ratio=1, we don't get R=N (uncompressed version)
-    # in this SVD domain, given an image, we save u and v matrices. In this case: compression_ratio = [uncompressed size of (u + v)]/[compressed size of (u+v)]
-    R = math.floor(N // compression_ratio) 
-
     u, s, vt = torch.linalg.svd(patches, full_matrices=False)
-    u = u[:, :, :R] @ torch.diag_embed(torch.sqrt(s[:, :R]))
-    vt = torch.diag_embed(torch.sqrt(s[:, :R])) @ vt[:, :R, :]
+    u = u @ torch.diag_embed(torch.sqrt(s))
+    vt = torch.diag_embed(torch.sqrt(s)) @ vt
 
     u_reshaped = rearrange(
         u,
@@ -39,7 +33,7 @@ def get_patch_svd_components(x, patch_size=(8, 8), compression_ratio=1):
     return u_reshaped, vt_reshaped
 
 
-class TSVDResNet(nn.Module):
+class SVDResNet(nn.Module):
     def __init__(
         self,
         num_classes=10,
@@ -48,7 +42,7 @@ class TSVDResNet(nn.Module):
         u_output_dim=96,
         vt_output_dim=24,
     ):
-        super(TSVDResNet, self).__init__()
+        super(SVDResNet, self).__init__()
 
         self.num_classes = num_classes
         p1, p2 = self.patch_size = _pair(patch_size)
@@ -69,10 +63,9 @@ class TSVDResNet(nn.Module):
     def forward(self, x):
         batch_size = x.shape[0]
 
-        cr = random.uniform(*self.compression_ratio)
-        u, vt = get_patch_svd_components(x, self.patch_size, cr)
+        u, vt = get_patch_svd_components(x, self.patch_size)
 
-        u = self.resnet(u)["flatten"]
+        u = self.resnet(u)["features"]
         u = self.linear_u(u)
         u = rearrange(u, "(b r) d -> b d r", b=batch_size)
 
