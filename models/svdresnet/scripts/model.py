@@ -39,7 +39,7 @@ def get_patch_svd_components(x, patch_size=(8, 8), compression_ratio=1):
     return u_reshaped, vt_reshaped
 
 
-class TSVDResNet(nn.Module):
+class SVDResNet(nn.Module):
     def __init__(
         self,
         num_classes=10,
@@ -48,7 +48,7 @@ class TSVDResNet(nn.Module):
         u_output_dim=96,
         vt_output_dim=24,
     ):
-        super(TSVDResNet, self).__init__()
+        super(SVDResNet, self).__init__()
 
         self.num_classes = num_classes
         p1, p2 = self.patch_size = _pair(patch_size)
@@ -72,7 +72,7 @@ class TSVDResNet(nn.Module):
         cr = random.uniform(*self.compression_ratio)
         u, vt = get_patch_svd_components(x, self.patch_size, cr)
 
-        u = self.resnet(u)["flatten"]
+        u = self.resnet(u)["features"]
         u = self.linear_u(u)
         u = rearrange(u, "(b r) d -> b d r", b=batch_size)
 
@@ -80,6 +80,6 @@ class TSVDResNet(nn.Module):
         vt = rearrange(vt, "(b r) d -> b r d", b=batch_size)
 
         y = u @ vt
-        y = torch.flatten(y, 1)
+        y = torch.flatten(y, 1) # ?? default params for u_output_dim and vt_output_dim results in the dimension of [batch, 2304] <-- double-check
         y = self.fc(y)
         return y

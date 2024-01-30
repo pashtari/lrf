@@ -10,10 +10,10 @@ from ignite.engine import (
 from ignite.handlers import ModelCheckpoint
 from ignite.contrib.handlers import TensorboardLogger, global_step_from_engine
 
-rootutils.set_root(path=rootutils.find_root(search_from=__file__), pythonpath=True, cwd=True)
+# rootutils.setup_root(__file__, indicator="../", pythonpath=True)
 
 @hydra.main(
-    version_base=None, config_path="../models/svdresnet/configs", config_name="train"
+    version_base=None, config_path="./models/svdresnet/configs", config_name="train"
 )
 def main(cfg: DictConfig) -> None:
     device = cfg.device
@@ -56,8 +56,15 @@ def main(cfg: DictConfig) -> None:
             f"Validation Results - Epoch[{trainer.state.epoch}] Avg accuracy: {metrics['accuracy']:.2f} Avg loss: {metrics['loss']:.2f}"
         )
 
+    def score_function(engine):
+        return engine.state.metrics["accuracy"]
+
     model_checkpoint = ModelCheckpoint(
-        **cfg.model_checkpoint,
+        "checkpoint",
+        n_saved=cfg.num_saved_model,
+        filename_prefix="best",
+        score_function=score_function,
+        score_name="accuracy",
         global_step_transform=global_step_from_engine(trainer),
     )
     val_evaluator.add_event_handler(Events.COMPLETED, model_checkpoint, {"model": model})
