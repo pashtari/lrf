@@ -1,14 +1,16 @@
 device: "cpu"
 num_epochs: 300
 batch_size: 64
-batch_size_val: 128  # ?? 2*${batch_size} is not working
 log_interval: 100
 num_saved_model: 2
-compression_ratio: 5
 
 model:
     _target_: scripts.model.SVDResNet
-    compression_ratio: ${compression_ratio}
+    num_classes: 10
+    patch_size: 8
+    compression_ratio: 1
+    u_output_dim: 96
+    vt_output_dim: 24
 
 train_transform:
     _target_: torchvision.transforms.Compose
@@ -53,7 +55,7 @@ train_loader:
 val_loader:
     _target_: torch.utils.data.DataLoader
     dataset: ${val_set}
-    batch_size: ${batch_size_val}
+    batch_size: ${2* batch_size}
     shuffle: true
 
 optimizer:
