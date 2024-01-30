@@ -57,7 +57,7 @@ class SVDResNet(nn.Module):
         self.model.conv1 = nn.Conv2d(
             1, 64, kernel_size=3, stride=1, padding=1, bias=False
         )
-        self.resnet = create_feature_extractor(self.model, {"avgpool": "features"})
+        self.resnet = create_feature_extractor(self.model, {"flatten": "flatten"})
         self.linear_u = nn.Linear(2048, self.u_output_dim)
         self.linear_vt = nn.Linear(3 * p1 * p2, self.vt_output_dim)
 
