@@ -10,8 +10,22 @@ model:
     u_output_dim: 96
     vt_output_dim: 24
 
+val_loader:
+    _target_: torch.utils.data.DataLoader
+    dataset: ${val_set_tiny}
+    batch_size: ${batch_size} 
+    shuffle: true
+    
 
 ### Other
+val_transform_tiny:
+    _target_: torchvision.transforms.Compose
+    transforms:
+        - _target_: torchvision.transforms.Normalize
+          mean: [0.5, 0.5, 0.5]
+          std: [0.5, 0.5, 0.5]
+        - _target_: torchvision.transforms.ToTensor
+
 val_transform:
     _target_: torchvision.transforms.Compose
     transforms:
@@ -20,18 +34,17 @@ val_transform:
           std: [0.229, 0.224, 0.225]
         - _target_: torchvision.transforms.ToTensor
 
+val_set_tiny:
+    _target_: torchvision.datasets.ImageFolder
+    root: ./datasets/tiny_imagenet_200/test
+    transform: ${val_transform_tiny}
+
 val_set:
     _target_: torchvision.datasets.CIFAR10
     root: "./datasets"
     transform: ${val_transform}
     train: false
     download: True
-
-val_loader:
-    _target_: torch.utils.data.DataLoader
-    dataset: ${val_set}
-    batch_size: ${batch_size} 
-    shuffle: true
 
 loss:
     _target_: torch.nn.CrossEntropyLoss
