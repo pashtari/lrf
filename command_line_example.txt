@@ -1,0 +1,1 @@
+python train.py -cp ../models/resnet/configs num_epochs=115 batch_size=32

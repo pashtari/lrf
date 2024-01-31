@@ -5,11 +5,17 @@ log_interval: 100
 num_saved_model: 2
 
 model:
-    _target_: scripts.model.IMGResNet
+    _target_: models.resnet.scripts.model.IMGResNet
     num_classes: 10
     compression_ratio: 1
     rescale: true
     image_size: [224, 224]
+
+model_checkpoint:
+    dirname: checkpoints
+    n_saved: ${num_saved_model}
+    filename_prefix: best
+    score_name: "accuracy"
 
 train_transform:
     _target_: torchvision.transforms.Compose

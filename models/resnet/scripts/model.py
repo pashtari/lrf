@@ -23,9 +23,10 @@ class IMGResNet(nn.Module):
         self.model = resnet50()
 
     def forward(self, x):
+        
+        cr_sqrt = math.sqrt(random.uniform(*self.compression_ratio))
 
-        if self.compression_ratio > 1:
-            cr_sqrt = math.sqrt(random.uniform(*self.compression_ratio))
+        if cr_sqrt > 1:
             x = interpolate(x, scale_factor=1/cr_sqrt)
             if self.rescale:
                 x = interpolate(x, size=self.image_size)
