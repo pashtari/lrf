@@ -13,11 +13,19 @@ model:
     vt_output_dim: 24
 
 model_checkpoint:
-    dirname: checkpoint1
+    dirname: checkpoints
     n_saved: ${num_saved_model}
     filename_prefix: best
     score_name: "accuracy"
 
+optimizer:
+    _target_: torch.optim.AdamW
+    _partial_: true
+    lr: 0.001
+    weight_decay: 0.0
+
+
+### Other
 train_transform:
     _target_: torchvision.transforms.Compose
     transforms:
@@ -63,12 +71,6 @@ val_loader:
     dataset: ${val_set}
     batch_size: ${batch_size} # ?? ${2 * batch_size} doesn't work for me!
     shuffle: true
-
-optimizer:
-    _target_: torch.optim.AdamW
-    _partial_: true
-    lr: 0.001
-    weight_decay: 0.0
 
 scheduler:
     _target_: torch.optim.lr_scheduler.CosineAnnealingLR

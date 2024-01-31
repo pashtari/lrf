@@ -1,0 +1,44 @@
+device: "cpu"
+batch_size: 64
+checkpoint: "best_model_10.pt"
+
+model:
+    _target_: models.svdresnet.scripts.model.SVDResNet
+    num_classes: 10
+    patch_size: 8
+    compression_ratio: 1
+    u_output_dim: 96
+    vt_output_dim: 24
+
+
+### Other
+val_transform:
+    _target_: torchvision.transforms.Compose
+    transforms:
+        - _target_: torchvision.transforms.Normalize
+          mean: [0.485, 0.456, 0.406]
+          std: [0.229, 0.224, 0.225]
+        - _target_: torchvision.transforms.ToTensor
+
+val_set:
+    _target_: torchvision.datasets.CIFAR10
+    root: "./datasets"
+    transform: ${val_transform}
+    train: false
+    download: True
+
+val_loader:
+    _target_: torch.utils.data.DataLoader
+    dataset: ${val_set}
+    batch_size: ${batch_size} 
+    shuffle: true
+
+loss:
+    _target_: torch.nn.CrossEntropyLoss
+
+val_metrics:
+    accuracy:
+        _target_: ignite.metrics.Accuracy
+    loss:
+        _target_: ignite.metrics.Loss
+        loss_fn: ${loss}
