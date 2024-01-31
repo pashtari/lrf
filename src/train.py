@@ -13,7 +13,7 @@ from ignite.contrib.handlers import TensorboardLogger, global_step_from_engine
 rootutils.set_root(path=rootutils.find_root(search_from=__file__), pythonpath=True, cwd=True)
 
 @hydra.main(
-    version_base=None, config_path="../models/svdresnet/configs", config_name="train"
+    version_base=None, config_path="../models/resnet/configs", config_name="train"
 )
 def main(cfg: DictConfig) -> None:
     device = cfg.device
