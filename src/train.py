@@ -41,7 +41,7 @@ def main(cfg: DictConfig) -> None:
         train_evaluator.run(train_loader)
         metrics = train_evaluator.state.metrics
         print(
-            f"Training Results - Epoch[{trainer.state.epoch}] Avg accuracy: {metrics['accuracy']:.2f} Avg loss: {metrics['loss']:.2f}"
+            f"Training Results - Epoch[{trainer.state.epoch}] Avg top-1 accuracy: {metrics['top_1_accuracy']:.2f} Avg top-5 accuracy: {metrics['top_5_accuracy']:.2f} Avg loss: {metrics['loss']:.2f}"
         )
 
     @trainer.on(Events.EPOCH_COMPLETED)
@@ -49,7 +49,7 @@ def main(cfg: DictConfig) -> None:
         val_evaluator.run(val_loader)
         metrics = val_evaluator.state.metrics
         print(
-            f"Validation Results - Epoch[{trainer.state.epoch}] Avg accuracy: {metrics['accuracy']:.2f} Avg loss: {metrics['loss']:.2f}"
+            f"Validation Results - Epoch[{trainer.state.epoch}] Avg top-1 accuracy: {metrics['top_1_accuracy']:.2f} Avg top-5 accuracy: {metrics['top_5_accuracy']:.2f} Avg loss: {metrics['loss']:.2f}"
         )
 
     model_checkpoint = ModelCheckpoint(

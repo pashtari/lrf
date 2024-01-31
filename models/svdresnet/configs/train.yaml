@@ -81,8 +81,12 @@ loss:
     _target_: torch.nn.CrossEntropyLoss
 
 val_metrics:
-    accuracy:
-        _target_: ignite.metrics.Accuracy
+    top_1_accuracy:
+        _target_: ignite.metrics.TopKCategoricalAccuracy
+        k: 1
+    top_5_accuracy:
+        _target_: ignite.metrics.TopKCategoricalAccuracy
+        k: 5
     loss:
         _target_: ignite.metrics.Loss
         loss_fn: ${loss}

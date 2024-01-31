@@ -30,7 +30,7 @@ def main(cfg: DictConfig) -> None:
     def log_test_results(engine):
         metrics = engine.state.metrics
         print(
-            f"Test Results - Avg accuracy: {metrics['accuracy']:.2f} Avg loss: {metrics['loss']:.2f}"
+            f"Test Results - Avg top-1 accuracy: {metrics['top_1_accuracy']:.2f} Avg top-5 accuracy: {metrics['top_5_accuracy']:.2f} Avg loss: {metrics['loss']:.2f}"
         )
 
     tb_logger = TensorboardLogger(log_dir="tb-test-logger")
@@ -38,7 +38,7 @@ def main(cfg: DictConfig) -> None:
         evaluator,
         event_name=Events.COMPLETED,
         tag="test",
-        metric_names=["accuracy"],
+        metric_names="all",
     )
 
     evaluator.run(val_loader)
