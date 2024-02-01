@@ -1,0 +1,5 @@
+model_checkpoint:
+  dirname: ./checkpoints
+  n_saved: ${num_saved_model}
+  filename_prefix: best
+  score_name: "accuracy"

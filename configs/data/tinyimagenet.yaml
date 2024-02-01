@@ -1,36 +1,34 @@
-batch_size: 64
+batch_size: 32
 val_batch_size: 128
 
 train_transform:
   _target_: torchvision.transforms.Compose
   transforms:
     - _target_: torchvision.transforms.RandomResizedCrop
-      size: 224
+      size: 64
     - _target_: torchvision.transforms.RandomHorizontalFlip
       p: 0.5
     - _target_: torchvision.transforms.ToTensor
     - _target_: torchvision.transforms.Normalize
-      mean: [0.485, 0.456, 0.406]
-      std: [0.229, 0.224, 0.225]
+      mean: [0.5, 0.5, 0.5]
+      std: [0.5, 0.5, 0.5]
 
 val_transform:
   _target_: torchvision.transforms.Compose
   transforms:
     - _target_: torchvision.transforms.Normalize
-      mean: [0.485, 0.456, 0.406]
-      std: [0.229, 0.224, 0.225]
+      mean: [0.5, 0.5, 0.5]
+      std: [0.5, 0.5, 0.5]
     - _target_: torchvision.transforms.ToTensor
 
 train_set:
-  _target_: torchvision.datasets.ImageNet
-  root: "../datasets/ILSVRC"
-  split: train
-  transform: ${train_transform}
+  _target_: torchvision.datasets.ImageFolder
+  root: datasets/tiny_imagenet_200/train
+  transform: ${..train_transform}
 
 val_set:
-  _target_: torchvision.datasets.ImageNet
-  root: "../datasets/ILSVRC"
-  split: val
+  _target_: torchvision.datasets.ImageFolder
+  root: datasets/tiny_imagenet_200/val
   transform: ${val_transform}
 
 train_loader:

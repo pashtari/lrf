@@ -2,7 +2,11 @@ device: "cpu"
 compile: false
 num_epochs: 500
 warmup_duration: 10
+amp: null
+resume_from: null
+non_blocking: true
 # val_interval: 1  # Could we define such a param??
+
 loss:
     _target_: torch.nn.CrossEntropyLoss
 

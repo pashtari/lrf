@@ -1,0 +1,17 @@
+defaults:
+  - _self_
+  - data: tinyimagenet
+  - model: resnet
+  - handler: common
+  - logger: [tensorboard, checkpoint, basic]
+  - trainer: trainer
+  - metric: imagenet
+  - paths: default
+
+task_name: "train"
+seed: 42
+###
+# checkpoint
+# tb
+# common_handler
+# basic

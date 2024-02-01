@@ -1,0 +1,6 @@
+_target_: src.models.svdresnet.SVDResNet
+num_classes: 200
+patch_size: 8
+compression_ratio: [1, 20]
+u_output_dim: 96
+vt_output_dim: 24

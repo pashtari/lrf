@@ -1,3 +1,2 @@
 log_every_iters: 100
 output_path: "./output/tensorboard/"
-tag: [train, val]
