@@ -1,6 +1,6 @@
 import hydra
 import torch
-import rootutils
+import rootutils  # I prefer to avoid such an uncommon depondency!!
 
 from omegaconf import DictConfig
 from ignite.engine import (
@@ -10,17 +10,18 @@ from ignite.engine import (
 from ignite.handlers import Checkpoint
 from ignite.contrib.handlers import TensorboardLogger
 
-rootutils.set_root(path=rootutils.find_root(search_from=__file__), pythonpath=True, cwd=True)
-
-@hydra.main(
-    version_base=None, config_path="../models/svdresnet/configs", config_name="eval"
+rootutils.set_root(
+    path=rootutils.find_root(search_from=__file__), pythonpath=True, cwd=True
 )
+
+
+@hydra.main(version_base=None, config_path="../models/resnet/configs", config_name="eval")
 def main(cfg: DictConfig) -> None:
     device = cfg.device
     model = hydra.utils.instantiate(cfg.model).to(device)
     checkpoint_fp = "../checkpoints" + cfg.checkpoint
-    checkpoint = torch.load(checkpoint_fp, map_location=device) 
-    Checkpoint.load_objects(to_load={"model": model}, checkpoint=checkpoint) 
+    checkpoint = torch.load(checkpoint_fp, map_location=device)
+    Checkpoint.load_objects(to_load={"model": model}, checkpoint=checkpoint)
 
     val_loader = hydra.utils.instantiate(cfg.val_loader)
     val_metrics = {k: hydra.utils.instantiate(v) for k, v in cfg.val_metrics.items()}
@@ -29,9 +30,8 @@ def main(cfg: DictConfig) -> None:
     @evaluator.on(Events.COMPLETED)
     def log_test_results(engine):
         metrics = engine.state.metrics
-        print(
-            f"Test Results - Avg top-1 accuracy: {metrics['top_1_accuracy']:.2f} Avg top-5 accuracy: {metrics['top_5_accuracy']:.2f} Avg loss: {metrics['loss']:.2f}"
-        )
+        printed_metrics = " - ".join(f"{k}: {v:.2f}" for k, v in metrics.items())
+        print(f"Test Results - {printed_metrics}")
 
     tb_logger = TensorboardLogger(log_dir="tb-test-logger")
     tb_logger.attach_output_handler(
@@ -43,6 +43,7 @@ def main(cfg: DictConfig) -> None:
 
     evaluator.run(val_loader)
     tb_logger.close()
+
 
 if __name__ == "__main__":
     main()

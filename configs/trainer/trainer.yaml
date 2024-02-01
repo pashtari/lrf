@@ -1,0 +1,22 @@
+device: "cpu"
+compile: false
+num_epochs: 500
+warmup_duration: 10
+# val_interval: 1  # Could we define such a param??
+loss:
+    _target_: torch.nn.CrossEntropyLoss
+
+optimizer:
+    _target_: torch.optim.AdamW
+    _partial_: true
+    lr: 0.001
+    weight_decay: 0.0
+
+lr_scheduler:
+    _target_: ignite.handlers.param_scheduler.CosineAnnealingScheduler
+    _partial_: true
+    param_name: lr
+    start_value: 0.0
+    end_value: 1.0
+    cycle_size: ${num_epochs}
+    warmup_duration: ${warmup_duration}

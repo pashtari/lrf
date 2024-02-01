@@ -1,0 +1,4 @@
+save_every_iters: 100
+save_handler: "../"
+with_pbars: true
+clear_cuda_cache: false

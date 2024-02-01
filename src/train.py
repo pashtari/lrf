@@ -1,4 +1,4 @@
-import rootutils
+import rootutils  # I prefer to avoid such an uncommon depondency!!
 import hydra
 
 from omegaconf import DictConfig
@@ -10,7 +10,10 @@ from ignite.engine import (
 from ignite.handlers import ModelCheckpoint
 from ignite.contrib.handlers import TensorboardLogger, global_step_from_engine
 
-rootutils.set_root(path=rootutils.find_root(search_from=__file__), pythonpath=True, cwd=True)
+rootutils.set_root(
+    path=rootutils.find_root(search_from=__file__), pythonpath=True, cwd=True
+)
+
 
 @hydra.main(
     version_base=None, config_path="../models/resnet/configs", config_name="train"
@@ -32,25 +35,28 @@ def main(cfg: DictConfig) -> None:
 
     @trainer.on(Events.ITERATION_COMPLETED(every=cfg.log_interval))
     def log_training_loss(engine):
-        print(
-            f"Epoch[{engine.state.epoch}], Iter[{engine.state.iteration}] Loss: {engine.state.output:.2f}"
-        )
+        e = engine.state.epoch
+        n = engine.state.max_epochs
+        i = engine.state.iteration
+        print(f"Epoch[{e}/{n}], Iter[{i}] - loss: {engine.state.output:.2f}")
 
     @trainer.on(Events.EPOCH_COMPLETED)
     def log_training_results(trainer):
         train_evaluator.run(train_loader)
         metrics = train_evaluator.state.metrics
-        print(
-            f"Training Results - Epoch[{trainer.state.epoch}] Avg top-1 accuracy: {metrics['top_1_accuracy']:.2f} Avg top-5 accuracy: {metrics['top_5_accuracy']:.2f} Avg loss: {metrics['loss']:.2f}"
-        )
+        e = trainer.state.epoch
+        n = trainer.state.max_epochs
+        printed_metrics = " - ".join(f"{k}: {v:.2f}" for k, v in metrics.items())
+        print(f"Training Results, Epoch[{e}/{n}]] - {printed_metrics}")
 
     @trainer.on(Events.EPOCH_COMPLETED)
     def log_validation_results(trainer):
         val_evaluator.run(val_loader)
         metrics = val_evaluator.state.metrics
-        print(
-            f"Validation Results - Epoch[{trainer.state.epoch}] Avg top-1 accuracy: {metrics['top_1_accuracy']:.2f} Avg top-5 accuracy: {metrics['top_5_accuracy']:.2f} Avg loss: {metrics['loss']:.2f}"
-        )
+        e = trainer.state.epoch
+        n = trainer.state.max_epochs
+        printed_metrics = " - ".join(f"{k}: {v:.2f}" for k, v in metrics.items())
+        print(f"Validation Results, Epoch[{e}/{n}]] - {printed_metrics}")
 
     model_checkpoint = ModelCheckpoint(
         **cfg.model_checkpoint,

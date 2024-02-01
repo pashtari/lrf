@@ -1,121 +1,12 @@
-device: "cpu"
-num_epochs: 300
-batch_size: 64
-log_interval: 100
-num_saved_model: 2
+######### metric #########
 
-model:
-    _target_: models.resnet.scripts.model.IMGResNet
-    num_classes: 10
-    compression_ratio: [1, 20]
-    rescale: true
-    image_size: [224, 224]
-
-model_checkpoint:
+######### handler #########
+# checkpoint
+checkpoint:
     dirname: checkpoints
-    n_saved: ${num_saved_model}
+    n_saved: 2
     filename_prefix: best
     score_name: "accuracy"
 
-optimizer:
-    _target_: torch.optim.AdamW
-    _partial_: true
-    lr: 0.001
-    weight_decay: 0.0
-
-train_loader:
-    _target_: torch.utils.data.DataLoader
-    dataset: ${train_set_tiny}
-    batch_size: ${batch_size}
-    shuffle: true
-
-val_loader:
-    _target_: torch.utils.data.DataLoader
-    dataset: ${val_set_tiny}
-    batch_size: ${batch_size} # ?? ${2 * batch_size} doesn't work for me!
-    shuffle: true
-
-
-### Other
-train_transform_tiny:
-    _target_: torchvision.transforms.Compose
-    transforms:
-        - _target_: torchvision.transforms.RandomResizedCrop
-          size: 64
-        - _target_: torchvision.transforms.RandomHorizontalFlip
-          p: 0.5
-        - _target_: torchvision.transforms.ToTensor
-        - _target_: torchvision.transforms.Normalize
-          mean: [0.5, 0.5, 0.5]
-          std: [0.5, 0.5, 0.5]
-
-val_transform_tiny:
-    _target_: torchvision.transforms.Compose
-    transforms:
-        - _target_: torchvision.transforms.Normalize
-          mean: [0.5, 0.5, 0.5]
-          std: [0.5, 0.5, 0.5]
-        - _target_: torchvision.transforms.ToTensor
-
-train_transform:
-    _target_: torchvision.transforms.Compose
-    transforms:
-        - _target_: torchvision.transforms.RandomResizedCrop
-          size: 224
-        - _target_: torchvision.transforms.RandomHorizontalFlip
-          p: 0.5
-        - _target_: torchvision.transforms.ToTensor
-        - _target_: torchvision.transforms.Normalize
-          mean: [0.485, 0.456, 0.406]
-          std: [0.229, 0.224, 0.225]
-
-val_transform:
-    _target_: torchvision.transforms.Compose
-    transforms:
-        - _target_: torchvision.transforms.Normalize
-          mean: [0.485, 0.456, 0.406]
-          std: [0.229, 0.224, 0.225]
-        - _target_: torchvision.transforms.ToTensor
-
-train_set_tiny:
-    _target_: torchvision.datasets.ImageFolder
-    root: ./datasets/tiny_imagenet_200/train
-    transform: ${train_transform_tiny}
-
-val_set_tiny:
-    _target_: torchvision.datasets.ImageFolder
-    root: ./datasets/tiny_imagenet_200/val
-    transform: ${val_transform_tiny}
-
-train_set:
-    _target_: torchvision.datasets.CIFAR10
-    root: "./datasets"
-    transform: ${train_transform}
-    train: True
-    download: True
-
-val_set:
-    _target_: torchvision.datasets.CIFAR10
-    root: "./datasets"
-    transform: ${val_transform}
-    train: false
-    download: True
-
-scheduler:
-    _target_: torch.optim.lr_scheduler.CosineAnnealingLR
-    _partial_: true
-    T_max: ${num_epochs}
-
-loss:
-    _target_: torch.nn.CrossEntropyLoss
-
-val_metrics:
-    top_1_accuracy:
-        _target_: ignite.metrics.TopKCategoricalAccuracy
-        k: 1
-    top_5_accuracy:
-        _target_: ignite.metrics.TopKCategoricalAccuracy
-        k: 5
-    loss:
-        _target_: ignite.metrics.Loss
-        loss_fn: ${loss}
+# TensorBoard logger
+log_interval: 100

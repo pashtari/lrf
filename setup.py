@@ -36,9 +36,8 @@ setup(
     python_requires=">=3.10",
     install_requires=[
         "torch",
-        "hydra-core",
-        "torch",
         "torchvision",
+        "hydra-core",
         "einops",
     ],
 )

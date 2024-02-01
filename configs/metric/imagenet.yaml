@@ -1,0 +1,9 @@
+top1_accuracy:
+    _target_: ignite.metrics.TopKCategoricalAccuracy
+    k: 1
+top5_accuracy:
+    _target_: ignite.metrics.TopKCategoricalAccuracy
+    k: 5
+# loss: # Could we remove this?! instead add it in train.py!
+#     _target_: ignite.metrics.Loss
+#     loss_fn: ${loss}
