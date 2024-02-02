@@ -1,0 +1,5 @@
+checkpoint:
+    dirname: ./checkpoints
+    n_saved: 2
+    filename_prefix: best
+    score_name: "accuracy"
