@@ -1,2 +1,3 @@
-log_every_iters: 100
-output_path: "./output/logger/tensorboard/"
+tensorboard:
+  log_every_iters: 100
+  output_path: "./outputs/logger/tensorboard/"

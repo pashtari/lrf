@@ -1,2 +1,2 @@
-from resnet import *
-from svdresnet import *
+from .resnet import *
+from .svdresnet import *

@@ -1,2 +1,2 @@
-from pylogger import *
-from xlogger import *
+from .pylogger import *
+from .xlogger import *

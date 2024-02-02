@@ -1,7 +1,6 @@
 common:
     save_every_iters: 100
     log_every_epochs: 10
-    save_handler: "../"
     with_pbars: true
     with_pbar_on_iters: true
     clear_cuda_cache: false

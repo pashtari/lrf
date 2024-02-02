@@ -2,10 +2,26 @@ defaults:
     - _self_
     - data: tinyimagenet
     - model: resnet
-    - handler: [checkpoint, common]
-    - logger: [pylogger, tensorboard]
+    - handler: null
+    - logger: [tensorboard]
     - trainer: trainer
     - metric: imagenet
 
 task_name: "train"
 seed: 42
+pylogger_output_path: "./outputs/pylogger/"
+
+common_handlers:
+    save_every_iters: 100
+    with_gpu_stats: false
+    with_pbars: false
+    with_pbar_on_iters: false
+    log_every_iters: 10
+    stop_on_nan: false
+    clear_cuda_cache: false
+
+checkpoint:
+    dirname: ./outputs/checkpoints
+    n_saved: 2
+    filename_prefix: best
+    score_name: "accuracy"
