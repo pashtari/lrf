@@ -1,0 +1,49 @@
+batch_size: 32
+val_batch_size: 64
+
+train_transform:
+  _target_: torchvision.transforms.Compose
+  transforms:
+    - _target_: torchvision.transforms.RandomResizedCrop
+      size: 32
+    - _target_: torchvision.transforms.RandomHorizontalFlip
+      p: 0.5
+    - _target_: torchvision.transforms.ToTensor
+    - _target_: torchvision.transforms.Normalize
+      mean: [0.5, 0.5, 0.5]
+      std: [0.5, 0.5, 0.5]
+
+val_transform:
+  _target_: torchvision.transforms.Compose
+  transforms:
+    - _target_: torchvision.transforms.Normalize
+      mean: [0.5, 0.5, 0.5]
+      std: [0.5, 0.5, 0.5]
+    - _target_: torchvision.transforms.ToTensor
+
+train_set:
+  _target_: torchvision.datasets.CIFAR10
+  root: "../datasets/cifar-10-python.tar"
+  split: train
+  transform: ${train_transform}
+
+val_set:
+  _target_: torchvision.datasets.CIFAR10
+  root: "../datasets/cifar-10-python.tar"
+  split: val
+  transform: ${val_transform}
+
+train_loader:
+  _target_: ignite.distributed.idist.auto_dataloader
+  dataset: ${train_set}
+  batch_size: ${batch_size}
+  num_workers: 2
+  shuffle: true
+  drop_last: true
+
+val_loader:
+  _target_: ignite.distributed.idist.auto_dataloader
+  dataset: ${val_set}
+  batch_size: ${val_batch_size}
+  num_workers: 2
+  shuffle: false
