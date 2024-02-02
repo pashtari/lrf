@@ -2,48 +2,48 @@ batch_size: 64
 val_batch_size: 128
 
 train_transform:
-  _target_: torchvision.transforms.Compose
-  transforms:
-    - _target_: torchvision.transforms.RandomResizedCrop
-      size: 224
-    - _target_: torchvision.transforms.RandomHorizontalFlip
-      p: 0.5
-    - _target_: torchvision.transforms.ToTensor
-    - _target_: torchvision.transforms.Normalize
-      mean: [0.485, 0.456, 0.406]
-      std: [0.229, 0.224, 0.225]
+    _target_: torchvision.transforms.Compose
+    transforms:
+        - _target_: torchvision.transforms.RandomResizedCrop
+          size: 224
+        - _target_: torchvision.transforms.RandomHorizontalFlip
+          p: 0.5
+        - _target_: torchvision.transforms.ToTensor
+        - _target_: torchvision.transforms.Normalize
+          mean: [0.485, 0.456, 0.406]
+          std: [0.229, 0.224, 0.225]
 
 val_transform:
-  _target_: torchvision.transforms.Compose
-  transforms:
-    - _target_: torchvision.transforms.Normalize
-      mean: [0.485, 0.456, 0.406]
-      std: [0.229, 0.224, 0.225]
-    - _target_: torchvision.transforms.ToTensor
+    _target_: torchvision.transforms.Compose
+    transforms:
+        - _target_: torchvision.transforms.Normalize
+          mean: [0.485, 0.456, 0.406]
+          std: [0.229, 0.224, 0.225]
+        - _target_: torchvision.transforms.ToTensor
 
 train_set:
-  _target_: torchvision.datasets.ImageNet
-  root: "../datasets/ILSVRC"
-  split: train
-  transform: ${train_transform}
+    _target_: torchvision.datasets.ImageNet
+    root: "../datasets/ILSVRC"
+    split: train
+    transform: ${train_transform}
 
 val_set:
-  _target_: torchvision.datasets.ImageNet
-  root: "../datasets/ILSVRC"
-  split: val
-  transform: ${val_transform}
+    _target_: torchvision.datasets.ImageNet
+    root: "../datasets/ILSVRC"
+    split: val
+    transform: ${val_transform}
 
 train_loader:
-  _target_: ignite.distributed.idist.auto_dataloader
-  dataset: ${train_set}
-  batch_size: ${batch_size}
-  num_workers: 2
-  shuffle: true
-  drop_last: true
+    _target_: ignite.distributed.auto_dataloader
+    dataset: ${train_set}
+    batch_size: ${batch_size}
+    num_workers: 2
+    shuffle: true
+    drop_last: true
 
 val_loader:
-  _target_: ignite.distributed.idist.auto_dataloader
-  dataset: ${val_set}
-  batch_size: ${val_batch_size}
-  num_workers: 2
-  shuffle: false
+    _target_: ignite.distributed.auto_dataloader
+    dataset: ${val_set}
+    batch_size: ${val_batch_size}
+    num_workers: 2
+    shuffle: false

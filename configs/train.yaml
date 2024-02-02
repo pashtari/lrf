@@ -1,6 +1,6 @@
 defaults:
     - _self_
-    - data: tinyimagenet
+    - data: cifar10
     - model: resnet
     - handler: null
     - logger: [tensorboard]
@@ -9,16 +9,7 @@ defaults:
 
 task_name: "train"
 seed: 42
-pylogger_output_path: "./outputs/pylogger/"
-
-common_handlers:
-    save_every_iters: 100
-    with_gpu_stats: false
-    with_pbars: false
-    with_pbar_on_iters: false
-    log_every_iters: 10
-    stop_on_nan: false
-    clear_cuda_cache: false
+logger_output_path: "./outputs/logger/"
 
 checkpoint:
     dirname: ./outputs/checkpoints

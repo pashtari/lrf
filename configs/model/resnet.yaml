@@ -2,4 +2,4 @@ _target_: models.resnet.ResNet
 num_classes: 10
 compression_ratio: [1, 20]
 rescale: true
-image_size: [224, 224]
+image_size: [32, 32]
