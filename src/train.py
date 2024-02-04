@@ -12,10 +12,10 @@ from ignite.engine import (
     create_supervised_evaluator,
 )
 from ignite.metrics import Loss
-from ignite.contrib.handlers import ProgressBar
+
 from ignite.contrib.engines import common
 from torch.utils.data.distributed import DistributedSampler
-from ignite.handlers import Checkpoint
+from ignite.handlers import Checkpoint, global_step_from_engine
 
 
 def load_checkpoint(resume_from):
@@ -95,49 +95,11 @@ def main(cfg: DictConfig) -> None:
     )
 
     @trainer.on(
-        Events.EPOCH_COMPLETED(every=cfg.trainer.val_every_epochs) | Events.COMPLETED
+        Events.EPOCH_COMPLETED(every=cfg.trainer.val_every_epochs) or Events.COMPLETED
     )
     def run_validation(engine):
         train_evaluator.run(train_loader)
         val_evaluator.run(val_loader)
-
-    # progress bar for iters
-    iter_pbar = ProgressBar(persist=True)
-    iter_pbar.attach(
-        trainer,
-        event_name=Events.ITERATION_COMPLETED(every=cfg.trainer.log_every_iters),
-    )
-
-    @trainer.on(Events.ITERATION_COMPLETED(every=cfg.trainer.log_every_iters))
-    def log_train_pbar(engine):
-        train_metrics = train_evaluator.state.metrics
-        val_metrics = val_evaluator.state.metrics
-        metrics = [
-            f"train_{k}: {train_metrics[k]:.2f} - val_{k}: {val_metrics[k]:.2f}"
-            for k in train_metrics
-        ]
-        metrics = " - ".join(metrics)
-        iter_pbar.log_message(f"{metrics} - loss: {trainer.state.output:.2f}")
-
-    # progress bar for epochs
-    epoch_pbar = ProgressBar(persist=True)
-    epoch_pbar.attach(
-        trainer,
-        metric_names="all",
-        event_name=Events.EPOCH_STARTED,
-        closing_event_name=Events.COMPLETED,
-    )
-
-    @trainer.on(Events.EPOCH_COMPLETED | Events.COMPLETED)
-    def log_eval_pbar(engine):
-        train_metrics = train_evaluator.state.metrics
-        val_metrics = val_evaluator.state.metrics
-        metrics = [
-            f"train_{k}: {train_metrics[k]:.2f} - val_{k}: {val_metrics[k]:.2f}"
-            for k in train_metrics
-        ]
-        metrics = " - ".join(metrics)
-        epoch_pbar.log_message(metrics)
 
     if isinstance(train_loader.sampler, DistributedSampler):
 
@@ -145,8 +107,22 @@ def main(cfg: DictConfig) -> None:
         def distrib_set_epoch(engine: Engine) -> None:
             train_loader.sampler.set_epoch(engine.state.epoch - 1)
 
-    ###### handlers ######
 
+    object_dict = {"model": model,
+                   "trainer": trainer,
+                   "train_evaluator": train_evaluator,
+                   "val_evaluator": val_evaluator,
+                   "optimizer": optimizer,
+                   "lr_scheduler": lr_scheduler,
+                   }
+    
+    for key, value in cfg.handler.items():
+        handler = hydra.utils.instantiate(value)(object_dict=object_dict)
+        object_dict[f"{key}"] = handler
+
+
+
+    ###### handlers ######
     # if rank == 0:
     #     evaluators = {"train": train_evaluator, "val": val_evaluator}
     #     tb_logger = common.setup_tb_logging(
@@ -156,14 +132,6 @@ def main(cfg: DictConfig) -> None:
     #         evaluators=evaluators,
     #         log_every_iters=cfg.logger.log_every_iter,
     #     )  # ??
-
-    # best_model_handler = Checkpoint(
-    #     {"model": model},  # ??
-    #     global_step_transform=global_step_from_engine(trainer),
-    #     score_function=Checkpoint.get_default_score_fn("Accuracy"),  # ??
-    #     **cfg.logger.model_checkpoint,
-    # )
-    # val_evaluator.add_event_handler(Events.COMPLETED, best_model_handler)
 
     trainer.run(train_loader, max_epochs=cfg.trainer.num_epochs)
 

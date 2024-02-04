@@ -2,7 +2,7 @@ defaults:
     - _self_
     - data: cifar10
     - model: resnet
-    - handler: null
+    - handler: [progressbar, model_checkpoint]
     - logger: [tensorboard]
     - trainer: trainer
     - metric: imagenet
@@ -10,9 +10,3 @@ defaults:
 task_name: "train"
 seed: 42
 logger_output_path: "./outputs/logger/"
-
-checkpoint:
-    dirname: ./outputs/checkpoints
-    n_saved: 2
-    filename_prefix: best
-    score_name: "accuracy"
