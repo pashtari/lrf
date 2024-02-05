@@ -3,7 +3,7 @@ defaults:
     - data: cifar10
     - model: resnet
     - handler: [progressbar, model_checkpoint]
-    - logger: [tensorboard]
+    - logger: [pylogger, tensorboard]
     - trainer: trainer
     - metric: imagenet
 

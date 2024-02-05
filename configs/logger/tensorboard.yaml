@@ -1,3 +1,5 @@
 tensorboard:
+  _target_: utils.tensorboard.my_tensorboard
+  _partial_: true
   log_every_iters: 100
-  output_path: "./outputs/logger/tensorboard/"
+  output_path: "./outputs/tensorboard/"

@@ -3,7 +3,19 @@ import ignite
 import ignite.distributed as idist
 from datetime import datetime
 from pathlib import Path
+from ignite.utils import setup_logger
 
+
+def my_pylogger(**kwargs):
+
+    if kwargs["cfg"] is not None:
+        cfg = kwargs["cfg"]
+        logger = setup_logger(cfg.task_name)
+        log_basic_info(logger, cfg)
+
+        rank = idist.get_rank()
+        if rank == 0:
+            setup_basic_logger(logger, cfg)
 
 def log_basic_info(logger, cfg):
     logger.info(cfg.task_name)
@@ -33,13 +45,13 @@ def log_basic_info(logger, cfg):
 def setup_basic_logger(logger, cfg):
     now = datetime.now().strftime("%Y%m%d-%H%M%S")
     model_name = cfg.model._target_.split(".")[-1]
-    output_path = cfg.logger.basic_logger_output_path
+    output_path = cfg.logger_output_path
     folder_name = f"{model_name}_backend-{idist.backend()}-{idist.get_world_size()}_{now}"
     output_path = Path(output_path) / folder_name
     if not output_path.exists():
         output_path.mkdir(parents=True)
-    cfg.logger.basic_logger_output_path = output_path.as_posix()
-    logger.info(f"Output path: {cfg.logger.basic_logger_output_path}")
+    cfg.logger_output_path = output_path.as_posix()
+    logger.info(f"Output path: {cfg.logger_output_path}")
 
 
 def log_metrics(logger, trainer, elapsed, tag, metrics):

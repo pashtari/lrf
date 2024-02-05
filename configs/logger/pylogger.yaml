@@ -1,0 +1,3 @@
+pylogger:
+  _target_: utils.pylogger.my_pylogger
+  _partial_: true
