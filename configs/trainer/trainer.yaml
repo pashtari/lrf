@@ -1,4 +1,4 @@
-device: "cpu"
+backend: nccl
 compile: false
 num_epochs: 20
 warmup_duration: 10
