@@ -1,0 +1,19 @@
+Universe = vanilla
+
+RequestCpus    = 1
+RequestMemory  = 64G
++RequestWalltime = 1800
+Request_GPUs = 1
+
+
+stream_output = True
+
+initialdir = ./
+Executable = my_script.txt
+
+
+Log          = condor_log.log
+Output       = condor_out.out
+Error        = condor_err.err
+
+Queue 1
