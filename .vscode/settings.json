@@ -1,0 +1,7 @@
+{
+    "python.pythonPath": "/Users/pooya/opt/miniconda3/envs/deepenv/bin/python",
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter"
+    },
+    "python.formatting.provider": "none"
+}

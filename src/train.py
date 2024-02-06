@@ -81,26 +81,10 @@ def main(cfg: DictConfig) -> None:
     ###### handlers ######
     for key, value in cfg.handler.items():
         handler = hydra.utils.instantiate(value)(objects=objects)
-        objects[f"{key}"] = handler
 
     ###### loggers ######
-    # # PyLogger
-    # logger = setup_logger(cfg.task_name)
-    # log_basic_info(logger, cfg)
-
-    # if rank == 0:
-    #     setup_basic_logger(logger, cfg)
-
-    ###### handlers ######
-    # if rank == 0:
-    #     evaluators = {"train": train_evaluator, "val": val_evaluator}
-    #     tb_logger = common.setup_tb_logging(
-    #         cfg.logger.output_path,
-    #         trainer,
-    #         optimizer,
-    #         evaluators=evaluators,
-    #         log_every_iters=cfg.logger.log_every_iter,
-    #     )  # ??
+    for key, value in cfg.logger.items():
+        logger = hydra.utils.instantiate(value)(objects=objects)
 
     trainer.run(train_loader, max_epochs=cfg.trainer.num_epochs)
 

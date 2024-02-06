@@ -1,4 +1,4 @@
 pylogger:
-    _target_: utils.pylogger.my_pylogger
+    _target_: utils.pylogger
     _partial_: true
     output_path: ${hydra:runtime.output_dir}/logger/pylogger

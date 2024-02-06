@@ -1,4 +1,6 @@
 torch
 torchvision
-einops
 hydra-core
+omegaconf
+ignite
+einops

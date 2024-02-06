@@ -1,5 +1,5 @@
 tensorboard:
-    _target_: utils.tensorboard.my_tensorboard
+    _target_: utils.tensorboard
     _partial_: true
     log_every_iters: 100
     output_path: ${hydra:runtime.output_dir}/logger/tensorboard
