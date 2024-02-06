@@ -9,6 +9,7 @@ from ignite.engine import (
     create_supervised_trainer,
     create_supervised_evaluator,
 )
+from ignite.contrib.handlers.base_logger import BaseLogger
 from ignite.metrics import Loss
 
 
@@ -79,17 +80,18 @@ def main(cfg: DictConfig) -> None:
     }
 
     ###### handlers ######
-    for key, value in cfg.handler.items():
-        handler = hydra.utils.instantiate(value)(objects=objects)
+    for value in cfg.handler.values():
+        hydra.utils.instantiate(value)(objects=objects)
 
     ###### loggers ######
-    for key, value in cfg.logger.items():
-        logger = hydra.utils.instantiate(value)(objects=objects)
+    for value in cfg.logger.values():
+        hydra.utils.instantiate(value)(objects=objects)
 
     trainer.run(train_loader, max_epochs=cfg.trainer.num_epochs)
 
     # if rank == 0:
     #     tb_logger.close()
+
     print("All is fine!")
 
 

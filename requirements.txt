@@ -2,5 +2,9 @@ torch
 torchvision
 hydra-core
 omegaconf
-ignite
+pytorch-ignite
+tqdm
+tensorboardX
+scikit-image
+matplotlib
 einops
