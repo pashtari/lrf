@@ -1,4 +1,4 @@
-_target_: src.models.svdresnet.SVDResNet
+_target_: models.SVDResNet
 num_classes: 200
 patch_size: 8
 compression_ratio: [1, 20]

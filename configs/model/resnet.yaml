@@ -1,4 +1,4 @@
-_target_: models.resnet.ResNet
+_target_: models.ResNet
 num_classes: 10
 compression_ratio: [1, 20]
 rescale: true
