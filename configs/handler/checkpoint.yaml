@@ -1,0 +1,5 @@
+checkpoint:
+    _target_: utils.checkpoint
+    _partial_: true
+    dirname: ${hydra:runtime.output_dir}/checkpoints
+    resume_from: null

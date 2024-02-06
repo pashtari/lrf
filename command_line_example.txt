@@ -1,1 +1,1 @@
-python train.py -cp ../models/resnet/configs num_epochs=115 batch_size=32
+python train.py -cp ../models/resnet/configs data.batch_size=32 trainer.num_epochs=500 ++handler.checkpoint.filename_prefix=""

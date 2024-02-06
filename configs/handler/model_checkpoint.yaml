@@ -1,7 +1,0 @@
-model_checkpoint:
-    _target_: utils.model_checkpoint.myCheckpoint
-    _partial_: true
-    save_handler: ./outputs/checkpoints
-    n_saved: 2
-    filename_prefix: "best"
-    score_name: "top1_accuracy"
