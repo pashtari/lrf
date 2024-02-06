@@ -102,3 +102,4 @@ def run(backend=None, **kwargs):
 
 if __name__ == "__main__":
     fire.Fire({"run": run})
+    print("All is fine!")
