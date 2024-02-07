@@ -10,11 +10,11 @@ from ignite.engine import (
     create_supervised_evaluator,
 )
 from ignite.metrics import Loss
-import fire
+
+# import fire
 
 
-@hydra.main(version_base=None, config_path="../configs", config_name="train")
-def training(cfg: DictConfig) -> None:
+def training(local_rank, cfg) -> None:
     device = idist.device()
     rank = idist.get_rank()
     manual_seed(cfg.seed + rank)
@@ -95,11 +95,14 @@ def training(cfg: DictConfig) -> None:
     print("All is fine!")
 
 
-def run(backend=None, **kwargs):
-    with idist.Parallel(backend=backend, **kwargs) as parallel:
-        parallel.run(training)
+@hydra.main(version_base=None, config_path="../configs", config_name="train")
+def main(cfg: DictConfig) -> None:
+
+    with idist.Parallel(**cfg.distributed) as parallel:
+        parallel.run(training, cfg)
 
 
 if __name__ == "__main__":
-    fire.Fire({"run": run})
-    print("All is fine!")
+    # fire.Fire({"run": run})
+    main()
+    print("Completed.")

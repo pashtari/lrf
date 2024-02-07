@@ -7,4 +7,9 @@ export PATH="${VSC_DATA}/miniconda3/bin:${PATH}"
 conda activate deepenv
 
 cd $VSC_DATA/scripts/lsvd/src
-torchrun --standalone --nnodes=1 --nproc_per_node=2 train.py run --backend=nccl data=${data} model=${model} metric=${metric}
+torchrun --backend=nccl --nproc_per_node=2 --nnodes=1 train.py data=${data} model=${model} metric=${metric}
+
+
+torchrun train.py data=cifar10 model=resnet metric=cifar10
+
+python train.py data=cifar10 model=resnet metric=cifar10

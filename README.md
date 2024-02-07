@@ -14,6 +14,9 @@ $ pip install -r requirements.txt
 ```
 
 
+## To-do
+- remove subset in cifar10 
+
 ## Contact
 
 This repo is currently maintained by Pooya Ashtari ([@pashtari](https://github.com/pashtari)) and Pourya Behmandpoor ([@pourya-b](https://github.com/pourya-b)).

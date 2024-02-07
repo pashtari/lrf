@@ -10,3 +10,7 @@ defaults:
 
 task_name: "train"
 seed: 42
+distributed:
+    backend: null
+    nproc_per_node: null
+    nnodes: null
