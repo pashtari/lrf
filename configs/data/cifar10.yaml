@@ -1,5 +1,5 @@
-batch_size: 2
-val_batch_size: 4
+batch_size: 128
+val_batch_size: 256
 
 train_transform:
     _target_: torchvision.transforms.Compose
@@ -35,27 +35,27 @@ val_set:
     transform: ${data.val_transform}
     download: false
 
-train_subset:
-    _target_: torch.utils.data.Subset
-    dataset: ${data.train_set}
-    indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+# train_subset:
+#     _target_: torch.utils.data.Subset
+#     dataset: ${data.train_set}
+#     indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
-val_subset:
-    _target_: torch.utils.data.Subset
-    dataset: ${data.val_set}
-    indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+# val_subset:
+#     _target_: torch.utils.data.Subset
+#     dataset: ${data.val_set}
+#     indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
 train_loader:
     _target_: ignite.distributed.auto_dataloader
-    dataset: ${data.train_subset}
+    dataset: ${data.train_set}
     batch_size: ${data.batch_size}
-    num_workers: 0
+    num_workers: 2
     shuffle: true
     drop_last: true
 
 val_loader:
     _target_: ignite.distributed.auto_dataloader
-    dataset: ${data.val_subset}
+    dataset: ${data.val_set}
     batch_size: ${data.val_batch_size}
-    num_workers: 0
+    num_workers: 2
     shuffle: false

@@ -1,12 +1,13 @@
 defaults:
     - _self_
+    - path: default
     - hydra: default
     - data: cifar10
     - model: resnet
-    - handler: [checkpoint, progressbar]
+    - handler: [progressbar, checkpoint]
     - logger: [pylogger, tensorboard]
     - trainer: trainer
-    - metric: imagenet
+    - metric: cifar10
 
 task_name: "train"
 seed: 42

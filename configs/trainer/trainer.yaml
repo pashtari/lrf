@@ -3,8 +3,8 @@ amp: false
 num_epochs: 500
 warmup_duration: 10
 non_blocking: true
-val_every_epochs: 1
-log_every_iters: 1
+val_every_epochs: 5
+log_every_iters: 10
 
 loss:
     _target_: torch.nn.CrossEntropyLoss

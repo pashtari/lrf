@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 import hydra
 from omegaconf import DictConfig
 from torch.utils.data.distributed import DistributedSampler
@@ -10,8 +13,6 @@ from ignite.engine import (
     create_supervised_evaluator,
 )
 from ignite.metrics import Loss
-
-# import fire
 
 
 def training(local_rank, cfg) -> None:
@@ -98,11 +99,15 @@ def training(local_rank, cfg) -> None:
 @hydra.main(version_base=None, config_path="../configs", config_name="train")
 def main(cfg: DictConfig) -> None:
 
+    for k, v in cfg.path.items():
+        cfg.path[k] = v
+
     with idist.Parallel(**cfg.distributed) as parallel:
         parallel.run(training, cfg)
 
 
 if __name__ == "__main__":
-    # fire.Fire({"run": run})
+    cwd = Path(__file__).parent
+    os.chdir(cwd.parent)
     main()
     print("Completed.")
