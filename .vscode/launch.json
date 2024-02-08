@@ -11,7 +11,10 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": false,
-            // "cwd": "${fileDirname}"
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "cwd": "${fileDirname}"
         },
         {
             "name": "Python: Debug Unit Tests",
@@ -19,7 +22,7 @@
             "request": "test",
             "console": "integratedTerminal",
             "justMyCode": false,
-            // "cwd": "${fileDirname}"
+            "cwd": "${fileDirname}"
         }
     ]
 }
