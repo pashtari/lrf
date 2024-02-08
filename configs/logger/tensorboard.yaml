@@ -2,4 +2,4 @@ tensorboard:
     _target_: utils.tensorboard
     _partial_: true
     log_every_iters: ${trainer.log_every_iters}
-    output_path: ${path.output_dir}/logs/tensorboard
+    output_path: ${path.output_dir}/tensorboard
