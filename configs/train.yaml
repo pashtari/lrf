@@ -4,14 +4,15 @@ defaults:
     - hydra: default
     - data: cifar10
     - model: resnet
-    - handler: [progressbar, checkpoint]
+    - handler: [checkpoint]
     - logger: [pylogger, tensorboard]
     - trainer: trainer
     - metric: cifar10
 
 task_name: "train"
 seed: 42
+
 distributed:
-    backend: null
-    nproc_per_node: null
-    nnodes: null
+    backend: nccl
+    nproc_per_node: 2
+    nnodes: 1

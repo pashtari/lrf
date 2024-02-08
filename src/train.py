@@ -79,7 +79,7 @@ def training(local_rank, cfg) -> None:
         "optimizer": optimizer,
         "lr_scheduler": lr_scheduler,
     }
-
+   
     ###### handlers ######
     for value in cfg.handler.values():
         hydra.utils.instantiate(value)(objects=objects)
