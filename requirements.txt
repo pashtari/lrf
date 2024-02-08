@@ -3,9 +3,9 @@ torchvision
 hydra-core
 omegaconf
 pytorch-ignite
-fire
 tqdm
 tensorboardX
 scikit-image
 matplotlib
+deepspeed
 einops
