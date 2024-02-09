@@ -29,6 +29,7 @@ class ResNet(nn.Module):
         self.channels = channels
         self.num_classes = num_classes
         self.compression_ratio = _pair(compression_ratio)
+        self.updated_compression_ratio = None
         self.image_size = _pair(image_size)
         self.rescale = rescale
         self.no_grad = no_grad
@@ -44,12 +45,12 @@ class ResNet(nn.Module):
 
     def compress(self, x):
         if self.compression_ratio[0] == self.compression_ratio[1]:
-            cr = self.compression_ratio[0]
+            self.updated_compression_ratio = self.compression_ratio[0]
         else:
-            cr = random.uniform(*self.compression_ratio)
+            self.updated_compression_ratio = random.uniform(*self.compression_ratio)
 
-        if cr != 1:
-            scale_factor = 1 / math.sqrt(cr)
+        if self.updated_compression_ratio != 1:
+            scale_factor = 1 / math.sqrt(self.updated_compression_ratio)
             x = F.interpolate(x, scale_factor=scale_factor)
             if self.rescale:
                 x = F.interpolate(x, size=self.image_size)
