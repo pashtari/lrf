@@ -1,7 +1,0 @@
-#!/bin/bash
-
-source ~/.bashrc
-conda activate deepenv
-cd src/
-torchrun --standalone --nnodes=1 --nproc_per_node=2 train.py data=cifar10 model=resnet
-
