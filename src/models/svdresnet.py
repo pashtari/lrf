@@ -5,7 +5,7 @@ from contextlib import contextmanager
 import torch
 from torch import nn
 from torch.nn.modules.utils import _pair
-from torchvision.models import resnet34, resnet50
+from torchvision.models import resnet50
 from torchvision.models.feature_extraction import create_feature_extractor
 from einops import rearrange
 
@@ -64,6 +64,7 @@ class SVDResNet(nn.Module):
         self.v_output_dim = v_output_dim
         self.no_grad = no_grad
         self.compression_ratio = _pair(compression_ratio)
+        self.updated_compression_ratio = None
         self.model = UVModel(
             u_input_dim=1,
             v_input_dim=self.v_input_dim,
@@ -82,12 +83,13 @@ class SVDResNet(nn.Module):
 
     def compress(self, x):
         if self.compression_ratio[0] == self.compression_ratio[1]:
-            cr = self.compression_ratio[0]
+            self.updated_compression_ratio = self.compression_ratio[0]
         else:
-            cr = random.uniform(*self.compression_ratio)
+            self.updated_compression_ratio = random.uniform(*self.compression_ratio)
 
-        u, v = get_patch_svd_components(x, self.patch_size, cr)
-
+        u, v = get_patch_svd_components(
+            x, self.patch_size, self.updated_compression_ratio
+        )
         return u, v
 
     def forward(self, x):
