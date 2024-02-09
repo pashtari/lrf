@@ -1,3 +1,4 @@
+import sys
 import logging
 import hydra
 from pathlib import Path
@@ -11,11 +12,13 @@ from ignite.engine import Events
 
 def pylogger(objects, log_every_iters = 10, **kwargs):
     ignite_logger = logging.getLogger('ignite.engine.engine.Engine')
-    ignite_logger.setLevel(logging.WARN)
+    ignite_logger.setLevel(logging.INFO)
     
-    logger = setup_logger(**kwargs)
+    # local_rank = idist.get_rank()
+    logger = setup_logger(name="pylogger", stream=sys.stdout, distributed_rank=0, **kwargs)
     logger.info(f"PyTorch version: {torch.__version__}")
     logger.info(f"Ignite version: {ignite.__version__}")
+    
     if torch.cuda.is_available():
         # explicitly import cudnn as torch.backends.cudnn can not be pickled with hvd spawning procs
         from torch.backends import cudnn
@@ -27,7 +30,7 @@ def pylogger(objects, log_every_iters = 10, **kwargs):
     if idist.get_world_size() > 1:
         logger.info("Distributed setting:")
         logger.info(f"\tbackend: {idist.backend()}")
-        logger.info(f"\ttworld size: {idist.get_world_size()}")
+        logger.info(f"\tworld size: {idist.get_world_size()}")
 
     trainer = objects["trainer"]
     train_evaluator = objects["train_evaluator"]

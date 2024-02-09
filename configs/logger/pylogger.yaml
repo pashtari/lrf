@@ -2,4 +2,4 @@ pylogger:
     _target_: utils.pylogger
     _partial_: true
     log_every_iters: ${trainer.log_every_iters}
-    distributed_rank: ${distributed.nproc_per_node}
+    filepath: ${path.output_dir}/pylogger.log
