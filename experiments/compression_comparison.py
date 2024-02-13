@@ -2,12 +2,31 @@ import math
 
 import numpy as np
 import torch
+import torch.nn.functional as F
 import torch_dct as dct
 import matplotlib.pyplot as plt
 
 from skimage import data, img_as_float
-from skimage.transform import resize, rescale
+from skimage import exposure
+from skimage.transform import resize
+from skimage.metrics import structural_similarity
 from einops import rearrange
+
+from src.models import compression as com
+
+
+def zscore_normalize(tensor):
+    mean = np.mean(dim=(-2, -1), keepdims=True)
+    std = np.std(dim=(-2, -1), keepdims=True)
+    normalized_tensor = (tensor - mean) / (std + 1e-8)
+    return normalized_tensor
+
+
+def minmax_normalize(x):
+    min_val = torch.amin(x, dim=(-2, -1), keepdim=True)
+    max_val = torch.amax(x, dim=(-2, -1), keepdim=True)
+    normalized_tensor = (x - min_val) / (max_val - min_val)
+    return normalized_tensor
 
 
 def mae(image1, image2):
@@ -27,187 +46,150 @@ def psnr(image1, image2):
     return psnr_value
 
 
-def compress_rescale(image, compression_ratio):
-    """Compress the image using resizing."""
-    scale = compression_ratio**-0.5
-    scaled_image = rescale(image, scale, channel_axis=2)
-    rescaled_image = resize(scaled_image, image.shape)
-    return rescaled_image
+def ssim(image1, image2):
+    ssim_value = structural_similarity(
+        image1, image2, data_range=image2.max() - image2.min(), channel_axis=-1
+    )
+    return ssim_value
 
 
-def compress_dct(image, compression_ratio):
+def compress_interpolate(x, compression_ratio):
+    """Compress the image by resizing using interpolation."""
+    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
+    interpolate = com.Interpolate(mode="bilinear")
+    y = interpolate(x, compression_ratio=compression_ratio)
+    return torch.clip(y, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
+
+
+def compress_interpolate_low(x, compression_ratio):
+    """Compress the image by resizing using interpolation."""
+    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
+    interpolate = com.Interpolate(mode="bilinear")
+    y = interpolate.compress(x, compression_ratio=compression_ratio)
+    return torch.clip(y, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
+
+
+def compress_dct(x, compression_ratio):
+    """Compress the image using DCT."""
+    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
+    dct2 = com.DCT()
+    y = dct2(x, compression_ratio=compression_ratio)
+    return torch.clip(y, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
+
+
+def compress_dct_low(x, compression_ratio):
+    """Compress the image using DCT."""
+    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
+    dct2 = com.DCT()
+    y = dct2(x, compression_ratio=compression_ratio, pad=False)
+    return minmax_normalize(y).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
+
+
+def compress_svd(x, compression_ratio):
     """Compress the image using SVD."""
-    image = torch.tensor(image, dtype=torch.float32).permute(-1, 0, 1)
-    M, N = image.shape[-2:]
-
-    dct_image = dct.dct_2d(image)
-
-    # Keep only a certain number of low-frequency components
-    R = math.floor(math.sqrt(M * N / compression_ratio))
-    mask = torch.zeros_like(dct_image)
-    mask[:, :R, :R] = 1  # Keep top-left corner according to R
-    compressed_dct_image = dct_image * mask
-    reconstructed = dct.idct_2d(compressed_dct_image)
-    return torch.clip(reconstructed, 0, 1).permute(1, 2, 0).to(torch.float64).numpy()
+    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
+    svd = com.SVD()
+    y = svd(x, compression_ratio=compression_ratio)
+    return torch.clip(y, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
 
 
-def compress_dct_patches(image, compression_ratio, patch_size=8):
-    """Compress the image using DCT on patches."""
-    image = torch.tensor(image, dtype=torch.float32).permute(-1, 0, 1)
-
-    *_, H, W = image.shape
-
-    # Rearrange image to form 8x8 patches
-    patches = rearrange(
-        image, "c (h p1) (w p2) -> c (h w) p1 p2", p1=patch_size, p2=patch_size
-    )
-
-    # Apply DCT to each patch
-    dct_patches = dct.dct_2d(patches)
-
-    # Keep only a certain number of low-frequency components
-    R = math.floor(math.sqrt(patch_size * patch_size / compression_ratio))
-    mask = torch.zeros_like(dct_patches)
-    mask[:, :, :R, :R] = 1  # Keep top-left corner according to R
-    compressed_dct_patches = dct_patches * mask
-
-    # Apply IDCT to reconstruct the patches
-    reconstructed_patches = dct.idct_2d(compressed_dct_patches)
-
-    # Rearrange compressed patches back to image format
-    reconstructed_image = rearrange(
-        reconstructed_patches,
-        "c (h w) p1 p2 -> c (h p1) (w p2)",
-        h=H // patch_size,
-        w=W // patch_size,
-    )
-    return (
-        torch.clip(reconstructed_image, 0, 1).permute(1, 2, 0).to(torch.float64).numpy()
-    )
-
-
-def compress_svd(image, compression_ratio):
-    """Compress the image using SVD."""
-    image = torch.tensor(image, dtype=torch.float32).permute(-1, 0, 1)
-    M, N = image.shape[-2:]
-    R = math.floor(M * N // (compression_ratio * (M + N)))
-    U, S, Vt = torch.linalg.svd(image, full_matrices=False)
-    reconstructed = U[:, :, :R] @ torch.diag_embed(S[:, :R]) @ Vt[:, :R, :]
-    return torch.clip(reconstructed, 0, 1).permute(1, 2, 0).to(torch.float64).numpy()
-
-
-def compress_svd_patches(image, compression_ratio, patch_size=8):
+def compress_patch_svd(x, compression_ratio, patch_size=(8, 8)):
     """Compress the image using SVD on patches."""
-    image = torch.tensor(image, dtype=torch.float32).permute(-1, 0, 1)
-
-    # Rearrange image to form columns of flattened patches
-    patches = rearrange(
-        image, "c (h p1) (w p2) -> (h w) (c p1 p2)", p1=patch_size, p2=patch_size
-    )
-
-    M, N = patches.shape[-2:]
-    R = math.floor(M * N // (compression_ratio * (M + N)))
-
-    U, S, Vt = torch.linalg.svd(patches, full_matrices=False)
-    reconstructed_patches = U[:, :R] @ torch.diag_embed(S[:R]) @ Vt[:R, :]
-
-    # Rearrange compressed patches back to image format
-    reconstructed_image = rearrange(
-        reconstructed_patches,
-        "(h w) (c p1 p2) -> c (h p1) (w p2)",
-        p1=patch_size,
-        p2=patch_size,
-        h=image.shape[1] // patch_size,
-    )
-    return (
-        torch.clip(reconstructed_image, 0, 1).permute(1, 2, 0).to(torch.float64).numpy()
-    )
+    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
+    patch_svd = com.PatchSVD(patch_size=patch_size)
+    y = patch_svd(x, compression_ratio=compression_ratio)
+    return torch.clip(y, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
 
 
 # Load the astronaut image
-image = data.astronaut()
+image = data.cat()
 
 # Convert the image to float and resize
 image = img_as_float(image)
 image = resize(image, (224, 224), preserve_range=True)
+image = exposure.equalize_hist(image)
 
 plt.imshow(image)
 plt.axis("off")
 plt.title("Astronaut Image")
 plt.show()
 
+for metric in [psnr, ssim, mae]:
+    # Compression ratios to be used
+    compression_ratios = np.array([1.25, 1.5, 1.75, *np.arange(2, 20.5, 1)])
 
-# Compression ratios to be used
-compression_ratios = np.arange(1, 20.5, 1.5)
+    # Store errors and compressed images for each method and compression ratio
+    err_values = {
+        "Interpolation": [],
+        "DCT": [],
+        # "SVD": [],
+        "Patch SVD": [],
+    }
+    compressed_images = {
+        "Interpolation": [],
+        "Interpolation Low": [],
+        "DCT": [],
+        "DCT Low": [],
+        # "SVD": [],
+        "Patch SVD": [],
+    }
 
-# Store MAE and compressed images for each method and compression ratio
-err_values = {
-    "Rescale": [],
-    "DCT": [],
-    "DCT Patches": [],
-    "SVD": [],
-    "SVD Patches": [],
-}
-compressed_images = {
-    "Rescale": [],
-    "DCT": [],
-    "DCT Patches": [],
-    "SVD": [],
-    "SVD Patches": [],
-}
+    # Calculate MAE and compressed images for each method and compression ratio
+    for ratio in compression_ratios:
+        # interpolate
+        compressed_interpolate = compress_interpolate(image, ratio)
+        err_values["Interpolation"].append(metric(image, compressed_interpolate))
+        compressed_images["Interpolation"].append(compressed_interpolate)
 
-# Calculate MAE and compressed images for each method and compression ratio
-for ratio in compression_ratios:
-    # Rescale
-    compressed_rescale = compress_rescale(image, ratio)
-    err_values["Rescale"].append(mae(image, compressed_rescale))
-    compressed_images["Rescale"].append(compressed_rescale)
+        # interpolate low
+        compressed_interpolate_low = compress_interpolate(image, ratio)
+        compressed_images["Interpolation Low"].append(compressed_interpolate_low)
 
-    # DCT
-    compressed_dct = compress_dct(image, ratio)
-    err_values["DCT"].append(mae(image, compressed_dct))
-    compressed_images["DCT"].append(compressed_dct)
+        # DCT
+        compressed_dct = compress_dct(image, ratio)
+        err_values["DCT"].append(metric(image, compressed_dct))
+        compressed_images["DCT"].append(compressed_dct)
 
-    # DCT Patches
-    compressed_dct_patches = compress_dct_patches(image, ratio)
-    err_values["DCT Patches"].append(mae(image, compressed_dct_patches))
-    compressed_images["DCT Patches"].append(compressed_dct_patches)
+        # DCT Low
+        compressed_dct_low = compress_dct_low(image, ratio)
+        compressed_images["DCT Low"].append(compressed_dct_low)
 
-    # SVD
-    compressed_svd = compress_svd(image, ratio)
-    err_values["SVD"].append(mae(image, compressed_svd))
-    compressed_images["SVD"].append(compressed_svd)
+        # # SVD
+        # compressed_svd = compress_svd(image, ratio)
+        # err_values["SVD"].append(metric(image, compressed_svd))
+        # compressed_images["SVD"].append(compressed_svd)
 
-    # SVD Patches
-    compressed_svd_patches = compress_svd_patches(image, ratio)
-    err_values["SVD Patches"].append(mae(image, compressed_svd_patches))
-    compressed_images["SVD Patches"].append(compressed_svd_patches)
+        # SVD Patches
+        compressed_patch_svd = compress_patch_svd(image, ratio)
+        err_values["Patch SVD"].append(metric(image, compressed_patch_svd))
+        compressed_images["Patch SVD"].append(compressed_patch_svd)
 
+    # Plotting the results
+    plt.figure()
+    for method, err in err_values.items():
+        plt.plot(compression_ratios, err, marker="o", label=method)
 
-# Plotting the results
-plt.figure(figsize=(10, 7))
-for method, err in err_values.items():
-    plt.plot(compression_ratios, err, marker="o", label=method)
-
-plt.xlabel("Compression Ratio")
-plt.ylabel("MAE")
-plt.title("Comprison of Different Compression Methods")
-plt.xticks(np.arange(compression_ratios.min(), compression_ratios.max() + 1))
-plt.legend()
-plt.grid()
-plt.savefig("experiments/comparison_of_compression_methods.pdf", format="pdf", dpi=600)
-plt.show()
+    plt.xlabel("Compression Ratio")
+    plt.ylabel(f"{metric.__name__}")
+    plt.title("Comprison of Different Compression Methods")
+    plt.xticks(np.arange(1, compression_ratios.max() + 1))
+    plt.legend()
+    plt.grid()
+    plt.savefig(
+        "experiments/comparison_of_compression_methods.pdf", format="pdf", dpi=600
+    )
+    plt.show()
 
 
 # Plotting the compressed images for each method and compression ratio
 fig, axs = plt.subplots(
     len(compression_ratios),
-    len(err_values),
-    figsize=(2 * len(err_values), 2 * len(compression_ratios)),
+    len(compressed_images),
+    figsize=(3 * len(err_values), 2 * len(compression_ratios)),
 )
 
 # Setting titles for columns
-for ax, method in zip(axs[0], err_values.keys()):
+for ax, method in zip(axs[0], compressed_images.keys()):
     ax.set_title(method)
 
 # Setting labels for rows
@@ -215,7 +197,7 @@ for ax, ratio in zip(axs[:, 0], compression_ratios):
     ax.set_ylabel(f"Ratio {ratio}", rotation=90, size="large")
 
 for i, ratio in enumerate(compression_ratios):
-    for j, method in enumerate(err_values.keys()):
+    for j, method in enumerate(compressed_images.keys()):
         compressed_image = compressed_images[method][i]
         axs[i, j].imshow(compressed_image)
         axs[i, j].axis("off")
