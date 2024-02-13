@@ -1,2 +1,2 @@
-from .resnet import *
-from .svdresnet import *
+from .interpolate_resnet import *
+from .svd_resnet import *

@@ -2,15 +2,11 @@ import math
 
 import numpy as np
 import torch
-import torch.nn.functional as F
-import torch_dct as dct
 import matplotlib.pyplot as plt
-
 from skimage import data, img_as_float
 from skimage import exposure
 from skimage.transform import resize
 from skimage.metrics import structural_similarity
-from einops import rearrange
 
 from src.models import compression as com
 
@@ -116,7 +112,7 @@ plt.show()
 
 for metric in [psnr, ssim, mae]:
     # Compression ratios to be used
-    compression_ratios = np.array([1.25, 1.5, 1.75, *np.arange(2, 20.5, 1)])
+    compression_ratios = np.array([1.25, 1.5, 1.75, *np.arange(2, 25.5, 1)])
 
     # Store errors and compressed images for each method and compression ratio
     err_values = {
@@ -134,14 +130,14 @@ for metric in [psnr, ssim, mae]:
         "Patch SVD": [],
     }
 
-    # Calculate MAE and compressed images for each method and compression ratio
+    # Calculate reconstructed images and metric for each method and compression ratio
     for ratio in compression_ratios:
-        # interpolate
+        # Interpolate
         compressed_interpolate = compress_interpolate(image, ratio)
         err_values["Interpolation"].append(metric(image, compressed_interpolate))
         compressed_images["Interpolation"].append(compressed_interpolate)
 
-        # interpolate low
+        # Interpolate low
         compressed_interpolate_low = compress_interpolate(image, ratio)
         compressed_images["Interpolation Low"].append(compressed_interpolate_low)
 
@@ -170,13 +166,15 @@ for metric in [psnr, ssim, mae]:
         plt.plot(compression_ratios, err, marker="o", label=method)
 
     plt.xlabel("Compression Ratio")
-    plt.ylabel(f"{metric.__name__}")
+    plt.ylabel(f"{metric.__name__.upper()}")
     plt.title("Comprison of Different Compression Methods")
     plt.xticks(np.arange(1, compression_ratios.max() + 1))
     plt.legend()
     plt.grid()
     plt.savefig(
-        "experiments/comparison_of_compression_methods.pdf", format="pdf", dpi=600
+        f"experiments/compression_methods_comparison_{metric.__name__}.pdf",
+        format="pdf",
+        dpi=600,
     )
     plt.show()
 
@@ -185,7 +183,7 @@ for metric in [psnr, ssim, mae]:
 fig, axs = plt.subplots(
     len(compression_ratios),
     len(compressed_images),
-    figsize=(3 * len(err_values), 2 * len(compression_ratios)),
+    figsize=(5 * len(err_values), 3 * len(compression_ratios)),
 )
 
 # Setting titles for columns
@@ -203,4 +201,9 @@ for i, ratio in enumerate(compression_ratios):
         axs[i, j].axis("off")
 
 plt.tight_layout()
+plt.savefig(
+    "experiments/compression_methods_qualitative_comparison.pdf",
+    format="pdf",
+    dpi=600,
+)
 plt.show()

@@ -1,5 +1,5 @@
 import math
-from typing import Any, Tuple, Optional
+from typing import Tuple, Optional, Union
 from abc import ABC, abstractmethod
 
 import torch
@@ -9,103 +9,84 @@ import torch_dct as dct
 from einops import rearrange
 
 
-def relative_error(x: Tensor, y: Tensor, eps: float = 1e-16) -> Tensor:
-    """
-    Calculates the relative error between two tensors.
+def relative_error(x: Tensor, y: Tensor, epsilon: float = 1e-16) -> Tensor:
+    """Calculate the relative error between two tensors.
 
     Args:
-        x (Tensor): The first tensor.
-        y (Tensor): The second tensor to compare against.
-        eps (float, optional): A small value to avoid division by zero. Defaults to 1e-16.
+        x (Tensor): The original tensor.
+        y (Tensor): The tensor to compare against.
+        epsilon (float): A small value to prevent division by zero.
 
     Returns:
-        Tensor: The relative error between x and y.
+        Tensor: The relative error between `x` and `y`.
     """
     numerator = torch.norm(x - y, p=2)
     denominator = torch.norm(x, p=2)
-    return numerator / (denominator + eps)
+    return numerator / (denominator + epsilon)
 
 
 class Compress(ABC, nn.Module):
-    """Base module for compression."""
+    """Abstract base class for compression methods."""
 
     @abstractmethod
-    def compress(self, x: Tensor, *args, **kwargs) -> Any:
+    def compress(self, x: Tensor, *args, **kwargs) -> Union[Tensor, Tuple[Tensor, ...]]:
+        """Compress the input tensor."""
         pass
 
     @abstractmethod
-    def decompress(self, *args, **kwargs) -> Any:
+    def decompress(self, *args, **kwargs) -> Tensor:
+        """Decompress the input tensor."""
         pass
 
     def loss(self, x: Tensor, *args, **kwargs) -> Tensor:
-        """
-        Calculates the loss (relative error) between the original and decompressed tensors.
+        """Calculate the loss between the original and decompressed tensors.
 
         Args:
             x (Tensor): The original tensor.
-            u (Tensor): The left factor matrix.
-            v (Tensor): The right factor matrix.
 
         Returns:
-            Tensor: The loss value.
+            Tensor: The calculated loss.
         """
         y = self.decompress(*args, **kwargs)
         return relative_error(x, y)
 
     def forward(self, x: Tensor, *args, **kwargs) -> Tensor:
-        # x: B × C × H × W
-        z = self.compress(x, *args, **kwargs)
-        y = self.decompress(z)
-        return y
+        """Forward pass through the compression model.
+
+        Args:
+            x (Tensor): Input tensor to be compressed and decompressed.
+
+        Returns:
+            Tensor: The decompressed tensor.
+        """
+        compressed = self.compress(x, *args, **kwargs)
+        decompressed = self.decompress(compressed)
+        return decompressed
 
 
 class Interpolate(Compress):
-    """
-    A module for interpolation to compress and decompress tensors,
-    allowing for dimensionality reduction and data compression.
-    """
+    """Compression method using interpolation for resizing images."""
 
     def __init__(self, **kwargs) -> None:
-        super(Interpolate, self).__init__()
-        self.kwargs = kwargs
+        super().__init__()
+        self.interpolation_kwargs = kwargs
 
-    def get_new_size(
+    def calculate_new_size(
         self, original_size: Tuple[int, int], compression_ratio: float
-    ) -> int:
-        """
-        Calculates the new size for the interpolation based the original size and compression ratio.
+    ) -> Tuple[int, int]:
+        """Calculate new size for an image given a compression ratio.
 
         Args:
-            size (Tuple[int, int]): The size of the matrix (M, N).
+            original_size (Tuple[int, int]): The original (height, width) of the image.
             compression_ratio (float): The desired compression ratio.
 
         Returns:
-            int: The calculated new size for the compressed image.
+            Tuple[int, int]: The new (height, width) of the image.
         """
-        H, W = original_size
-        new_height = max(math.floor(H / math.sqrt(compression_ratio)), 1)
-        new_width = max(math.floor(W / math.sqrt(compression_ratio)), 1)
-        return (new_height, new_width)
-
-    def get_compression_ratio(
-        self, original_size: Tuple[int, int], new_size: Tuple[int, int]
-    ) -> float:
-        """
-        Calculates the compression ratio based on the matrix size and cutoff.
-
-        Args:
-            size (Tuple[int, int]): The size of the original image.
-            new_size (Tuple[int, int]): The size of the resized image.
-
-        Returns:
-            float: The calculated compression ratio.
-        """
-        H, W = original_size
-        M, N = new_size
-        df_original = H * W  # degrees of freedom of the original image
-        df_new = M * N  # degrees of freedom of the new image
-        compression_ratio = df_original / df_new
-        return compression_ratio
+        height, width = original_size
+        new_height = max(math.floor(height / math.sqrt(compression_ratio)), 1)
+        new_width = max(math.floor(width / math.sqrt(compression_ratio)), 1)
+        return new_height, new_width
 
     def compress(
         self,
@@ -113,41 +94,41 @@ class Interpolate(Compress):
         compression_ratio: Optional[float] = None,
         new_size: Optional[Tuple[int, int]] = None,
     ) -> Tensor:
-        """
-        Compresses a tensor using SVD based on either a specified cutoff or compression ratio.
+        """Compress the input image by resizing.
 
         Args:
-            x (Tensor): The input tensor to compress.
-            compression_ratio (Optional[float], optional): The desired compression ratio. Defaults to None.
-            cutoff (Optional[int], optional): The specific cutoff to use for compression. Defaults to None.
+            x (Tensor): Input image tensor.
+            compression_ratio (Optional[float]): Compression ratio to determine new size.
+            new_size (Optional[Tuple[int, int]]): Directly specify new size.
 
         Returns:
-            Tensor: The low-path filtered tensor in the frequency domain.
+            Tensor: The resized (compressed) image tensor.
         """
-        assert (new_size is not None) or (
-            compression_ratio is not None
-        ), "Either 'cutoff' or 'compression_ratio' must be specified."
+        assert (
+            new_size is not None or compression_ratio is not None
+        ), "Either new_size or compression_ratio must be specified."
 
         original_size = x.shape[-2:]
         if new_size is None:
-            new_size = self.get_new_size(original_size, compression_ratio)
+            new_size = self.calculate_new_size(original_size, compression_ratio)
 
-        x_resized = F.interpolate(x, size=new_size, **self.kwargs)
-        return x_resized
+        resized_image = F.interpolate(x, size=new_size, **self.interpolation_kwargs)
+        return resized_image
 
     def decompress(self, x: Tensor, original_size: Tuple[int, int]) -> Tensor:
-        """
-        Decompresses a tensor from its compressed components.
+        """Decompress the image by resizing back to the original size.
 
         Args:
-            x (Tensor): The compressed low-path filtered image in the frequency domain.
-            size (Tuple[int, int]): The original spatial size of the uncompressed image.
+            x (Tensor): Compressed image tensor.
+            original_size (Tuple[int, int]): The original size to decompress to.
 
         Returns:
-            Tensor: The decompressed tensor.
+            Tensor: The decompressed (resized) image tensor.
         """
-        y = F.interpolate(x, size=original_size, **self.kwargs)
-        return y
+        decompressed_image = F.interpolate(
+            x, size=original_size, **self.interpolation_kwargs
+        )
+        return decompressed_image
 
     def forward(self, x: Tensor, *args, **kwargs) -> Tensor:
         # x: B × C × H × W
@@ -156,43 +137,112 @@ class Interpolate(Compress):
         return y
 
 
-class SVD(Compress):
-    """
-    A module for Singular Value Decomposition (SVD) to compress and decompress tensors,
-    allowing for dimensionality reduction and data compression.
-    """
+class DCT(Compress):
+    """Implements Discrete Cosine Transform (DCT) based compression and decompression."""
 
-    def get_rank(self, size: Tuple[int, int], compression_ratio: float) -> int:
-        """
-        Calculates the rank for the SVD compression based on the matrix size and compression ratio.
+    def get_cutoff(
+        self, size: Tuple[int, int], compression_ratio: float
+    ) -> Tuple[int, int]:
+        """Calculate the cutoff frequencies for DCT based on compression ratio.
 
         Args:
-            size (Tuple[int, int]): The size of the matrix (M, N).
+            size: Tuple[int, int], the height and width of the input tensor.
+            compression_ratio: float, the desired compression ratio.
+
+        Returns:
+            Tuple[int, int], the cutoff frequencies for height and width.
+        """
+        height, width = size
+        cutoff_height = max(math.floor(height / (math.sqrt(compression_ratio))), 1)
+        cutoff_width = max(math.floor(width / math.sqrt(compression_ratio)), 1)
+        return (cutoff_height, cutoff_width)
+
+    def compress(
+        self,
+        x: Tensor,
+        compression_ratio: Optional[float] = None,
+        cutoff: Optional[Tuple[int, int]] = None,
+    ) -> Tensor:
+        """Compress the input tensor using DCT.
+
+        Args:
+            x: Tensor, the input tensor to be compressed.
+            compression_ratio: Optional[float], the desired compression ratio.
+            cutoff: Optional[Tuple[int, int]], the cutoff frequencies for DCT.
+
+        Returns:
+            Tensor, the compressed tensor.
+        """
+        assert (cutoff is not None) or (
+            compression_ratio is not None
+        ), "Either 'cutoff' or 'compression_ratio' must be specified."
+
+        size = x.shape[-2:]
+        if cutoff is None:
+            cutoff = self.get_cutoff(size, compression_ratio)
+
+        x_dct = dct.dct_2d(x)  # Perform DCT
+        x_dct = x_dct[..., : cutoff[0], : cutoff[1]]  # Keep frequencies up to cutoff
+        return x_dct
+
+    def decompress(self, x: Tensor, size: Tuple[int, int], pad: bool = True) -> Tensor:
+        """Decompress the input tensor using inverse DCT.
+
+        Args:
+            x: Tensor, the compressed tensor to be decompressed.
+            size: Tuple[int, int], the original height and width of the input tensor.
+            pad: bool, whether to pad the tensor to its original size.
+
+        Returns:
+            Tensor, the decompressed tensor.
+        """
+        height, width = size
+        if pad:
+            cutoff_height, cutoff_width = x.shape[-2:]
+            x = F.pad(x, pad=(0, width - cutoff_width, 0, height - cutoff_height))
+
+        y = dct.idct_2d(x)  # Perform inverse DCT
+        return y
+
+    def forward(self, x: Tensor, *args, pad=True, **kwargs) -> Tensor:
+        # x: B × C × H × W
+        z = self.compress(x, *args, **kwargs)
+        y = self.decompress(z, x.shape[-2:], pad=pad)
+        return y
+
+
+class SVD(Compress):
+    """Implements Singular Value Decomposition (SVD) based compression."""
+
+    def get_rank(self, size: Tuple[int, int], compression_ratio: float) -> int:
+        """Calculate the rank for SVD based on the compression ratio.
+
+        Args:
+            size (Tuple[int, int]): The size of the input tensor.
             compression_ratio (float): The desired compression ratio.
 
         Returns:
-            int: The calculated rank for the compressed matrix.
+            int: The calculated rank.
         """
-        M, N = size
-        df_input = M * N  # degrees of freedom of the input matrix
-        df_lowrank = M + N  # degrees of freedom of the low-rank matrix
+        rows, cols = size
+        df_input = rows * cols  # Degrees of freedom of the input matrix
+        df_lowrank = rows + cols  # Degrees of freedom of the low-rank matrix
         rank = max(math.floor(df_input / (compression_ratio * df_lowrank)), 1)
         return rank
 
     def get_compression_ratio(self, size: Tuple[int, int], rank: int) -> float:
-        """
-        Calculates the compression ratio based on the matrix size and rank.
+        """Calculate the compression ratio based on the rank.
 
         Args:
-            size (Tuple[int, int]): The size of the matrix (M, N).
-            rank (int): The rank of the low-rank approximation.
+            size (Tuple[int, int]): The size of the input tensor.
+            rank (int): The rank used for compression.
 
         Returns:
-            float: The calculated compression ratio.
+            float: The compression ratio.
         """
-        H, W = size
-        df_input = H * W  # degrees of freedom of the input matrix
-        df_lowrank = H + W  # degrees of freedom of the low-rank matrix
+        rows, cols = size
+        df_input = rows * cols  # Degrees of freedom of the input matrix
+        df_lowrank = rows + cols  # Degrees of freedom of the low-rank matrix
         compression_ratio = df_input / (rank * df_lowrank)
         return compression_ratio
 
@@ -202,16 +252,15 @@ class SVD(Compress):
         compression_ratio: Optional[float] = None,
         rank: Optional[int] = None,
     ) -> Tuple[Tensor, Tensor]:
-        """
-        Compresses a tensor using SVD based on either a specified rank or compression ratio.
+        """Compress the input tensor using SVD.
 
         Args:
             x (Tensor): The input tensor to compress.
             compression_ratio (Optional[float], optional): The desired compression ratio. Defaults to None.
-            rank (Optional[int], optional): The specific rank to use for compression. Defaults to None.
+            rank (Optional[int], optional): The rank to use for SVD. Defaults to None.
 
         Returns:
-            Tuple[Tensor, Tensor]: The factor matrices (u, v) of the tensor.
+            Tuple[Tensor, Tensor]: The compressed form of the input tensor.
         """
         assert (rank is not None) or (
             compression_ratio is not None
@@ -221,22 +270,18 @@ class SVD(Compress):
         if rank is None:
             rank = self.get_rank(size, compression_ratio)
 
-        # Perform SVD
         u, s, vt = torch.linalg.svd(x, full_matrices=False)
-        # Keep top 'rank' components
         u, s, vt = u[..., :rank], s[..., :rank], vt[..., :rank, :]
 
-        # Distribute matrix s between u and vt
         u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
         v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), vt)
         return u, v
 
     def decompress(self, x: Tuple[Tensor, Tensor]) -> Tensor:
-        """
-        Decompresses a tensor from its compressed components.
+        """Decompress the input tensor from its compressed form.
 
         Args:
-            x (Tuple[Tensor, Tensor]): The factor matrices (u, v) of the tensor.
+            x (Tuple[Tensor, Tensor]): The compressed form of the input tensor.
 
         Returns:
             Tensor: The decompressed tensor.
@@ -247,31 +292,59 @@ class SVD(Compress):
 
 
 class PatchSVD(SVD):
-    """
-    A module for Singular Value Decomposition (SVD) on patches to compress and decompress tensors,
-    allowing for dimensionality reduction and data compression.
-    """
+    """Implements SVD-based compression with patchification."""
 
-    def __init__(self, patch_size=(8, 8)) -> None:
+    def __init__(self, patch_size: Tuple[int, int] = (8, 8)) -> None:
+        """Initialize the PatchSVD compressor.
+
+        Args:
+            patch_size (Tuple[int, int], optional): The size of the patches. Defaults to (8, 8).
+        """
         super(PatchSVD, self).__init__()
         self.patch_size = patch_size
 
-    def patchify(self, x):
+    def patchify(self, x: Tensor) -> Tensor:
+        """Break down the input tensor into patches.
+
+        Args:
+            x (Tensor): The input tensor.
+
+        Returns:
+            Tensor: The tensor reshaped into patches.
+        """
         p1, p2 = self.patch_size
         patches = rearrange(x, "b c (h p1) (w p2) -> b (h w) (c p1 p2)", p1=p1, p2=p2)
         return patches
 
-    def depatchify_uv(self, x, u, v):
+    def depatchify_uv(self, x: Tensor, u: Tensor, v: Tensor) -> Tuple[Tensor, Tensor]:
+        """Reshape the u and v matrices into their original spatial dimensions.
+
+        Args:
+            x (Tensor): The original input tensor.
+            u (Tensor): The u matrix from SVD.
+            v (Tensor): The v matrix from SVD.
+
+        Returns:
+            Tuple[Tensor, Tensor]: The u and v matrices reshaped.
+        """
         p1, p2 = self.patch_size
         u_new = rearrange(u, "b (h w) r -> b r 1 h w", h=x.shape[-2] // p1)
         v_new = rearrange(v, "b r (c p1 p2) -> b r c p1 p2", p1=p1, p2=p2)
         return u_new, v_new
 
-    def depatchify(self, x, size):
+    def depatchify(self, x: Tensor, size: Tuple[int, int]) -> Tensor:
+        """Reconstruct the original tensor from its patches.
+
+        Args:
+            x (Tensor): The tensor in its patch form.
+            size (Tuple[int, int]): The size of the original tensor.
+
+        Returns:
+            Tensor: The reconstructed tensor.
+        """
         p1, p2 = self.patch_size
-        H, _ = size
         patches = rearrange(
-            x, "b (h w) (c p1 p2) -> b c (h p1) (w p2)", p1=p1, p2=p2, h=H // p1
+            x, "b (h w) (c p1 p2) -> b c (h p1) (w p2)", p1=p1, p2=p2, h=size[0] // p1
         )
         return patches
 
@@ -281,140 +354,55 @@ class PatchSVD(SVD):
         compression_ratio: Optional[float] = None,
         rank: Optional[int] = None,
     ) -> Tuple[Tensor, Tensor]:
+        """Compress the input tensor using patch-wise SVD.
 
-        assert (rank is not None) or (
-            compression_ratio is not None
-        ), "Either 'rank' or 'compression_ratio' must be specified."
+        Overrides the compress method from the SVD class to apply patch-wise compression.
 
-        # Patchify
+        Args:
+            x (Tensor): The input tensor to compress.
+            compression_ratio (Optional[float], optional): The desired compression ratio. Defaults to None.
+            rank (Optional[int], optional): The rank to use for SVD. Defaults to None.
+
+        Returns:
+            Tuple[Tensor, Tensor]: The compressed form of the input tensor.
+        """
         patches = self.patchify(x)
 
-        # Set rank or compression ratio
         size = patches.shape[-2:]
         if rank is None:
             rank = self.get_rank(size, compression_ratio)
 
-        # Perform SVD
         u, s, vt = torch.linalg.svd(patches, full_matrices=False)
-        # Keep top 'rank' components
         u, s, vt = u[..., :rank], s[..., :rank], vt[..., :rank, :]
 
-        # Distribute matrix s between u and vt
         u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
         v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), vt)
-        # u = u[:, :, :rank] @ torch.diag_embed(torch.sqrt(s[:, :rank]))
-        # v = vt[:, :rank, :].transpose(-2, -1) @ torch.diag_embed(torch.sqrt(s[:, :rank]))
         return u, v
 
     def decompress(self, x: Tuple[Tensor, Tensor], size: Tuple[int, int]) -> Tensor:
+        """Decompress the input tensor from its compressed patch form.
+
+        Args:
+            x (Tuple[Tensor, Tensor]): The compressed form of the input tensor.
+            size (Tuple[int, int]): The size of the original tensor.
+
+        Returns:
+            Tensor: The decompressed tensor.
+        """
         u, v = x
         reconstructed_patches = u @ v.transpose(-2, -1)
         reconstructed_image = self.depatchify(reconstructed_patches, size)
         return reconstructed_image
 
     def forward(self, x: Tensor, *args, **kwargs) -> Tensor:
-        # x: B × C × H × W
-        z = self.compress(x, *args, **kwargs)
-        y = self.decompress(z, x.shape[-2:])
-        return y
-
-
-class DCT(Compress):
-    """
-    A module for Discrete Cosine Transform (DCT) to compress and decompress tensors,
-    allowing for dimensionality reduction and data compression.
-    """
-
-    def get_cutoff(
-        self, size: Tuple[int, int], compression_ratio: float
-    ) -> Tuple[int, int]:
-        """
-        Calculates the cutoff for the DCT-compression based the matrix size and compression ratio.
+        """Defines the computation performed at every call for patch-wise compression.
 
         Args:
-            size (Tuple[int, int]): The size of the matrix (M, N).
-            compression_ratio (float): The desired compression ratio.
+            x (Tensor): The input tensor.
 
         Returns:
-            int: The calculated cutoff for the compressed matrix.
+            Tensor: The decompressed tensor, after compression and decompression.
         """
-        H, W = size
-        cutoff_h = max(math.floor(H / (math.sqrt(compression_ratio))), 1)
-        cutoff_w = max(math.floor(W / math.sqrt(compression_ratio)), 1)
-        return (cutoff_h, cutoff_w)
-
-    def get_compression_ratio(
-        self, size: Tuple[int, int], cutoff: Tuple[int, int]
-    ) -> float:
-        """
-        Calculates the compression ratio based on the matrix size and cutoff.
-
-        Args:
-            size (Tuple[int, int]): The size of the matrix (M, N).
-            cutoff (int): The cutoff of the low-path filter.
-
-        Returns:
-            float: The calculated compression ratio.
-        """
-        M, N = size
-        cutoff_h, cutoff_w = cutoff
-        df_input = M * N  # degrees of freedom of the input matrix
-        compression_ratio = df_input / (cutoff_h * cutoff_w)
-        return compression_ratio
-
-    def compress(
-        self,
-        x: Tensor,
-        compression_ratio: Optional[float] = None,
-        cutoff: Optional[Tuple[int, int]] = None,
-    ) -> Tuple[Tensor, Tensor]:
-        """
-        Compresses a tensor using SVD based on either a specified cutoff or compression ratio.
-
-        Args:
-            x (Tensor): The input tensor to compress.
-            compression_ratio (Optional[float], optional): The desired compression ratio. Defaults to None.
-            cutoff (Optional[int], optional): The specific cutoff to use for compression. Defaults to None.
-
-        Returns:
-            Tensor: The low-path filtered tensor in the frequency domain.
-        """
-        assert (cutoff is not None) or (
-            compression_ratio is not None
-        ), "Either 'cutoff' or 'compression_ratio' must be specified."
-
-        size = x.shape[-2:]
-        if cutoff is None:
-            cutoff = self.get_cutoff(size, compression_ratio)
-
-        # Take DCT
-        x_dct = dct.dct_2d(x)
-
-        # Keep up to cutoff frequency
-        x_dct = x_dct[..., : cutoff[0], : cutoff[1]]
-        return x_dct
-
-    def decompress(self, x: Tensor, size: Tuple[int, int], pad=True) -> Tensor:
-        """
-        Decompresses a tensor from its compressed components.
-
-        Args:
-            x (Tensor): The compressed low-path filtered image in the frequency domain.
-            size (Tuple[int, int]): The original spatial size of the uncompressed image.
-
-        Returns:
-            Tensor: The decompressed tensor.
-        """
-        H, W = size
-        if pad:
-            cutoff_h, cutoff_w = x.shape[-2:]
-            x = F.pad(x, pad=(0, H - cutoff_h, 0, W - cutoff_w))
-
-        y = dct.idct_2d(x)
-        return y
-
-    def forward(self, x: Tensor, *args, pad=True, **kwargs) -> Tensor:
-        # x: B × C × H × W
-        z = self.compress(x, *args, **kwargs)
-        y = self.decompress(z, x.shape[-2:], pad=pad)
-        return y
+        compressed_patches = self.compress(x, *args, **kwargs)
+        decompressed_image = self.decompress(compressed_patches, x.shape[-2:])
+        return decompressed_image
