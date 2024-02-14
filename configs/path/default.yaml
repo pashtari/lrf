@@ -1,2 +1,5 @@
-root_dir: ./
+root_dir: ${oc.env:.}
 output_dir: ${hydra:runtime.output_dir}
+data_dir: ${paths.root_dir}/data
+log_dir: ${paths.output_dir}/logs
+work_dir: ${hydra:runtime.cwd}

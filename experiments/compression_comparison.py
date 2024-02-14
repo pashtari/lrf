@@ -103,7 +103,6 @@ image = data.cat()
 # Convert the image to float and resize
 image = img_as_float(image)
 image = resize(image, (224, 224), preserve_range=True)
-image = exposure.equalize_hist(image)
 
 plt.imshow(image)
 plt.axis("off")

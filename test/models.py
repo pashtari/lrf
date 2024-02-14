@@ -1,0 +1,32 @@
+import torch
+from skimage import data, img_as_float
+from skimage.transform import resize
+import matplotlib.pyplot as plt
+
+from src import models
+
+x = data.cat()
+x = img_as_float(x)
+x = resize(x, (224, 224), preserve_range=True)
+
+plt.imshow(x)
+plt.axis("off")
+plt.show()
+
+x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
+
+interpolate_resnet = models.InterpolateResNet(
+    channels=3,
+    num_classes=1000,
+    rescale=False,
+    original_size=224,
+    new_size="all",
+    no_grad=True,
+)
+y = interpolate_resnet(x)
+z = interpolate_resnet.transform(x)
+
+z = torch.clip(z, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
+plt.imshow(z)
+plt.axis("off")
+plt.show()

@@ -4,5 +4,5 @@ __pycache__
 
 outputs
 tb-logger
-datasets
+data
 condor

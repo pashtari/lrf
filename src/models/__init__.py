@@ -1,2 +1,3 @@
-from .interpolate_resnet import *
-from .svd_resnet import *
+from .interpolate_model import *
+from .patchsvd_model import *
+from .resnet_cifar import *

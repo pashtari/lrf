@@ -2,60 +2,60 @@ batch_size: 128
 val_batch_size: 256
 
 train_transform:
-  _target_: torchvision.transforms.Compose
-  transforms:
-    - _target_: torchvision.transforms.RandomResizedCrop
-      size: 32
-    - _target_: torchvision.transforms.RandomHorizontalFlip
-      p: 0.5
-    - _target_: torchvision.transforms.ToTensor
-    - _target_: torchvision.transforms.Normalize
-      mean: [0.5, 0.5, 0.5]
-      std: [0.5, 0.5, 0.5]
+    _target_: torchvision.transforms.Compose
+    transforms:
+        - _target_: torchvision.transforms.RandomResizedCrop
+          size: 32
+        - _target_: torchvision.transforms.RandomHorizontalFlip
+          p: 0.5
+        - _target_: torchvision.transforms.ToTensor
+        - _target_: torchvision.transforms.Normalize
+          mean: [0.5, 0.5, 0.5]
+          std: [0.5, 0.5, 0.5]
 
 val_transform:
-  _target_: torchvision.transforms.Compose
-  transforms:
-    - _target_: torchvision.transforms.ToTensor
-    - _target_: torchvision.transforms.Normalize
-      mean: [0.5, 0.5, 0.5]
-      std: [0.5, 0.5, 0.5]
+    _target_: torchvision.transforms.Compose
+    transforms:
+        - _target_: torchvision.transforms.ToTensor
+        - _target_: torchvision.transforms.Normalize
+          mean: [0.5, 0.5, 0.5]
+          std: [0.5, 0.5, 0.5]
 
 train_set:
-  _target_: torchvision.datasets.CIFAR10
-  root: "./datasets"
-  train: true
-  transform: ${data.train_transform}
-  download: true
+    _target_: torchvision.data.CIFAR10
+    root: ${path.data_dir}
+    train: true
+    transform: ${data.train_transform}
+    download: true
 
 val_set:
-  _target_: torchvision.datasets.CIFAR10
-  root: "./datasets"
-  train: false
-  transform: ${data.val_transform}
-  download: false
+    _target_: torchvision.data.CIFAR10
+    root: ${path.data_dir}
+    train: false
+    transform: ${data.val_transform}
+    download: false
 
 # train_subset:
 #   _target_: torch.utils.data.Subset
-#   dataset: ${data.train_set}
+#   data: ${data.train_set}
 #   indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
 # val_subset:
 #   _target_: torch.utils.data.Subset
-#   dataset: ${data.val_set}
+#   data: ${data.val_set}
 #   indices: [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
 train_loader:
-  _target_: ignite.distributed.auto_dataloader
-  dataset: ${data.train_set}
-  batch_size: ${data.batch_size}
-  num_workers: 2
-  shuffle: true
-  drop_last: true
+    _target_: ignite.distributed.auto_dataloader
+    data: ${data.train_set}
+    batch_size: ${data.batch_size}
+    num_workers: 2
+    shuffle: true
+    drop_last: true
 
 val_loader:
-  _target_: ignite.distributed.auto_dataloader
-  dataset: ${data.val_set}
-  batch_size: ${data.val_batch_size}
-  num_workers: 2
-  shuffle: false
+    _target_: ignite.distributed.auto_dataloader
+    data: ${data.val_set}
+    batch_size: ${data.val_batch_size}
+    num_workers: 2
+    shuffle: false

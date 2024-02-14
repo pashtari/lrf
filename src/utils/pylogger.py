@@ -48,5 +48,5 @@ def pylogger(objects, log_every_iters=10, **kwargs):
         ]
         metrics = " - ".join(metrics)
         logger.info(
-            f"Epoch[{trainer.state.epoch}/{trainer.state.max_epochs}] - iter[{trainer.state.iteration}] - {metrics} - loss: {trainer.state.output:.2f}"
+            f"Epoch[{trainer.state.epoch}/{trainer.state.max_epochs}], iter[{trainer.state.iteration}] - {metrics} - loss: {trainer.state.output:.2f}"
         )

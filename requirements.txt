@@ -1,11 +1,21 @@
+# --------- pytorch --------- #
 torch
 torchvision
-hydra-core
-omegaconf
 pytorch-ignite
+
+# --------- hydra --------- #
+hydra-core
+hydra_colorlog
+omegaconf
+
+# --------- loggers --------- #
 tqdm
 tensorboardX
+
+# --------- visualization --------- #
 scikit-image
 matplotlib
+
+# --------- others --------- #
 deepspeed
 einops

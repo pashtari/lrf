@@ -3,7 +3,7 @@ defaults:
     - path: default
     - hydra: default
     - data: cifar10
-    - model: resnet
+    - model: interpolate_model
     - handler: [checkpoint]
     - logger: [pylogger, tensorboard]
     - trainer: trainer
@@ -13,6 +13,6 @@ task_name: "train"
 seed: 42
 
 distributed:
-    backend: nccl
-    nproc_per_node: 2
-    nnodes: 1
+    backend: null
+    nproc_per_node: null
+    nnodes: null
