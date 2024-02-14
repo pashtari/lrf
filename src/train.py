@@ -4,6 +4,7 @@ from pathlib import Path
 import hydra
 from omegaconf import DictConfig
 from torch.utils.data.distributed import DistributedSampler
+from ignite.contrib.handlers.tensorboard_logger import TensorboardLogger
 from ignite.utils import manual_seed
 import ignite.distributed as idist
 from ignite.engine import (
@@ -85,13 +86,16 @@ def training(local_rank, cfg) -> None:
         hydra.utils.instantiate(value)(objects=objects)
 
     ###### loggers ######
-    for value in cfg.logger.values():
-        hydra.utils.instantiate(value)(objects=objects)
+    loggers = {}
+    for key, value in cfg.logger.items():
+        loggers[key] = hydra.utils.instantiate(value)(objects=objects)
 
     trainer.run(train_loader, max_epochs=cfg.trainer.num_epochs)
 
-    # if rank == 0:
-    #     tb_logger.close()
+    if rank == 0:
+        for key, logger in loggers.items():
+            if isinstance(logger, TensorboardLogger):
+                logger.close()
 
     print("All is fine!")
 
