@@ -45,7 +45,7 @@ def psnr(image1, image2):
 
 def ssim(image1, image2):
     ssim_value = structural_similarity(
-        image1, image2, data_range=image2.max() - image2.min(), channel_axis=-1
+        image1, image2, data_range=image2.max() - image2.min(), channel_axis=-1,
     )
     return ssim_value
 
@@ -201,6 +201,10 @@ class Interpolate(Compress):
             new_size = self.calculate_new_size(original_size, compression_ratio)
 
         resized_image = F.interpolate(x, size=new_size, **self.interpolation_kwargs)
+
+        orig_height, orig_width = original_size
+        resized_height, resized_width = new_size
+        self._ratio = (orig_height*orig_width)/(resized_height*resized_width)
         return resized_image
 
     def decompress(self, x: Tensor, original_size: Tuple[int, int]) -> Tensor:
@@ -265,12 +269,16 @@ class DCT(Compress):
             compression_ratio is not None
         ), "Either 'cutoff' or 'compression_ratio' must be specified."
 
-        size = x.shape[-2:]
+        original_size = x.shape[-2:]
         if cutoff is None:
-            cutoff = self.get_cutoff(size, compression_ratio)
+            cutoff = self.get_cutoff(original_size, compression_ratio)
 
         x_dct = dct.dct_2d(x)  # Perform DCT
         x_dct = x_dct[..., : cutoff[0], : cutoff[1]]  # Keep frequencies up to cutoff
+
+        orig_height, orig_width = original_size
+        resized_height, resized_width = x_dct.shape[-2:]
+        self._ratio = (orig_height*orig_width)/(resized_height*resized_width)
         return x_dct
 
     def decompress(self, x: Tensor, size: Tuple[int, int], pad: bool = True) -> Tensor:
@@ -354,15 +362,17 @@ class SVD(Compress):
             compression_ratio is not None
         ), "Either 'rank' or 'compression_ratio' must be specified."
 
-        size = x.shape[-2:]
+        original_size = x.shape[-2:]
         if rank is None:
-            rank = self.get_rank(size, compression_ratio)
+            rank = self.get_rank(original_size, compression_ratio)
 
         u, s, vt = torch.linalg.svd(x, full_matrices=False)
         u, s, vt = u[..., :rank], s[..., :rank], vt[..., :rank, :]
 
         u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
         v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), vt)
+
+        self._ratio = self.get_compression_ratio(size=original_size, rank=rank)
         return u, v
 
     def decompress(self, x: Tuple[Tensor, Tensor]) -> Tensor:
@@ -456,15 +466,17 @@ class PatchSVD(SVD):
         """
         patches = self.patchify(x)
 
-        size = patches.shape[-2:]
+        original_size = patches.shape[-2:]
         if rank is None:
-            rank = self.get_rank(size, compression_ratio)
+            rank = self.get_rank(original_size, compression_ratio)
 
         u, s, vt = torch.linalg.svd(patches, full_matrices=False)
         u, s, vt = u[..., :rank], s[..., :rank], vt[..., :rank, :]
 
         u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
         v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), vt)
+
+        self._ratio = self.get_compression_ratio(size=original_size, rank=rank)
         return u, v
 
     def decompress(self, x: Tuple[Tensor, Tensor], size: Tuple[int, int]) -> Tensor:
