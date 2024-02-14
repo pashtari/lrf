@@ -23,13 +23,13 @@ val_transform:
 
 train_set:
     _target_: torchvision.datasets.ImageNet
-    root: "../datasets/ILSVRC"
+    root: ".../ILSVRC"
     split: train
     transform: ${data.train_transform}
 
 val_set:
     _target_: torchvision.datasets.ImageNet
-    root: "../datasets/ILSVRC"
+    root: ".../ILSVRC"
     split: val
     transform: ${data.val_transform}
 

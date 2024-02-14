@@ -1,5 +1,5 @@
+import sys
 import os
-from pathlib import Path
 
 import hydra
 from omegaconf import DictConfig
@@ -14,6 +14,14 @@ from ignite.engine import (
     create_supervised_evaluator,
 )
 from ignite.metrics import Loss
+
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(script_dir)
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
+
+os.chdir(parent_dir)
 
 
 def training(local_rank, cfg) -> None:
@@ -80,7 +88,7 @@ def training(local_rank, cfg) -> None:
         "optimizer": optimizer,
         "lr_scheduler": lr_scheduler,
     }
-   
+
     ###### handlers ######
     for value in cfg.handler.values():
         hydra.utils.instantiate(value)(objects=objects)
@@ -111,7 +119,5 @@ def main(cfg: DictConfig) -> None:
 
 
 if __name__ == "__main__":
-    cwd = Path(__file__).parent
-    os.chdir(cwd.parent)
     main()
     print("Completed.")

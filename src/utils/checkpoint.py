@@ -12,7 +12,9 @@ def load_checkpoint(resume_from):
     return ckpt
 
 
-def checkpoint(objects, resume_from=False, save_every_epochs=1, load_checkpoint_kwargs=None, **kwargs):
+def checkpoint(
+    objects, resume_from=False, save_every_epochs=1, load_checkpoint_kwargs=None, **kwargs
+):
     load_checkpoint_kwargs = (
         {} if load_checkpoint_kwargs is None else load_checkpoint_kwargs
     )
@@ -31,7 +33,11 @@ def checkpoint(objects, resume_from=False, save_every_epochs=1, load_checkpoint_
     model_checkpoint = ModelCheckpoint(
         global_step_transform=global_step_from_engine(trainer), **kwargs
     )
-    trainer.add_event_handler(Events.EPOCH_COMPLETED(every=save_every_epochs) or Events.COMPLETED, model_checkpoint, to_save)
+    trainer.add_event_handler(
+        Events.EPOCH_COMPLETED(every=save_every_epochs) or Events.COMPLETED,
+        model_checkpoint,
+        to_save,
+    )
 
     if resume_from is not None:
         ckpt = load_checkpoint(resume_from)

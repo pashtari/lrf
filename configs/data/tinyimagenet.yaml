@@ -23,12 +23,12 @@ val_transform:
 
 train_set:
     _target_: torchvision.datasets.ImageFolder
-    root: datasets/tiny_imagenet_200/train
+    root: ${path.data_dir}/tiny_imagenet_200/train
     transform: ${data.train_transform}
 
 val_set:
     _target_: torchvision.datasets.ImageFolder
-    root: datasets/tiny_imagenet_200/val
+    root: ${path.data_dir}/tiny_imagenet_200/val
     transform: ${data.val_transform}
 
 train_loader:

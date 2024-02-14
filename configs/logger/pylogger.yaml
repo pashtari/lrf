@@ -1,5 +1,5 @@
 pylogger:
-    _target_: utils.pylogger
+    _target_: src.utils.pylogger
     _partial_: true
     log_every_iters: ${trainer.log_every_iters}
-    filepath: ${path.output_dir}/pylogger.log
+    filepath: ${path.log_dir}/pylogger.log

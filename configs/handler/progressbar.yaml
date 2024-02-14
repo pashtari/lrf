@@ -1,5 +1,5 @@
 progressbar:
-    _target_: utils.progressbar
+    _target_: src.utils.progressbar
     _partial_: true
     persist_iters: false
     persist_epochs: true

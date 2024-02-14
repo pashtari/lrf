@@ -10,15 +10,17 @@ from ignite.utils import setup_logger
 from ignite.engine import Events
 
 
-def pylogger(objects, log_every_iters = 10, **kwargs):
-    ignite_logger = logging.getLogger('ignite.engine.engine.Engine')
+def pylogger(objects, log_every_iters=10, **kwargs):
+    ignite_logger = logging.getLogger("ignite.engine.engine.Engine")
     ignite_logger.setLevel(logging.INFO)
-    
+
     # local_rank = idist.get_rank()
-    logger = setup_logger(name="pylogger", stream=sys.stdout, distributed_rank=0, **kwargs)
+    logger = setup_logger(
+        name="pylogger", stream=sys.stdout, distributed_rank=0, **kwargs
+    )
     logger.info(f"PyTorch version: {torch.__version__}")
     logger.info(f"Ignite version: {ignite.__version__}")
-    
+
     if torch.cuda.is_available():
         # explicitly import cudnn as torch.backends.cudnn can not be pickled with hvd spawning procs
         from torch.backends import cudnn
@@ -45,5 +47,6 @@ def pylogger(objects, log_every_iters = 10, **kwargs):
             for k in train_metrics
         ]
         metrics = " - ".join(metrics)
-        logger.info(f"Epoch[{trainer.state.epoch}/{trainer.state.max_epochs}] - iter[{trainer.state.iteration}] - {metrics} - loss: {trainer.state.output:.2f}")
-
+        logger.info(
+            f"Epoch[{trainer.state.epoch}/{trainer.state.max_epochs}], iter[{trainer.state.iteration}] - {metrics} - loss: {trainer.state.output:.2f}"
+        )
