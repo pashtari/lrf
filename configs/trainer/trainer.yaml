@@ -1,8 +1,13 @@
+lr: .5
+momentum: 0.9
+weight_decay: 0.00002
+
+max_epochs: 100
+warmup_epochs: 5
+warmup_decay: 0.01
+
 compile: false
 amp: false
-max_epochs: 600
-max_steps: .inf
-warmup_steps: 100
 non_blocking: true
 val_every_epochs: 5
 log_every_iters: 1
@@ -11,15 +16,17 @@ loss:
     _target_: torch.nn.CrossEntropyLoss
 
 optimizer:
-    _target_: torch.optim.AdamW
+    _target_: torch.optim.SGD
     _partial_: true
-    lr: 0.001
-    weight_decay: 0.0
+    lr: ${trainer.lr}
+    momentum: ${trainer.momentum}
+    weight_decay: ${trainer.weight_decay}
 
 lr_scheduler:
     _target_: src.scheduler.WarmupCosineAnnealingLR
     _partial_: true
-    warmup_steps: ${trainer.warmup_steps}
-    total_steps: ${trainer.max_steps}
+    warmup_epochs: ${trainer.warmup_epochs}
+    max_epochs: ${trainer.max_epochs}
+    warmup_decay: ${trainer.warmup_decay}
     lr_min: 0
     last_epoch: -1

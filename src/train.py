@@ -60,19 +60,14 @@ def training(local_rank, cfg) -> None:
         amp_mode="amp" if cfg.trainer.amp else None,
     )
 
-    @trainer.on(Events.ITERATION_COMPLETED)
-    def check_iteration(engine):
-        if engine.state.iteration >= cfg.trainer.max_steps:
-            engine.terminate()
-
     if lr_scheduler is not None:
         if isinstance(lr_scheduler, PyTorchLRScheduler):
             trainer.add_event_handler(
-                Events.ITERATION_COMPLETED,
+                Events.EPOCH_COMPLETED,
                 lambda engine: cast(PyTorchLRScheduler, lr_scheduler).step(),
             )
         else:
-            trainer.add_event_handler(Events.ITERATION_STARTED, lr_scheduler)
+            trainer.add_event_handler(Events.EPOCH_STARTED, lr_scheduler)
 
     @trainer.on(
         Events.EPOCH_COMPLETED(every=cfg.trainer.val_every_epochs) or Events.COMPLETED
