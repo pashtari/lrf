@@ -1,5 +1,7 @@
 import os
 import sys
+from datetime import datetime
+from pathlib import Path
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(script_dir)
@@ -14,25 +16,36 @@ import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 
 from pathlib import Path
-from skimage import img_as_float
+from skimage import data, img_as_float
 from torchvision.transforms import Resize
 from torch.utils.data import Subset
 
 from src.models import compression as com
 
-# Set current script path as the working directory
-cwd = Path(__file__).parent
-os.chdir(cwd)
+# Setup result directory
+now = datetime.now().strftime("%Y%m%d-%H%M%S")
+folder_name = (f"{now}")
+output_path = Path(script_dir) /"compression_comparison_results" / folder_name
+if not output_path.exists():
+    output_path.mkdir(parents=True)
+output_path = output_path.as_posix()
 
 # Load dataset
 task_name = "compression_comparison_CIFAR10"
-dataset = torchvision.datasets.CIFAR10(root='../datasets', train=False, download=True, transform=transforms.ToTensor())
-# dataset = Subset(dataset, indices=[0, 1, 2, 3])
+transform = transforms.Compose([transforms.ToTensor(),])
+dataset = torchvision.datasets.CIFAR10(root='../datasets', train=True, download=False, transform=transform)
+# dataset = Subset(dataset, indices=np.arange(0,25))
 data_loader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=False)
 
-methods = [com.Interpolate(mode="bilinear"), com.DCT(), com.PatchSVD()]
+## for test
+# image = data.cat()
+# image = img_as_float(image)
+# image = torch.tensor(image, dtype=torch.float32).permute(2,0,1).unsqueeze(0)
+# data_loader = [(image, 1)]
+
+methods = [com.Interpolate(mode="bilinear"), com.DCT(), com.PatchSVD(patch_size=(4,4))]
 metrics = [com.psnr, com.ssim]
-summary_metrics = [np.mean]
+summary_metrics = [np.mean, np.std]
 compression_ratios = np.array([1.25, *np.arange(2, 20, 1)])
 
 metric_values = {method.__class__.__name__: {f"ratio_id_{i}": {"ratio_val": None, **{metric.__name__: [] for metric in metrics}} for i, _ in enumerate(compression_ratios)} for method in methods}
@@ -70,11 +83,12 @@ for metric in metrics:
                 summary_values[method.__class__.__name__][f"ratio_id_{i}"][metric.__name__][summary.__name__] = summary(metric_values[method.__class__.__name__][f"ratio_id_{i}"][metric.__name__])
                 summary_values[method.__class__.__name__][f"ratio_id_{i}"]["ratio_val"] = metric_values[method.__class__.__name__][f"ratio_id_{i}"]["ratio_val"]
 
+
 # saving the dictionaries
-with open(f'{task_name}_dict.pkl', 'wb') as f:
+with open(f'{output_path}/{task_name}_dict.pkl', 'wb') as f:
     pickle.dump(metric_values, f)
 
-with open(f'{task_name}_summary_dict.pkl', 'wb') as f:
+with open(f'{output_path}/{task_name}_summary_dict.pkl', 'wb') as f:
     pickle.dump(summary_values, f)
 
 # Plotting the results
@@ -96,7 +110,7 @@ for metric in metrics:
     plt.legend()
     plt.grid()
     plt.savefig(
-        f"{task_name}_{metric.__name__}.pdf",
+        f"{output_path}/{task_name}_{metric.__name__}.pdf",
         format="pdf",
         dpi=600,
     )

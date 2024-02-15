@@ -2,6 +2,7 @@
 torch
 torchvision
 pytorch-ignite
+torch-dct
 
 # --------- hydra --------- #
 hydra-core

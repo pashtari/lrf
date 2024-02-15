@@ -1,8 +1,10 @@
 __pycache__
 .DS_Store
 ._*
+.pkl
 
 outputs
 tb-logger
 data
 condor
+datasets
