@@ -2,7 +2,6 @@ __pycache__
 .DS_Store
 ._*
 
-outputs
-tb-logger
 data
+logs
 condor

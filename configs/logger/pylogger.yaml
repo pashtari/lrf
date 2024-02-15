@@ -2,4 +2,4 @@ pylogger:
     _target_: src.utils.pylogger
     _partial_: true
     log_every_iters: ${trainer.log_every_iters}
-    filepath: ${path.log_dir}/pylogger.log
+    filepath: ${path.output_dir}/${task_name}.log

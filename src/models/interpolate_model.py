@@ -5,11 +5,10 @@ import random
 import torch
 from torch import nn
 from torch.nn.modules.utils import _pair
-import torch.nn.functional as F
 from torchvision.models import resnet50
 
 from .compression import Interpolate
-from ..utils.helpers import null_context
+from ..utils.helper import null_context
 
 
 class InterpolateModel(nn.Module):

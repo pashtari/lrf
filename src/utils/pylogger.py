@@ -11,12 +11,16 @@ from ignite.engine import Events
 
 
 def pylogger(objects, log_every_iters=10, **kwargs):
-    ignite_logger = logging.getLogger("ignite.engine.engine.Engine")
-    ignite_logger.setLevel(logging.INFO)
+    # ignite_logger = logging.getLogger("ignite.engine.engine.Engine")
+    # ignite_logger.setLevel(logging.INFO)
 
     # local_rank = idist.get_rank()
     logger = setup_logger(
-        name="pylogger", stream=sys.stdout, distributed_rank=0, **kwargs
+        name="PyLogger",
+        # stream=sys.stdout,
+        format="[%(asctime)s][%(name)s][%(levelname)s]: %(message)s",
+        distributed_rank=0,
+        **kwargs,
     )
     logger.info(f"PyTorch version: {torch.__version__}")
     logger.info(f"Ignite version: {ignite.__version__}")

@@ -1,10 +1,11 @@
 compile: false
 amp: false
-num_epochs: 500
-warmup_duration: 10
+max_epochs: 600
+max_steps: .inf
+warmup_steps: 100
 non_blocking: true
 val_every_epochs: 5
-log_every_iters: 10
+log_every_iters: 1
 
 loss:
     _target_: torch.nn.CrossEntropyLoss
@@ -16,10 +17,9 @@ optimizer:
     weight_decay: 0.0
 
 lr_scheduler:
-    _target_: ignite.handlers.param_scheduler.CosineAnnealingScheduler
+    _target_: src.scheduler.WarmupCosineAnnealingLR
     _partial_: true
-    param_name: lr
-    start_value: 0.0
-    end_value: 1.0
-    cycle_size: ${trainer.num_epochs}
-    warmup_duration: ${trainer.warmup_duration}
+    warmup_steps: ${trainer.warmup_steps}
+    total_steps: ${trainer.max_steps}
+    lr_min: 0
+    last_epoch: -1
