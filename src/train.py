@@ -1,10 +1,11 @@
 import sys
 import os
+from typing import cast
 
 import hydra
 from omegaconf import DictConfig
 from torch.utils.data.distributed import DistributedSampler
-from ignite.contrib.handlers.tensorboard_logger import TensorboardLogger
+from torch.optim.lr_scheduler import LRScheduler as PyTorchLRScheduler
 from ignite.utils import manual_seed
 import ignite.distributed as idist
 from ignite.engine import (
@@ -14,14 +15,6 @@ from ignite.engine import (
     create_supervised_evaluator,
 )
 from ignite.metrics import Loss
-
-
-script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(script_dir)
-if parent_dir not in sys.path:
-    sys.path.append(parent_dir)
-
-os.chdir(parent_dir)
 
 
 def training(local_rank, cfg) -> None:
@@ -37,8 +30,8 @@ def training(local_rank, cfg) -> None:
     optimizer = idist.auto_optim(
         hydra.utils.instantiate(cfg.trainer.optimizer)(params=model.parameters())
     )
-    loss = hydra.utils.instantiate(cfg.trainer.loss).to(device)
     lr_scheduler = hydra.utils.instantiate(cfg.trainer.lr_scheduler)(optimizer=optimizer)
+    loss = hydra.utils.instantiate(cfg.trainer.loss).to(device)
 
     trainer = create_supervised_trainer(
         model,
@@ -67,6 +60,15 @@ def training(local_rank, cfg) -> None:
         amp_mode="amp" if cfg.trainer.amp else None,
     )
 
+    if lr_scheduler is not None:
+        if isinstance(lr_scheduler, PyTorchLRScheduler):
+            trainer.add_event_handler(
+                Events.EPOCH_COMPLETED,
+                lambda engine: cast(PyTorchLRScheduler, lr_scheduler).step(),
+            )
+        else:
+            trainer.add_event_handler(Events.EPOCH_STARTED, lr_scheduler)
+
     @trainer.on(
         Events.EPOCH_COMPLETED(every=cfg.trainer.val_every_epochs) or Events.COMPLETED
     )
@@ -94,18 +96,10 @@ def training(local_rank, cfg) -> None:
         hydra.utils.instantiate(value)(objects=objects)
 
     ###### loggers ######
-    loggers = {}
-    for key, value in cfg.logger.items():
-        loggers[key] = hydra.utils.instantiate(value)(objects=objects)
+    for value in cfg.logger.values():
+        hydra.utils.instantiate(value)(objects=objects)
 
-    trainer.run(train_loader, max_epochs=cfg.trainer.num_epochs)
-
-    if rank == 0:
-        for key, logger in loggers.items():
-            if isinstance(logger, TensorboardLogger):
-                logger.close()
-
-    print("All is fine!")
+    trainer.run(train_loader, max_epochs=cfg.trainer.max_epochs)
 
 
 @hydra.main(version_base=None, config_path="../configs", config_name="train")
@@ -119,5 +113,11 @@ def main(cfg: DictConfig) -> None:
 
 
 if __name__ == "__main__":
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(script_dir)
+    if parent_dir not in sys.path:
+        sys.path.append(parent_dir)
+
+    os.chdir(parent_dir)
+    os.environ["PROJECT_ROOT"] = parent_dir
     main()
-    print("Completed.")
