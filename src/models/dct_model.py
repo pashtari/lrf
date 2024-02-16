@@ -1,39 +1,46 @@
-import math
-import random
-from contextlib import contextmanager
+from typing import Sequence
 
+import random
 import torch
 from torch import nn
 from torch.nn.modules.utils import _pair
-import torch.nn.functional as F
 from torchvision.models import resnet50
 
-
-@contextmanager
-def null_context():
-    yield
+from .compression import DCT
+from ..utils.helper import null_context
 
 
-class ResNet(nn.Module):
+class DCTModel(nn.Module):
     def __init__(
         self,
-        channels=3,
-        num_classes=1000,
-        compression_ratio=1,
+        net=None,
         rescale=False,
-        image_size=(224, 224),
+        original_size=224,
+        new_size=None,
         no_grad=True,
     ):
-        super(ResNet, self).__init__()
+        super(DCTModel, self).__init__()
 
-        self.channels = channels
-        self.num_classes = num_classes
-        self.compression_ratio = _pair(compression_ratio)
         self.updated_compression_ratio = None
-        self.image_size = _pair(image_size)
+        self.original_size = _pair(original_size)
+        if new_size is None:
+            self.new_size = (self.original_size,)
+        elif new_size in ("all", "rand", "random"):
+            self.new_size = self.get_all_feasible_sizes()
+        elif isinstance(new_size, int):
+            self.new_size = ((new_size, new_size),)
+        elif isinstance(new_size, Sequence) and not isinstance(new_size, str):
+            self.new_size = tuple(_pair(s) for s in new_size)
+        else:
+            raise ValueError("`new_size` type is incorrect.")
+
         self.rescale = rescale
         self.no_grad = no_grad
-        self.model = resnet50()
+        if net is None:
+            net = resnet50
+
+        self.net = net()
+        self.dct = DCT()
 
     def context(self):
         if self.no_grad:
@@ -43,23 +50,24 @@ class ResNet(nn.Module):
 
         return context
 
-    def compress(self, x):
-        if self.compression_ratio[0] == self.compression_ratio[1]:
-            self.updated_compression_ratio = self.compression_ratio[0]
-        else:
-            self.updated_compression_ratio = random.uniform(*self.compression_ratio)
+    def get_all_feasible_sizes(self):
+        heights = [16 * i for i in range(3, self.original_size[0] // 16)]
+        widths = [16 * j for j in range(3, self.original_size[1] // 16)]
+        all_feasible_sizes = [*zip(heights, widths)]
+        return all_feasible_sizes
 
-        if self.updated_compression_ratio != 1:
-            scale_factor = 1 / math.sqrt(self.updated_compression_ratio)
-            x = F.interpolate(x, scale_factor=scale_factor)
-            if self.rescale:
-                x = F.interpolate(x, size=self.image_size)
+    def transform(self, x):
+        with self.context():
+            new_size = random.choice(self.new_size)
+            compression_ratio = (self.original_size[0]*self.original_size[1]) / (new_size[0]*new_size[1])
+            if compression_ratio == 1:
+                z = x
+            else:
+                z = self.dct.forward(x, compression_ratio=compression_ratio, pad=self.rescale)
 
-        return x
+        return z
 
     def forward(self, x):
-        with self.context():
-            z = self.compress(x)
-
-        y = self.model(z)
+        z = self.transform(x)
+        y = self.net(z)
         return y
