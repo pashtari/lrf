@@ -38,19 +38,35 @@ def pylogger(objects, log_every_iters=10, **kwargs):
         logger.info(f"\tbackend: {idist.backend()}")
         logger.info(f"\tworld size: {idist.get_world_size()}")
 
-    trainer = objects["trainer"]
-    train_evaluator = objects["train_evaluator"]
-    val_evaluator = objects["val_evaluator"]
+    if "trainer" in objects:
+        trainer = objects["trainer"]
+        train_evaluator = objects["train_evaluator"]
+        val_evaluator = objects["val_evaluator"]
 
-    @trainer.on(Events.ITERATION_COMPLETED(every=log_every_iters))
-    def log_train(engine):
-        train_metrics = train_evaluator.state.metrics
-        val_metrics = val_evaluator.state.metrics
-        metrics = [
-            f"train_{k}: {train_metrics[k]:.2f} - val_{k}: {val_metrics[k]:.2f}"
-            for k in train_metrics
-        ]
-        metrics = " - ".join(metrics)
-        logger.info(
-            f"Epoch[{trainer.state.epoch}/{trainer.state.max_epochs}], iter[{trainer.state.iteration}] - {metrics} - loss: {trainer.state.output:.2f}"
-        )
+        @trainer.on(Events.ITERATION_COMPLETED(every=log_every_iters) or Events.COMPLETED)
+        def log_train(engine):
+            train_metrics = train_evaluator.state.metrics
+            val_metrics = val_evaluator.state.metrics
+            metrics = [
+                f"train_{k}: {train_metrics[k]:.2f} - val_{k}: {val_metrics[k]:.2f}"
+                for k in train_metrics
+            ]
+            metrics = " - ".join(metrics)
+            logger.info(
+                f"Epoch[{trainer.state.epoch}/{trainer.state.max_epochs}], iter[{trainer.state.iteration}] - {metrics} - loss: {trainer.state.output:.2f}"
+            )
+    elif "evaluator" in objects:
+        evaluator = objects["evaluator"]
+
+        @evaluator.on(Events.ITERATION_COMPLETED(every=log_every_iters) or Events.COMPLETED)
+        def log_val(engine):
+            val_metrics = evaluator.state.metrics
+            metrics = [
+                f"val_{k}: {val_metrics[k]:.2f}"
+                for k in val_metrics
+            ]
+            metrics = " - ".join(metrics)
+            logger.info(
+                f"Iter[{evaluator.state.iteration}] - {metrics}"
+            )
+

@@ -1,0 +1,18 @@
+defaults:
+  - _self_
+  - path: default
+  - hydra: default
+  - data: cifar10
+  - model: interpolate_model_cifar10
+  - handler: []
+  - logger: [pylogger]
+  - metric: cifar10
+
+checkpoint_path: "../logs/"
+task_name: "test"
+seed: 42
+
+dist:
+  backend: null
+  nproc_per_node: null
+  nnodes: null

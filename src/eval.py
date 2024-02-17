@@ -1,48 +1,65 @@
-import hydra
-import torch
-import rootutils  # I prefer to avoid such an uncommon depondency!!
+import sys
+import os
+from pathlib import Path
 
+import torch
+import hydra
 from omegaconf import DictConfig
+from ignite.utils import manual_seed
+import ignite.distributed as idist
 from ignite.engine import (
-    Events,
     create_supervised_evaluator,
 )
-from ignite.handlers import Checkpoint
-from ignite.contrib.handlers import TensorboardLogger
-
-rootutils.set_root(
-    path=rootutils.find_root(search_from=__file__), pythonpath=True, cwd=True
-)
+from ignite.handlers import ModelCheckpoint
 
 
-@hydra.main(version_base=None, config_path="../models/resnet/configs", config_name="eval")
-def main(cfg: DictConfig) -> None:
-    device = cfg.device
-    model = hydra.utils.instantiate(cfg.model).to(device)
-    checkpoint_fp = "../checkpoints" + cfg.checkpoint
-    checkpoint = torch.load(checkpoint_fp, map_location=device)
-    Checkpoint.load_objects(to_load={"model": model}, checkpoint=checkpoint)
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(script_dir)
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
 
-    val_loader = hydra.utils.instantiate(cfg.val_loader)
-    val_metrics = {k: hydra.utils.instantiate(v) for k, v in cfg.val_metrics.items()}
-    evaluator = create_supervised_evaluator(model, val_metrics, device)
+os.chdir(parent_dir)
+os.environ["PROJECT_ROOT"] = parent_dir
 
-    @evaluator.on(Events.COMPLETED)
-    def log_test_results(engine):
-        metrics = engine.state.metrics
-        printed_metrics = " - ".join(f"{k}: {v:.2f}" for k, v in metrics.items())
-        print(f"Test Results - {printed_metrics}")
 
-    tb_logger = TensorboardLogger(log_dir="tb-test-logger")
-    tb_logger.attach_output_handler(
-        evaluator,
-        event_name=Events.COMPLETED,
-        tag="test",
-        metric_names="all",
+def evaluating(local_rank, cfg) -> None:
+    device = idist.device()
+    rank = idist.get_rank()
+    manual_seed(cfg.seed + rank)
+
+    model = hydra.utils.instantiate(cfg.model)
+    
+    ckpt_path = Path(cfg.checkpoint_path)
+    assert ckpt_path.exists(), f"Checkpoint '{ckpt_path.as_posix()}' is not found"
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+    ModelCheckpoint.load_objects(to_load={"model": model}, checkpoint=ckpt)
+
+    val_loader = hydra.utils.instantiate(cfg.data.val_loader)
+    metrics = {k: hydra.utils.instantiate(v) for k, v in cfg.metric.items()}
+
+    evaluator = create_supervised_evaluator(
+        model,
+        metrics,
+        device,
     )
 
-    evaluator.run(val_loader)
-    tb_logger.close()
+    objects = {"evaluator": evaluator}
+
+    ###### loggers ######
+    for value in cfg.logger.values():
+        hydra.utils.instantiate(value)(objects=objects)
+
+    evaluator.run(val_loader, max_epochs=1)
+
+
+@hydra.main(version_base=None, config_path="../configs", config_name="eval")
+def main(cfg: DictConfig) -> None:
+
+    for k, v in cfg.path.items():
+        cfg.path[k] = v
+
+    with idist.Parallel(**cfg.dist) as parallel:
+        parallel.run(evaluating, cfg)
 
 
 if __name__ == "__main__":
