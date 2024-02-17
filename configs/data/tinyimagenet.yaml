@@ -2,24 +2,24 @@ batch_size: 128
 val_batch_size: 256
 
 train_transform:
-    _target_: torchvision.transforms.Compose
+    _target_: torchvision.transforms.v2.Compose
     transforms:
-        - _target_: torchvision.transforms.RandomResizedCrop
+        - _target_: torchvision.transforms.v2.RandomResizedCrop
           size: 64
-        - _target_: torchvision.transforms.RandomHorizontalFlip
+        - _target_: torchvision.transforms.v2.RandomHorizontalFlip
           p: 0.5
-        - _target_: torchvision.transforms.ToTensor
-        - _target_: torchvision.transforms.Normalize
+        - _target_: torchvision.transforms.v2.ToTensor
+        - _target_: torchvision.transforms.v2.Normalize
           mean: [0.5, 0.5, 0.5]
           std: [0.5, 0.5, 0.5]
 
 val_transform:
-    _target_: torchvision.transforms.Compose
+    _target_: torchvision.transforms.v2.Compose
     transforms:
-        - _target_: torchvision.transforms.Normalize
+        - _target_: torchvision.transforms.v2.Normalize
           mean: [0.5, 0.5, 0.5]
           std: [0.5, 0.5, 0.5]
-        - _target_: torchvision.transforms.ToTensor
+        - _target_: torchvision.transforms.v2.ToTensor
 
 train_set:
     _target_: torchvision.datasets.ImageFolder

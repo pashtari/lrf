@@ -2,6 +2,8 @@ from typing import Union, Sequence, Callable
 from contextlib import contextmanager
 from functools import partial
 
+import torch
+
 
 @contextmanager
 def null_context():
@@ -27,3 +29,7 @@ def wrap_class(obj: Union[Sequence, Callable]) -> Callable:
         return partial(callable_obj, *args, **kwargs)
     else:
         return obj
+
+
+def get_dtype(name: str):
+    return getattr(torch, name)

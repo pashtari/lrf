@@ -17,6 +17,15 @@ from ignite.engine import (
 from ignite.metrics import Loss
 
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(script_dir)
+if parent_dir not in sys.path:
+    sys.path.append(parent_dir)
+
+os.chdir(parent_dir)
+os.environ["PROJECT_ROOT"] = parent_dir
+
+
 def training(local_rank, cfg) -> None:
     device = idist.device()
     rank = idist.get_rank()
@@ -108,16 +117,9 @@ def main(cfg: DictConfig) -> None:
     for k, v in cfg.path.items():
         cfg.path[k] = v
 
-    with idist.Parallel(**cfg.distributed) as parallel:
+    with idist.Parallel(**cfg.dist) as parallel:
         parallel.run(training, cfg)
 
 
 if __name__ == "__main__":
-    script_dir = os.path.dirname(os.path.abspath(__file__))
-    parent_dir = os.path.dirname(script_dir)
-    if parent_dir not in sys.path:
-        sys.path.append(parent_dir)
-
-    os.chdir(parent_dir)
-    os.environ["PROJECT_ROOT"] = parent_dir
     main()

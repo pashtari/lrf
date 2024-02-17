@@ -1,25 +1,35 @@
-batch_size: 1
-val_batch_size: 2
+batch_size: 128
+val_batch_size: 256
 
 train_transform:
-    _target_: torchvision.transforms.Compose
+    _target_: torchvision.transforms.v2.Compose
     transforms:
-        - _target_: torchvision.transforms.RandomResizedCrop
+        - _target_: torchvision.transforms.v2.ToImage
+        - _target_: torchvision.transforms.v2.RandomResizedCrop
           size: 32
-        - _target_: torchvision.transforms.RandomHorizontalFlip
+          antialias: true
+        - _target_: torchvision.transforms.v2.RandomHorizontalFlip
           p: 0.5
-        - _target_: torchvision.transforms.ToTensor
-        - _target_: torchvision.transforms.Normalize
-          mean: [0.5, 0.5, 0.5]
-          std: [0.5, 0.5, 0.5]
+        - _target_: torchvision.transforms.v2.ToDtype
+          dtype:
+              _target_: src.get_dtype
+              name: float32
+          scale: true
+        - _target_: torchvision.transforms.v2.Normalize
+          mean: [0.4914, 0.4822, 0.4465]
+          std: [0.2023, 0.1994, 0.2010]
 
 val_transform:
-    _target_: torchvision.transforms.Compose
+    _target_: torchvision.transforms.v2.Compose
     transforms:
-        - _target_: torchvision.transforms.ToTensor
-        - _target_: torchvision.transforms.Normalize
-          mean: [0.5, 0.5, 0.5]
-          std: [0.5, 0.5, 0.5]
+        - _target_: torchvision.transforms.v2.ToImage
+        - _target_: torchvision.transforms.v2.ToDtype
+          dtype:
+              _target_: src.get_dtype
+              name: float32
+        - _target_: torchvision.transforms.v2.Normalize
+          mean: [0.4914, 0.4822, 0.4465]
+          std: [0.2023, 0.1994, 0.2010]
 
 train_set:
     _target_: torchvision.datasets.CIFAR10
@@ -35,27 +45,27 @@ val_set:
     transform: ${data.val_transform}
     download: false
 
-train_subset:
-    _target_: torch.utils.data.Subset
-    dataset: ${data.train_set}
-    indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+# train_subset:
+#     _target_: torch.utils.data.Subset
+#     dataset: ${data.train_set}
+#     indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
-val_subset:
-    _target_: torch.utils.data.Subset
-    dataset: ${data.val_set}
-    indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+# val_subset:
+#     _target_: torch.utils.data.Subset
+#     dataset: ${data.val_set}
+#     indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
 
 train_loader:
     _target_: ignite.distributed.auto_dataloader
-    dataset: ${data.train_subset}
+    dataset: ${data.train_set}
     batch_size: ${data.batch_size}
-    num_workers: 0
+    num_workers: 2
     shuffle: true
     drop_last: true
 
 val_loader:
     _target_: ignite.distributed.auto_dataloader
-    dataset: ${data.val_subset}
+    dataset: ${data.val_set}
     batch_size: ${data.val_batch_size}
-    num_workers: 0
+    num_workers: 2
     shuffle: false
