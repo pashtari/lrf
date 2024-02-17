@@ -1,13 +1,12 @@
-batch_size: 128
-val_batch_size: 256
+batch_size: 256
+val_batch_size: 512
 
 train_transform:
     _target_: torchvision.transforms.v2.Compose
     transforms:
-        - _target_: torchvision.transforms.v2.ToImage
-        - _target_: torchvision.transforms.v2.RandomResizedCrop
+        - _target_: torchvision.transforms.v2.RandomCrop
           size: 32
-          antialias: true
+          padding: 4
         - _target_: torchvision.transforms.v2.RandomHorizontalFlip
           p: 0.5
         - _target_: torchvision.transforms.v2.ToDtype
@@ -18,11 +17,11 @@ train_transform:
         - _target_: torchvision.transforms.v2.Normalize
           mean: [0.4914, 0.4822, 0.4465]
           std: [0.2023, 0.1994, 0.2010]
+        - _target_: torchvision.transforms.v2.ToPureTensor
 
 val_transform:
     _target_: torchvision.transforms.v2.Compose
     transforms:
-        - _target_: torchvision.transforms.v2.ToImage
         - _target_: torchvision.transforms.v2.ToDtype
           dtype:
               _target_: src.get_dtype

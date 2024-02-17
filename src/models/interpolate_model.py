@@ -19,6 +19,7 @@ class InterpolateModel(nn.Module):
         original_size=224,
         new_size=None,
         no_grad=True,
+        **kwargs
     ):
         super(InterpolateModel, self).__init__()
 
@@ -40,7 +41,7 @@ class InterpolateModel(nn.Module):
         if net is None:
             net = resnet50
 
-        self.net = net()
+        self.net = net(**kwargs)
         self.interpolate = Interpolate()
 
     def context(self):
