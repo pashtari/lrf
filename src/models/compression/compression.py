@@ -281,18 +281,18 @@ class DCT(Compress):
         self._ratio = (orig_height*orig_width)/(resized_height*resized_width)
         return x_dct
 
-    def decompress(self, x: Tensor, size: Tuple[int, int], pad: bool = True) -> Tensor:
+    def decompress(self, x: Tensor, original_size: Tuple[int, int], pad: bool = True) -> Tensor:
         """Decompress the input tensor using inverse DCT.
 
         Args:
             x: Tensor, the compressed tensor to be decompressed.
-            size: Tuple[int, int], the original height and width of the input tensor.
+            original_size: Tuple[int, int], the original height and width of the input tensor.
             pad: bool, whether to pad the tensor to its original size.
 
         Returns:
             Tensor, the decompressed tensor.
         """
-        height, width = size
+        height, width = original_size
         if pad:
             cutoff_height, cutoff_width = x.shape[-2:]
             x = F.pad(x, pad=(0, width - cutoff_width, 0, height - cutoff_height))
