@@ -8,7 +8,7 @@ defaults:
   - logger: [pylogger]
   - metric: cifar10
 
-checkpoint_path: "../logs/"
+checkpoint_path: "/logs/"
 task_name: "test"
 seed: 42
 

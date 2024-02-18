@@ -29,7 +29,7 @@ def evaluating(local_rank, cfg) -> None:
 
     model = hydra.utils.instantiate(cfg.model)
     
-    ckpt_path = Path(cfg.checkpoint_path)
+    ckpt_path = Path(parent_dir + cfg.checkpoint_path)
     assert ckpt_path.exists(), f"Checkpoint '{ckpt_path.as_posix()}' is not found"
     ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
     ModelCheckpoint.load_objects(to_load={"model": model}, checkpoint=ckpt)
