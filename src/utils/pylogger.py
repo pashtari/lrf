@@ -11,8 +11,8 @@ from ignite.engine import Events
 
 
 def pylogger(objects, log_every_iters=10, **kwargs):
-    # ignite_logger = logging.getLogger("ignite.engine.engine.Engine")
-    # ignite_logger.setLevel(logging.INFO)
+    ignite_logger = logging.getLogger("ignite.engine.engine.Engine")
+    ignite_logger.setLevel(logging.WARN)
 
     # local_rank = idist.get_rank()
     logger = setup_logger(
