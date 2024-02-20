@@ -1,4 +1,3 @@
-import json
 import sys
 import os
 
@@ -6,8 +5,7 @@ import hydra
 from omegaconf import DictConfig
 from ignite.utils import manual_seed
 import ignite.distributed as idist
-from ignite.engine import create_supervised_evaluator, create_supervised_trainer
-from ignite.engine import Events
+from ignite.engine import create_supervised_evaluator
 
 
 script_dir = os.path.dirname(os.path.abspath(__file__))

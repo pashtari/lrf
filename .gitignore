@@ -3,9 +3,6 @@ __pycache__
 ._*
 *.pkl
 
-data
-condor
-datasets
-logs
-condor
-outputs
+/data
+/condor
+/logs

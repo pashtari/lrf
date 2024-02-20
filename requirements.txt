@@ -6,7 +6,7 @@ torch-dct
 
 # --------- hydra --------- #
 hydra-core
-hydra_colorlog
+hydra-colorlog
 omegaconf
 
 # --------- loggers --------- #
