@@ -1,0 +1,9 @@
+_target_: src.models.InterpolateModel
+net:
+    _target_: src.models.resnet_cifar.ResNet50
+    _partial_: true
+num_classes: 10
+rescale: false
+original_size: 32
+new_size: [12, 16, 20, 24, 28, 32]
+no_grad: true

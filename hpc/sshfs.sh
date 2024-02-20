@@ -3,3 +3,4 @@ sshfs vsc33647@login.hpc.kuleuven.be:/scratch/leuven/336/vsc33647 /Users/pooya/D
 
 umount -f /Users/pooya/Desktop/vsc/vsc_data
 umount -f /Users/pooya/Desktop/vsc/vsc_scratch
+

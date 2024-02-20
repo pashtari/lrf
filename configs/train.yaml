@@ -3,16 +3,15 @@ defaults:
     - path: default
     - hydra: default
     - data: cifar10
-    - model: interpolate_model
-    - handler: [checkpoint]
-    - logger: [pylogger, tensorboard]
+    - model: interpolate_model_cifar10
+    - handler: [checkpoint, pylogger, tensorboard]
     - trainer: trainer
     - metric: cifar10
 
-task_name: "train"
+task_name: train
 seed: 42
 
-distributed:
+dist:
     backend: null
     nproc_per_node: null
     nnodes: null

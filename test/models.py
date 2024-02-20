@@ -15,16 +15,16 @@ plt.show()
 
 x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
 
-interpolate_resnet = models.InterpolateResNet(
-    channels=3,
-    num_classes=1000,
+interpolate_model = models.InterpolateModel(
+    net=models.resnet50,
+    num_classes=10,
     rescale=False,
     original_size=224,
     new_size="all",
     no_grad=True,
 )
-y = interpolate_resnet(x)
-z = interpolate_resnet.transform(x)
+y = interpolate_model(x)
+z = interpolate_model.transform(x)
 
 z = torch.clip(z, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
 plt.imshow(z)

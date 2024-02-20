@@ -1,10 +1,11 @@
 __pycache__
 .DS_Store
 ._*
+*.pkl
 
-outputs
-tb-logger
 data
-datasets
-experiments
 condor
+datasets
+logs
+condor
+outputs

@@ -5,11 +5,10 @@ import random
 import torch
 from torch import nn
 from torch.nn.modules.utils import _pair
-import torch.nn.functional as F
 from torchvision.models import resnet50
 
 from .compression import Interpolate
-from ..utils.helpers import null_context
+from ..utils.helper import null_context
 
 
 class InterpolateModel(nn.Module):
@@ -20,6 +19,7 @@ class InterpolateModel(nn.Module):
         original_size=224,
         new_size=None,
         no_grad=True,
+        **kwargs
     ):
         super(InterpolateModel, self).__init__()
 
@@ -41,7 +41,7 @@ class InterpolateModel(nn.Module):
         if net is None:
             net = resnet50
 
-        self.net = net()
+        self.net = net(**kwargs)
         self.interpolate = Interpolate()
 
     def context(self):
@@ -61,11 +61,12 @@ class InterpolateModel(nn.Module):
     def transform(self, x):
         with self.context():
             new_size = random.choice(self.new_size)
-            if new_size == self.original_size:
+            compression_ratio = (self.original_size[0]*self.original_size[1]) // (new_size[0]*new_size[1])
+            if compression_ratio == 1:
                 z = x
             else:
-                z = self.interpolate.compress(x, new_size=new_size)
-            if self.rescale and new_size != self.original_size:
+                z = self.interpolate.compress(x, compression_ratio=compression_ratio)
+            if self.rescale and compression_ratio != 1:
                 z = self.interpolate.decompress(z, original_size=self.original_size)
         return z
 

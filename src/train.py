@@ -1,11 +1,17 @@
 import sys
 import os
+import glob
+from pathlib import Path
+from typing import cast
+import json
+
 
 import hydra
 from omegaconf import DictConfig
 from torch.utils.data.distributed import DistributedSampler
-from ignite.contrib.handlers.tensorboard_logger import TensorboardLogger
+from torch.optim.lr_scheduler import LRScheduler as PyTorchLRScheduler
 from ignite.utils import manual_seed
+from ignite.contrib.handlers.base_logger import BaseLogger
 import ignite.distributed as idist
 from ignite.engine import (
     Events,
@@ -22,6 +28,7 @@ if parent_dir not in sys.path:
     sys.path.append(parent_dir)
 
 os.chdir(parent_dir)
+os.environ["PROJECT_ROOT"] = parent_dir
 
 
 def training(local_rank, cfg) -> None:
@@ -29,16 +36,17 @@ def training(local_rank, cfg) -> None:
     rank = idist.get_rank()
     manual_seed(cfg.seed + rank)
 
-    model = idist.auto_model(hydra.utils.instantiate(cfg.model))
+    model = hydra.utils.instantiate(cfg.model)
+    model = idist.auto_model(model)
 
     train_loader = hydra.utils.instantiate(cfg.data.train_loader)
     val_loader = hydra.utils.instantiate(cfg.data.val_loader)
 
-    optimizer = idist.auto_optim(
-        hydra.utils.instantiate(cfg.trainer.optimizer)(params=model.parameters())
-    )
-    loss = hydra.utils.instantiate(cfg.trainer.loss).to(device)
+    optimizer = hydra.utils.instantiate(cfg.trainer.optimizer)(params=model.parameters())
+    optimizer = idist.auto_optim(optimizer)
+
     lr_scheduler = hydra.utils.instantiate(cfg.trainer.lr_scheduler)(optimizer=optimizer)
+    loss = hydra.utils.instantiate(cfg.trainer.loss).to(device)
 
     trainer = create_supervised_trainer(
         model,
@@ -67,6 +75,15 @@ def training(local_rank, cfg) -> None:
         amp_mode="amp" if cfg.trainer.amp else None,
     )
 
+    if lr_scheduler is not None:
+        if isinstance(lr_scheduler, PyTorchLRScheduler):
+            trainer.add_event_handler(
+                Events.EPOCH_COMPLETED,
+                lambda engine: cast(PyTorchLRScheduler, lr_scheduler).step(),
+            )
+        else:
+            trainer.add_event_handler(Events.EPOCH_STARTED, lr_scheduler)
+
     @trainer.on(
         Events.EPOCH_COMPLETED(every=cfg.trainer.val_every_epochs) or Events.COMPLETED
     )
@@ -90,22 +107,16 @@ def training(local_rank, cfg) -> None:
     }
 
     ###### handlers ######
-    for value in cfg.handler.values():
-        hydra.utils.instantiate(value)(objects=objects)
+    handlers = {}
+    for key, value in cfg.handler.items():
+        handlers[key] = hydra.utils.instantiate(value)(objects=objects)
 
-    ###### loggers ######
-    loggers = {}
-    for key, value in cfg.logger.items():
-        loggers[key] = hydra.utils.instantiate(value)(objects=objects)
-
-    trainer.run(train_loader, max_epochs=cfg.trainer.num_epochs)
+    trainer.run(train_loader, max_epochs=cfg.trainer.max_epochs)
 
     if rank == 0:
-        for key, logger in loggers.items():
-            if isinstance(logger, TensorboardLogger):
-                logger.close()
-
-    print("All is fine!")
+        for key, handler in handlers.items():
+            if isinstance(handler, BaseLogger):
+                handler.close()
 
 
 @hydra.main(version_base=None, config_path="../configs", config_name="train")
@@ -114,10 +125,16 @@ def main(cfg: DictConfig) -> None:
     for k, v in cfg.path.items():
         cfg.path[k] = v
 
-    with idist.Parallel(**cfg.distributed) as parallel:
+    with idist.Parallel(**cfg.dist) as parallel:
         parallel.run(training, cfg)
+
+    ckpt_path = [*glob.glob(f"{cfg.path.output_dir}/checkpoints/*.pt")]
+    ckpt_path = sorted(ckpt_path)
+
+    Path("./.temp/").mkdir(parents=True, exist_ok=True)
+    with open(f"./.temp/{cfg.task_name}.txt", "w") as f:
+        json.dump(ckpt_path[-1], f)
 
 
 if __name__ == "__main__":
     main()
-    print("Completed.")
