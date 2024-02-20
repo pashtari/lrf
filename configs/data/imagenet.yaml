@@ -10,6 +10,7 @@ val_batch_size: 512
 train_transform:
     _target_: torchvision.transforms.v2.Compose
     transforms:
+        - _target_: torchvision.transforms.v2.ToImage
         - _target_: torchvision.transforms.v2.RandomResizedCrop
           size: ${data.image_size}
           interpolation: bilinear
@@ -43,6 +44,7 @@ train_batched_transform:
 val_transform:
     _target_: torchvision.transforms.v2.Compose
     transforms:
+        - _target_: torchvision.transforms.v2.ToImage
         - _target_: torchvision.transforms.v2.Resize
           size: ${data.val_resize_size}
           interpolation: bilinear

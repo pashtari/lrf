@@ -1,4 +1,5 @@
 import numpy as np
+import torch
 import matplotlib.pyplot as plt
 from skimage import data, img_as_float
 from skimage import exposure
@@ -14,12 +15,16 @@ image = data.cat()
 image = img_as_float(image)
 image = resize(image, (224, 224), preserve_range=True)
 
+# Visualize image
 plt.imshow(image)
 plt.axis("off")
 plt.title("Astronaut Image")
 plt.show()
 
-for metric in [com.psnr, com.ssim, com.mae]:
+# Convert to channel-first pytorch tensor
+image = torch.tensor(image).permute(-1, 0, 1).unsqueeze(0)
+
+for metric in [com.psnr, com.ssim]:
     # Compression ratios to be used
     compression_ratios = np.array([1.25, 1.5, 1.75, *np.arange(2, 25.5, 1)])
 
@@ -42,30 +47,36 @@ for metric in [com.psnr, com.ssim, com.mae]:
     # Calculate reconstructed images and metric for each method and compression ratio
     for ratio in compression_ratios:
         # Interpolate
-        compressed_interpolate = com.compress_interpolate(image, ratio)
+        interpolate = com.Interpolate(mode="bilinear")
+        compressed_interpolate = interpolate(image, ratio).clip(0, 1)
         err_values["Interpolation"].append(metric(image, compressed_interpolate))
         compressed_images["Interpolation"].append(compressed_interpolate)
 
         # Interpolate low
-        compressed_interpolate_low = com.compress_interpolate_low(image, ratio)
+        interpolate = com.Interpolate(mode="bilinear")
+        compressed_interpolate_low = interpolate.compress(image, ratio).clip(0, 1)
         compressed_images["Interpolation Low"].append(compressed_interpolate_low)
 
         # DCT
-        compressed_dct = com.compress_dct(image, ratio)
+        dct = com.DCT()
+        compressed_dct = dct(image, ratio).clip(0, 1)
         err_values["DCT"].append(metric(image, compressed_dct))
         compressed_images["DCT"].append(compressed_dct)
 
         # DCT Low
-        compressed_dct_low = com.compress_dct_low(image, ratio)
+        dct = com.DCT()
+        compressed_dct_low = com.minmax_normalize(dct(image, ratio, pad=False))
         compressed_images["DCT Low"].append(compressed_dct_low)
 
         # # SVD
-        # compressed_svd = ccom.ompress_svd(image, ratio)
+        # svd = com.SVD()
+        # compressed_svd = svd(image, ratio).clip(0, 1)
         # err_values["SVD"].append(metric(image, compressed_svd))
         # compressed_images["SVD"].append(compressed_svd)
 
         # SVD Patches
-        compressed_patch_svd = com.compress_patch_svd(image, ratio)
+        patch_svd = com.PatchSVD()
+        compressed_patch_svd = patch_svd(image, ratio).clip(0, 1)
         err_values["Patch SVD"].append(metric(image, compressed_patch_svd))
         compressed_images["Patch SVD"].append(compressed_patch_svd)
 
@@ -106,8 +117,9 @@ for ax, ratio in zip(axs[:, 0], compression_ratios):
 for i, ratio in enumerate(compression_ratios):
     for j, method in enumerate(compressed_images.keys()):
         compressed_image = compressed_images[method][i]
-        axs[i, j].imshow(compressed_image)
+        axs[i, j].imshow(compressed_image.squeeze(0).permute(1, 2, 0))
         axs[i, j].axis("off")
+
 
 plt.tight_layout()
 plt.savefig(

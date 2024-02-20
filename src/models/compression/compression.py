@@ -1,116 +1,14 @@
-import math
-import numpy as np
-
 from typing import Tuple, Optional, Union
 from abc import ABC, abstractmethod
+import math
 
 import torch
 from torch import nn, Tensor
 import torch.nn.functional as F
 import torch_dct as dct
 from einops import rearrange
-from skimage.metrics import structural_similarity
 
-
-def zscore_normalize(tensor):
-    mean = np.mean(dim=(-2, -1), keepdims=True)
-    std = np.std(dim=(-2, -1), keepdims=True)
-    normalized_tensor = (tensor - mean) / (std + 1e-8)
-    return normalized_tensor
-
-
-def minmax_normalize(x):
-    min_val = torch.amin(x, dim=(-2, -1), keepdim=True)
-    max_val = torch.amax(x, dim=(-2, -1), keepdim=True)
-    normalized_tensor = (x - min_val) / (max_val - min_val)
-    return normalized_tensor
-
-
-def mae(image1, image2):
-    return np.mean(np.abs(image1 - image2))
-
-
-def mse(image1, image2):
-    return np.mean((image1 - image2) ** 2)
-
-
-def psnr(image1, image2):
-    mse_value = mse(image1, image2)
-    if mse_value == 0:
-        return float("inf")  # If the MSE is zero, the PSNR is infinite
-    max_pixel = np.max(image1)
-    psnr_value = 20 * math.log10(max_pixel / math.sqrt(mse_value))
-    return psnr_value
-
-
-def ssim(image1, image2):
-    ssim_value = structural_similarity(
-        image1, image2, data_range=image2.max() - image2.min(), channel_axis=-1,
-    )
-    return ssim_value
-
-
-def compress_interpolate(x, compression_ratio):
-    """Compress the image by resizing using interpolation."""
-    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
-    interpolate = Interpolate(mode="bilinear")
-    y = interpolate(x, compression_ratio=compression_ratio)
-    return torch.clip(y, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
-
-
-def compress_interpolate_low(x, compression_ratio):
-    """Compress the image by resizing using interpolation."""
-    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
-    interpolate = Interpolate(mode="bilinear")
-    y = interpolate.compress(x, compression_ratio=compression_ratio)
-    return torch.clip(y, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
-
-
-def compress_dct(x, compression_ratio):
-    """Compress the image using DCT."""
-    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
-    dct2 = DCT()
-    y = dct2(x, compression_ratio=compression_ratio)
-    return torch.clip(y, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
-
-
-def compress_dct_low(x, compression_ratio):
-    """Compress the image using DCT."""
-    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
-    dct2 = DCT()
-    y = dct2(x, compression_ratio=compression_ratio, pad=False)
-    return minmax_normalize(y).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
-
-
-def compress_svd(x, compression_ratio):
-    """Compress the image using SVD."""
-    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
-    svd = SVD()
-    y = svd(x, compression_ratio=compression_ratio)
-    return torch.clip(y, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
-
-
-def compress_patch_svd(x, compression_ratio, patch_size=(8, 8)):
-    """Compress the image using SVD on patches."""
-    x = torch.tensor(x, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
-    patch_svd = PatchSVD(patch_size=patch_size)
-    y = patch_svd(x, compression_ratio=compression_ratio)
-    return torch.clip(y, 0, 1).squeeze(0).permute(1, 2, 0).to(torch.float64).numpy()
-
-def relative_error(x: Tensor, y: Tensor, epsilon: float = 1e-16) -> Tensor:
-    """Calculate the relative error between two tensors.
-
-    Args:
-        x (Tensor): The original tensor.
-        y (Tensor): The tensor to compare against.
-        epsilon (float): A small value to prevent division by zero.
-
-    Returns:
-        Tensor: The relative error between `x` and `y`.
-    """
-    numerator = torch.norm(x - y, p=2)
-    denominator = torch.norm(x, p=2)
-    return numerator / (denominator + epsilon)
+from .metrics import relative_error
 
 
 class Compress(ABC, nn.Module):
@@ -159,7 +57,7 @@ class Interpolate(Compress):
         super().__init__()
         self.interpolation_kwargs = kwargs
 
-    def calculate_new_size(
+    def get_new_size(
         self, original_size: Tuple[int, int], compression_ratio: float
     ) -> Tuple[int, int]:
         """Calculate new size for an image given a compression ratio.
@@ -198,13 +96,15 @@ class Interpolate(Compress):
 
         original_size = x.shape[-2:]
         if new_size is None:
-            new_size = self.calculate_new_size(original_size, compression_ratio)
+            new_size = self.get_new_size(original_size, compression_ratio)
 
         resized_image = F.interpolate(x, size=new_size, **self.interpolation_kwargs)
 
         orig_height, orig_width = original_size
         resized_height, resized_width = new_size
-        self._ratio = (orig_height*orig_width)/(resized_height*resized_width)
+        self.real_compression_ratio = (orig_height * orig_width) / (
+            resized_height * resized_width
+        )
         return resized_image
 
     def decompress(self, x: Tensor, original_size: Tuple[int, int]) -> Tensor:
@@ -278,10 +178,14 @@ class DCT(Compress):
 
         orig_height, orig_width = original_size
         resized_height, resized_width = x_dct.shape[-2:]
-        self._ratio = (orig_height*orig_width)/(resized_height*resized_width)
+        self.real_compression_ratio = (orig_height * orig_width) / (
+            resized_height * resized_width
+        )
         return x_dct
 
-    def decompress(self, x: Tensor, original_size: Tuple[int, int], pad: bool = True) -> Tensor:
+    def decompress(
+        self, x: Tensor, original_size: Tuple[int, int], pad: bool = True
+    ) -> Tensor:
         """Decompress the input tensor using inverse DCT.
 
         Args:
@@ -372,7 +276,9 @@ class SVD(Compress):
         u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
         v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), vt)
 
-        self._ratio = self.get_compression_ratio(size=original_size, rank=rank)
+        self.real_compression_ratio = self.get_compression_ratio(
+            size=original_size, rank=rank
+        )
         return u, v
 
     def decompress(self, x: Tuple[Tensor, Tensor]) -> Tensor:
@@ -476,7 +382,9 @@ class PatchSVD(SVD):
         u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
         v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), vt)
 
-        self._ratio = self.get_compression_ratio(size=original_size, rank=rank)
+        self.real_compression_ratio = self.get_compression_ratio(
+            size=original_size, rank=rank
+        )
         return u, v
 
     def decompress(self, x: Tuple[Tensor, Tensor], size: Tuple[int, int]) -> Tensor:

@@ -1,23 +1,15 @@
-import sys
 import logging
-import hydra
-from pathlib import Path
+
 import torch
 import ignite
 import ignite.distributed as idist
-
 from ignite.utils import setup_logger
 from ignite.engine import Events
 
 
 def pylogger(objects, log_every_iters=10, **kwargs):
-    ignite_logger = logging.getLogger("ignite.engine.engine.Engine")
-    ignite_logger.setLevel(logging.WARN)
-
-    # local_rank = idist.get_rank()
     logger = setup_logger(
         name="PyLogger",
-        # stream=sys.stdout,
         format="[%(asctime)s][%(name)s][%(levelname)s]: %(message)s",
         distributed_rank=0,
         **kwargs,
@@ -55,18 +47,15 @@ def pylogger(objects, log_every_iters=10, **kwargs):
             logger.info(
                 f"Epoch[{trainer.state.epoch}/{trainer.state.max_epochs}], iter[{trainer.state.iteration}] - {metrics} - loss: {trainer.state.output:.2f}"
             )
+
     elif "evaluator" in objects:
+        ignite_logger = logging.getLogger("ignite.engine.engine.Engine")
+        ignite_logger.setLevel(logging.WARN)
         evaluator = objects["evaluator"]
 
-        @evaluator.on(Events.ITERATION_COMPLETED(every=log_every_iters) or Events.COMPLETED)
+        @evaluator.on(Events.COMPLETED)
         def log_val(engine):
-            val_metrics = evaluator.state.metrics
-            metrics = [
-                f"val_{k}: {val_metrics[k]:.2f}"
-                for k in val_metrics
-            ]
+            val_metrics = engine.state.metrics
+            metrics = [f"val_{k}: {val_metrics[k]:.2f}" for k in val_metrics]
             metrics = " - ".join(metrics)
-            logger.info(
-                f"Iter[{evaluator.state.iteration}] - {metrics}"
-            )
-
+            logger.info(f"{metrics}")

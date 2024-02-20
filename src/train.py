@@ -1,12 +1,17 @@
 import sys
 import os
+import glob
+from pathlib import Path
 from typing import cast
+import json
+
 
 import hydra
 from omegaconf import DictConfig
 from torch.utils.data.distributed import DistributedSampler
 from torch.optim.lr_scheduler import LRScheduler as PyTorchLRScheduler
 from ignite.utils import manual_seed
+from ignite.contrib.handlers.base_logger import BaseLogger
 import ignite.distributed as idist
 from ignite.engine import (
     Events,
@@ -31,14 +36,15 @@ def training(local_rank, cfg) -> None:
     rank = idist.get_rank()
     manual_seed(cfg.seed + rank)
 
-    model = idist.auto_model(hydra.utils.instantiate(cfg.model))
+    model = hydra.utils.instantiate(cfg.model)
+    model = idist.auto_model(model)
 
     train_loader = hydra.utils.instantiate(cfg.data.train_loader)
     val_loader = hydra.utils.instantiate(cfg.data.val_loader)
 
-    optimizer = idist.auto_optim(
-        hydra.utils.instantiate(cfg.trainer.optimizer)(params=model.parameters())
-    )
+    optimizer = hydra.utils.instantiate(cfg.trainer.optimizer)(params=model.parameters())
+    optimizer = idist.auto_optim(optimizer)
+
     lr_scheduler = hydra.utils.instantiate(cfg.trainer.lr_scheduler)(optimizer=optimizer)
     loss = hydra.utils.instantiate(cfg.trainer.loss).to(device)
 
@@ -101,14 +107,16 @@ def training(local_rank, cfg) -> None:
     }
 
     ###### handlers ######
-    for value in cfg.handler.values():
-        hydra.utils.instantiate(value)(objects=objects)
-
-    ###### loggers ######
-    for value in cfg.logger.values():
-        hydra.utils.instantiate(value)(objects=objects)
+    handlers = {}
+    for key, value in cfg.handler.items():
+        handlers[key] = hydra.utils.instantiate(value)(objects=objects)
 
     trainer.run(train_loader, max_epochs=cfg.trainer.max_epochs)
+
+    if rank == 0:
+        for key, handler in handlers.items():
+            if isinstance(handler, BaseLogger):
+                handler.close()
 
 
 @hydra.main(version_base=None, config_path="../configs", config_name="train")
@@ -119,6 +127,13 @@ def main(cfg: DictConfig) -> None:
 
     with idist.Parallel(**cfg.dist) as parallel:
         parallel.run(training, cfg)
+
+    ckpt_path = [*glob.glob(f"{cfg.path.output_dir}/checkpoints/*.pt")]
+    ckpt_path = sorted(ckpt_path)
+
+    Path("./.temp/").mkdir(parents=True, exist_ok=True)
+    with open(f"./.temp/{cfg.task_name}.txt", "w") as f:
+        json.dump(ckpt_path[-1], f)
 
 
 if __name__ == "__main__":
