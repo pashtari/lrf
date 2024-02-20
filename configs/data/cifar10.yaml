@@ -1,5 +1,5 @@
-batch_size: 256
-val_batch_size: 512
+batch_size: 1
+val_batch_size: 2
 
 train_transform:
     _target_: torchvision.transforms.v2.Compose

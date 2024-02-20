@@ -133,7 +133,7 @@ def main(cfg: DictConfig) -> None:
 
     Path("./.temp/").mkdir(parents=True, exist_ok=True)
     with open(f"./.temp/{cfg.task_name}.txt", "w") as f:
-        json.dump(ckpt_path[-1], f)
+        f.write(ckpt_path[-1])
 
 
 if __name__ == "__main__":
