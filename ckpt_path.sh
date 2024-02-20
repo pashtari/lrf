@@ -1,1 +1,0 @@
-export VAR="this a path"

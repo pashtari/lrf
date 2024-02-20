@@ -2,7 +2,6 @@ from typing import Tuple, Optional, Union
 from abc import ABC, abstractmethod
 import math
 
-import numpy as np
 import torch
 from torch import nn, Tensor
 import torch.nn.functional as F
