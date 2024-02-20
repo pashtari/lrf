@@ -1,0 +1,7 @@
+tensorboard:
+    _target_: src.utils.tensorboard
+    _partial_: true
+    log_every_iters: 1
+    output_path: ${path.output_dir}/tensorboard
+    max_queue: 10
+    flush_secs: 60

@@ -3,5 +3,5 @@ progressbar:
     _partial_: true
     persist_iters: false
     persist_epochs: true
-    update_every_iters: ${trainer.log_every_iters}
+    update_every_iters: 1
     update_every_epochs: 1
