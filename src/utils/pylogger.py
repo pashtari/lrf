@@ -29,7 +29,7 @@ def pylogger(objects, log_every_iters=10, **kwargs):
             logger.info(f"CUDNN version: {cudnn.version()}")
 
         if idist.get_world_size() > 1:
-            logger.info(f"Distributed Backend: {idist.backend()}")
+            logger.info(f"Distributed backend: {idist.backend()}")
             logger.info(f"World size: {idist.get_world_size()}")
 
     if "trainer" in objects:
