@@ -1,6 +1,5 @@
-# #!/bin/bash
+#!/bin/bash
 
-VSC_DATA="/esat/dspdata/pbehmand/projects"
 export PATH="${VSC_DATA}/miniconda3/bin:${PATH}"
 source activate deepenv
 
