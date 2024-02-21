@@ -26,8 +26,6 @@ class DCTModel(nn.Module):
         self.original_size = _pair(original_size)
         if new_size is None:
             self.new_size = (self.original_size,)
-        elif new_size in ("all", "rand", "random"):
-            self.new_size = self.get_all_feasible_sizes()
         elif isinstance(new_size, int):
             self.new_size = ((new_size, new_size),)
         elif isinstance(new_size, Sequence) and not isinstance(new_size, str):
@@ -51,11 +49,6 @@ class DCTModel(nn.Module):
 
         return context
 
-    def get_all_feasible_sizes(self):
-        heights = [16 * i for i in range(3, self.original_size[0] // 16)]
-        widths = [16 * j for j in range(3, self.original_size[1] // 16)]
-        all_feasible_sizes = [*zip(heights, widths)]
-        return all_feasible_sizes
 
     def transform(self, x):
         with self.context():
@@ -64,7 +57,7 @@ class DCTModel(nn.Module):
             if compression_ratio == 1:
                 z = x
             else:
-                z = self.dct.forward(x, compression_ratio=compression_ratio, pad=self.rescale)
+                z = self.dct(x, compression_ratio=compression_ratio, pad=self.rescale)
 
         return z
 
