@@ -18,6 +18,7 @@ class DCTModel(nn.Module):
         original_size=224,
         new_size=None,
         no_grad=True,
+        **kwargs
     ):
         super(DCTModel, self).__init__()
 
@@ -39,7 +40,7 @@ class DCTModel(nn.Module):
         if net is None:
             net = resnet50
 
-        self.net = net()
+        self.net = net(**kwargs)
         self.dct = DCT()
 
     def context(self):
