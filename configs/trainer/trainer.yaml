@@ -2,14 +2,14 @@ lr: .5
 momentum: 0.9
 weight_decay: 0.00002
 
-max_epochs: 2
+max_epochs: 600
 warmup_epochs: 5
 warmup_decay: 0.01
 
 compile: false
 amp: false
 non_blocking: true
-val_every_epochs: 1
+val_every_epochs: 10
 
 loss:
     _target_: torch.nn.CrossEntropyLoss

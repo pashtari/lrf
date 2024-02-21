@@ -3,7 +3,7 @@ defaults:
     - path: default
     - hydra: default
     - data: cifar10
-    - model: interpolate_model_cifar10
+    - model: dct_model_cifar10
     - handler: [checkpoint, pylogger, tensorboard]
     - trainer: trainer
     - metric: cifar10

@@ -1,0 +1,1 @@
+/Users/pourya/Desktop/Server/projects/lsvd/logs/train/runs/2024-02-21_11-03-26/checkpoints/checkpoint_2.pt
