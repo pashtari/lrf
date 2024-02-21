@@ -3,7 +3,8 @@ net:
   _target_: src.models.resnet_cifar.ResNet50
   _partial_: true
 num_classes: 10
-rescale: false
 original_size: 32
+domain: compressed
 new_size: [12, 16, 20, 24, 28, 32]
+pad: false
 no_grad: true
