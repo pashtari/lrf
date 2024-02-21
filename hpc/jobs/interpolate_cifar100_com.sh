@@ -18,7 +18,6 @@ for size in 12 16 20 24 28 32; do
     echo "new_size=$size done."
 done
 
-
 rm ../.temp/${TASK_NAME}.txt
 
 
