@@ -20,5 +20,4 @@ def tensorboard(objects, output_path="./", **kwargs):
             evaluators=evaluators,
             **kwargs
         )
-
-    return tb_logger
+        return tb_logger

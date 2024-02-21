@@ -31,12 +31,14 @@ os.environ["PROJECT_ROOT"] = parent_dir
 
 
 def training(local_rank, cfg) -> None:
+    print("This is start of training")
     device = idist.device()
     rank = idist.get_rank()
     manual_seed(cfg.seed + rank)
 
     model = hydra.utils.instantiate(cfg.model)
     model = idist.auto_model(model)
+    print("This is after idist.auto_model")
 
     train_loader = hydra.utils.instantiate(cfg.data.train_loader)
     val_loader = hydra.utils.instantiate(cfg.data.val_loader)
@@ -46,6 +48,7 @@ def training(local_rank, cfg) -> None:
 
     lr_scheduler = hydra.utils.instantiate(cfg.trainer.lr_scheduler)(optimizer=optimizer)
     loss = hydra.utils.instantiate(cfg.trainer.loss).to(device)
+    print("This is after hydra.utils.instantiate")
 
     trainer = create_supervised_trainer(
         model,
@@ -108,8 +111,10 @@ def training(local_rank, cfg) -> None:
     ###### handlers ######
     handlers = {}
     for key, value in cfg.handler.items():
+        print(f"This is before {key}")
         handlers[key] = hydra.utils.instantiate(value)(objects=objects)
 
+    print("This is before trainer.run")
     trainer.run(train_loader, max_epochs=cfg.trainer.max_epochs)
 
     if rank == 0:
@@ -124,7 +129,9 @@ def main(cfg: DictConfig) -> None:
     for k, v in cfg.path.items():
         cfg.path[k] = v
 
+    print("This is before idist.Parallel")
     with idist.Parallel(**cfg.dist) as parallel:
+        print("This is before parallel.run")
         parallel.run(training, cfg)
 
     ckpt_path = [*glob.glob(f"{cfg.path.output_dir}/checkpoints/*.pt")]
@@ -136,4 +143,5 @@ def main(cfg: DictConfig) -> None:
 
 
 if __name__ == "__main__":
+    print("This is before main")
     main()

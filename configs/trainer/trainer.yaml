@@ -9,7 +9,7 @@ warmup_decay: 0.01
 compile: false
 amp: false
 non_blocking: true
-val_every_epochs: 10
+val_every_epochs: 5
 
 loss:
     _target_: torch.nn.CrossEntropyLoss

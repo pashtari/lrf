@@ -1,0 +1,67 @@
+SLURM_JOB_ID: 55692194
+SLURM_JOB_USER: vsc33647
+SLURM_JOB_ACCOUNT: lp_inspiremed
+SLURM_JOB_NAME: interpolate_cifar10_sgl
+SLURM_CLUSTER_NAME: genius
+SLURM_JOB_PARTITION: gpu_v100
+SLURM_NNODES: 1
+SLURM_NODELIST: r24g09
+SLURM_JOB_CPUS_PER_NODE: 8
+SLURM_JOB_GPUS: 0,1
+Date: Wed Feb 21 20:28:19 CET 2024
+Walltime: 00-00:15:00
+========================================================================
+This is before main
+2024-02-21 20:28:24,055 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:28:24,055 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:28:24,055 ignite.distributed.launcher.Parallel INFO: Spawn function '<function training at 0x1496ca09e200>' in 2 processes
+This is before idist.Parallel
+This is before parallel.run
+2024-02-21 20:28:31,336 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:28:32,184 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 128, 'num_workers': 1, 'drop_last': True, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x147f14cd4e00>, 'pin_memory': True}
+2024-02-21 20:28:32,518 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x147f13b324b0>, 'pin_memory': True}
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+[2024-02-21 20:28:32,528][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-21 20:28:32,528][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-21 20:28:32,528][PyLogger][INFO]: GPU device: Tesla V100-SXM2-32GB
+[2024-02-21 20:28:32,528][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-21 20:28:32,529][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-21 20:28:32,529][PyLogger][INFO]: Distributed setting:
+[2024-02-21 20:28:32,529][PyLogger][INFO]: Backend: nccl
+[2024-02-21 20:28:32,529][PyLogger][INFO]: World size: 2
+[2024-02-21 20:28:32,529][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-21 20:28:32,529][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-21 20:28:32,529][PyLogger][INFO]: GPU device: Tesla V100-SXM2-32GB
+[2024-02-21 20:28:32,529][PyLogger][INFO]: CUDA version: 12.1
+This is start of training
+This is after idist.auto_model
+Files already downloaded and verified
+This is after hydra.utils.instantiate
+This is before checkpoint
+This is before pylogger
+This is before trainer.run
+[2024-02-21 20:28:32,530][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-21 20:28:32,530][PyLogger][INFO]: Distributed setting:
+[2024-02-21 20:28:32,530][PyLogger][INFO]: Backend: nccl
+[2024-02-21 20:28:32,530][PyLogger][INFO]: World size: 2
+This is start of training
+This is after idist.auto_model
+Files already downloaded and verified
+This is after hydra.utils.instantiate
+This is before checkpoint
+This is before pylogger
+This is before trainer.run
+[2024-02-21 20:28:56,267][PyLogger][INFO]: Epoch[1/600], iter[100] -  - loss: 2.49
+[2024-02-21 20:28:56,267][PyLogger][INFO]: Epoch[1/600], iter[100] -  - loss: 2.71
+[2024-02-21 20:29:14,855][PyLogger][INFO]: Epoch[2/600], iter[200] -  - loss: 2.31
+[2024-02-21 20:29:14,856][PyLogger][INFO]: Epoch[2/600], iter[200] -  - loss: 2.32
+[2024-02-21 20:29:27,977][PyLogger][INFO]: Epoch[2/600], iter[300] -  - loss: 2.23
+[2024-02-21 20:29:27,977][PyLogger][INFO]: Epoch[2/600], iter[300] -  - loss: 2.25

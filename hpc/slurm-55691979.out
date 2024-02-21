@@ -1,0 +1,71 @@
+SLURM_JOB_ID: 55691979
+SLURM_JOB_USER: vsc33647
+SLURM_JOB_ACCOUNT: lp_inspiremed
+SLURM_JOB_NAME: interpolate_cifar10_sgl
+SLURM_CLUSTER_NAME: genius
+SLURM_JOB_PARTITION: gpu_v100
+SLURM_NNODES: 1
+SLURM_NODELIST: r24g05
+SLURM_JOB_CPUS_PER_NODE: 4
+SLURM_JOB_GPUS: 7
+Date: Wed Feb 21 19:58:35 CET 2024
+Walltime: 00-00:15:00
+========================================================================
+This is before main
+2024-02-21 19:58:41,827 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 19:58:41,827 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 1
+	nnodes: 1
+	node_rank: 0
+2024-02-21 19:58:41,827 ignite.distributed.launcher.Parallel INFO: Spawn function '<function training at 0x14e849552200>' in 1 processes
+This is before idist.Parallel
+This is before parallel.run
+This is start of training
+This is after idist.auto_model
+Downloading https://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz to /vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/data/cifar-10-python.tar.gz
+  0%|          | 0/170498071 [00:00<?, ?it/s]  0%|          | 32768/170498071 [00:00<11:13, 253272.26it/s]  0%|          | 98304/170498071 [00:00<07:55, 358642.40it/s]  0%|          | 229376/170498071 [00:00<04:01, 705312.02it/s]  0%|          | 458752/170498071 [00:00<02:16, 1246064.28it/s]  1%|          | 950272/170498071 [00:00<01:09, 2449410.28it/s]  1%|          | 1933312/170498071 [00:00<00:35, 4788859.25it/s]  2%|▏         | 3899392/170498071 [00:00<00:17, 9426282.64it/s]  4%|▍         | 6848512/170498071 [00:00<00:10, 15394560.50it/s]  6%|▌         | 9863168/170498071 [00:00<00:08, 19710178.51it/s]  7%|▋         | 12779520/170498071 [00:01<00:07, 22365608.98it/s]  9%|▉         | 15761408/170498071 [00:01<00:06, 24360675.37it/s] 11%|█         | 18939904/170498071 [00:01<00:05, 26229114.43it/s] 13%|█▎        | 21987328/170498071 [00:01<00:05, 27262009.01it/s] 15%|█▍        | 25100288/170498071 [00:01<00:05, 28035025.51it/s] 17%|█▋        | 28147712/170498071 [00:01<00:05, 28400547.97it/s] 18%|█▊        | 31293440/170498071 [00:01<00:04, 28841734.29it/s] 20%|██        | 34406400/170498071 [00:01<00:04, 28922531.99it/s] 22%|██▏       | 37388288/170498071 [00:01<00:04, 28973616.60it/s] 24%|██▎       | 40435712/170498071 [00:02<00:04, 29125830.87it/s] 25%|██▌       | 43417600/170498071 [00:02<00:04, 29107633.96it/s] 27%|██▋       | 46465024/170498071 [00:02<00:04, 29274251.31it/s] 29%|██▉       | 49479680/170498071 [00:02<00:04, 29370492.22it/s] 31%|███       | 52592640/170498071 [00:02<00:03, 29583049.01it/s] 33%|███▎      | 55574528/170498071 [00:02<00:03, 29471938.89it/s] 34%|███▍      | 58556416/170498071 [00:02<00:03, 29421263.74it/s] 36%|███▌      | 61767680/170498071 [00:02<00:03, 29920204.33it/s] 38%|███▊      | 64946176/170498071 [00:02<00:03, 30120559.25it/s] 40%|███▉      | 67960832/170498071 [00:02<00:03, 29970472.46it/s] 42%|████▏     | 70975488/170498071 [00:03<00:03, 29807742.75it/s] 43%|████▎     | 73957376/170498071 [00:03<00:03, 29616682.10it/s] 45%|████▌     | 77037568/170498071 [00:03<00:03, 29731147.86it/s] 47%|████▋     | 80084992/170498071 [00:03<00:03, 29741428.02it/s] 49%|████▉     | 83263488/170498071 [00:03<00:02, 29813247.11it/s] 51%|█████     | 86441984/170498071 [00:03<00:02, 30059751.56it/s] 52%|█████▏    | 89489408/170498071 [00:03<00:02, 29998639.60it/s] 54%|█████▍    | 92536832/170498071 [00:03<00:02, 29931321.79it/s] 56%|█████▌    | 95748096/170498071 [00:03<00:02, 30243661.80it/s] 58%|█████▊    | 98992128/170498071 [00:03<00:02, 30508954.87it/s] 60%|█████▉    | 102236160/170498071 [00:04<00:02, 30573350.31it/s] 62%|██████▏   | 105414656/170498071 [00:04<00:02, 30666282.94it/s] 64%|██████▎   | 108593152/170498071 [00:04<00:02, 30725011.56it/s] 66%|██████▌   | 111771648/170498071 [00:04<00:01, 30632627.40it/s] 67%|██████▋   | 115015680/170498071 [00:04<00:01, 30742715.87it/s] 69%|██████▉   | 118194176/170498071 [00:04<00:01, 30665171.73it/s] 71%|███████   | 121372672/170498071 [00:04<00:01, 30657381.43it/s] 73%|███████▎  | 124518400/170498071 [00:04<00:01, 30540935.50it/s] 75%|███████▍  | 127631360/170498071 [00:04<00:01, 30350846.76it/s] 77%|███████▋  | 130744320/170498071 [00:05<00:01, 30229863.10it/s] 79%|███████▊  | 133988352/170498071 [00:05<00:01, 30555972.45it/s] 81%|████████  | 137428992/170498071 [00:05<00:01, 31132478.18it/s] 82%|████████▏ | 140541952/170498071 [00:05<00:00, 30874771.76it/s] 84%|████████▍ | 143720448/170498071 [00:05<00:00, 30710106.14it/s] 86%|████████▌ | 146800640/170498071 [00:05<00:00, 30520656.29it/s] 88%|████████▊ | 150011904/170498071 [00:05<00:00, 30633137.93it/s] 90%|████████▉ | 153223168/170498071 [00:05<00:00, 30694001.90it/s] 92%|█████████▏| 156336128/170498071 [00:05<00:00, 30574316.19it/s] 94%|█████████▎| 159449088/170498071 [00:05<00:00, 30378836.70it/s] 95%|█████████▌| 162562048/170498071 [00:06<00:00, 30357484.83it/s] 97%|█████████▋| 165740544/170498071 [00:06<00:00, 30467798.89it/s] 99%|█████████▉| 168984576/170498071 [00:06<00:00, 30632669.17it/s]100%|██████████| 170498071/170498071 [00:06<00:00, 27101870.49it/s]
+2024-02-21 19:59:04,856 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 2, 'shuffle': True, 'drop_last': True, 'pin_memory': True}
+2024-02-21 19:59:05,243 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 512, 'num_workers': 2, 'shuffle': False, 'pin_memory': True}
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+[2024-02-21 19:59:05,256][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-21 19:59:05,256][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-21 19:59:05,256][PyLogger][INFO]: GPU device: Tesla V100-SXM2-32GB
+[2024-02-21 19:59:05,256][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-21 19:59:05,303][PyLogger][INFO]: CUDNN version: 8902
+Extracting /vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/data/cifar-10-python.tar.gz to /vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/data/
+This is after hydra.utils.instantiate
+This is before checkpoint
+This is before pylogger
+This is before tensorboard
+This is before trainer.run
+[2024-02-21 19:59:56,034][PyLogger][INFO]: Epoch[1/600], iter[100] -  - loss: 2.32
+[2024-02-21 20:00:39,008][PyLogger][INFO]: Epoch[2/600], iter[200] -  - loss: 2.29
+[2024-02-21 20:01:03,804][PyLogger][INFO]: Epoch[2/600], iter[300] -  - loss: 2.03
+[2024-02-21 20:01:45,498][PyLogger][INFO]: Epoch[3/600], iter[400] -  - loss: 2.41
+[2024-02-21 20:02:10,299][PyLogger][INFO]: Epoch[3/600], iter[500] -  - loss: 1.96
+[2024-02-21 20:02:50,970][PyLogger][INFO]: Epoch[4/600], iter[600] -  - loss: 1.90
+[2024-02-21 20:03:15,776][PyLogger][INFO]: Epoch[4/600], iter[700] -  - loss: 1.82
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:156: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+[2024-02-21 20:03:52,386][PyLogger][INFO]: Epoch[5/600], iter[800] -  - loss: 1.73
+[2024-02-21 20:04:17,210][PyLogger][INFO]: Epoch[5/600], iter[900] -  - loss: 1.74
+[2024-02-21 20:04:53,050][PyLogger][INFO]: Epoch[6/600], iter[1000] -  - loss: 1.59
+[2024-02-21 20:05:17,882][PyLogger][INFO]: Epoch[6/600], iter[1100] -  - loss: 1.70
+[2024-02-21 20:05:53,575][PyLogger][INFO]: Epoch[7/600], iter[1200] -  - loss: 1.59
+[2024-02-21 20:06:18,401][PyLogger][INFO]: Epoch[7/600], iter[1300] -  - loss: 1.51
+[2024-02-21 20:06:54,143][PyLogger][INFO]: Epoch[8/600], iter[1400] -  - loss: 1.54
+[2024-02-21 20:07:18,975][PyLogger][INFO]: Epoch[8/600], iter[1500] -  - loss: 1.56
+[2024-02-21 20:07:54,633][PyLogger][INFO]: Epoch[9/600], iter[1600] -  - loss: 1.43
+[2024-02-21 20:08:19,455][PyLogger][INFO]: Epoch[9/600], iter[1700] -  - loss: 1.37
+[2024-02-21 20:08:54,956][PyLogger][INFO]: Epoch[10/600], iter[1800] -  - loss: 1.30
+[2024-02-21 20:09:19,783][PyLogger][INFO]: Epoch[10/600], iter[1900] -  - loss: 1.41
+[2024-02-21 20:10:33,679][PyLogger][INFO]: Epoch[11/600], iter[2000] - train_accuracy: 0.65 - val_accuracy: 0.10 - train_loss: 1.29 - val_loss: 1480.76 - loss: 1.32
+[2024-02-21 20:10:58,500][PyLogger][INFO]: Epoch[11/600], iter[2100] - train_accuracy: 0.65 - val_accuracy: 0.10 - train_loss: 1.29 - val_loss: 1480.76 - loss: 1.16
+[2024-02-21 20:11:34,271][PyLogger][INFO]: Epoch[12/600], iter[2200] - train_accuracy: 0.65 - val_accuracy: 0.10 - train_loss: 1.29 - val_loss: 1480.76 - loss: 1.23
+[2024-02-21 20:11:59,091][PyLogger][INFO]: Epoch[12/600], iter[2300] - train_accuracy: 0.65 - val_accuracy: 0.10 - train_loss: 1.29 - val_loss: 1480.76 - loss: 1.16
+[2024-02-21 20:12:34,653][PyLogger][INFO]: Epoch[13/600], iter[2400] - train_accuracy: 0.65 - val_accuracy: 0.10 - train_loss: 1.29 - val_loss: 1480.76 - loss: 1.15
+[2024-02-21 20:12:59,475][PyLogger][INFO]: Epoch[13/600], iter[2500] - train_accuracy: 0.65 - val_accuracy: 0.10 - train_loss: 1.29 - val_loss: 1480.76 - loss: 1.14
+slurmstepd: error: *** JOB 55691979 ON r24g05 CANCELLED AT 2024-02-21T20:13:34 DUE TO TIME LIMIT ***

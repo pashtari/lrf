@@ -1,0 +1,747 @@
+SLURM_JOB_ID: 55692074
+SLURM_JOB_USER: vsc33647
+SLURM_JOB_ACCOUNT: lp_inspiremed
+SLURM_JOB_NAME: interpolate_cifar10_sgl
+SLURM_CLUSTER_NAME: genius
+SLURM_JOB_PARTITION: gpu_v100
+SLURM_NNODES: 1
+SLURM_NODELIST: r24g09
+SLURM_JOB_CPUS_PER_NODE: 8
+SLURM_JOB_GPUS: 0,1
+Date: Wed Feb 21 20:18:03 CET 2024
+Walltime: 00-00:15:00
+========================================================================
+This is before main
+2024-02-21 20:18:07,697 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:18:07,697 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:18:07,697 ignite.distributed.launcher.Parallel INFO: Spawn function '<function training at 0x14738e886200>' in 2 processes
+This is before idist.Parallel
+This is before parallel.run
+2024-02-21 20:18:16,419 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:18:18,604 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 128, 'num_workers': 1, 'drop_last': True, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x14c9ccc290d0>, 'pin_memory': True}
+2024-02-21 20:18:18,941 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x14c9cc4de930>, 'pin_memory': True}
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+[2024-02-21 20:18:18,952][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-21 20:18:18,952][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-21 20:18:18,952][PyLogger][INFO]: GPU device: Tesla V100-SXM2-32GB
+[2024-02-21 20:18:18,952][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-21 20:18:18,953][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-21 20:18:18,953][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-21 20:18:18,953][PyLogger][INFO]: GPU device: Tesla V100-SXM2-32GB
+[2024-02-21 20:18:18,953][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-21 20:18:18,974][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-21 20:18:18,974][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-21 20:18:18,974][PyLogger][INFO]: Distributed setting:
+[2024-02-21 20:18:18,974][PyLogger][INFO]: Distributed setting:
+[2024-02-21 20:18:18,974][PyLogger][INFO]: Backend: nccl
+[2024-02-21 20:18:18,974][PyLogger][INFO]: Backend: nccl
+[2024-02-21 20:18:18,974][PyLogger][INFO]: World size: 2
+[2024-02-21 20:18:18,974][PyLogger][INFO]: World size: 2
+This is start of training
+This is after idist.auto_model
+Files already downloaded and verified
+This is after hydra.utils.instantiate
+This is before checkpoint
+This is before pylogger
+This is before tensorboard
+This is start of training
+This is after idist.auto_model
+Files already downloaded and verified
+This is after hydra.utils.instantiate
+This is before checkpoint
+This is before pylogger
+This is before tensorboard
+This is before trainer.run
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=train_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.new_size=32']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/train.py", line 135, in main
+    parallel.run(training, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/train.py", line 115, in training
+    handlers[key] = hydra.utils.instantiate(value)(objects=objects)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/tensorboard.py", line 24, in tensorboard
+    return tb_logger
+           ^^^^^^^^^
+UnboundLocalError: cannot access local variable 'tb_logger' where it is not associated with a value
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+cat: ../.temp/interpolate_cifar10_org.txt: No such file or directory
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/multiprocessing/resource_tracker.py:254: UserWarning: resource_tracker: There appear to be 14 leaked semaphore objects to clean up at shutdown
+  warnings.warn('resource_tracker: There appear to be %d '
+2024-02-21 20:18:29,529 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:18:29,529 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:18:29,529 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x14683c5623e0>' in 2 processes
+2024-02-21 20:18:38,038 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:18:38,435 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x1541d38a1f40>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=false', 'model.new_size=12']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 0 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=12 done.
+2024-02-21 20:18:42,841 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:18:42,841 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:18:42,841 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x155026f523e0>' in 2 processes
+2024-02-21 20:18:50,011 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:18:50,417 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x14c27832d700>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=false', 'model.new_size=16']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=16 done.
+2024-02-21 20:18:55,118 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:18:55,118 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:18:55,118 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x14590600a3e0>' in 2 processes
+2024-02-21 20:19:02,470 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:19:02,870 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x14b968f7ac00>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=false', 'model.new_size=20']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=20 done.
+2024-02-21 20:19:07,477 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:19:07,477 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:19:07,477 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x147b33d8e3e0>' in 2 processes
+2024-02-21 20:19:15,411 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:19:15,796 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x151712b148f0>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=false', 'model.new_size=24']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=24 done.
+2024-02-21 20:19:20,290 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:19:20,290 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:19:20,290 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x145cfbcc63e0>' in 2 processes
+2024-02-21 20:19:27,103 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:19:27,499 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x15259ecd2c00>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=false', 'model.new_size=28']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 0 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=28 done.
+2024-02-21 20:19:31,860 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:19:31,860 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:19:31,860 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x148c072863e0>' in 2 processes
+2024-02-21 20:19:38,817 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:19:39,208 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x1500dc2cacc0>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=false', 'model.new_size=32']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=32 done.
+2024-02-21 20:19:43,871 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:19:43,871 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:19:43,871 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x151fe6e1a3e0>' in 2 processes
+2024-02-21 20:19:50,958 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:19:51,345 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x14d3cf2b29c0>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=true', 'model.new_size=12']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=12 done.
+2024-02-21 20:19:55,811 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:19:55,811 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:19:55,811 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x150c6aa523e0>' in 2 processes
+2024-02-21 20:20:04,001 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:20:04,401 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x14d4657cd640>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=true', 'model.new_size=16']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 0 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=16 done.
+2024-02-21 20:20:08,988 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:20:08,988 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:20:08,988 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x14dd34e5a3e0>' in 2 processes
+2024-02-21 20:20:15,872 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:20:16,272 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x151bedd52d80>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=true', 'model.new_size=20']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=20 done.
+2024-02-21 20:20:20,733 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:20:20,733 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:20:20,733 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x14d5457ea3e0>' in 2 processes
+2024-02-21 20:20:28,537 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:20:28,922 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x15087d32ea50>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=true', 'model.new_size=24']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=24 done.
+2024-02-21 20:20:33,421 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:20:33,421 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:20:33,421 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x146ebb4463e0>' in 2 processes
+2024-02-21 20:20:40,795 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:20:41,197 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x14683f766300>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=true', 'model.new_size=28']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 1 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=28 done.
+2024-02-21 20:20:45,860 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-21 20:20:45,860 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-21 20:20:45,860 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x1485ff7f23e0>' in 2 processes
+2024-02-21 20:20:53,729 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-21 20:20:54,116 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x145a502aef00>, 'pin_memory': True}
+Error executing job with overrides: ['dist.backend=nccl', 'dist.nproc_per_node=2', 'dist.nnodes=1', 'task_name=eval_interpolate_cifar10_org', 'data=cifar10', 'metric=cifar10', 'handler.checkpoint.load_from=', 'model=interpolate_model_cifar', 'model.num_classes=10', 'model.rescale=true', 'model.new_size=32']
+Traceback (most recent call last):
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 49, in main
+    parallel.run(evaluation, cfg)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/launcher.py", line 312, in run
+    idist.spawn(self.backend, func, args=args, kwargs_dict=kwargs, **self._spawn_params)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/utils.py", line 322, in spawn
+    comp_model_cls.spawn(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 392, in spawn
+    start_processes(
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 197, in start_processes
+    while not context.join():
+              ^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 158, in join
+    raise ProcessRaisedException(msg, error_index, failed_process.pid)
+torch.multiprocessing.spawn.ProcessRaisedException: 
+
+-- Process 0 terminated with the following error:
+Traceback (most recent call last):
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/multiprocessing/spawn.py", line 68, in _wrap
+    fn(i, *args)
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/ignite/distributed/comp_models/native.py", line 341, in _dist_worker_task_fn
+    fn(local_rank, *args, **kw_dict)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/eval.py", line 37, in evaluation
+    hydra.utils.instantiate(value)(objects=objects)
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 54, in checkpoint
+    ckpt = load_checkpoint(load_from)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/src/utils/checkpoint.py", line 11, in load_checkpoint
+    ckpt = torch.load(ckpt_path.as_posix(), map_location="cpu")
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 998, in load
+    with _open_file_like(f, 'rb') as opened_file:
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 445, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/serialization.py", line 426, in __init__
+    super().__init__(open(name, mode))
+                     ^^^^^^^^^^^^^^^^
+IsADirectoryError: [Errno 21] Is a directory: '.'
+
+
+Set the environment variable HYDRA_FULL_ERROR=1 for a complete stack trace.
+new_size=32 done.
+rm: cannot remove '../.temp/interpolate_cifar10_org.txt': No such file or directory
