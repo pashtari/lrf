@@ -1,4 +1,3 @@
-import math
 from torch.optim.lr_scheduler import LRScheduler
 from torch.optim.lr_scheduler import LinearLR, CosineAnnealingLR, SequentialLR
 

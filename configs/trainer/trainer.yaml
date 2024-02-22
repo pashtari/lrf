@@ -2,7 +2,7 @@ lr: .5
 momentum: 0.9
 weight_decay: 0.00002
 
-max_epochs: 600
+max_epochs: 7
 warmup_epochs: 5
 warmup_decay: 0.01
 

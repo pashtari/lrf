@@ -1,0 +1,261 @@
+SLURM_JOB_ID: 55692619
+SLURM_JOB_USER: vsc33647
+SLURM_JOB_ACCOUNT: lp_inspiremed
+SLURM_JOB_NAME: interpolate_cifar10_sgl
+SLURM_CLUSTER_NAME: genius
+SLURM_JOB_PARTITION: gpu_v100
+SLURM_NNODES: 1
+SLURM_NODELIST: r24g09
+SLURM_JOB_CPUS_PER_NODE: 8
+SLURM_JOB_GPUS: 4,5
+Date: Thu Feb 22 03:17:38 CET 2024
+Walltime: 00-00:30:00
+========================================================================
+2024-02-22 03:17:42,646 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-22 03:17:42,646 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-22 03:17:42,646 ignite.distributed.launcher.Parallel INFO: Spawn function '<function training at 0x1467ad8e53a0>' in 2 processes
+2024-02-22 03:17:50,276 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-22 03:17:51,156 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 256, 'num_workers': 1, 'drop_last': True, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x153bacc5f500>, 'pin_memory': True}
+2024-02-22 03:17:51,500 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 512, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x153b8ccc6e70>, 'pin_memory': True}
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+[2024-02-22 03:17:51,509][PyLogger][INFO]: GPU device[1]: Tesla V100-SXM2-32GB
+[2024-02-22 03:17:51,509][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:17:51,509][PyLogger][INFO]: World size: 2
+[2024-02-22 03:17:51,510][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-22 03:17:51,510][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-22 03:17:51,510][PyLogger][INFO]: GPU device[0]: Tesla V100-SXM2-32GB
+[2024-02-22 03:17:51,510][PyLogger][INFO]: CUDA version: 12.1
+Files already downloaded and verified
+[2024-02-22 03:17:51,511][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-22 03:17:51,511][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:17:51,511][PyLogger][INFO]: World size: 2
+Files already downloaded and verified
+[2024-02-22 03:18:11,366][PyLogger][INFO]: Rank[1]: Epoch[1/7], iter[50] -  - loss: 5.42399
+[2024-02-22 03:18:11,366][PyLogger][INFO]: Rank[0]: Epoch[1/7], iter[50] -  - loss: 2.42508
+[2024-02-22 03:18:29,693][PyLogger][INFO]: Rank[0]: Epoch[2/7], iter[100] -  - loss: 2.32720
+[2024-02-22 03:18:29,693][PyLogger][INFO]: Rank[1]: Epoch[2/7], iter[100] -  - loss: 2.30492
+[2024-02-22 03:18:42,303][PyLogger][INFO]: Rank[1]: Epoch[2/7], iter[150] -  - loss: 2.30450
+[2024-02-22 03:18:42,303][PyLogger][INFO]: Rank[0]: Epoch[2/7], iter[150] -  - loss: 2.30376
+[2024-02-22 03:19:03,887][PyLogger][INFO]: Rank[0]: Epoch[3/7], iter[200] -  - loss: 2.08954
+[2024-02-22 03:19:03,887][PyLogger][INFO]: Rank[1]: Epoch[3/7], iter[200] -  - loss: 2.14388
+[2024-02-22 03:19:16,498][PyLogger][INFO]: Rank[1]: Epoch[3/7], iter[250] -  - loss: 2.14196
+[2024-02-22 03:19:16,499][PyLogger][INFO]: Rank[0]: Epoch[3/7], iter[250] -  - loss: 2.06709
+[2024-02-22 03:19:37,386][PyLogger][INFO]: Rank[1]: Epoch[4/7], iter[300] -  - loss: 2.04888
+[2024-02-22 03:19:37,387][PyLogger][INFO]: Rank[0]: Epoch[4/7], iter[300] -  - loss: 2.03037
+[2024-02-22 03:19:50,001][PyLogger][INFO]: Rank[1]: Epoch[4/7], iter[350] -  - loss: 2.03939
+[2024-02-22 03:19:50,001][PyLogger][INFO]: Rank[0]: Epoch[4/7], iter[350] -  - loss: 2.01039
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:156: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:156: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+[2024-02-22 03:20:12,514][PyLogger][INFO]: Rank[0]: Epoch[5/7], iter[400] -  - loss: 1.88642
+[2024-02-22 03:20:12,514][PyLogger][INFO]: Rank[1]: Epoch[5/7], iter[400] -  - loss: 1.92461
+[2024-02-22 03:20:25,137][PyLogger][INFO]: Rank[1]: Epoch[5/7], iter[450] -  - loss: 1.91110
+[2024-02-22 03:20:25,137][PyLogger][INFO]: Rank[0]: Epoch[5/7], iter[450] -  - loss: 1.81022
+[2024-02-22 03:21:12,969][PyLogger][INFO]: Rank[0]: Epoch[6/7], iter[500] - train_accuracy: 0.35348 - val_accuracy: 0.09520 - train_loss: 1.86826 - val_loss: 45891.75040 - loss: 1.76469
+[2024-02-22 03:21:12,969][PyLogger][INFO]: Rank[1]: Epoch[6/7], iter[500] - train_accuracy: 0.35348 - val_accuracy: 0.09520 - train_loss: 1.86826 - val_loss: 45891.75040 - loss: 1.81189
+[2024-02-22 03:21:25,583][PyLogger][INFO]: Rank[1]: Epoch[6/7], iter[550] - train_accuracy: 0.35348 - val_accuracy: 0.09520 - train_loss: 1.86826 - val_loss: 45891.75040 - loss: 1.76899
+[2024-02-22 03:21:25,583][PyLogger][INFO]: Rank[0]: Epoch[6/7], iter[550] - train_accuracy: 0.35348 - val_accuracy: 0.09520 - train_loss: 1.86826 - val_loss: 45891.75040 - loss: 1.75253
+[2024-02-22 03:21:45,752][PyLogger][INFO]: Rank[0]: Epoch[7/7], iter[600] - train_accuracy: 0.35348 - val_accuracy: 0.09520 - train_loss: 1.86826 - val_loss: 45891.75040 - loss: 1.79833
+[2024-02-22 03:21:45,752][PyLogger][INFO]: Rank[1]: Epoch[7/7], iter[600] - train_accuracy: 0.35348 - val_accuracy: 0.09520 - train_loss: 1.86826 - val_loss: 45891.75040 - loss: 1.74686
+[2024-02-22 03:21:58,367][PyLogger][INFO]: Rank[1]: Epoch[7/7], iter[650] - train_accuracy: 0.35348 - val_accuracy: 0.09520 - train_loss: 1.86826 - val_loss: 45891.75040 - loss: 1.69205
+[2024-02-22 03:21:58,368][PyLogger][INFO]: Rank[0]: Epoch[7/7], iter[650] - train_accuracy: 0.35348 - val_accuracy: 0.09520 - train_loss: 1.86826 - val_loss: 45891.75040 - loss: 1.68552
+2024-02-22 03:22:08,499 ignite.distributed.launcher.Parallel INFO: End of run
+2024-02-22 03:22:14,738 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-22 03:22:14,738 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-22 03:22:14,738 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x14f9eb5e63e0>' in 2 processes
+2024-02-22 03:22:23,267 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-22 03:22:23,732 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 512, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x14a80dab9040>, 'pin_memory': True}
+[2024-02-22 03:22:24,694][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-22 03:22:24,694][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-22 03:22:24,694][PyLogger][INFO]: GPU device[0]: Tesla V100-SXM2-32GB
+[2024-02-22 03:22:24,694][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-22 03:22:24,694][PyLogger][INFO]: GPU device[1]: Tesla V100-SXM2-32GB
+[2024-02-22 03:22:24,694][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:22:24,694][PyLogger][INFO]: World size: 2
+[2024-02-22 03:22:24,695][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-22 03:22:24,695][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:22:24,695][PyLogger][INFO]: World size: 2
+[2024-02-22 03:22:34,269][PyLogger][INFO]: Rank[0]: val_accuracy: 0.10000
+[2024-02-22 03:22:34,269][PyLogger][INFO]: Rank[1]: val_accuracy: 0.10000
+2024-02-22 03:22:36,353 ignite.distributed.launcher.Parallel INFO: End of run
+new_size=12 done.
+2024-02-22 03:22:41,928 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-22 03:22:41,928 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-22 03:22:41,928 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x1501857c23e0>' in 2 processes
+2024-02-22 03:22:53,658 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-22 03:22:54,063 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 512, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x14ad2bdb9d00>, 'pin_memory': True}
+[2024-02-22 03:22:54,188][PyLogger][INFO]: GPU device[1]: Tesla V100-SXM2-32GB
+[2024-02-22 03:22:54,188][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:22:54,188][PyLogger][INFO]: World size: 2
+[2024-02-22 03:22:54,191][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-22 03:22:54,191][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-22 03:22:54,191][PyLogger][INFO]: GPU device[0]: Tesla V100-SXM2-32GB
+[2024-02-22 03:22:54,191][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-22 03:22:54,192][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-22 03:22:54,192][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:22:54,192][PyLogger][INFO]: World size: 2
+[2024-02-22 03:23:01,672][PyLogger][INFO]: Rank[0]: val_accuracy: 0.10000
+[2024-02-22 03:23:01,672][PyLogger][INFO]: Rank[1]: val_accuracy: 0.10000
+2024-02-22 03:23:03,546 ignite.distributed.launcher.Parallel INFO: End of run
+new_size=16 done.
+2024-02-22 03:23:07,205 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-22 03:23:07,205 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-22 03:23:07,205 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x14f0d26523e0>' in 2 processes
+2024-02-22 03:23:15,480 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-22 03:23:15,894 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 512, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x14fcd34f5be0>, 'pin_memory': True}
+[2024-02-22 03:23:16,010][PyLogger][INFO]: GPU device[1]: Tesla V100-SXM2-32GB
+[2024-02-22 03:23:16,010][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:23:16,010][PyLogger][INFO]: World size: 2
+[2024-02-22 03:23:16,013][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-22 03:23:16,013][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-22 03:23:16,013][PyLogger][INFO]: GPU device[0]: Tesla V100-SXM2-32GB
+[2024-02-22 03:23:16,013][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-22 03:23:16,014][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-22 03:23:16,014][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:23:16,014][PyLogger][INFO]: World size: 2
+[2024-02-22 03:23:23,830][PyLogger][INFO]: Rank[0]: val_accuracy: 0.10050
+[2024-02-22 03:23:23,830][PyLogger][INFO]: Rank[1]: val_accuracy: 0.10050
+2024-02-22 03:23:25,760 ignite.distributed.launcher.Parallel INFO: End of run
+new_size=20 done.
+2024-02-22 03:23:29,578 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-22 03:23:29,578 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-22 03:23:29,578 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x14bcdf4ee3e0>' in 2 processes
+2024-02-22 03:23:37,916 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-22 03:23:38,324 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 512, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x154843fcd9d0>, 'pin_memory': True}
+[2024-02-22 03:23:38,445][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-22 03:23:38,445][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-22 03:23:38,445][PyLogger][INFO]: GPU device[0]: Tesla V100-SXM2-32GB
+[2024-02-22 03:23:38,445][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-22 03:23:38,446][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-22 03:23:38,446][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:23:38,447][PyLogger][INFO]: World size: 2
+[2024-02-22 03:23:38,447][PyLogger][INFO]: GPU device[1]: Tesla V100-SXM2-32GB
+[2024-02-22 03:23:38,447][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:23:38,447][PyLogger][INFO]: World size: 2
+[2024-02-22 03:23:46,084][PyLogger][INFO]: Rank[0]: val_accuracy: 0.09980
+[2024-02-22 03:23:46,084][PyLogger][INFO]: Rank[1]: val_accuracy: 0.09980
+2024-02-22 03:23:48,020 ignite.distributed.launcher.Parallel INFO: End of run
+new_size=24 done.
+2024-02-22 03:23:51,796 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-22 03:23:51,796 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-22 03:23:51,796 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x1511f49763e0>' in 2 processes
+2024-02-22 03:23:59,511 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-22 03:23:59,925 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 512, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x1507173f9640>, 'pin_memory': True}
+[2024-02-22 03:24:00,044][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-22 03:24:00,045][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-22 03:24:00,045][PyLogger][INFO]: GPU device[0]: Tesla V100-SXM2-32GB
+[2024-02-22 03:24:00,045][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-22 03:24:00,046][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-22 03:24:00,046][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:24:00,046][PyLogger][INFO]: World size: 2
+[2024-02-22 03:24:00,046][PyLogger][INFO]: GPU device[1]: Tesla V100-SXM2-32GB
+[2024-02-22 03:24:00,046][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:24:00,046][PyLogger][INFO]: World size: 2
+[2024-02-22 03:24:07,926][PyLogger][INFO]: Rank[1]: val_accuracy: 0.09980
+[2024-02-22 03:24:07,926][PyLogger][INFO]: Rank[0]: val_accuracy: 0.09980
+2024-02-22 03:24:09,481 ignite.distributed.launcher.Parallel INFO: End of run
+new_size=28 done.
+2024-02-22 03:24:13,663 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-22 03:24:13,663 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-22 03:24:13,663 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x14cbca2c63e0>' in 2 processes
+2024-02-22 03:24:21,102 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-22 03:24:21,517 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 512, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x14d0b6472540>, 'pin_memory': True}
+[2024-02-22 03:24:21,634][PyLogger][INFO]: GPU device[1]: Tesla V100-SXM2-32GB
+[2024-02-22 03:24:21,634][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:24:21,634][PyLogger][INFO]: World size: 2
+[2024-02-22 03:24:21,635][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-22 03:24:21,635][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-22 03:24:21,635][PyLogger][INFO]: GPU device[0]: Tesla V100-SXM2-32GB
+[2024-02-22 03:24:21,635][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-22 03:24:21,636][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-22 03:24:21,636][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:24:21,636][PyLogger][INFO]: World size: 2
+[2024-02-22 03:24:29,845][PyLogger][INFO]: Rank[0]: val_accuracy: 0.09980
+[2024-02-22 03:24:29,845][PyLogger][INFO]: Rank[1]: val_accuracy: 0.09980
+2024-02-22 03:24:31,773 ignite.distributed.launcher.Parallel INFO: End of run
+new_size=32 done.
+2024-02-22 03:24:35,617 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-22 03:24:35,617 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-22 03:24:35,617 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x14e70c9323e0>' in 2 processes
+2024-02-22 03:24:44,089 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-22 03:24:44,494 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 512, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x1527801fe240>, 'pin_memory': True}
+[2024-02-22 03:24:44,610][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-22 03:24:44,610][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-22 03:24:44,610][PyLogger][INFO]: GPU device[0]: Tesla V100-SXM2-32GB
+[2024-02-22 03:24:44,610][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-22 03:24:44,611][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-22 03:24:44,611][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:24:44,611][PyLogger][INFO]: World size: 2
+[2024-02-22 03:24:44,614][PyLogger][INFO]: GPU device[1]: Tesla V100-SXM2-32GB
+[2024-02-22 03:24:44,614][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:24:44,614][PyLogger][INFO]: World size: 2
+[2024-02-22 03:24:52,340][PyLogger][INFO]: Rank[0]: val_accuracy: 0.10000
+[2024-02-22 03:24:52,340][PyLogger][INFO]: Rank[1]: val_accuracy: 0.10000
+2024-02-22 03:24:54,235 ignite.distributed.launcher.Parallel INFO: End of run
+new_size=12 done.
+2024-02-22 03:24:58,429 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-22 03:24:58,429 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-22 03:24:58,429 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x145ebe22e3e0>' in 2 processes
+2024-02-22 03:25:05,935 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-22 03:25:06,341 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset CIFAR10': 
+	{'batch_size': 512, 'num_workers': 1, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x1510c2902ea0>, 'pin_memory': True}
+[2024-02-22 03:25:06,461][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-22 03:25:06,461][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-22 03:25:06,461][PyLogger][INFO]: GPU device[0]: Tesla V100-SXM2-32GB
+[2024-02-22 03:25:06,461][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-22 03:25:06,462][PyLogger][INFO]: GPU device[1]: Tesla V100-SXM2-32GB
+[2024-02-22 03:25:06,462][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-22 03:25:06,462][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:25:06,462][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-22 03:25:06,462][PyLogger][INFO]: World size: 2
+[2024-02-22 03:25:06,462][PyLogger][INFO]: World size: 2
+[2024-02-22 03:25:14,455][PyLogger][INFO]: Rank[1]: val_accuracy: 0.09990
+[2024-02-22 03:25:14,455][PyLogger][INFO]: Rank[0]: val_accuracy: 0.09990
+2024-02-22 03:25:16,325 ignite.distributed.launcher.Parallel INFO: End of run
+new_size=16 done.
+2024-02-22 03:25:20,100 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-22 03:25:20,100 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-22 03:25:20,100 ignite.distributed.launcher.Parallel INFO: Spawn function '<function evaluation at 0x14d51032e3e0>' in 2 processes

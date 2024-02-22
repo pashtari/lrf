@@ -27,11 +27,11 @@ def progressbar(
         train_metrics = train_evaluator.state.metrics
         val_metrics = val_evaluator.state.metrics
         metrics = [
-            f"train_{k}: {train_metrics[k]:.2f} - val_{k}: {val_metrics[k]:.2f}"
+            f"train_{k}: {train_metrics[k]:.5f} - val_{k}: {val_metrics[k]:.5f}"
             for k in train_metrics
         ]
         metrics = " - ".join(metrics)
-        iter_pbar.log_message(f"{metrics} - loss: {trainer.state.output:.2f}")
+        iter_pbar.log_message(f"{metrics} - loss: {trainer.state.output:.5f}")
 
     # progress bar for epochs
     epoch_pbar = ProgressBar(persist=persist_epochs)
@@ -47,7 +47,7 @@ def progressbar(
         train_metrics = train_evaluator.state.metrics
         val_metrics = val_evaluator.state.metrics
         metrics = [
-            f"train_{k}: {train_metrics[k]:.2f} - val_{k}: {val_metrics[k]:.2f}"
+            f"train_{k}: {train_metrics[k]:.5f} - val_{k}: {val_metrics[k]:.5f}"
             for k in train_metrics
         ]
         metrics = " - ".join(metrics)
