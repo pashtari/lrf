@@ -1,22 +1,23 @@
 # --------- pytorch --------- #
-torch
-torchvision
-pytorch-ignite
-torch-dct
+torch=2.2.0
+torchvision=0.17.0
+pytorch-ignite=0.4.13
+torch-dct=0.1.6
 
 # --------- hydra --------- #
-hydra-core
-hydra-colorlog
-omegaconf
+hydra-core=1.3.2
+hydra-colorlog=1.2.0
+omegaconf=2.3.0
 
 # --------- loggers --------- #
-tqdm
-tensorboardX
+tqdm=4.66.2
+tensorboardX=2.6.2.2
+tensorboard=2.16.2
 
 # --------- visualization --------- #
-scikit-image
-matplotlib
+scikit-image=0.22.0
+matplotlib=3.8.3
 
 # --------- others --------- #
-deepspeed
-einops
+deepspeed=0.13.2
+einops=0.7.0
