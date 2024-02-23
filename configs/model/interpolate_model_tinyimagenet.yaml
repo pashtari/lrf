@@ -2,8 +2,8 @@ _target_: src.models.InterpolateModel
 net:
     _target_: src.models.resnet.ResNet50
     _partial_: true
-num_classes: 10
+num_classes: 200
 rescale: false
-original_size: 32
-new_size: [12, 16, 20, 24, 28, 32]
+original_size: 64
+new_size: [12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64]
 no_grad: true

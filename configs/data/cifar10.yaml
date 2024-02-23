@@ -28,9 +28,11 @@ val_transform:
           dtype:
               _target_: src.get_dtype
               name: float32
+          scale: true
         - _target_: torchvision.transforms.v2.Normalize
           mean: [0.4914, 0.4822, 0.4465]
           std: [0.2023, 0.1994, 0.2010]
+        - _target_: torchvision.transforms.v2.ToPureTensor
 
 train_set:
     _target_: torchvision.datasets.CIFAR10
@@ -60,7 +62,7 @@ train_loader:
     _target_: ignite.distributed.auto_dataloader
     dataset: ${data.train_set}
     batch_size: ${data.batch_size}
-    num_workers: 2
+    num_workers: 0
     shuffle: true
     drop_last: true
 
@@ -68,5 +70,5 @@ val_loader:
     _target_: ignite.distributed.auto_dataloader
     dataset: ${data.val_set}
     batch_size: ${data.val_batch_size}
-    num_workers: 2
+    num_workers: 0
     shuffle: false

@@ -1,24 +1,29 @@
 num_classes: 1000
 image_size: 224
-val_resize_size: 232
 image_mean: [0.485, 0.456, 0.406]
 image_std: [0.229, 0.224, 0.225]
 
 batch_size: 512
 val_batch_size: 1024
 
+train_crop_size: 176
+val_resize_size: 232
+val_crop_size: 224
+
+ra_reps: 4
+
 train_transform:
     _target_: torchvision.transforms.v2.Compose
     transforms:
         - _target_: torchvision.transforms.v2.ToImage
         - _target_: torchvision.transforms.v2.RandomResizedCrop
-          size: ${data.image_size}
-          interpolation: bilinear
+          size: ${data.train_crop_size}
+          interpolation: 2 #bilinear
           antialias: true
         - _target_: torchvision.transforms.v2.RandomHorizontalFlip
           p: 0.5
         - _target_: torchvision.transforms.v2.TrivialAugmentWide
-          interpolation: bilinear
+          interpolation: 2 #bilinear
         - _target_: torchvision.transforms.v2.ToDtype
           dtype:
               _target_: src.get_dtype
@@ -26,7 +31,7 @@ train_transform:
           scale: true
         - _target_: torchvision.transforms.v2.Normalize
           mean: ${data.image_mean}
-          std: ${data.image_mean}
+          std: ${data.image_std}
         - _target_: torchvision.transforms.v2.RandomErasing
           p: 0.1
         - _target_: torchvision.transforms.v2.ToPureTensor
@@ -47,9 +52,9 @@ val_transform:
         - _target_: torchvision.transforms.v2.ToImage
         - _target_: torchvision.transforms.v2.Resize
           size: ${data.val_resize_size}
-          interpolation: bilinear
+          interpolation: 2 #bilinear
         - _target_: torchvision.transforms.v2.CenterCrop
-          size: ${data.image_size}
+          size: ${data.val_crop_size}
         - _target_: torchvision.transforms.v2.ToDtype
           dtype:
               _target_: src.get_dtype
@@ -57,8 +62,8 @@ val_transform:
           scale: true
         - _target_: torchvision.transforms.v2.Normalize
           mean: ${data.image_mean}
-          std: ${data.image_mean}
-        - _target_: torchvision.transforms.v2.ToTensor
+          std: ${data.image_std}
+        - _target_: torchvision.transforms.v2.ToPureTensor
 
 train_set:
     _target_: torchvision.datasets.ImageNet
@@ -72,20 +77,27 @@ val_set:
     split: val
     transform: ${data.val_transform}
 
+train_sampler:
+    _target_: src.data.RASampler
+    dataset: train_set
+    shuffle: true
+    repetitions: ${data.ra_reps}
+
 train_loader:
     _target_: ignite.distributed.auto_dataloader
     dataset: ${data.train_set}
     batch_size: ${data.batch_size}
-    num_workers: 2
+    num_workers: 0
     collate_fn:
-        _target_: src.collate_fn_wrapper
-        transform: ${data.train_batched_transform}
+        _target_: src.data.collate_fn_wrapper
+        batched_transform: ${data.train_batched_transform}
     shuffle: true
+    sampler: ${data.train_sampler}
     drop_last: true
 
 val_loader:
     _target_: ignite.distributed.auto_dataloader
     dataset: ${data.val_set}
     batch_size: ${data.val_batch_size}
-    num_workers: 2
+    num_workers: 0
     shuffle: false
