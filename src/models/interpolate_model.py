@@ -53,7 +53,7 @@ class InterpolateModel(nn.Module):
     def transform(self, x):
         with self.context():
             new_size = random.choice(self.new_size)
-            compression_ratio = (self.original_size[0] * self.original_size[1]) // (
+            compression_ratio = (self.original_size[0] * self.original_size[1]) / (
                 new_size[0] * new_size[1]
             )
             if compression_ratio == 1:
