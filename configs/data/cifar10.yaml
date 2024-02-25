@@ -53,11 +53,11 @@ val_set:
 #     dataset: ${data.train_set}
 #     indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 
-val_subset:
-    _target_: torch.utils.data.Subset
-    dataset: ${data.val_set}
-    indices:
-        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+# val_subset:
+#     _target_: torch.utils.data.Subset
+#     dataset: ${data.val_set}
+#     indices:
+#         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
 
 train_loader:
     _target_: ignite.distributed.auto_dataloader
@@ -69,7 +69,7 @@ train_loader:
 
 val_loader:
     _target_: ignite.distributed.auto_dataloader
-    dataset: ${data.val_subset}
+    dataset: ${data.val_set}
     batch_size: ${data.val_batch_size}
     num_workers: 0
     shuffle: false

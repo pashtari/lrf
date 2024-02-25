@@ -1,13 +1,13 @@
 _target_: src.models.InterpolateModel
 net:
-    _target_: src.models.resnet.ResNet50
+    _target_: torchvision.models.resnet50
     _partial_: true
-num_classes: 10
+num_classes: 1000
 rescale: false
-original_size: 32
+original_size: 224
 new_size:
     _target_: numpy.arange
     start: 2
-    stop: 33
+    stop: 225
     step: 1
 no_grad: true

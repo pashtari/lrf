@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Iterable
 
 import random
 
@@ -29,7 +29,7 @@ class InterpolateModel(nn.Module):
             self.new_size = (self.original_size,)
         elif isinstance(new_size, int):
             self.new_size = ((new_size, new_size),)
-        elif isinstance(new_size, Sequence) and not isinstance(new_size, str):
+        elif isinstance(new_size, (Sequence, Iterable)) and not isinstance(new_size, str):
             self.new_size = tuple(_pair(s) for s in new_size)
         else:
             raise ValueError("`new_size` type is incorrect.")
@@ -53,7 +53,9 @@ class InterpolateModel(nn.Module):
     def transform(self, x):
         with self.context():
             new_size = random.choice(self.new_size)
-            compression_ratio = (self.original_size[0]*self.original_size[1]) // (new_size[0]*new_size[1])
+            compression_ratio = (self.original_size[0] * self.original_size[1]) // (
+                new_size[0] * new_size[1]
+            )
             if compression_ratio == 1:
                 z = x
             else:

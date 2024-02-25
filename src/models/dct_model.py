@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Iterable
 
 import random
 import torch
@@ -29,14 +29,14 @@ class DCTModel(nn.Module):
             self.new_size = (self.original_size,)
         elif isinstance(new_size, int):
             self.new_size = ((new_size, new_size),)
-        elif isinstance(new_size, Sequence) and not isinstance(new_size, str):
+        elif isinstance(new_size, (Sequence, Iterable)) and not isinstance(new_size, str):
             self.new_size = tuple(_pair(s) for s in new_size)
         else:
             raise ValueError("`new_size` type is incorrect.")
 
         self.pad = pad
         assert domain in {"compressed", "decompressed", "com", "dec"}
-        self.domain=domain
+        self.domain = domain
         self.no_grad = no_grad
         if net is None:
             net = resnet50
@@ -52,11 +52,12 @@ class DCTModel(nn.Module):
 
         return context
 
-
     def transform(self, x):
         with self.context():
             new_size = random.choice(self.new_size)
-            compression_ratio = (self.original_size[0]*self.original_size[1]) / (new_size[0]*new_size[1])
+            compression_ratio = (self.original_size[0] * self.original_size[1]) / (
+                new_size[0] * new_size[1]
+            )
             if self.domain in {"com", "compressed"}:
                 z = self.dct.compress(x, compression_ratio=compression_ratio)
             elif self.domain in {"dec", "decompressed"}:

@@ -78,48 +78,12 @@ val_set:
 # train_subset:
 #     _target_: torch.utils.data.Subset
 #     dataset: ${data.train_set}
-#     indices:
-#         [
-#             0,
-#             111,
-#             222,
-#             333,
-#             444,
-#             555,
-#             34545,
-#             701,
-#             805,
-#             910,
-#             100,
-#             2312,
-#             1231,
-#             13435,
-#             5466,
-#             42,
-#         ]
+#     indices: [0, 111, 222, 333, 444, 555, 3454, 701, 805]
 
 # val_subset:
 #     _target_: torch.utils.data.Subset
 #     dataset: ${data.val_set}
-#     indices:
-#         [
-#             0,
-#             111,
-#             222,
-#             333,
-#             444,
-#             555,
-#             345,
-#             701,
-#             805,
-#             910,
-#             100,
-#             2312,
-#             1231,
-#             134,
-#             546,
-#             42,
-#         ]
+#     indices: [0, 111, 222, 333, 444, 555, 3454, 701, 805]
 
 train_sampler:
     _target_: src.data.RASampler
@@ -136,7 +100,7 @@ train_loader:
         _target_: src.data.collate_fn_wrapper
         batched_transform: ${data.train_batched_transform}
     shuffle: true
-    sampler: ${data.train_sampler}
+    # sampler: ${data.train_sampler}
     drop_last: true
 
 val_loader:
