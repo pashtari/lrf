@@ -1,0 +1,14 @@
+_target_: src.models.DCTModel
+net:
+    _target_: torchvision.models.resnet50
+    _partial_: true
+num_classes: 200
+original_size: 64
+domain: compressed
+new_size:
+    _target_: numpy.arange
+    start: 2
+    stop: 65
+    step: 1
+pad: false
+no_grad: true
