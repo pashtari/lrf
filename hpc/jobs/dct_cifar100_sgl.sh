@@ -17,7 +17,7 @@ CKPT_PATH=$(cat ${ROOT_DIR}/.temp/train_${TASK_NAME}.txt)
 
 # Evals
 for size in $(seq 2 1 36); do
-    python eval.py dist.backend=nccl dist.nproc_per_node=2 dist.nnodes=1 task_name=eval_${TASK_NAME} data=cifar100 metric=cifar model=dct_model_cifar model.num_classes=100 model.domain=compressed model.new_size=$size model.pad=false
+    python eval.py dist.backend=nccl dist.nproc_per_node=2 dist.nnodes=1 task_name=eval_${TASK_NAME} data=cifar100 metric=cifar handler.checkpoint.load_from=${CKPT_PATH} model=dct_model_cifar model.num_classes=100 model.domain=compressed model.new_size=$size model.pad=false
     echo "new_size=$size done."
 done
 

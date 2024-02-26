@@ -81,6 +81,7 @@ train_loader:
     dataset: ${data.train_set}
     batch_size: ${data.batch_size}
     num_workers: 0
+    pin_memory: true
     collate_fn:
         _target_: src.data.collate_fn_wrapper
         batched_transform: ${data.train_batched_transform}
@@ -93,4 +94,5 @@ val_loader:
     dataset: ${data.val_set}
     batch_size: ${data.val_batch_size}
     num_workers: 0
+    pin_memory: true
     shuffle: false

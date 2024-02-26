@@ -1,0 +1,49 @@
+SLURM_JOB_ID: 55704739
+SLURM_JOB_USER: vsc33647
+SLURM_JOB_ACCOUNT: lp_inspiremed
+SLURM_JOB_NAME: dct_tinyimagenet_com
+SLURM_CLUSTER_NAME: genius
+SLURM_JOB_PARTITION: gpu_v100
+SLURM_NNODES: 1
+SLURM_NODELIST: r24g09
+SLURM_JOB_CPUS_PER_NODE: 8
+SLURM_JOB_GPUS: 2,3
+Date: Mon Feb 26 08:23:45 CET 2024
+Walltime: 00-00:10:00
+========================================================================
+2024-02-26 08:23:50,486 ignite.distributed.launcher.Parallel INFO: Initialized distributed launcher with backend: 'nccl'
+2024-02-26 08:23:50,486 ignite.distributed.launcher.Parallel INFO: - Parameters to spawn processes: 
+	nproc_per_node: 2
+	nnodes: 1
+	node_rank: 0
+2024-02-26 08:23:50,486 ignite.distributed.launcher.Parallel INFO: Spawn function '<function training at 0x14feb5a4d3a0>' in 2 processes
+2024-02-26 08:23:57,713 ignite.distributed.auto.auto_model INFO: Apply torch DistributedDataParallel on model, device id: 0
+2024-02-26 08:24:00,177 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset ImageFolder': 
+	{'batch_size': 256, 'num_workers': 0, 'collate_fn': <function collate_fn_wrapper.<locals>.collate_fn at 0x152f9d8e9da0>, 'drop_last': True, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x152f9dc697c0>, 'pin_memory': True}
+2024-02-26 08:24:00,640 ignite.distributed.auto.auto_dataloader INFO: Use data loader kwargs for dataset 'Dataset ImageFolder': 
+	{'batch_size': 512, 'num_workers': 0, 'sampler': <torch.utils.data.distributed.DistributedSampler object at 0x152f85f70d40>, 'pin_memory': True}
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:143: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn("Detected call of `lr_scheduler.step()` before `optimizer.step()`. "
+[2024-02-26 08:24:00,650][PyLogger][INFO]: PyTorch version: 2.2.0
+[2024-02-26 08:24:00,650][PyLogger][INFO]: Ignite version: 0.4.13
+[2024-02-26 08:24:00,650][PyLogger][INFO]: GPU device[0]: Tesla V100-SXM2-32GB
+[2024-02-26 08:24:00,650][PyLogger][INFO]: CUDA version: 12.1
+[2024-02-26 08:24:00,651][PyLogger][INFO]: CUDNN version: 8902
+[2024-02-26 08:24:00,651][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-26 08:24:00,651][PyLogger][INFO]: World size: 2
+[2024-02-26 08:24:00,653][PyLogger][INFO]: GPU device[1]: Tesla V100-SXM2-32GB
+[2024-02-26 08:24:00,653][PyLogger][INFO]: Distributed backend: nccl
+[2024-02-26 08:24:00,653][PyLogger][INFO]: World size: 2
+[2024-02-26 08:26:42,131][PyLogger][INFO]: Rank[0]: Epoch[1/7], iter[50] -  - loss: 5.74424
+[2024-02-26 08:26:42,131][PyLogger][INFO]: Rank[1]: Epoch[1/7], iter[50] -  - loss: 6.13852
+[2024-02-26 08:29:20,775][PyLogger][INFO]: Rank[0]: Epoch[1/7], iter[100] -  - loss: 5.31775
+[2024-02-26 08:29:20,775][PyLogger][INFO]: Rank[1]: Epoch[1/7], iter[100] -  - loss: 5.29917
+[2024-02-26 08:32:05,100][PyLogger][INFO]: Rank[1]: Epoch[1/7], iter[150] -  - loss: 5.30157
+[2024-02-26 08:32:05,100][PyLogger][INFO]: Rank[0]: Epoch[1/7], iter[150] -  - loss: 5.30112
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:156: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+/data/leuven/336/vsc33647/miniconda3/envs/deepenv/lib/python3.12/site-packages/torch/optim/lr_scheduler.py:156: UserWarning: The epoch parameter in `scheduler.step()` was not necessary and is being deprecated where possible. Please use `scheduler.step()` to step the scheduler. During the deprecation, if epoch is different from None, the closed form is used instead of the new chainable form, where available. Please open an issue if you are unable to replicate your use case: https://github.com/pytorch/pytorch/issues/new/choose.
+  warnings.warn(EPOCH_DEPRECATION_WARNING, UserWarning)
+slurmstepd: error: *** JOB 55704739 ON r24g09 CANCELLED AT 2024-02-26T08:34:06 DUE TO TIME LIMIT ***
