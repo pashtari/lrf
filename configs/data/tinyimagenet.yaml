@@ -80,7 +80,7 @@ val_set:
 
 train_sampler:
     _target_: src.data.RASampler
-    dataset: train_set
+    dataset: ${data.train_set}
     shuffle: true
     repetitions: ${data.ra_reps}
 

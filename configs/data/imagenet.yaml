@@ -70,11 +70,11 @@ val_set:
     split: val
     transform: ${data.val_transform}
 
-train_sampler:
-    _target_: src.data.RASampler
-    dataset: train_set
-    shuffle: true
-    repetitions: ${data.ra_reps}
+# train_sampler:
+#     _target_: src.data.RASampler
+#     dataset: ${data.train_set}
+#     shuffle: true
+#     repetitions: ${data.ra_reps}
 
 train_loader:
     _target_: ignite.distributed.auto_dataloader
