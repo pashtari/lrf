@@ -9,3 +9,5 @@ sshfs.sh
 /data
 /condor
 /logs
+/.temp
+/hpc/jobs/*.out
