@@ -1,0 +1,13 @@
+_target_: src.models.PatchSVDModel
+net:
+    _target_: torchvision.models.resnet50
+    _partial_: true
+num_classes: 1000
+original_size: 224
+domain: decompressed
+rank:
+    _target_: numpy.arange
+    start: 4
+    stop: 192
+    step: 8
+no_grad: true

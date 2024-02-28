@@ -19,11 +19,6 @@ from ignite.engine import (
 )
 from ignite.metrics import Loss
 
-from torch.nn import CrossEntropyLoss
-from torchvision.transforms.v2 import Compose
-from torchvision.datasets import ImageFolder
-from ignite.metrics import Accuracy
-
 script_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(script_dir)
 if parent_dir not in sys.path:
