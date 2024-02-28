@@ -1,6 +1,7 @@
 #!/bin/bash
 
 
+
 export PATH="${VSC_DATA}/miniconda3/bin:${PATH}"
 source activate deepenv
 
