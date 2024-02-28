@@ -7,6 +7,8 @@ from pathlib import Path
 from typing import Union, Sequence, Callable
 from contextlib import contextmanager
 from functools import partial
+from torchvision.models import ResNet50_Weights
+import torchvision
 
 import torch
 
@@ -40,7 +42,9 @@ def wrap_class(obj: Union[Sequence, Callable]) -> Callable:
 def get_dtype(name: str):
     return getattr(torch, name)
 
-
+def get_pretrained_resnet_weights(name):
+    class_name , attr_name = name.split(".")
+    return getattr(getattr(torchvision.models.resnet, class_name), attr_name)
 
 def get_eval_results(root_dir, filename=None, extension=".log", x_par_name="model.new_size", y_par_name="val_accuracy", yaml_rel_path=".hydra/overrides.yaml"):
     filename = Path(root_dir).stem if filename==None else filename

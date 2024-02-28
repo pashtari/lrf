@@ -48,6 +48,12 @@ val_transform:
     _target_: torchvision.transforms.v2.Compose
     transforms:
         - _target_: torchvision.transforms.v2.ToImage
+        - _target_: torchvision.transforms.v2.Resize
+          size: 256
+          interpolation: 2
+          antialias: true
+        - _target_: torchvision.transforms.v2.CenterCrop
+          size: 224
         - _target_: torchvision.transforms.v2.ToDtype
           dtype:
               _target_: src.get_dtype
@@ -59,15 +65,13 @@ val_transform:
         - _target_: torchvision.transforms.v2.ToPureTensor
 
 train_set:
-    _target_: torchvision.datasets.ImageNet
+    _target_: torchvision.datasets.ImageFolder
     root: ${path.data_dir}
-    split: train
     transform: ${data.train_transform}
 
 val_set:
-    _target_: torchvision.datasets.ImageNet
+    _target_: torchvision.datasets.ImageFolder
     root: ${path.data_dir}
-    split: val
     transform: ${data.val_transform}
 
 # train_sampler:
