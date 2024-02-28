@@ -1,1 +1,0 @@
-/vsc-hard-mounts/leuven-data/336/vsc33647/projects/lsvd/logs/train_interpolate_cifar100_sgl/runs/2024-02-26_01-46-17/checkpoints/checkpoint_7.pt
