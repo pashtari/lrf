@@ -26,14 +26,14 @@ image = torch.tensor(image).permute(-1, 0, 1).unsqueeze(0)
 
 for metric in [com.psnr, com.ssim]:
     # Compression ratios to be used
-    compression_ratios = np.array([1.25, 1.5, 1.75, *np.arange(2, 25.5, 1)])
+    compression_ratios = np.array([1.25, 1.5, 1.75, *np.arange(2, 30.5, 2)])
 
     # Store errors and compressed images for each method and compression ratio
     err_values = {
         "Interpolation": [],
         "DCT": [],
         # "SVD": [],
-        "Patch SVD": [],
+        "Patch SVD": []
     }
     compressed_images = {
         "Interpolation": [],
@@ -41,7 +41,7 @@ for metric in [com.psnr, com.ssim]:
         "DCT": [],
         "DCT Low": [],
         # "SVD": [],
-        "Patch SVD": [],
+        "Patch SVD": []
     }
 
     # Calculate reconstructed images and metric for each method and compression ratio
@@ -66,7 +66,7 @@ for metric in [com.psnr, com.ssim]:
         # DCT Low
         dct = com.DCT()
         compressed_dct_low = com.minmax_normalize(dct(image, ratio, pad=False))
-        compressed_images["DCT Low"].append(compressed_dct_low)
+        compressed_images["DCT Low"].append(com.minmax_normalize(compressed_dct_low))
 
         # # SVD
         # svd = com.SVD()
@@ -74,11 +74,12 @@ for metric in [com.psnr, com.ssim]:
         # err_values["SVD"].append(metric(image, compressed_svd))
         # compressed_images["SVD"].append(compressed_svd)
 
-        # SVD Patches
-        patch_svd = com.PatchSVD()
+        # Patch SVD
+        patch_svd = com.PatchSVD(patch_size=(8, 8))
         compressed_patch_svd = patch_svd(image, ratio).clip(0, 1)
         err_values["Patch SVD"].append(metric(image, compressed_patch_svd))
         compressed_images["Patch SVD"].append(compressed_patch_svd)
+
 
     # Plotting the results
     plt.figure()
@@ -88,7 +89,7 @@ for metric in [com.psnr, com.ssim]:
     plt.xlabel("Compression Ratio")
     plt.ylabel(f"{metric.__name__.upper()}")
     plt.title("Comprison of Different Compression Methods")
-    plt.xticks(np.arange(1, compression_ratios.max() + 1))
+    # plt.xticks(np.arange(1, compression_ratios.max() + 1))
     plt.legend()
     plt.grid()
     plt.savefig(

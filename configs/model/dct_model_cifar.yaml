@@ -1,6 +1,6 @@
 _target_: src.models.DCTModel
 net:
-    _target_: src.models.resnet.ResNet50
+    _target_: src.models.resnet50
     _partial_: true
 num_classes: 10
 original_size: 32

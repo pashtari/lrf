@@ -18,7 +18,7 @@ class DCTModel(nn.Module):
         original_size=224,
         new_size=None,
         no_grad=True,
-        domain=None,
+        domain="compressed",
         **kwargs
     ):
         super(DCTModel, self).__init__()
