@@ -5,7 +5,6 @@ __pycache__
 
 sshfs.sh
 
-/.trash
 /data
 /condor
 /logs
