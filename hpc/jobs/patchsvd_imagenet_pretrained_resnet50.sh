@@ -10,7 +10,7 @@ TASK_NAME=patchsvd_imagenet_pretrained_resnet50
 
 # Evals -- decomressed domain
 for rank in $(seq 4 8 192); do
-    python eval.py dist.backend=nccl dist.nproc_per_node=1 dist.nnodes=1 task_name=eval_${TASK_NAME} data=imagenet data.val_set.root=${VSC_SCRATCH}/ImageNet/ILSVRC/Data/CLS-LOC/val metric=imagenet model=patchsvd_model_imagenet model.net._target_=torchvision.models.resnet50 +model.weights._target_=src.utils.get_pretrained_resnet_weights +model.weights.name="ResNet50_Weights.IMAGENET1K_V2" model.num_classes=1000 model.domain=decompressed model.rank=$rank
+    python eval.py dist.backend=nccl dist.nproc_per_node=2 dist.nnodes=1 task_name=eval_${TASK_NAME} data=imagenet data.val_set.root=${VSC_SCRATCH}/ImageNet/ILSVRC/Data/CLS-LOC/val metric=imagenet model=patchsvd_model_imagenet model.net._target_=torchvision.models.resnet50 +model.weights._target_=src.utils.get_pretrained_resnet_weights +model.weights.name="ResNet50_Weights.IMAGENET1K_V2" model.num_classes=1000 model.domain=decompressed model.rank=$rank
 
     echo "new_size=$size done."
 done

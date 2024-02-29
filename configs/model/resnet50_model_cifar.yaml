@@ -1,5 +1,2 @@
 _target_: src.models.Resnet50Model
 num_classes: 10
-# weights:
-#     _targer_: src.utils.get_pretrained_resnet_weights
-#     name: "ResNet50_Weights.IMAGENET1K_V2"

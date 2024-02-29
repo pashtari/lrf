@@ -61,6 +61,10 @@ sbatch --account=lp_inspiremed --job-name=dct_imagenet_pretrained_resnet50 --clu
 sbatch --account=lp_inspiremed --job-name=dct_imagenet_pretrained_resnet50_low --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=9 --gres=gpu:2 --time=06:00:00 --partition=gpu_v100 dct_imagenet_pretrained_resnet50_low.sh
 sbatch --account=lp_inspiremed --job-name=patchsvd_imagenet_pretrained_resnet50 --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=9 --gres=gpu:2 --time=06:00:00 --partition=gpu_v100 patchsvd_imagenet_pretrained_resnet50.sh
 
+##### training vanilla models
+sbatch --account=lp_inspiremed --job-name=resnet50_cifar10 --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=9 --gres=gpu:2 --time=11:00:00 --partition=gpu_v100 resnet50_cifar10.sh
+sbatch --account=lp_inspiremed --job-name=resnet50_cifar100 --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=9 --gres=gpu:2 --time=13:00:00 --partition=gpu_v100 resnet50_cifar100.sh
+
 
 #### for tensorboard
 cd $VSC_DATA/projects/lsvd/logs
