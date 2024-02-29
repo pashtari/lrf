@@ -6,7 +6,7 @@ source activate deepenv
 ROOT_DIR="${VSC_DATA}/projects/lsvd"
 cd ${ROOT_DIR}/src
 
-TASK_NAME=dct_imagenet_pretrained_resnet50
+TASK_NAME=dct_imagenet_pretrained_resnet50_low
 
 # Evals -- decomressed domain
 for size in $(seq 32 8 224); do

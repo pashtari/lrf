@@ -55,15 +55,15 @@ sleep 1
 
 
 ##### pretrained resnet50
-sbatch --account=lp_inspiremed --job-name=interpolate_imagenet_pretrained_resnet50 --clusters=genius --nodes=1 --ntasks-per-node=1 --cpus-per-task=9 --gres=gpu:1 --time=06:00:00 --partition=gpu_p100 interpolate_imagenet_pretrained_resnet50.sh
-sbatch --account=lp_inspiremed --job-name=interpolate_imagenet_pretrained_resnet50_low --clusters=genius --nodes=1 --ntasks-per-node=1 --cpus-per-task=9 --gres=gpu:1 --time=06:00:00 --partition=gpu_p100 interpolate_imagenet_pretrained_resnet50_low.sh
-sbatch --account=lp_inspiremed --job-name=dct_imagenet_pretrained_resnet50 --clusters=genius --nodes=1 --ntasks-per-node=1 --cpus-per-task=9 --gres=gpu:1 --time=06:00:00 --partition=gpu_p100 dct_imagenet_pretrained_resnet50.sh
-sbatch --account=lp_inspiremed --job-name=dct_imagenet_pretrained_resnet50_low --clusters=genius --nodes=1 --ntasks-per-node=1 --cpus-per-task=9 --gres=gpu:1 --time=06:00:00 --partition=gpu_p100 dct_imagenet_pretrained_resnet50_low.sh
-sbatch --account=lp_inspiremed --job-name=patchsvd_imagenet_pretrained_resnet50 --clusters=genius --nodes=1 --ntasks-per-node=1 --cpus-per-task=9 --gres=gpu:1 --time=20:00 --partition=gpu_p100_debug patchsvd_imagenet_pretrained_resnet50.sh
+sbatch --account=lp_inspiremed --job-name=interpolate_imagenet_pretrained_resnet50 --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=9 --gres=gpu:2 --time=06:00:00 --partition=gpu_v100 interpolate_imagenet_pretrained_resnet50.sh
+sbatch --account=lp_inspiremed --job-name=interpolate_imagenet_pretrained_resnet50_low --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=9 --gres=gpu:2 --time=06:00:00 --partition=gpu_v100 interpolate_imagenet_pretrained_resnet50_low.sh
+sbatch --account=lp_inspiremed --job-name=dct_imagenet_pretrained_resnet50 --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=9 --gres=gpu:2 --time=06:00:00 --partition=gpu_v100 dct_imagenet_pretrained_resnet50.sh
+sbatch --account=lp_inspiremed --job-name=dct_imagenet_pretrained_resnet50_low --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=9 --gres=gpu:2 --time=06:00:00 --partition=gpu_v100 dct_imagenet_pretrained_resnet50_low.sh
+sbatch --account=lp_inspiremed --job-name=patchsvd_imagenet_pretrained_resnet50 --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=9 --gres=gpu:2 --time=06:00:00 --partition=gpu_v100 patchsvd_imagenet_pretrained_resnet50.sh
 
 
+#### for tensorboard
 cd $VSC_DATA/projects/lsvd/logs
-
 tensorboard --logdir=.  --port=6006
 
 
