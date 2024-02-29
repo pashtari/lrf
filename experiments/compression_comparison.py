@@ -29,11 +29,19 @@ for metric in [com.psnr, com.ssim]:
     compression_ratios = np.array([1.25, 1.5, 1.75, *np.arange(2, 30.5, 2)])
 
     # Store errors and compressed images for each method and compression ratio
+    compression_ratios = {
+        "Interpolation": [],
+        "Interpolation Low": [],
+        "DCT": [],
+        "DCT Low": [],
+        # "SVD": [],
+        "Patch SVD": [],
+    }
     err_values = {
         "Interpolation": [],
         "DCT": [],
         # "SVD": [],
-        "Patch SVD": []
+        "Patch SVD": [],
     }
     compressed_images = {
         "Interpolation": [],
@@ -41,31 +49,40 @@ for metric in [com.psnr, com.ssim]:
         "DCT": [],
         "DCT Low": [],
         # "SVD": [],
-        "Patch SVD": []
+        "Patch SVD": [],
     }
 
     # Calculate reconstructed images and metric for each method and compression ratio
-    for ratio in compression_ratios:
-        # Interpolate
+    # Interpolate
+    for new_size in range(48, 224, 16):
         interpolate = com.Interpolate(mode="bilinear")
-        compressed_interpolate = interpolate(image, ratio).clip(0, 1)
+        compressed_interpolate = interpolate(image, new_size=new_size).clip(0, 1)
+        compression_ratios["Interpolation"].append(interpolate.real_compression_ratio)
         err_values["Interpolation"].append(metric(image, compressed_interpolate))
         compressed_images["Interpolation"].append(compressed_interpolate)
 
-        # Interpolate low
+    # Interpolate low
+    for new_size in range(48, 224, 16):
         interpolate = com.Interpolate(mode="bilinear")
-        compressed_interpolate_low = interpolate.compress(image, ratio).clip(0, 1)
+        compressed_interpolate_low = interpolate.compress(image, new_size=new_size).clip(
+            0, 1
+        )
+        compression_ratios["Interpolation Low"].append(interpolate.real_compression_ratio)
         compressed_images["Interpolation Low"].append(compressed_interpolate_low)
 
-        # DCT
+    # DCT
+    for cutoff in range(48, 224, 16):
         dct = com.DCT()
-        compressed_dct = dct(image, ratio).clip(0, 1)
+        compressed_dct = dct(image, cutoff=cutoff).clip(0, 1)
+        compression_ratios["DCT"].append(dct.real_compression_ratio)
         err_values["DCT"].append(metric(image, compressed_dct))
         compressed_images["DCT"].append(compressed_dct)
 
-        # DCT Low
+    # DCT Low
+    for cutoff in range(48, 224, 16):
         dct = com.DCT()
-        compressed_dct_low = com.minmax_normalize(dct(image, ratio, pad=False))
+        compressed_dct_low = com.minmax_normalize(dct(image, cutoff=cutoff, pad=False))
+        compression_ratios["DCT Low"].append(dct.real_compression_ratio)
         compressed_images["DCT Low"].append(com.minmax_normalize(compressed_dct_low))
 
         # # SVD
@@ -74,17 +91,18 @@ for metric in [com.psnr, com.ssim]:
         # err_values["SVD"].append(metric(image, compressed_svd))
         # compressed_images["SVD"].append(compressed_svd)
 
-        # Patch SVD
+    # Patch SVD
+    for rank in range(7, 192, 16):
         patch_svd = com.PatchSVD(patch_size=(8, 8))
-        compressed_patch_svd = patch_svd(image, ratio).clip(0, 1)
+        compressed_patch_svd = patch_svd(image, rank=rank).clip(0, 1)
+        compression_ratios["Patch SVD"].append(patch_svd.real_compression_ratio)
         err_values["Patch SVD"].append(metric(image, compressed_patch_svd))
         compressed_images["Patch SVD"].append(compressed_patch_svd)
-
 
     # Plotting the results
     plt.figure()
     for method, err in err_values.items():
-        plt.plot(compression_ratios, err, marker="o", label=method)
+        plt.plot(compression_ratios[method], err, marker="o", label=method)
 
     plt.xlabel("Compression Ratio")
     plt.ylabel(f"{metric.__name__.upper()}")
@@ -102,9 +120,9 @@ for metric in [com.psnr, com.ssim]:
 
 # Plotting the compressed images for each method and compression ratio
 fig, axs = plt.subplots(
-    len(compression_ratios),
+    len(compression_ratios["Patch SVD"]),
     len(compressed_images),
-    figsize=(5 * len(err_values), 3 * len(compression_ratios)),
+    figsize=(5 * len(err_values), 3 * len(compression_ratios["Patch SVD"])),
 )
 
 # Setting titles for columns
@@ -115,9 +133,16 @@ for ax, method in zip(axs[0], compressed_images.keys()):
 for ax, ratio in zip(axs[:, 0], compression_ratios):
     ax.set_ylabel(f"Ratio {ratio}", rotation=90, size="large")
 
-for i, ratio in enumerate(compression_ratios):
+for i, ratio in enumerate(compression_ratios["Patch SVD"]):
     for j, method in enumerate(compressed_images.keys()):
-        compressed_image = compressed_images[method][i]
+        ii = np.argmax(
+            np.where(
+                ratio > np.array(compression_ratios[method]),
+                np.array(compression_ratios[method]),
+                -np.inf,
+            )
+        )
+        compressed_image = compressed_images[method][ii]
         axs[i, j].imshow(compressed_image.squeeze(0).permute(1, 2, 0))
         axs[i, j].axis("off")
 

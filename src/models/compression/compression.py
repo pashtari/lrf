@@ -5,6 +5,7 @@ import math
 import torch
 from torch import nn, Tensor
 import torch.nn.functional as F
+from torch.nn.modules.utils import _pair
 import torch_dct as dct
 from einops import rearrange
 
@@ -106,6 +107,8 @@ class Interpolate(Compress):
         if new_size is None:
             new_size = self.get_new_size(original_size, compression_ratio)
 
+        new_size = _pair(new_size)
+
         resized_image = F.interpolate(x, size=new_size, **self.interpolation_kwargs)
         self.real_compression_ratio = self.get_compression_ratio(original_size, new_size)
         return resized_image
@@ -175,6 +178,8 @@ class DCT(Compress):
         original_size = x.shape[-2:]
         if cutoff is None:
             cutoff = self.get_cutoff(original_size, compression_ratio)
+
+        cutoff = _pair(cutoff)
 
         x_dct = dct.dct_2d(x)  # Perform DCT
         x_dct = x_dct[..., : cutoff[0], : cutoff[1]]  # Keep frequencies up to cutoff
@@ -417,4 +422,3 @@ class PatchSVD(SVD):
         compressed_patches = self.compress(x, *args, **kwargs)
         decompressed_image = self.decompress(compressed_patches, x.shape[-2:])
         return decompressed_image
-
