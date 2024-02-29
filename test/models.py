@@ -1,4 +1,5 @@
 import torch
+from torchvision.models.resnet import resnet50, ResNet50_Weights
 from skimage import data, img_as_float
 from skimage.transform import resize
 import matplotlib.pyplot as plt
@@ -32,7 +33,14 @@ plt.axis("off")
 plt.show()
 
 
-patch_svd_model = models.PatchSVDModel(patch_size=8, rank=4, domain="decompressed")
+patch_svd_model = models.PatchSVDModel(
+    net=resnet50,
+    num_classes=1000,
+    patch_size=8,
+    rank=10,
+    domain="decompressed",
+    weights=ResNet50_Weights.IMAGENET1K_V2,
+)
 y = patch_svd_model(x)
 z = patch_svd_model.transform(x)
 
