@@ -7,7 +7,7 @@ patch_size: 8
 domain: decompressed
 rank:
     _target_: numpy.arange
-    start: 4
+    start: 1
     stop: 192
-    step: 8
+    step: 1
 no_grad: true

@@ -7,7 +7,7 @@ rescale: false
 original_size: 224
 new_size:
     _target_: numpy.arange
-    start: 2
+    start: 32
     stop: 225
     step: 1
 no_grad: true

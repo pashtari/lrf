@@ -7,7 +7,7 @@ original_size: 32
 domain: compressed
 new_size:
     _target_: numpy.arange
-    start: 2
+    start: 8
     stop: 33
     step: 1
 pad: false

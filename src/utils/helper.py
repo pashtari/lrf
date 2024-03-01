@@ -1,16 +1,14 @@
 import os
 import glob
-import yaml 
-import numpy as np
-
 from pathlib import Path
 from typing import Union, Sequence, Callable
-from contextlib import contextmanager
 from functools import partial
-from torchvision.models import ResNet50_Weights
-import torchvision
+from contextlib import contextmanager
+import re
 
+import numpy as np
 import torch
+import torchvision
 
 
 @contextmanager
@@ -42,34 +40,47 @@ def wrap_class(obj: Union[Sequence, Callable]) -> Callable:
 def get_dtype(name: str):
     return getattr(torch, name)
 
+
 def get_pretrained_resnet_weights(name):
-    class_name , attr_name = name.split(".")
+    class_name, attr_name = name.split(".")
     return getattr(getattr(torchvision.models.resnet, class_name), attr_name)
 
-def get_eval_results(root_dir, filename=None, extension=".log", x_par_name="model.new_size", y_par_name="val_accuracy", yaml_rel_path=".hydra/overrides.yaml"):
-    filename = Path(root_dir).stem if filename==None else filename
 
-    pattern = os.path.join(root_dir, '**', f'{filename}*{extension}')
+def get_eval_results(
+    root_dir,
+    filename=None,
+    extension=".log",
+    x_par_name="model.new_size",
+    y_par_name="val_accuracy",
+    config_rel_path=".hydra/overrides.config",
+):
+    filename = Path(root_dir).stem if filename == None else filename
+
+    pattern = os.path.join(root_dir, "**", f"{filename}*{extension}")
     files = glob.glob(pattern, recursive=True)
-    
-    file_num = len(files)
-    plot_data = np.zeros((2, file_num))
+
+    x = [None for f in files]
+    y = [None for f in files]
 
     for i, file_path in enumerate(files):
         file_dir = os.path.dirname(file_path)
-        yaml_path = os.path.join(file_dir, yaml_rel_path)
+        config_path = os.path.join(file_dir, config_rel_path)
 
-        with open(yaml_path, 'r') as yaml_file:
-            yaml_data = yaml.safe_load(yaml_file)
-            for line in yaml_data:
-                if x_par_name in line:
-                    new_size = int(line.split('=')[1])
-                    plot_data[0, i] = new_size
+        with open(config_path, "r") as config_file:
+            config_string = config_file.read()
+            match = re.search(
+                rf"{x_par_name}\s*=\s*[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?",
+                config_string,
+            )
+            if match:
+                x[i] = float(match.group(1))
 
-        with open(file_path, 'r') as log_file:
-            for line in log_file:
-                if y_par_name in line:
-                    val_accuracy = float(line.split(':')[-1].strip())
-                    plot_data[1, i] = val_accuracy
+        with open(file_path, "r") as log_file:
+            log_string = log_file.read()
+            match = re.search(
+                rf"{y_par_name}\s*:\s*[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?", log_string
+            )
+            if match:
+                y[i] = float(match.group(1))
 
-    return plot_data[0], plot_data[1]
+    return np.array(x, dtype=float), np.array(y, dtype=float)

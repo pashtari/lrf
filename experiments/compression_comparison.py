@@ -31,44 +31,61 @@ for metric in [com.psnr, com.ssim]:
     # Store errors and compressed images for each method and compression ratio
     compression_ratios = {
         "Interpolation": [],
-        "Interpolation Low": [],
+        "Interpolation - Antialias": [],
+        "Interpolation - Low": [],
         "DCT": [],
-        "DCT Low": [],
+        "DCT - Low": [],
         # "SVD": [],
         "Patch SVD": [],
     }
     err_values = {
         "Interpolation": [],
+        "Interpolation - Antialias": [],
         "DCT": [],
         # "SVD": [],
         "Patch SVD": [],
     }
     compressed_images = {
         "Interpolation": [],
-        "Interpolation Low": [],
+        "Interpolation - Antialias": [],
+        "Interpolation - Low": [],
         "DCT": [],
-        "DCT Low": [],
+        "DCT - Low": [],
         # "SVD": [],
         "Patch SVD": [],
     }
 
     # Calculate reconstructed images and metric for each method and compression ratio
-    # Interpolate
+    # Interpolation
     for new_size in range(48, 224, 16):
-        interpolate = com.Interpolate(mode="bilinear")
+        interpolate = com.Interpolate(mode="bilinear", antialias=False)
         compressed_interpolate = interpolate(image, new_size=new_size).clip(0, 1)
         compression_ratios["Interpolation"].append(interpolate.real_compression_ratio)
         err_values["Interpolation"].append(metric(image, compressed_interpolate))
         compressed_images["Interpolation"].append(compressed_interpolate)
 
-    # Interpolate low
+    # Interpolation - Antialias
+    for new_size in range(48, 224, 16):
+        interpolate = com.Interpolate(mode="bilinear", antialias=True)
+        compressed_interpolate = interpolate(image, new_size=new_size).clip(0, 1)
+        compression_ratios["Interpolation - Antialias"].append(
+            interpolate.real_compression_ratio
+        )
+        err_values["Interpolation - Antialias"].append(
+            metric(image, compressed_interpolate)
+        )
+        compressed_images["Interpolation - Antialias"].append(compressed_interpolate)
+
+    # Interpolation - low
     for new_size in range(48, 224, 16):
         interpolate = com.Interpolate(mode="bilinear")
         compressed_interpolate_low = interpolate.compress(image, new_size=new_size).clip(
             0, 1
         )
-        compression_ratios["Interpolation Low"].append(interpolate.real_compression_ratio)
-        compressed_images["Interpolation Low"].append(compressed_interpolate_low)
+        compression_ratios["Interpolation - Low"].append(
+            interpolate.real_compression_ratio
+        )
+        compressed_images["Interpolation - Low"].append(compressed_interpolate_low)
 
     # DCT
     for cutoff in range(48, 224, 16):
@@ -78,12 +95,12 @@ for metric in [com.psnr, com.ssim]:
         err_values["DCT"].append(metric(image, compressed_dct))
         compressed_images["DCT"].append(compressed_dct)
 
-    # DCT Low
+    # DCT low
     for cutoff in range(48, 224, 16):
         dct = com.DCT()
         compressed_dct_low = com.minmax_normalize(dct(image, cutoff=cutoff, pad=False))
-        compression_ratios["DCT Low"].append(dct.real_compression_ratio)
-        compressed_images["DCT Low"].append(com.minmax_normalize(compressed_dct_low))
+        compression_ratios["DCT - Low"].append(dct.real_compression_ratio)
+        compressed_images["DCT - Low"].append(com.minmax_normalize(compressed_dct_low))
 
         # # SVD
         # svd = com.SVD()

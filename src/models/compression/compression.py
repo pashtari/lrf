@@ -70,6 +70,7 @@ class Interpolate(Compress):
         Returns:
             Tuple[int, int]: The new (height, width) of the image.
         """
+        original_size = _pair(original_size)
         height, width = original_size
         new_height = max(math.floor(height / math.sqrt(compression_ratio)), 1)
         new_width = max(math.floor(width / math.sqrt(compression_ratio)), 1)
@@ -78,6 +79,8 @@ class Interpolate(Compress):
     def get_compression_ratio(
         self, original_size: Tuple[int, int], new_size: Tuple[int, int]
     ) -> float:
+        original_size = _pair(original_size)
+        new_size = _pair(new_size)
         orig_height, orig_width = original_size
         new_height, new_width = new_size
         compression_ratio = (orig_height * orig_width) / (new_height * new_width)
@@ -150,10 +153,21 @@ class DCT(Compress):
         Returns:
             Tuple[int, int], the cutoff frequencies for height and width.
         """
+        size = _pair(size)
         height, width = size
         cutoff_height = max(math.floor(height / (math.sqrt(compression_ratio))), 1)
         cutoff_width = max(math.floor(width / math.sqrt(compression_ratio)), 1)
         return (cutoff_height, cutoff_width)
+
+    def get_compression_ratio(
+        self, size: Tuple[int, int], cuttoff: Tuple[int, int]
+    ) -> float:
+        size = _pair(size)
+        cuttoff = _pair(cuttoff)
+        orig_height, orig_width = size
+        new_height, new_width = cuttoff
+        compression_ratio = (orig_height * orig_width) / (new_height * new_width)
+        return compression_ratio
 
     def compress(
         self,
@@ -184,11 +198,7 @@ class DCT(Compress):
         x_dct = dct.dct_2d(x)  # Perform DCT
         x_dct = x_dct[..., : cutoff[0], : cutoff[1]]  # Keep frequencies up to cutoff
 
-        orig_height, orig_width = original_size
-        resized_height, resized_width = x_dct.shape[-2:]
-        self.real_compression_ratio = (orig_height * orig_width) / (
-            resized_height * resized_width
-        )
+        self.real_compression_ratio = self.get_compression_ratio(original_size, cutoff)
         return x_dct
 
     def decompress(
@@ -204,6 +214,7 @@ class DCT(Compress):
         Returns:
             Tensor, the decompressed tensor.
         """
+        original_size = _pair(original_size)
         height, width = original_size
         if pad:
             cutoff_height, cutoff_width = x.shape[-2:]
@@ -232,6 +243,7 @@ class SVD(Compress):
         Returns:
             int: The calculated rank.
         """
+        size = _pair(size)
         rows, cols = size
         df_input = rows * cols  # Degrees of freedom of the input matrix
         df_lowrank = rows + cols  # Degrees of freedom of the low-rank matrix
@@ -248,6 +260,7 @@ class SVD(Compress):
         Returns:
             float: The compression ratio.
         """
+        size = _pair(size)
         rows, cols = size
         df_input = rows * cols  # Degrees of freedom of the input matrix
         df_lowrank = rows + cols  # Degrees of freedom of the low-rank matrix
@@ -312,8 +325,8 @@ class PatchSVD(SVD):
         Args:
             patch_size (Tuple[int, int], optional): The size of the patches. Defaults to (8, 8).
         """
-        super(PatchSVD, self).__init__()
-        self.patch_size = patch_size
+        super().__init__()
+        self.patch_size = _pair(patch_size)
 
     def patchify(self, x: Tensor) -> Tensor:
         """Break down the input tensor into patches.
