@@ -15,6 +15,7 @@ class DCTModel(nn.Module):
         self,
         net=None,
         pad=False,
+        zscore=False,
         original_size=224,
         new_size=None,
         no_grad=True,
@@ -35,6 +36,7 @@ class DCTModel(nn.Module):
             raise ValueError("`new_size` type is incorrect.")
 
         self.pad = pad
+        self.zscore = zscore
         assert domain in ("compressed", "decompressed", "com", "dec")
         self.domain = domain
         self.no_grad = no_grad
@@ -64,7 +66,12 @@ class DCTModel(nn.Module):
                 if compression_ratio == 1:
                     z = x
                 else:
-                    z = self.dct(x, compression_ratio=compression_ratio, pad=self.pad)
+                    z = self.dct(
+                        x,
+                        compression_ratio=compression_ratio,
+                        pad=self.pad,
+                        zscore=self.zscore,
+                    )
 
         return z
 

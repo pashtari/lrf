@@ -11,4 +11,5 @@ new_size:
     stop: 225
     step: 1
 pad: false
+zscore: false
 no_grad: true

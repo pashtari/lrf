@@ -2,8 +2,8 @@ import torch
 
 
 def zscore_normalize(tensor):
-    mean = torch.mean(dim=(-2, -1), keepdim=True)
-    std = torch.std(dim=(-2, -1), keepdim=True)
+    mean = torch.mean(tensor, dim=(-2, -1), keepdim=True)
+    std = torch.std(tensor, dim=(-2, -1), keepdim=True)
     normalized_tensor = (tensor - mean) / (std + 1e-8)
     return normalized_tensor
 

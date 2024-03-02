@@ -9,11 +9,12 @@ from src.models import compression as com
 
 
 # Load the astronaut image
-image = data.cat()
+image = data.astronaut()
 
 # Convert the image to float and resize
 image = img_as_float(image)
 image = resize(image, (224, 224), preserve_range=True)
+
 
 # Visualize image
 plt.imshow(image)
@@ -59,7 +60,7 @@ for metric in [com.psnr, com.ssim]:
     # Interpolation
     for new_size in range(48, 224, 16):
         interpolate = com.Interpolate(mode="bilinear", antialias=False)
-        compressed_interpolate = interpolate(image, new_size=new_size).clip(0, 1)
+        compressed_interpolate = interpolate(image, new_size=new_size)  # .clip(0, 1)
         compression_ratios["Interpolation"].append(interpolate.real_compression_ratio)
         err_values["Interpolation"].append(metric(image, compressed_interpolate))
         compressed_images["Interpolation"].append(compressed_interpolate)
@@ -67,7 +68,7 @@ for metric in [com.psnr, com.ssim]:
     # Interpolation - Antialias
     for new_size in range(48, 224, 16):
         interpolate = com.Interpolate(mode="bilinear", antialias=True)
-        compressed_interpolate = interpolate(image, new_size=new_size).clip(0, 1)
+        compressed_interpolate = interpolate(image, new_size=new_size)  # .clip(0, 1)
         compression_ratios["Interpolation - Antialias"].append(
             interpolate.real_compression_ratio
         )
@@ -79,9 +80,9 @@ for metric in [com.psnr, com.ssim]:
     # Interpolation - low
     for new_size in range(48, 224, 16):
         interpolate = com.Interpolate(mode="bilinear")
-        compressed_interpolate_low = interpolate.compress(image, new_size=new_size).clip(
-            0, 1
-        )
+        compressed_interpolate_low = interpolate.compress(
+            image, new_size=new_size
+        )  # .clip(0, 1)
         compression_ratios["Interpolation - Low"].append(
             interpolate.real_compression_ratio
         )
@@ -90,7 +91,7 @@ for metric in [com.psnr, com.ssim]:
     # DCT
     for cutoff in range(48, 224, 16):
         dct = com.DCT()
-        compressed_dct = dct(image, cutoff=cutoff).clip(0, 1)
+        compressed_dct = dct(image, cutoff=cutoff)  # .clip(0, 1)
         compression_ratios["DCT"].append(dct.real_compression_ratio)
         err_values["DCT"].append(metric(image, compressed_dct))
         compressed_images["DCT"].append(compressed_dct)
@@ -100,18 +101,19 @@ for metric in [com.psnr, com.ssim]:
         dct = com.DCT()
         compressed_dct_low = com.minmax_normalize(dct(image, cutoff=cutoff, pad=False))
         compression_ratios["DCT - Low"].append(dct.real_compression_ratio)
-        compressed_images["DCT - Low"].append(com.minmax_normalize(compressed_dct_low))
+        compressed_images["DCT - Low"].append(compressed_dct_low)
 
-        # # SVD
-        # svd = com.SVD()
-        # compressed_svd = svd(image, ratio).clip(0, 1)
-        # err_values["SVD"].append(metric(image, compressed_svd))
-        # compressed_images["SVD"].append(compressed_svd)
+    # for cutoff in range(48, 224, 16):
+    #     # SVD
+    #     svd = com.SVD()
+    #     compressed_svd = svd(image, ratio).clip(0, 1)
+    #     err_values["SVD"].append(metric(image, compressed_svd))
+    #     compressed_images["SVD"].append(compressed_svd)
 
     # Patch SVD
     for rank in range(7, 192, 16):
         patch_svd = com.PatchSVD(patch_size=(8, 8))
-        compressed_patch_svd = patch_svd(image, rank=rank).clip(0, 1)
+        compressed_patch_svd = patch_svd(image, rank=rank)  # .clip(0, 1)
         compression_ratios["Patch SVD"].append(patch_svd.real_compression_ratio)
         err_values["Patch SVD"].append(metric(image, compressed_patch_svd))
         compressed_images["Patch SVD"].append(compressed_patch_svd)

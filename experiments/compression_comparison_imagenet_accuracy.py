@@ -10,7 +10,7 @@ plt.rcParams.update({"font.size": 12})
 
 size = 224
 fig, ax = plt.subplots(figsize=(9, 7))
-max_com_ratio = 20
+max_com_ratio = 40
 
 
 # Interpolation
@@ -30,7 +30,7 @@ com_ratios = com_ratios[mask]
 top1_acc = top1_acc[mask]
 com_ratios, top1_acc = zip(*sorted(zip(com_ratios, top1_acc)))
 
-ax.plot(com_ratios, top1_acc, marker="o", label="Interpolation")
+ax.plot(com_ratios, top1_acc, marker="o", markersize=5, label="Interpolation")
 
 
 # Interpolation - low
@@ -50,7 +50,7 @@ com_ratios = com_ratios[mask]
 top1_acc = top1_acc[mask]
 com_ratios, top1_acc = zip(*sorted(zip(com_ratios, top1_acc)))
 
-ax.plot(com_ratios, top1_acc, marker="o", label="Interpolation - Low")
+ax.plot(com_ratios, top1_acc, marker="o", markersize=5, label="Interpolation - Low")
 
 
 # DCT
@@ -70,7 +70,7 @@ com_ratios = com_ratios[mask]
 top1_acc = top1_acc[mask]
 com_ratios, top1_acc = zip(*sorted(zip(com_ratios, top1_acc)))
 
-ax.plot(com_ratios, top1_acc, marker="o", label="DCT")
+ax.plot(com_ratios, top1_acc, marker="o", markersize=5, label="DCT")
 
 
 # DCT - low
@@ -90,7 +90,7 @@ com_ratios = com_ratios[mask]
 top1_acc = top1_acc[mask]
 com_ratios, top1_acc = zip(*sorted(zip(com_ratios, top1_acc)))
 
-ax.plot(com_ratios, top1_acc, marker="o", label="DCT - Low")
+ax.plot(com_ratios, top1_acc, marker="o", markersize=5, label="DCT - Low")
 
 
 # PatchSVD
@@ -112,7 +112,7 @@ com_ratios = com_ratios[mask]
 top1_acc = top1_acc[mask]
 com_ratios, top1_acc = zip(*sorted(zip(com_ratios, top1_acc)))
 
-ax.plot(com_ratios, top1_acc, marker="o", label="Patch SVD")
+ax.plot(com_ratios, top1_acc, marker="o", markersize=6, label="Patch SVD")
 
 
 # Save plot
@@ -120,9 +120,9 @@ ax.grid()
 ax.set_xlabel("Compression Ratio")
 ax.set_ylabel("Top1 Accuracy")
 ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=5)
-# fig.subplots_adjust(bottom=0.2)
 fig.savefig(
     "experiments/compression_methods_comparison_top1_acc.pdf",
     format="pdf",
     dpi=600,
+    bbox_inches="tight",
 )

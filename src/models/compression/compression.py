@@ -10,6 +10,7 @@ import torch_dct as dct
 from einops import rearrange
 
 from .metrics import relative_error
+from .utils import zscore_normalize
 
 
 class Compress(ABC, nn.Module):
@@ -202,7 +203,7 @@ class DCT(Compress):
         return x_dct
 
     def decompress(
-        self, x: Tensor, original_size: Tuple[int, int], pad: bool = True
+        self, x: Tensor, original_size: Tuple[int, int], pad: bool = True, zscore=False
     ) -> Tensor:
         """Decompress the input tensor using inverse DCT.
 
@@ -221,12 +222,14 @@ class DCT(Compress):
             x = F.pad(x, pad=(0, width - cutoff_width, 0, height - cutoff_height))
 
         y = dct.idct_2d(x)  # Perform inverse DCT
+        if zscore:
+            y = zscore_normalize(y)
         return y
 
-    def forward(self, x: Tensor, *args, pad=True, **kwargs) -> Tensor:
+    def forward(self, x: Tensor, *args, pad=True, zscore=False, **kwargs) -> Tensor:
         # x: B × C × H × W
         z = self.compress(x, *args, **kwargs)
-        y = self.decompress(z, x.shape[-2:], pad=pad)
+        y = self.decompress(z, x.shape[-2:], pad=pad, zscore=zscore)
         return y
 
 
