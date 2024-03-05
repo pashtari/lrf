@@ -112,11 +112,13 @@ com_ratios = com_ratios[mask]
 top1_acc = top1_acc[mask]
 com_ratios, top1_acc = zip(*sorted(zip(com_ratios, top1_acc)))
 
-ax.plot(com_ratios, top1_acc, marker="o", markersize=6, label="Patch SVD")
+ax.plot(com_ratios, top1_acc, marker="o", markersize=5, label="Patch SVD")
 
 
 # Save plot
 ax.grid()
+ax.set_xticks(np.arange(1,41, 3))
+ax.set_xlim([-1, 42])
 ax.set_xlabel("Compression Ratio")
 ax.set_ylabel("Top1 Accuracy")
 ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.15), ncol=5)
