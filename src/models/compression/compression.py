@@ -443,14 +443,13 @@ class PatchSVD(SVD):
 
 
 def filter_topk_elements(x, k):
-
     # Calculate the absolute values of X
     absolute_x = torch.abs(x)
 
     # Flatten the tensor to work with absolute values
     flattened_x = torch.flatten(absolute_x, -2, -1)
 
-    # Use topk to find the values and indices of the K largest elements
+    # Use kthvalue to find the k largest value and it index
     kth_value = torch.kthvalue(flattened_x, flattened_x.shape[-1] - k + 1).values
 
     kth_value_unsqueezed = kth_value.unsqueeze(-1).unsqueeze(-1)

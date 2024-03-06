@@ -78,10 +78,27 @@ plt.show()
 image = torch.tensor(image).permute(-1, 0, 1).unsqueeze(0)
 
 
-# LSD patches components
-patch_lsd = com.PatchLSD(patch_size=(8, 8))
+# Patch SVD components
+patch_svd = com.PatchSVD(patch_size=(8, 8))
+u, v = patch_svd.compress(image, rank=32)
+print(f"Real compression ratio: {patch_svd.real_compression_ratio:.2f}")
+loss = patch_svd.loss(image, (u, v), image.shape[-2:]).item()
+print(f"Relative error: {loss:.4f}")
+
+
+reshaped_u, reshaped_v = patch_svd.depatchify_uv(image, u, v)
+reshaped_u = reshaped_u.transpose(1, 2)
+reshaped_v = reshaped_v.transpose(1, 2)
+visualize_batch(reshaped_u, title="Patch SVD Reshaped U Matrix")
+visualize_batch(reshaped_v, title="Patch SVD Reshaped V Matrix")
+
+
+# Patch LSD components
+patch_lsd = com.PatchLSD(patch_size=(8, 8), num_iters=5, verbose=True)
 u, v, s = patch_lsd.compress(image, rank=32, alpha=0.01)
-print(f"Real compression ratio: {patch_lsd.real_compression_ratio}")
+print(f"Real compression ratio: {patch_lsd.real_compression_ratio:.2f}")
+loss = patch_lsd.loss(image, (u, v, s), image.shape[-2:]).item()
+print(f"Relative error: {loss:.4f}")
 
 reshaped_u, reshaped_v = patch_lsd.depatchify_uv(image, u, v)
 reshaped_u = reshaped_u.transpose(1, 2)

@@ -9,7 +9,7 @@ from src.models import compression as com
 
 
 # Load the astronaut image
-image = data.cat()
+image = data.astronaut()
 
 # Convert the image to float and resize
 image = img_as_float(image)
@@ -144,7 +144,7 @@ for rank in range(3, 193, 13):
 # LSD
 alpha = 0.005
 for rank in range(2, 224, 16):
-    lsd = com.LSD(num_iters=10)
+    lsd = com.LSD(num_iters=5)
     compressed_lsd = lsd(image, rank=rank, alpha=alpha)  # .clip(0, 1)
     if lsd.real_compression_ratio >= 1:
         compression_ratios["LSD"].append(lsd.real_compression_ratio)
