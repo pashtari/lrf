@@ -1,11 +1,9 @@
-import math
-
 import numpy as np
+import torch
+import torch.nn.functional as F
 import matplotlib.pyplot as plt
 from skimage import data, img_as_float
 from skimage.transform import resize
-import torch
-import torch.nn.functional as F
 from einops import rearrange
 
 
@@ -95,15 +93,14 @@ print(f"Real compression ratio: {patch_svd.real_compression_ratio:.2f}")
 loss = patch_svd.loss(image, (u, v), image.shape[-2:]).item()
 print(f"Relative error: {loss:.4f}")
 
-
 reshaped_u, reshaped_v = patch_svd.depatchify_uv(image, u, v)
 reshaped_u = reshaped_u.transpose(1, 2)
 reshaped_v = reshaped_v.transpose(1, 2)
-visualize_batch(reshaped_u, title="Patch SVD Reshaped U Matrix")
-visualize_batch(reshaped_v, title="Patch SVD Reshaped V Matrix")
-
 components = torch.einsum("brchw, brdpq -> brdhpwq", reshaped_u, reshaped_v)
 reshaped_components = rearrange(components, "b r c h p w q -> b r c (h p) (w q)")
+
+visualize_batch(reshaped_u, title="Patch SVD Reshaped U Matrix")
+visualize_batch(reshaped_v, title="Patch SVD Reshaped V Matrix")
 visualize_batch(reshaped_components, title="Patch SVD Rank-1 Components")
 
 
@@ -117,7 +114,10 @@ print(f"Relative error: {loss:.4f}")
 reshaped_u, reshaped_v = patch_lsd.depatchify_uv(image, u, v)
 reshaped_u = reshaped_u.transpose(1, 2)
 reshaped_v = reshaped_v.transpose(1, 2)
+reshaped_l = patch_lsd.depatchify(u @ v.transpose(-2, -1), image.shape[-2:])
 reshaped_s = patch_lsd.depatchify(s, image.shape[-2:])
+
 visualize_batch(reshaped_u, title="Patch LSD Reshaped U Matrix")
 visualize_batch(reshaped_v, title="Patch LSD Reshaped V Matrix")
-visualize_batch(reshaped_s, title="Patch LSD Reshaped X Matrix")
+visualize_batch(reshaped_l, title="Patch LSD Reshaped L Matrix")
+visualize_batch(reshaped_s, title="Patch LSD Reshaped S Matrix")
