@@ -526,14 +526,19 @@ class LSD(Compress):
     def compress(
         self,
         x: Tensor,
-        rank: int,
         alpha: float,
+        rank = None,
+        compression_ratio = None
     ) -> Tuple[Tensor, Tensor, Tensor]:
         # x: B × * × M × N
         size = x.shape[-2:]
 
         # init
         u, v, s = None, None, None
+
+        if rank is None:
+            assert compression_ratio is not None, "at least rank or compression ration should be provided"
+            rank = self.get_rank(size, compression_ratio, alpha)
 
         # iterate
         for it in range(1, self.num_iters + 1):
@@ -589,12 +594,18 @@ class PatchLSD(LSD):
     def compress(
         self,
         x: Tensor,
-        rank: int,
         alpha: float,
+        rank = None,
+        compression_ratio = None
     ) -> Tuple[Tensor, Tensor, Tensor]:
         # x: B × * × M × N
 
         patches = self.patchify(x)
+
+        if rank is None:
+            assert compression_ratio is not None, "at least rank or compression ration should be provided"
+            size = patches.shape[-2:]
+            rank = self.get_rank(size, compression_ratio, alpha)
 
         # init
         u, v, s = None, None, None
@@ -610,7 +621,7 @@ class PatchLSD(LSD):
                 print(f"Iter {it}, loss = {loss}")
 
         self.real_compression_ratio = self.get_compression_ratio(
-            patches.shape[-2], rank, alpha
+            patches.shape[-2:], rank, alpha
         )
         return u, v, s
 
@@ -741,7 +752,7 @@ class PatchLSD(LSD):
 #     def decompress(self, x: Tuple[Tensor, Tensor, Tensor]) -> Tensor:
 #         u, v, s = x
 #         y = u @ v.transpose(-2, -1) + s
-#         return y
+#         return y 
 
 
 # class PatchALSD(ALSD):
@@ -780,6 +791,7 @@ class PatchLSD(LSD):
 #         self,
 #         x: Tensor,
 #         compression_ratio: float,
+#         alpha: float,
 #     ) -> Tuple[Tensor, Tensor, Tensor]:
 #         # x: B × * × M × N
 
@@ -790,39 +802,21 @@ class PatchLSD(LSD):
 #         # init
 #         u, v, s = None, None, None
 
-#         alpha = 0.0
 #         rank = self.get_rank(size, compression_ratio, alpha)
 
 #         # iterate
 #         for it in range(1, self.num_iters + 1):
-#             rank_values = [*range(1, rank + 1)]
-#             alpha_values = []
-#             loss_values = []
-#             uu = []
-#             vv = []
-#             ss = []
-#             for r in rank_values:
-#                 alpha = self.get_alpha(size, compression_ratio, r)
-#                 alpha_values.append(alpha)
+#             u, v = self.update_uv(patches, s, rank)
 
-#                 u, v = self.update_uv(patches, s, r)
-#                 s = self.update_s(patches, u, v, alpha)
-
-#                 uu.append(u)
-#                 vv.append(v)
-#                 ss.append(s)
-#                 loss_values.append(self.loss(x, (u, v, s), x.shape[-2:]))
-
-#             j = torch.stack(loss_values).flatten(1).mean(1).argmin(0).item()
-#             rank, alpha = rank_values[j], alpha_values[j]
-#             loss = loss_values[j]
-#             u, v, s = uu[j], vv[j], ss[j]
+#             s = self.update_s(patches, u, v, alpha)
 
 #             if self.verbose:
 #                 loss = self.loss(x, (u, v, s), x.shape[-2:])
 #                 print(f"Iter {it}, loss = {loss}")
 
-#         self.real_compression_ratio = self.get_compression_ratio(size, rank, alpha)
+#         self.real_compression_ratio = self.get_compression_ratio(
+#             patches.shape[-2:], rank, alpha
+#         )
 #         return u, v, s
 
 #     def decompress(
