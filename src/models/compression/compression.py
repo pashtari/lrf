@@ -482,9 +482,11 @@ class LSD(Compress):
     ) -> int:
         size = _pair(size)
         num_rows, num_cols = size
-        numerator = num_rows * num_cols - compression_ratio * rank * (num_rows + num_cols)
-        denominator = 2 * compression_ratio * num_rows * num_cols
+        numel = num_rows * num_cols
+        numerator = numel - compression_ratio * rank * (num_rows + num_cols)
+        denominator = 2 * compression_ratio * numel
         alpha = max(numerator / denominator, 0)
+        alpha = math.floor(alpha * numel) / numel
         return alpha
 
     def get_compression_ratio(
@@ -497,7 +499,7 @@ class LSD(Compress):
             num_rows + num_cols
         )  # Degrees of freedom of the low-rank matrix
         df_sparse = (
-            num_rows * num_cols * alpha * 2
+            math.floor(num_rows * num_cols * alpha) * 2
         )  # Degrees of freedom of the sparse matrix
         compression_ratio = df_input / (df_lowrank + df_sparse)
         return compression_ratio
@@ -517,8 +519,12 @@ class LSD(Compress):
         else:
             e = x - u @ v.transpose(-2, -1)
             num_rows, num_cols = x.shape[-2:]
-            zero_norm = math.floor(alpha * (num_rows * num_cols))
-            s = filter_topk_elements(e, zero_norm)
+            zero_norm = math.floor(alpha * num_rows * num_cols)
+            if zero_norm == 0:
+                s = torch.zeros_like(x)
+            else:
+                s = filter_topk_elements(e, zero_norm)
+            # update formula for l1 regularization
             # lam = (1 - alpha) / alpha
             # s = torch.relu(torch.abs(e) - lam / 2)
         return s
