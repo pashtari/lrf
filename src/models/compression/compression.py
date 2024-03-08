@@ -530,11 +530,7 @@ class LSD(Compress):
         return s
 
     def compress(
-        self,
-        x: Tensor,
-        alpha: float,
-        rank = None,
-        compression_ratio = None
+        self, x: Tensor, alpha: float, rank: int = None, compression_ratio: float = None
     ) -> Tuple[Tensor, Tensor, Tensor]:
         # x: B × * × M × N
         size = x.shape[-2:]
@@ -543,7 +539,9 @@ class LSD(Compress):
         u, v, s = None, None, None
 
         if rank is None:
-            assert compression_ratio is not None, "at least rank or compression ration should be provided"
+            assert (
+                compression_ratio is not None
+            ), "at least rank or compression ration should be provided"
             rank = self.get_rank(size, compression_ratio, alpha)
 
         # iterate
@@ -598,18 +596,16 @@ class PatchLSD(LSD):
         return patches
 
     def compress(
-        self,
-        x: Tensor,
-        alpha: float,
-        rank = None,
-        compression_ratio = None
+        self, x: Tensor, alpha: float, rank: int = None, compression_ratio: float = None
     ) -> Tuple[Tensor, Tensor, Tensor]:
         # x: B × * × M × N
 
         patches = self.patchify(x)
 
         if rank is None:
-            assert compression_ratio is not None, "at least rank or compression ration should be provided"
+            assert (
+                compression_ratio is not None
+            ), "at least rank or compression ration should be provided"
             size = patches.shape[-2:]
             rank = self.get_rank(size, compression_ratio, alpha)
 
@@ -758,7 +754,7 @@ class PatchLSD(LSD):
 #     def decompress(self, x: Tuple[Tensor, Tensor, Tensor]) -> Tensor:
 #         u, v, s = x
 #         y = u @ v.transpose(-2, -1) + s
-#         return y 
+#         return y
 
 
 # class PatchALSD(ALSD):

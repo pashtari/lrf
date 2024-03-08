@@ -151,8 +151,8 @@ for rank in range(3, 193, 13):
 
 # LSD
 for rank in range(15, 224, 16):
-    lsd = com.LSD(num_iters=10, verbose=True)
-    compressed_lsd = lsd(image, rank=rank, alpha=0.005)  # .clip(0, 1)
+    lsd = com.LSD(num_iters=10, verbose=False)
+    compressed_lsd = lsd(image, rank=rank, alpha=0.001)  # .clip(0, 1)
     if lsd.real_compression_ratio >= 1:
         compression_ratios["LSD"].append(lsd.real_compression_ratio)
         compressed_images["LSD"].append(compressed_lsd)
@@ -161,17 +161,21 @@ for rank in range(15, 224, 16):
 
 # ALSD
 for ratio in [*np.arange(1, 4, 0.5), *np.arange(4, 7, 1)]:
-    alsd = com.LSD(num_iters=10, verbose=True)
+    alsd = com.LSD(num_iters=10, verbose=False)
     rank_max = alsd.get_rank(image.shape[-2:], compression_ratio=ratio, alpha=0)
 
     alpha_log = {}
-    for rank_ in range(1, rank_max+1, int(np.ceil(rank_max/10))):
+    for rank_ in range(1, rank_max + 1, int(np.ceil(rank_max / 10))):
         alpha_ = alsd.get_alpha(image.shape[-2:], compression_ratio=ratio, rank=rank_)
-        compressed_alsd = alsd(image, compression_ratio=ratio, alpha=alpha_)  # .clip(0, 1)
+        compressed_alsd = alsd(
+            image, compression_ratio=ratio, alpha=alpha_
+        )  # .clip(0, 1)
         alpha_log[alpha_] = com.psnr(image, compressed_alsd)
-    
+
     selected_alpha = max(alpha_log, key=alpha_log.get)
-    compressed_alsd = alsd(image, compression_ratio=ratio, alpha=selected_alpha)  # .clip(0, 1)
+    compressed_alsd = alsd(
+        image, compression_ratio=ratio, alpha=selected_alpha
+    )  # .clip(0, 1)
 
     if alsd.real_compression_ratio >= 1:
         compression_ratios["ALSD"].append(alsd.real_compression_ratio)
@@ -181,9 +185,9 @@ for ratio in [*np.arange(1, 4, 0.5), *np.arange(4, 7, 1)]:
 
 
 # Patch LSD
-for rank in range(15, 192, 13):
-    patch_lsd = com.PatchLSD(patch_size=(8, 8), num_iters=10, verbose=True)
-    compressed_patch_lsd = patch_lsd(image, rank=rank, alpha=0.005)  # .clip(0, 1)
+for rank in range(3, 193, 13):
+    patch_lsd = com.PatchLSD(patch_size=(8, 8), num_iters=10, verbose=False)
+    compressed_patch_lsd = patch_lsd(image, rank=rank, alpha=0.001)  # .clip(0, 1)
     if patch_lsd.real_compression_ratio >= 1:
         compression_ratios["Patch LSD"].append(patch_lsd.real_compression_ratio)
         compressed_images["Patch LSD"].append(compressed_patch_lsd)
@@ -193,18 +197,24 @@ for rank in range(15, 192, 13):
 
 # Patch ALSD
 for ratio in [*np.arange(1, 4, 0.5), *np.arange(4, 11, 1)]:
-    patch_alsd = com.PatchLSD(patch_size=(8, 8), num_iters=10, verbose=True)
+    patch_alsd = com.PatchLSD(patch_size=(8, 8), num_iters=10, verbose=False)
     patches = patch_alsd.patchify(image)
     rank_max = patch_alsd.get_rank(patches.shape[-2:], compression_ratio=ratio, alpha=0)
 
     alpha_log = {}
-    for rank_ in range(1, rank_max+1, int(np.ceil(rank_max/10))):
-        alpha_ = patch_alsd.get_alpha(patches.shape[-2:], compression_ratio=ratio, rank=rank_)
-        compressed_patch_alsd = patch_alsd(image, compression_ratio=ratio, alpha=alpha_)  # .clip(0, 1)
+    for rank_ in range(1, rank_max + 1, int(np.ceil(rank_max / 10))):
+        alpha_ = patch_alsd.get_alpha(
+            patches.shape[-2:], compression_ratio=ratio, rank=rank_
+        )
+        compressed_patch_alsd = patch_alsd(
+            image, compression_ratio=ratio, alpha=alpha_
+        )  # .clip(0, 1)
         alpha_log[alpha_] = com.psnr(image, compressed_patch_alsd)
-    
+
     selected_alpha = max(alpha_log, key=alpha_log.get)
-    compressed_patch_alsd = patch_alsd(image, compression_ratio=ratio, alpha=selected_alpha)  # .clip(0, 1)
+    compressed_patch_alsd = patch_alsd(
+        image, compression_ratio=ratio, alpha=selected_alpha
+    )  # .clip(0, 1)
 
     if patch_alsd.real_compression_ratio >= 1:
         compression_ratios["Patch ALSD"].append(patch_alsd.real_compression_ratio)
@@ -221,7 +231,7 @@ for method, values in psnr_values.items():
 plt.xlabel("Compression Ratio")
 plt.ylabel("PSNR")
 plt.title("Comprison of Different Compression Methods")
-plt.xticks(np.arange(1, max(compression_ratios["Patch LSD"]) + 1, 3))
+plt.xticks(np.arange(1, max(compression_ratios["Patch SVD"]) + 1, 3))
 plt.legend()
 plt.grid()
 plt.savefig(
@@ -239,7 +249,7 @@ for method, values in ssim_values.items():
 plt.xlabel("Compression Ratio")
 plt.ylabel("SSIM")
 plt.title("Comprison of Different Compression Methods")
-plt.xticks(np.arange(1, max(compression_ratios["Patch LSD"]) + 1, 3))
+plt.xticks(np.arange(1, max(compression_ratios["Patch SVD"]) + 1, 3))
 plt.legend()
 plt.grid()
 plt.savefig(
