@@ -54,7 +54,7 @@ sbatch --account=lp_inspiremed --job-name=dct_tinyimagenet_sgl --clusters=genius
 sleep 1
 
 
-##### pretrained resnet50
+##### pretrained imagenet resnet50
 sbatch --account=lp_inspiremed --job-name=interpolate_imagenet_pretrained_resnet50 --clusters=genius --nodes=1 --ntasks-per-node=1 --cpus-per-task=4 --gres=gpu:1 --time=06:00:00 --partition=gpu_v100 interpolate_imagenet_pretrained_resnet50.sh
 sbatch --account=lp_inspiremed --job-name=interpolate_imagenet_pretrained_resnet50_low --clusters=genius --nodes=1 --ntasks-per-node=1 --cpus-per-task=4 --gres=gpu:1 --time=06:00:00 --partition=gpu_v100 interpolate_imagenet_pretrained_resnet50_low.sh
 sbatch --account=lp_inspiremed --job-name=dct_imagenet_pretrained_resnet50 --clusters=genius --nodes=1 --ntasks-per-node=1 --cpus-per-task=4 --gres=gpu:1 --time=06:00:00 --partition=gpu_v100 dct_imagenet_pretrained_resnet50.sh
@@ -65,6 +65,9 @@ sbatch --account=lp_inspiremed --job-name=patchsvd_imagenet_pretrained_resnet50 
 sbatch --account=lp_inspiremed --job-name=resnet50_cifar10 --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=4 --gres=gpu:2 --time=9:00:00 --partition=gpu_v100 resnet50_cifar10.sh
 sbatch --account=lp_inspiremed --job-name=resnet50_cifar100 --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=4 --gres=gpu:2 --time=11:00:00 --partition=gpu_v100 resnet50_cifar100.sh
 
+##### pretrained cifar10 resnet50
+sbatch --account=lp_inspiremed --job-name=interpolate_cifar10_pretrained_resnet50 --clusters=genius --nodes=1 --ntasks-per-node=1 --cpus-per-task=9 --gres=gpu:1 --time=1:00:00 --partition=gpu_p100  interpolate_cifar10_pretrained_resnet50.sh
+sbatch --account=lp_inspiremed --job-name=interpolate_cifar10_pretrained_resnet50_low --clusters=genius --nodes=1 --ntasks-per-node=1 --cpus-per-task=9 --gres=gpu:1 --time=1:00:00 --partition=gpu_p100  interpolate_cifar10_pretrained_resnet50_low.sh
 
 #### for tensorboard
 cd $VSC_DATA/projects/lsvd/logs
