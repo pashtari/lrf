@@ -232,8 +232,16 @@ def resnet34(*args, **kwargs):
     return ResNet(BasicBlock, [3, 4, 6, 3], *args, **kwargs)
 
 
-def resnet50(*args, **kwargs):
-    return ResNet(Bottleneck, [3, 4, 6, 3], *args, **kwargs)
+def resnet50(pretrained_weights_path=None, *args, **kwargs):
+    model = ResNet(Bottleneck, [3, 4, 6, 3], *args, **kwargs)
+
+    if pretrained_weights_path is not None:
+        if torch.cuda.is_available():
+            model.load_state_dict(torch.load(pretrained_weights_path))
+        else:
+            model.load_state_dict(torch.load(pretrained_weights_path, map_location=torch.device('cpu')))
+
+    return model
 
 
 def resnet101(*args, **kwargs):
