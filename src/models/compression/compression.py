@@ -482,9 +482,11 @@ class LSD(Compress):
     ) -> int:
         size = _pair(size)
         num_rows, num_cols = size
-        numerator = num_rows * num_cols - compression_ratio * rank * (num_rows + num_cols)
-        denominator = 2 * compression_ratio * num_rows * num_cols
+        numel = num_rows * num_cols
+        numerator = numel - compression_ratio * rank * (num_rows + num_cols)
+        denominator = 2 * compression_ratio * numel
         alpha = max(numerator / denominator, 0)
+        alpha = math.floor(alpha * numel) / numel
         return alpha
 
     def get_compression_ratio(
@@ -497,7 +499,7 @@ class LSD(Compress):
             num_rows + num_cols
         )  # Degrees of freedom of the low-rank matrix
         df_sparse = (
-            num_rows * num_cols * alpha * 2
+            math.floor(num_rows * num_cols * alpha) * 2
         )  # Degrees of freedom of the sparse matrix
         compression_ratio = df_input / (df_lowrank + df_sparse)
         return compression_ratio
@@ -517,18 +519,18 @@ class LSD(Compress):
         else:
             e = x - u @ v.transpose(-2, -1)
             num_rows, num_cols = x.shape[-2:]
-            zero_norm = math.floor(alpha * (num_rows * num_cols))
-            s = filter_topk_elements(e, zero_norm)
+            zero_norm = math.floor(alpha * num_rows * num_cols)
+            if zero_norm == 0:
+                s = torch.zeros_like(x)
+            else:
+                s = filter_topk_elements(e, zero_norm)
+            # update formula for l1 regularization
             # lam = (1 - alpha) / alpha
             # s = torch.relu(torch.abs(e) - lam / 2)
         return s
 
     def compress(
-        self,
-        x: Tensor,
-        alpha: float,
-        rank = None,
-        compression_ratio = None
+        self, x: Tensor, alpha: float, rank: int = None, compression_ratio: float = None
     ) -> Tuple[Tensor, Tensor, Tensor]:
         # x: B × * × M × N
         size = x.shape[-2:]
@@ -537,7 +539,9 @@ class LSD(Compress):
         u, v, s = None, None, None
 
         if rank is None:
-            assert compression_ratio is not None, "at least rank or compression ration should be provided"
+            assert (
+                compression_ratio is not None
+            ), "at least rank or compression ration should be provided"
             rank = self.get_rank(size, compression_ratio, alpha)
 
         # iterate
@@ -592,18 +596,16 @@ class PatchLSD(LSD):
         return patches
 
     def compress(
-        self,
-        x: Tensor,
-        alpha: float,
-        rank = None,
-        compression_ratio = None
+        self, x: Tensor, alpha: float, rank: int = None, compression_ratio: float = None
     ) -> Tuple[Tensor, Tensor, Tensor]:
         # x: B × * × M × N
 
         patches = self.patchify(x)
 
         if rank is None:
-            assert compression_ratio is not None, "at least rank or compression ration should be provided"
+            assert (
+                compression_ratio is not None
+            ), "at least rank or compression ration should be provided"
             size = patches.shape[-2:]
             rank = self.get_rank(size, compression_ratio, alpha)
 
@@ -752,7 +754,7 @@ class PatchLSD(LSD):
 #     def decompress(self, x: Tuple[Tensor, Tensor, Tensor]) -> Tensor:
 #         u, v, s = x
 #         y = u @ v.transpose(-2, -1) + s
-#         return y 
+#         return y
 
 
 # class PatchALSD(ALSD):
