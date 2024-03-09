@@ -1,11 +1,19 @@
-#!/bin/bash
+#!/bin/bash -l
+
+# SBATCH --account=lp_inspiremed
+# SBATCH --clusters=genius
+# SBATCH --partition=gpu_v100
+# SBATCH --nodes=1
+# SBATCH --ntasks=8
+# SBATCH --cpus-per-task=1
+# SBATCH --gpus-per-node=2
+# SBATCH --time=1:00:00
+# SBATCH --job-name=dct_cifar10_com
 
 export PATH="${VSC_DATA}/miniconda3/bin:${PATH}"
 source activate deepenv
 
-
 ROOT_DIR="${VSC_DATA}/projects/lsvd"
-
 cd ${ROOT_DIR}/src
 
 TASK_NAME=dct_cifar10_com
