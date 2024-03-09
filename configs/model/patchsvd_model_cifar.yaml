@@ -1,15 +1,13 @@
-_target_: src.models.DCTModel
+_target_: src.models.PatchSVDModel
 net:
     _target_: src.models.resnet.resnet50
     _partial_: true
 num_classes: 10
-original_size: 32
-domain: compressed
-new_size:
+patch_size: 2
+domain: decompressed
+rank:
     _target_: numpy.arange
-    start: 8
-    stop: 33
+    start: 1
+    stop: 12
     step: 1
-pad: false
 no_grad: true
-zscore: false

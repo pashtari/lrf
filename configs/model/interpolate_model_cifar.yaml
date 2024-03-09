@@ -1,6 +1,6 @@
 _target_: src.models.InterpolateModel
 net:
-    _target_: src.models.resnet50
+    _target_: src.models.resnet.resnet50
     _partial_: true
 num_classes: 10
 rescale: false
