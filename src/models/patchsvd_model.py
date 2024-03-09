@@ -60,7 +60,7 @@ class PatchSVDModel(nn.Module):
                     num_classes=self.num_classes, **kwargs
                 )
             else:
-                self.net = net(**kwargs)
+                self.net = net(num_classes=self.num_classes, **kwargs)
 
     def context(self):
         if self.no_grad:

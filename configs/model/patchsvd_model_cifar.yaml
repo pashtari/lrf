@@ -1,6 +1,6 @@
 _target_: src.models.PatchSVDModel
 net:
-    _target_: torchvision.models.resnet50
+    _target_: src.models.resnet.resnet50
     _partial_: true
 num_classes: 10
 patch_size: 2

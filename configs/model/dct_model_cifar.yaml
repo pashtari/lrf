@@ -1,6 +1,6 @@
 _target_: src.models.DCTModel
 net:
-    _target_: src.models.resnet50
+    _target_: src.models.resnet.resnet50
     _partial_: true
 num_classes: 10
 original_size: 32
@@ -12,3 +12,4 @@ new_size:
     step: 1
 pad: false
 no_grad: true
+zscore: false
