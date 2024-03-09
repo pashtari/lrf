@@ -260,40 +260,40 @@ plt.savefig(
 plt.show()
 
 
-# # Plotting the compressed images for each method and compression ratio
-# selected_ratios = [2, 5, 10, 15, 20, 25]
-# selected_methods = ["Interpolation", "DCT", "Patch SVD", "Patch LSD"]
-# fig, axs = plt.subplots(
-#     len(selected_ratios),
-#     len(selected_methods),
-#     figsize=(5 * len(selected_methods), 5 * len(selected_ratios)),
-# )
+# Plotting the compressed images for each method and compression ratio
+selected_ratios = [2, 5, 10, 15, 20, 25]
+selected_methods = ["Interpolation", "DCT", "Patch SVD", "Patch LSD"]
+fig, axs = plt.subplots(
+    len(selected_ratios),
+    len(selected_methods),
+    figsize=(5 * len(selected_methods), 5 * len(selected_ratios)),
+)
 
-# # Setting titles for columns
-# for ax, method in zip(axs[0], selected_methods):
-#     ax.set_title(method, fontsize=24)
+# Setting titles for columns
+for ax, method in zip(axs[0], selected_methods):
+    ax.set_title(method, fontsize=24)
 
-# for i, ratio in enumerate(selected_ratios):
-#     for j, method in enumerate(selected_methods):
-#         ii = np.argmin(np.abs(np.array(compression_ratios[method]) - ratio))
-#         compressed_image = compressed_images[method][ii]
-#         axs[i, j].imshow(compressed_image.squeeze(0).permute(1, 2, 0))
-#         real_ratio = compression_ratios[method][ii]
-#         axs[i, j].set_ylabel(f"Ratio = {real_ratio:.2f}", rotation=90, fontsize=18)
-#         axs[i, j].tick_params(
-#             axis="both",
-#             which="both",
-#             bottom=False,
-#             left=False,
-#             labelbottom=False,
-#             labelleft=False,
-#         )
+for i, ratio in enumerate(selected_ratios):
+    for j, method in enumerate(selected_methods):
+        ii = np.argmin(np.abs(np.array(compression_ratios[method]) - ratio))
+        compressed_image = compressed_images[method][ii]
+        axs[i, j].imshow(compressed_image.squeeze(0).permute(1, 2, 0))
+        real_ratio = compression_ratios[method][ii]
+        axs[i, j].set_ylabel(f"Ratio = {real_ratio:.2f}", rotation=90, fontsize=18)
+        axs[i, j].tick_params(
+            axis="both",
+            which="both",
+            bottom=False,
+            left=False,
+            labelbottom=False,
+            labelleft=False,
+        )
 
 
-# plt.tight_layout()
-# plt.savefig(
-#     "experiments/compression_methods_qualitative_comparison.pdf",
-#     format="pdf",
-#     dpi=600,
-# )
-# plt.show()
+plt.tight_layout()
+plt.savefig(
+    "experiments/compression_methods_qualitative_comparison.pdf",
+    format="pdf",
+    dpi=600,
+)
+plt.show()

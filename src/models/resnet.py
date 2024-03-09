@@ -1,6 +1,5 @@
 from typing import List, Optional, Type, Union
 
-import torch
 import torch.nn as nn
 from torch import Tensor
 
@@ -158,6 +157,7 @@ class ResNet(nn.Module):
         self.layer3 = self._make_layer(block, 256, layers[2], stride=2)
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.avgpool = self._avgp_type(tuple(1 for i in range(spatial_dims)))
+        self.flatten = nn.Flatten(start_dim=1)
         self.fc = nn.Linear(512 * block.expansion, num_classes)
 
         for m in self.modules():
@@ -204,9 +204,9 @@ class ResNet(nn.Module):
             layers.append(block(self.in_planes, planes, self.spatial_dims))
 
         return nn.Sequential(*layers)
-    
+
     def forward(self, x: Tensor) -> Tensor:
-        x = self.conv1(x   )
+        x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
         if not self.no_maxpool:
@@ -218,7 +218,7 @@ class ResNet(nn.Module):
         x = self.layer4(x)
 
         x = self.avgpool(x)
-        x = torch.flatten(x, 1)
+        x = self.flatten(x)
         x = self.fc(x)
 
         return x

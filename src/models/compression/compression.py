@@ -358,8 +358,8 @@ class PatchSVD(SVD):
             Tuple[Tensor, Tensor]: The u and v matrices reshaped.
         """
         p1, p2 = self.patch_size
-        u_new = rearrange(u, "b (h w) r -> b 1 r h w", h=x.shape[-2] // p1)
-        v_new = rearrange(v, "b (c p1 p2) r -> b c r p1 p2", p1=p1, p2=p2)
+        u_new = rearrange(u, "b (h w) r -> b r 1 h w", h=x.shape[-2] // p1)
+        v_new = rearrange(v, "b (c p1 p2) r -> b r c p1 p2", p1=p1, p2=p2)
         return u_new, v_new
 
     def depatchify(self, x: Tensor, size: Tuple[int, int]) -> Tensor:

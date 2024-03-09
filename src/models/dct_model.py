@@ -24,7 +24,6 @@ class DCTModel(nn.Module):
     ):
         super(DCTModel, self).__init__()
 
-        self.updated_compression_ratio = None
         self.original_size = _pair(original_size)
         if new_size is None:
             self.new_size = (self.original_size,)
@@ -35,6 +34,7 @@ class DCTModel(nn.Module):
         else:
             raise ValueError("`new_size` type is incorrect.")
 
+        self.real_compression_ratio = None
         self.pad = pad
         self.zscore = zscore
         assert domain in ("compressed", "decompressed", "com", "dec")
@@ -62,9 +62,11 @@ class DCTModel(nn.Module):
             )
             if self.domain in ("compressed", "com"):
                 z = self.dct.compress(x, compression_ratio=compression_ratio)
+                self.real_compression_ratio = self.dct.real_compression_ratio
             else:
                 if compression_ratio == 1:
                     z = x
+                    self.real_compression_ratio = 1
                 else:
                     z = self.dct(
                         x,
@@ -72,6 +74,7 @@ class DCTModel(nn.Module):
                         pad=self.pad,
                         zscore=self.zscore,
                     )
+                    self.real_compression_ratio = self.dct.real_compression_ratio
 
         return z
 

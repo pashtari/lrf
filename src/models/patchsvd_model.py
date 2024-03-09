@@ -39,6 +39,7 @@ class PatchSVDModel(nn.Module):
         else:
             raise ValueError("`new_size` type is incorrect.")
 
+        self.real_compression_ratio = None
         self.patch_svd = PatchSVD(patch_size=self.patch_size)
 
         assert domain in ("compressed", "decompressed", "com", "dec")
@@ -76,12 +77,15 @@ class PatchSVDModel(nn.Module):
             if self.domain in ("compressed", "com"):
                 uv = self.patch_svd.compress(x, rank=rank)
                 z = self.patch_svd.depatchify_uv(x, *uv)
+                self.real_compression_ratio = self.patch_svd.real_compression_ratio
             else:
                 patch_numel = x.shape[1] * self.patch_size[0] * self.patch_size[1]
                 if rank == patch_numel:
                     z = x
+                    self.real_compression_ratio = 1
                 else:
                     z = self.patch_svd(x, rank=rank)
+                    self.real_compression_ratio = self.patch_svd.real_compression_ratio
         return z
 
     def forward(self, x):
@@ -157,10 +161,16 @@ class ResNetBody(nn.Module):
         super().__init__()
         resnet = resnet50(**kwargs)
         resnet.conv1 = nn.Identity()
-        self.feature_extractor = create_feature_extractor(
-            resnet, return_nodes={f"{output_layer}": "features"}
-        )
+        resnet.avgpool = nn.Identity()
+        resnet.flatten = nn.Identity()
+        resnet.fc = nn.Identity()
+        # self.feature_extractor = create_feature_extractor(
+        #     resnet, return_nodes={f"{output_layer}": "features"}
+        # )
+        self.body = resnet
 
     def forward(self, x):
-        features = self.feature_extractor(x)["features"]
-        return features
+        # features = self.feature_extractor(x)["features"]
+        # return features
+        out = self.body(x)
+        return out

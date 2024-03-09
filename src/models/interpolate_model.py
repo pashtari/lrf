@@ -23,7 +23,6 @@ class InterpolateModel(nn.Module):
     ):
         super(InterpolateModel, self).__init__()
 
-        self.updated_compression_ratio = None
         self.original_size = _pair(original_size)
         if new_size is None:
             self.new_size = (self.original_size,)
@@ -34,6 +33,7 @@ class InterpolateModel(nn.Module):
         else:
             raise ValueError("`new_size` type is incorrect.")
 
+        self.real_compression_ratio = None
         self.rescale = rescale
         self.no_grad = no_grad
         if net is None:
@@ -58,10 +58,13 @@ class InterpolateModel(nn.Module):
             )
             if compression_ratio == 1:
                 z = x
+                self.real_compression_ratio = 1
             else:
                 z = self.interpolate.compress(x, compression_ratio=compression_ratio)
+                self.real_compression_ratio = self.interpolate.real_compression_ratio
             if self.rescale and compression_ratio != 1:
                 z = self.interpolate.decompress(z, original_size=self.original_size)
+                self.real_compression_ratio = self.interpolate.real_compression_ratio
         return z
 
     def forward(self, x):
