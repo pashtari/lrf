@@ -1,5 +1,6 @@
 from typing import List, Optional, Type, Union
 
+import torch
 import torch.nn as nn
 from torch import Tensor
 
@@ -114,6 +115,75 @@ class Bottleneck(nn.Module):
         return out
 
 
+class Bottleneck3d(nn.Module):
+
+    expansion: int = 4
+
+    def __init__(
+        self,
+        in_planes: int,
+        planes: int,
+        spatial_dims: int = 3,
+        stride: int = 1,
+        downsample: Optional[nn.Module] = None,
+    ) -> None:
+        super().__init__()
+        self.conv1 = nn.Conv3d(in_planes, planes, kernel_size=1, bias=False)
+        self.bn1 = nn.BatchNorm3d(planes)
+
+        self.conv2 = nn.Conv3d(
+            planes,
+            planes,
+            kernel_size=(1, 3, 3),
+            stride=(1, stride, stride),
+            padding=(0, 1, 1),
+            bias=False,
+            groups=planes,
+        )
+        self.bn2 = nn.BatchNorm3d(planes)
+        self.conv3 = nn.Conv3d(
+            planes,
+            planes,
+            kernel_size=(3, 1, 1),
+            stride=(stride, 1, 1),
+            padding=(1, 0, 0),
+            bias=False,
+        )
+        self.bn3 = nn.BatchNorm3d(planes)
+
+        self.conv4 = nn.Conv3d(planes, planes * self.expansion, kernel_size=1, bias=False)
+        self.bn4 = nn.BatchNorm3d(planes * self.expansion)
+
+        self.relu = nn.ReLU(inplace=True)
+        self.downsample = downsample
+        self.stride = stride
+
+    def forward(self, x: Tensor) -> Tensor:
+        identity = x
+
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.relu(out)
+
+        out = self.conv2(out)
+        out = self.bn2(out)
+        out = self.relu(out)
+        out = self.conv3(out)
+        out = self.bn3(out)
+        out = self.relu(out)
+
+        out = self.conv4(out)
+        out = self.bn4(out)
+
+        if self.downsample is not None:
+            identity = self.downsample(x)
+
+        out += identity
+        out = self.relu(out)
+
+        return out
+
+
 class ResNet(nn.Module):
     def __init__(
         self,
@@ -198,10 +268,18 @@ class ResNet(nn.Module):
         else:
             downsample = None
 
-        layers = [block(self.in_planes, planes, self.spatial_dims, stride, downsample)]
+        layers = [
+            block(
+                self.in_planes,
+                planes,
+                spatial_dims=self.spatial_dims,
+                stride=stride,
+                downsample=downsample,
+            )
+        ]
         self.in_planes = planes * block.expansion
         for _ in range(1, blocks):
-            layers.append(block(self.in_planes, planes, self.spatial_dims))
+            layers.append(block(self.in_planes, planes, spatial_dims=self.spatial_dims))
 
         return nn.Sequential(*layers)
 
@@ -224,32 +302,36 @@ class ResNet(nn.Module):
         return x
 
 
-def resnet18(*args, **kwargs):
-    return ResNet(BasicBlock, [2, 2, 2, 2], *args, **kwargs)
+def resnet(block, layers, weights=None, **kwargs):
+    model = ResNet(block, [3, 4, 6, 3], **kwargs)
 
-
-def resnet34(*args, **kwargs):
-    return ResNet(BasicBlock, [3, 4, 6, 3], *args, **kwargs)
-
-
-def resnet50(pretrained_weights_path=None, *args, **kwargs):
-    model = ResNet(Bottleneck, [3, 4, 6, 3], *args, **kwargs)
-
-    if pretrained_weights_path is not None:
+    if weights is not None:
         if torch.cuda.is_available():
-            model.load_state_dict(torch.load(pretrained_weights_path))
+            model.load_state_dict(torch.load(weights))
         else:
-            model.load_state_dict(torch.load(pretrained_weights_path, map_location=torch.device('cpu')))
+            model.load_state_dict(torch.load(weights, map_location=torch.device("cpu")))
 
     return model
 
 
+def resnet18(*args, **kwargs):
+    return resnet(BasicBlock, [2, 2, 2, 2], *args, **kwargs)
+
+
+def resnet34(*args, **kwargs):
+    return resnet(BasicBlock, [3, 4, 6, 3], *args, **kwargs)
+
+
+def resnet50(*args, **kwargs):
+    return resnet(Bottleneck, [3, 4, 6, 3], *args, **kwargs)
+
+
 def resnet101(*args, **kwargs):
-    return ResNet(Bottleneck, [3, 4, 23, 3], *args, **kwargs)
+    return resnet(Bottleneck, [3, 4, 23, 3], *args, **kwargs)
 
 
 def resnet152(*args, **kwargs):
-    return ResNet(Bottleneck, [3, 8, 36, 3], *args, **kwargs)
+    return resnet(Bottleneck, [3, 8, 36, 3], *args, **kwargs)
 
 
 # def test():

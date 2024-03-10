@@ -5,12 +5,11 @@ import random
 import torch
 from torch import nn
 from torch.nn.modules.utils import _pair
-from torchvision.models.feature_extraction import create_feature_extractor
 import torchvision
 from einops import rearrange
 
-from .compression import PatchSVD
-from .resnet import resnet50
+from .compression import PatchSVD, zscore_normalize
+from .resnet import resnet, Bottleneck3d
 from ..utils.helper import null_context
 
 
@@ -75,9 +74,10 @@ class PatchSVDModel(nn.Module):
         with self.context():
             rank = random.choice(self.rank)
             if self.domain in ("compressed", "com"):
-                uv = self.patch_svd.compress(x, rank=rank)
-                z = self.patch_svd.depatchify_uv(x, *uv)
+                u, v = self.patch_svd.compress(x, rank=rank)
+                u, v = self.patch_svd.depatchify_uv(x, u, v)
                 self.real_compression_ratio = self.patch_svd.real_compression_ratio
+                z = zscore_normalize(u), zscore_normalize(v)
             else:
                 patch_numel = x.shape[1] * self.patch_size[0] * self.patch_size[1]
                 if rank == patch_numel:
@@ -110,67 +110,109 @@ class UVModel(nn.Module):
         self.base_width = base_width
         self.num_classes = num_classes
 
-        self.conv_u = nn.Conv3d(
-            self.u_channels,
-            self.base_width,
-            kernel_size=3,
-            stride=1,
-            padding=1,
+        self.conv1_u = nn.Conv3d(
+            in_channels=u_channels,
+            out_channels=self.base_width,
+            kernel_size=(3, 3, 3),
+            stride=(2, 2, 2),
+            padding=(1, 1, 1),
             bias=False,
         )
-        self.conv_v = nn.Conv3d(
-            self.v_channels,
-            self.base_width,
-            kernel_size=3,
-            stride=1,
-            padding=1,
+        self.bn1_u = nn.BatchNorm3d(self.base_width)
+        self.conv2_u = nn.Conv3d(
+            in_channels=self.base_width,
+            out_channels=self.base_width,
+            kernel_size=(3, 1, 1),
+            stride=(2, 1, 1),
+            padding=(1, 0, 0),
             bias=False,
         )
+        self.bn2_u = nn.BatchNorm3d(self.base_width)
+
+        self.conv1_v = nn.Conv3d(
+            in_channels=v_channels,
+            out_channels=self.base_width,
+            kernel_size=(3, 3, 3),
+            stride=(2, 1, 1),
+            padding=(1, 1, 1),
+            bias=False,
+        )
+        self.bn1_v = nn.BatchNorm3d(self.base_width)
+        self.conv2_v = nn.Conv3d(
+            in_channels=self.base_width,
+            out_channels=self.base_width,
+            kernel_size=(3, 1, 1),
+            stride=(2, 1, 1),
+            padding=(1, 0, 0),
+            bias=False,
+        )
+        self.bn2_v = nn.BatchNorm3d(self.base_width)
+
         if backbone is None:
             self.backbone = ResNetBody(
-                output_layer="layer4", spatial_dims=3, no_maxpool=True, **kwargs
+                net=resnet,
+                block=Bottleneck3d,
+                layers=[3, 4, 6, 3],
+                spatial_dims=3,
+                **kwargs,
             )
         else:
             self.backbone = backbone(**kwargs)
 
-        self.fc = nn.LazyLinear(self.num_classes)
+        self.flatten = nn.Flatten(start_dim=1)
+        self.fc = nn.LazyLinear(out_features=self.num_classes)
 
-    def forward(self, x):
-        u, v = x
-        u = self.conv_u(u)
+    def forward(self, x: torch.Tensor):
+        # u, v = x  # u: B × 1 × R × H × W,    v: B × 3 × R × P × P
+        # u, v = u.flatten(1, 2), v.flatten(1, 2)
+
+        u, v = x  # u: B × R × 1 × H × W,    v: B × R × 3 × P × P
+
+        u = self.conv1_u(u)
+        u = self.bn1_u(u)
+        u = self.conv2_u(u)
+        u = self.bn2_u(u)
         u = self.backbone(u)
 
-        v = self.conv_v(v)
+        v = self.conv1_v(v)
+        v = self.bn1_v(v)
+        v = self.conv2_v(v)
+        v = self.bn2_v(v)
         v = self.backbone(v)
 
         u = torch.mean(u, dim=(-2, -1))
         v = torch.mean(v, dim=(-2, -1))
+
+        # c = math.floor(2 ** (math.log2(u.shape[1]) // 2))
+        # u = rearrange(u, "b (g c) -> b g c", c=c)
+        # v = rearrange(v, "b (g c) -> b g c", c=c)
+
+        # y = torch.einsum("b f c, b g c -> b f g", u, v)
 
         c = math.floor(2 ** (math.log2(u.shape[1]) // 2))
         u = rearrange(u, "b (c e) r -> b c e r", c=c)
         v = rearrange(v, "b (c e) r -> b c e r", c=c)
 
         y = torch.einsum("b c e r, b d e r -> b c d", u, v)
-        y = torch.flatten(y, 1)
+
+        y = self.flatten(y)
         y = self.fc(y)
         return y
 
 
 class ResNetBody(nn.Module):
-    def __init__(self, output_layer="layer4", **kwargs):
+    def __init__(self, net, **kwargs):
         super().__init__()
-        resnet = resnet50(**kwargs)
-        resnet.conv1 = nn.Identity()
-        resnet.avgpool = nn.Identity()
-        resnet.flatten = nn.Identity()
-        resnet.fc = nn.Identity()
-        # self.feature_extractor = create_feature_extractor(
-        #     resnet, return_nodes={f"{output_layer}": "features"}
-        # )
-        self.body = resnet
+
+        model = net(**kwargs)
+        self.layer1 = model.layer1
+        self.layer2 = model.layer2
+        self.layer3 = model.layer3
+        self.layer4 = model.layer4
 
     def forward(self, x):
-        # features = self.feature_extractor(x)["features"]
-        # return features
-        out = self.body(x)
+        out = self.layer1(x)
+        out = self.layer2(out)
+        out = self.layer3(out)
+        out = self.layer4(out)
         return out
