@@ -1,13 +1,6 @@
 _target_: src.models.PatchSVDModel
-net:
-    _target_: src.models.resnet.resnet50
-    _partial_: true
 num_classes: 10
-patch_size: 2
-domain: decompressed
-rank:
-    _target_: numpy.arange
-    start: 1
-    stop: 12
-    step: 1
+patch_size: 4
+domain: compressed
+rank: -1
 no_grad: true

@@ -332,15 +332,3 @@ def resnet101(*args, **kwargs):
 
 def resnet152(*args, **kwargs):
     return resnet(Bottleneck, [3, 8, 36, 3], *args, **kwargs)
-
-
-# def test():
-#     net = resnet50(
-#         spatial_dims=3,
-#         num_classes=10,
-#         conv1_kernel_size=3,
-#         conv1_stride=1,
-#         no_maxpool=True,
-#     )
-#     y = net(torch.randn(1, 3, 32, 32, 32))
-#     print(y.size())
