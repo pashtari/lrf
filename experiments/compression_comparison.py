@@ -23,7 +23,7 @@ plt.title("Astronaut Image")
 plt.show()
 
 # Convert to channel-first pytorch tensor
-image = torch.tensor(image).permute(-1, 0, 1).unsqueeze(0)
+image = torch.tensor(image, dtype=torch.float64).permute(-1, 0, 1).unsqueeze(0)
 
 
 # Store errors and compressed images for each method and compression ratio
@@ -35,10 +35,10 @@ compression_ratios = {
     "DCT - Low": [],
     "SVD": [],
     "Patch SVD": [],
-    "LSD": [],
-    "Patch LSD": [],
-    "ALSD": [],
-    "Patch ALSD": [],
+    # "LSD": [],
+    # "Patch LSD": [],
+    # "ALSD": [],
+    # "Patch ALSD": [],
 }
 
 compressed_images = {
@@ -49,10 +49,10 @@ compressed_images = {
     "DCT - Low": [],
     "SVD": [],
     "Patch SVD": [],
-    "LSD": [],
-    "Patch LSD": [],
-    "ALSD": [],
-    "Patch ALSD": [],
+    # "LSD": [],
+    # "Patch LSD": [],
+    # "ALSD": [],
+    # "Patch ALSD": [],
 }
 
 psnr_values = {
@@ -61,10 +61,10 @@ psnr_values = {
     "DCT": [],
     "SVD": [],
     "Patch SVD": [],
-    "LSD": [],
-    "Patch LSD": [],
-    "ALSD": [],
-    "Patch ALSD": [],
+    # "LSD": [],
+    # "Patch LSD": [],
+    # "ALSD": [],
+    # "Patch ALSD": [],
 }
 ssim_values = {
     "Interpolation": [],
@@ -72,10 +72,10 @@ ssim_values = {
     "DCT": [],
     "SVD": [],
     "Patch SVD": [],
-    "LSD": [],
-    "Patch LSD": [],
-    "ALSD": [],
-    "Patch ALSD": [],
+    # "LSD": [],
+    # "Patch LSD": [],
+    # "ALSD": [],
+    # "Patch ALSD": [],
 }
 
 # Calculate reconstructed images and metric values for each method
@@ -140,7 +140,7 @@ for rank in range(2, 224, 16):
         ssim_values["SVD"].append(com.ssim(image, compressed_svd).item())
 
 # Patch SVD
-for rank in range(3, 193, 13):
+for rank in range(3, 193, 7):
     patch_svd = com.PatchSVD(patch_size=(8, 8))
     compressed_patch_svd = patch_svd(image, rank=rank)  # .clip(0, 1)
     if patch_svd.real_compression_ratio >= 1:
@@ -149,79 +149,85 @@ for rank in range(3, 193, 13):
         psnr_values["Patch SVD"].append(com.psnr(image, compressed_patch_svd).item())
         ssim_values["Patch SVD"].append(com.ssim(image, compressed_patch_svd).item())
 
-# LSD
-for rank in range(15, 224, 16):
-    lsd = com.LSD(num_iters=10, verbose=False)
-    compressed_lsd = lsd(image, rank=rank, alpha=0.001)  # .clip(0, 1)
-    if lsd.real_compression_ratio >= 1:
-        compression_ratios["LSD"].append(lsd.real_compression_ratio)
-        compressed_images["LSD"].append(compressed_lsd)
-        psnr_values["LSD"].append(com.psnr(image, compressed_lsd).item())
-        ssim_values["LSD"].append(com.ssim(image, compressed_lsd).item())
+# # LSD
+# for rank in range(15, 224, 16):
+#     lsd = com.LSD(num_iters=10, verbose=False)
+#     compressed_lsd = lsd(image, rank=rank, alpha=0.001)  # .clip(0, 1)
+#     if lsd.real_compression_ratio >= 1:
+#         compression_ratios["LSD"].append(lsd.real_compression_ratio)
+#         compressed_images["LSD"].append(compressed_lsd)
+#         psnr_values["LSD"].append(com.psnr(image, compressed_lsd).item())
+#         ssim_values["LSD"].append(com.ssim(image, compressed_lsd).item())
 
-# ALSD
-for ratio in [*np.arange(1, 4, 0.5), *np.arange(4, 7, 1)]:
-    alsd = com.LSD(num_iters=10, verbose=False)
-    rank_max = alsd.get_rank(image.shape[-2:], compression_ratio=ratio, alpha=0)
-
-    alpha_log = {}
-    for rank_ in range(1, rank_max + 1, int(np.ceil(rank_max / 10))):
-        alpha_ = alsd.get_alpha(image.shape[-2:], compression_ratio=ratio, rank=rank_)
-        compressed_alsd = alsd(
-            image, compression_ratio=ratio, alpha=alpha_
-        )  # .clip(0, 1)
-        alpha_log[alpha_] = com.psnr(image, compressed_alsd)
-
-    selected_alpha = max(alpha_log, key=alpha_log.get)
-    compressed_alsd = alsd(
-        image, compression_ratio=ratio, alpha=selected_alpha
-    )  # .clip(0, 1)
-
-    if alsd.real_compression_ratio >= 1:
-        compression_ratios["ALSD"].append(alsd.real_compression_ratio)
-        compressed_images["ALSD"].append(compressed_alsd)
-        psnr_values["ALSD"].append(com.psnr(image, compressed_alsd))
-        ssim_values["ALSD"].append(com.ssim(image, compressed_alsd))
+# # Patch LSD
+# for rank in range(3, 193, 13):
+#     patch_lsd = com.PatchLSD(patch_size=(8, 8), num_iters=10, verbose=False)
+#     compressed_patch_lsd = patch_lsd(image, rank=rank, alpha=0.001)  # .clip(0, 1)
+#     if patch_lsd.real_compression_ratio >= 1:
+#         compression_ratios["Patch LSD"].append(patch_lsd.real_compression_ratio)
+#         compressed_images["Patch LSD"].append(compressed_patch_lsd)
+#         psnr_values["Patch LSD"].append(com.psnr(image, compressed_patch_lsd).item())
+#         ssim_values["Patch LSD"].append(com.ssim(image, compressed_patch_lsd).item())
 
 
-# Patch LSD
-for rank in range(3, 193, 13):
-    patch_lsd = com.PatchLSD(patch_size=(8, 8), num_iters=10, verbose=False)
-    compressed_patch_lsd = patch_lsd(image, rank=rank, alpha=0.001)  # .clip(0, 1)
-    if patch_lsd.real_compression_ratio >= 1:
-        compression_ratios["Patch LSD"].append(patch_lsd.real_compression_ratio)
-        compressed_images["Patch LSD"].append(compressed_patch_lsd)
-        psnr_values["Patch LSD"].append(com.psnr(image, compressed_patch_lsd).item())
-        ssim_values["Patch LSD"].append(com.ssim(image, compressed_patch_lsd).item())
+# # ALSD
+# for ratio in [*np.arange(1, 4, 0.5), *np.arange(4, 7, 1)]:
+#     alsd = com.LSD(num_iters=10, verbose=False)
+#     rank_max = alsd.get_rank(image.shape[-2:], compression_ratio=ratio, alpha=0)
+
+#     alpha_log = {}
+#     for rank_ in range(1, rank_max + 1, int(np.ceil(rank_max / 10))):
+#         alpha_ = alsd.get_alpha(image.shape[-2:], compression_ratio=ratio, rank=rank_)
+#         compressed_alsd = alsd(
+#             image, compression_ratio=ratio, alpha=alpha_
+#         )  # .clip(0, 1)
+#         alpha_log[alpha_] = com.psnr(image, compressed_alsd)
+
+#     selected_alpha = max(alpha_log, key=alpha_log.get)
+#     compressed_alsd = alsd(
+#         image, compression_ratio=ratio, alpha=selected_alpha
+#     )  # .clip(0, 1)
+
+#     if alsd.real_compression_ratio >= 1:
+#         compression_ratios["ALSD"].append(alsd.real_compression_ratio)
+#         compressed_images["ALSD"].append(compressed_alsd)
+#         psnr_values["ALSD"].append(com.psnr(image, compressed_alsd))
+#         ssim_values["ALSD"].append(com.ssim(image, compressed_alsd))
 
 
-# Patch ALSD
-for ratio in [*np.arange(1, 4, 0.5), *np.arange(4, 11, 1)]:
-    patch_alsd = com.PatchLSD(patch_size=(8, 8), num_iters=10, verbose=False)
-    patches = patch_alsd.patchify(image)
-    rank_max = patch_alsd.get_rank(patches.shape[-2:], compression_ratio=ratio, alpha=0)
+# # Patch ALSD
+# for ratio in [*np.arange(1, 4, 0.5), *np.arange(4, 11, 1)]:
+#     patch_alsd = com.PatchLSD(patch_size=(8, 8), num_iters=10, verbose=False)
+#     patches = patch_alsd.patchify(image)
+#     rank_max = patch_alsd.get_rank(patches.shape[-2:], compression_ratio=ratio, alpha=0)
 
-    alpha_log = {}
-    for rank_ in range(1, rank_max + 1, int(np.ceil(rank_max / 10))):
-        alpha_ = patch_alsd.get_alpha(
-            patches.shape[-2:], compression_ratio=ratio, rank=rank_
-        )
-        compressed_patch_alsd = patch_alsd(
-            image, compression_ratio=ratio, alpha=alpha_
-        )  # .clip(0, 1)
-        alpha_log[alpha_] = com.psnr(image, compressed_patch_alsd)
+#     alpha_log = {}
+#     for rank_ in range(1, rank_max + 1, int(np.ceil(rank_max / 10))):
+#         alpha_ = patch_alsd.get_alpha(
+#             patches.shape[-2:], compression_ratio=ratio, rank=rank_
+#         )
+#         compressed_patch_alsd = patch_alsd(
+#             image, compression_ratio=ratio, alpha=alpha_
+#         )  # .clip(0, 1)
+#         alpha_log[alpha_] = com.psnr(image, compressed_patch_alsd)
 
-    selected_alpha = max(alpha_log, key=alpha_log.get)
-    compressed_patch_alsd = patch_alsd(
-        image, compression_ratio=ratio, alpha=selected_alpha
-    )  # .clip(0, 1)
+#     selected_alpha = max(alpha_log, key=alpha_log.get)
+#     compressed_patch_alsd = patch_alsd(
+#         image, compression_ratio=ratio, alpha=selected_alpha
+#     )  # .clip(0, 1)
 
-    if patch_alsd.real_compression_ratio >= 1:
-        compression_ratios["Patch ALSD"].append(patch_alsd.real_compression_ratio)
-        compressed_images["Patch ALSD"].append(compressed_patch_alsd)
-        psnr_values["Patch ALSD"].append(com.psnr(image, compressed_patch_alsd))
-        ssim_values["Patch ALSD"].append(com.ssim(image, compressed_patch_alsd))
+#     if patch_alsd.real_compression_ratio >= 1:
+#         compression_ratios["Patch ALSD"].append(patch_alsd.real_compression_ratio)
+#         compressed_images["Patch ALSD"].append(compressed_patch_alsd)
+#         psnr_values["Patch ALSD"].append(com.psnr(image, compressed_patch_alsd))
+#         ssim_values["Patch ALSD"].append(com.ssim(image, compressed_patch_alsd))
 
+
+selected_methods = ["Interpolation", "DCT", "Patch SVD"]
+compression_ratios = {k: compression_ratios[k] for k in selected_methods}
+compressed_images = {k: compressed_images[k] for k in selected_methods}
+psnr_values = {k: psnr_values[k] for k in selected_methods}
+ssim_values = {k: ssim_values[k] for k in selected_methods}
 
 # Plotting the results: PSNR
 plt.figure()
@@ -231,7 +237,7 @@ for method, values in psnr_values.items():
 plt.xlabel("Compression Ratio")
 plt.ylabel("PSNR")
 plt.title("Comprison of Different Compression Methods")
-plt.xticks(np.arange(1, max(compression_ratios["Patch SVD"]) + 1, 3))
+plt.xticks(np.arange(1, max(compression_ratios["Patch SVD"]) + 1, 4))
 plt.legend()
 plt.grid()
 plt.savefig(
@@ -249,7 +255,7 @@ for method, values in ssim_values.items():
 plt.xlabel("Compression Ratio")
 plt.ylabel("SSIM")
 plt.title("Comprison of Different Compression Methods")
-plt.xticks(np.arange(1, max(compression_ratios["Patch SVD"]) + 1, 3))
+plt.xticks(np.arange(1, max(compression_ratios["Patch SVD"]) + 1, 4))
 plt.legend()
 plt.grid()
 plt.savefig(
@@ -261,8 +267,7 @@ plt.show()
 
 
 # Plotting the compressed images for each method and compression ratio
-selected_ratios = [2, 5, 10, 15, 20, 25]
-selected_methods = ["Interpolation", "DCT", "Patch SVD", "Patch LSD"]
+selected_ratios = [1.25, 2.5, 4, 10, 15]
 fig, axs = plt.subplots(
     len(selected_ratios),
     len(selected_methods),

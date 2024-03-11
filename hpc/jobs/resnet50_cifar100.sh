@@ -1,5 +1,15 @@
 #!/bin/bash
 
+#SBATCH --account=lp_inspiremed
+#SBATCH --clusters=genius
+#SBATCH --partition=gpu_p100
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=2
+#SBATCH --cpus-per-task=9
+#SBATCH --gpus-per-node=2
+#SBATCH --time=12:00:00
+#SBATCH --job-name=resnet50_cifar100
+
 export PATH="${VSC_DATA}/miniconda3/bin:${PATH}"
 source activate deepenv
 

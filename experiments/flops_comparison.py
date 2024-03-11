@@ -22,7 +22,7 @@ for new_size in range(48, 225, 8):
 # PatchSVD
 patchsvd_flops = []
 patchsvd_ratios = []
-for rank in range(10, 193, 7):
+for rank in range(192, 193, 7):
     patchsvd_model = PatchSVDModel(rank=rank, patch_size=8, domain="compressed")
     z = u, v = patchsvd_model.transform(x)
     flops, macs, params = get_model_profile(

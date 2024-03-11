@@ -55,12 +55,12 @@ sleep 1
 
 
 ##### Train vanilla models
-sbatch --account=lp_inspiremed --job-name=resnet50_cifar10 --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=4 --gres=gpu:2 --time=9:00:00 --partition=gpu_v100 resnet50_cifar10.sh
-sbatch --account=lp_inspiremed --job-name=resnet50_cifar100 --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=4 --gres=gpu:2 --time=11:00:00 --partition=gpu_v100 resnet50_cifar100.sh
-
+sbatch resnet50_cifar10.sh
+sbatch resnet50_cifar100.sh
 
 ##### Train compressed-domain models
-sbatch --account=lp_inspiremed --job-name=patchsvd_cifar10 --clusters=genius --nodes=1 --ntasks-per-node=2 --cpus-per-task=4 --gres=gpu:2 --time=9:00:00 --partition=gpu_v100 patchsvd_cifar10.sh
+sbatch patchsvd_cifar10.sh
+
 
 ##### Evaluate on resnet50 pretrained on imagenet 
 sbatch --account=lp_inspiremed --job-name=interpolate_imagenet_pretrained_resnet50 --clusters=genius --nodes=1 --ntasks-per-node=1 --cpus-per-task=4 --gres=gpu:1 --time=06:00:00 --partition=gpu_v100 interpolate_imagenet_pretrained_resnet50.sh

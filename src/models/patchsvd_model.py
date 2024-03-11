@@ -160,7 +160,8 @@ class UVModel(nn.Module):
             self.backbone = backbone(**kwargs)
 
         self.flatten = nn.Flatten(start_dim=1)
-        self.fc = nn.LazyLinear(out_features=self.num_classes)
+        self.bn_out = nn.BatchNorm1d(num_features=1024)
+        self.fc = nn.Linear(in_features=1024, out_features=self.num_classes)
 
     def forward(self, x: torch.Tensor):
         # u, v = x  # u: B × 1 × R × H × W,    v: B × 3 × R × P × P
@@ -168,20 +169,30 @@ class UVModel(nn.Module):
 
         u, v = x  # u: B × R × 1 × H × W,    v: B × R × 3 × P × P
 
+        # print(f"u.mean(), u.std(): ({u.mean()}, {u.std()})")
         u = self.conv1_u(u)
         u = self.bn1_u(u)
+        # print(f"bn1_u: u.mean(), u.std(): ({u.mean()}, {u.std()})")
         u = self.conv2_u(u)
         u = self.bn2_u(u)
+        # print(f"bn2_u: u.mean(), u.std(): ({u.mean()}, {u.std()})")
         u = self.backbone(u)
+        # print(f"backbone_u: u.mean(), u.std(): ({u.mean()}, {u.std()})")
 
+        # print(f"v.mean(), v.std(): ({v.mean()}, {v.std()})")
         v = self.conv1_v(v)
         v = self.bn1_v(v)
+        # print(f"bn1_v: v.mean(), v.std(): ({v.mean()}, {v.std()})")
         v = self.conv2_v(v)
         v = self.bn2_v(v)
+        # print(f"bn2_v: v.mean(), v.std(): ({v.mean()}, {v.std()})")
         v = self.backbone(v)
+        # print(f"backbone_v: v.mean(), v.std(): ({v.mean()}, {v.std()})")
 
         u = torch.mean(u, dim=(-2, -1))
+        # print(f"torch.mean_u: u.mean(), u.std(): ({u.mean()}, {u.std()})")
         v = torch.mean(v, dim=(-2, -1))
+        # print(f"torch.mean_v: v.mean(), v.std(): ({v.mean()}, {v.std()})")
 
         # c = math.floor(2 ** (math.log2(u.shape[1]) // 2))
         # u = rearrange(u, "b (g c) -> b g c", c=c)
@@ -191,12 +202,21 @@ class UVModel(nn.Module):
 
         c = math.floor(2 ** (math.log2(u.shape[1]) // 2))
         u = rearrange(u, "b (c e) r -> b c e r", c=c)
+        # print(f"rearrange_u: u.mean(), u.std(): ({u.mean()}, {u.std()})")
         v = rearrange(v, "b (c e) r -> b c e r", c=c)
+        # print(f"rearrange_v: v.mean(), v.std(): ({v.mean()}, {v.std()})")
 
         y = torch.einsum("b c e r, b d e r -> b c d", u, v)
+        # print(f"einsum_y: y.mean(), y.std(): ({y.mean()}, {y.std()})")
 
         y = self.flatten(y)
+        # print(f"flatten_y: y.mean(), y.std(): ({y.mean()}, {y.std()})")
+
+        y = self.bn_out(y)
+        # print(f"bn_out_y: y.mean(), y.std(): ({y.mean()}, {y.std()})")
+
         y = self.fc(y)
+        # print(f"fc_y: y.mean(), y.std(): ({y.mean()}, {y.std()})")
         return y
 
 
