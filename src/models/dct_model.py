@@ -61,7 +61,7 @@ class DCTModel(nn.Module):
                 new_size[0] * new_size[1]
             )
             if self.domain in ("compressed", "com"):
-                z = self.dct.compress(x, compression_ratio=compression_ratio)
+                z = self.dct.encode(x, compression_ratio=compression_ratio)
                 self.real_compression_ratio = self.dct.real_compression_ratio
             else:
                 if compression_ratio == 1:

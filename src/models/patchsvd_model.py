@@ -74,7 +74,7 @@ class PatchSVDModel(nn.Module):
         with self.context():
             rank = random.choice(self.rank)
             if self.domain in ("compressed", "com"):
-                u, v = self.patch_svd.compress(x, rank=rank)
+                u, v = self.patch_svd.encode(x, rank=rank)
                 u, v = self.patch_svd.depatchify_uv(x, u, v)
                 self.real_compression_ratio = self.patch_svd.real_compression_ratio
                 z = zscore_normalize(u), zscore_normalize(v)

@@ -1,5 +1,6 @@
-from typing import Tuple, Optional, Union
+from typing import Sequence, Tuple, Optional, Union
 from abc import ABC, abstractmethod
+from numbers import Real
 import math
 
 import torch
@@ -8,21 +9,24 @@ import torch.nn.functional as F
 from torch.nn.modules.utils import _pair
 import torch_dct as dct
 from einops import rearrange
-
-from .metrics import relative_error
-from .utils import zscore_normalize
+from sympy import Symbol, solve
 
 
-class Compress(ABC, nn.Module):
+from .metrics import relative_error, ssim
+from .utils import zscore_normalize, prod
+from ..decomposition import batch_hosvd, batched_multi_mode_product
+
+
+class Compression(ABC, nn.Module):
     """Abstract base class for compression methods."""
 
     @abstractmethod
-    def compress(self, x: Tensor, *args, **kwargs) -> Union[Tensor, Tuple[Tensor, ...]]:
+    def encode(self, x: Tensor, *args, **kwargs) -> Union[Tensor, Tuple[Tensor, ...]]:
         """Compress the input tensor."""
         pass
 
     @abstractmethod
-    def decompress(self, *args, **kwargs) -> Tensor:
+    def decode(self, *args, **kwargs) -> Tensor:
         """Decompress the input tensor."""
         pass
 
@@ -35,7 +39,7 @@ class Compress(ABC, nn.Module):
         Returns:
             Tensor: The calculated loss.
         """
-        y = self.decompress(*args, **kwargs)
+        y = self.decode(*args, **kwargs)
         return relative_error(x, y)
 
     def forward(self, x: Tensor, *args, **kwargs) -> Tensor:
@@ -47,12 +51,12 @@ class Compress(ABC, nn.Module):
         Returns:
             Tensor: The decompressed tensor.
         """
-        compressed = self.compress(x, *args, **kwargs)
-        decompressed = self.decompress(compressed)
+        compressed = self.encode(x, *args, **kwargs)
+        decompressed = self.decode(compressed)
         return decompressed
 
 
-class Interpolate(Compress):
+class Interpolate(Compression):
     """Compression method using interpolation for resizing images."""
 
     def __init__(self, **kwargs) -> None:
@@ -87,7 +91,7 @@ class Interpolate(Compress):
         compression_ratio = (orig_height * orig_width) / (new_height * new_width)
         return compression_ratio
 
-    def compress(
+    def encode(
         self,
         x: Tensor,
         compression_ratio: Optional[float] = None,
@@ -117,7 +121,7 @@ class Interpolate(Compress):
         self.real_compression_ratio = self.get_compression_ratio(original_size, new_size)
         return resized_image
 
-    def decompress(self, x: Tensor, original_size: Tuple[int, int]) -> Tensor:
+    def decode(self, x: Tensor, original_size: Tuple[int, int]) -> Tensor:
         """Decompress the image by resizing back to the original size.
 
         Args:
@@ -134,12 +138,12 @@ class Interpolate(Compress):
 
     def forward(self, x: Tensor, *args, **kwargs) -> Tensor:
         # x: B × C × H × W
-        z = self.compress(x, *args, **kwargs)
-        y = self.decompress(z, x.shape[-2:])
+        z = self.encode(x, *args, **kwargs)
+        y = self.decode(z, x.shape[-2:])
         return y
 
 
-class DCT(Compress):
+class DCT(Compression):
     """Implements Discrete Cosine Transform (DCT) based compression and decompression."""
 
     def get_cutoff(
@@ -170,7 +174,7 @@ class DCT(Compress):
         compression_ratio = (orig_height * orig_width) / (new_height * new_width)
         return compression_ratio
 
-    def compress(
+    def encode(
         self,
         x: Tensor,
         compression_ratio: Optional[float] = None,
@@ -202,7 +206,7 @@ class DCT(Compress):
         self.real_compression_ratio = self.get_compression_ratio(original_size, cutoff)
         return x_dct
 
-    def decompress(
+    def decode(
         self, x: Tensor, original_size: Tuple[int, int], pad: bool = True, zscore=False
     ) -> Tensor:
         """Decompress the input tensor using inverse DCT.
@@ -228,12 +232,12 @@ class DCT(Compress):
 
     def forward(self, x: Tensor, *args, pad=True, zscore=False, **kwargs) -> Tensor:
         # x: B × C × H × W
-        z = self.compress(x, *args, **kwargs)
-        y = self.decompress(z, x.shape[-2:], pad=pad, zscore=zscore)
+        z = self.encode(x, *args, **kwargs)
+        y = self.decode(z, x.shape[-2:], pad=pad, zscore=zscore)
         return y
 
 
-class SVD(Compress):
+class SVD(Compression):
     """Implements Singular Value Decomposition (SVD) based compression."""
 
     def get_rank(self, size: Tuple[int, int], compression_ratio: float) -> int:
@@ -272,7 +276,7 @@ class SVD(Compress):
         compression_ratio = df_input / df_lowrank
         return compression_ratio
 
-    def compress(
+    def encode(
         self,
         x: Tensor,
         compression_ratio: Optional[float] = None,
@@ -307,7 +311,7 @@ class SVD(Compress):
         )
         return u, v
 
-    def decompress(self, x: Tuple[Tensor, Tensor]) -> Tensor:
+    def decode(self, x: Tuple[Tensor, Tensor]) -> Tensor:
         """Decompress the input tensor from its compressed form.
 
         Args:
@@ -342,8 +346,8 @@ class PatchSVD(SVD):
         Returns:
             Tensor: The tensor reshaped into patches.
         """
-        p1, p2 = self.patch_size
-        patches = rearrange(x, "b c (h p1) (w p2) -> b (h w) (c p1 p2)", p1=p1, p2=p2)
+        p, q = self.patch_size
+        patches = rearrange(x, "b c (h p) (w q) -> b (h w) (c p q)", p=p, q=q)
         return patches
 
     def depatchify_uv(self, x: Tensor, u: Tensor, v: Tensor) -> Tuple[Tensor, Tensor]:
@@ -357,9 +361,9 @@ class PatchSVD(SVD):
         Returns:
             Tuple[Tensor, Tensor]: The u and v matrices reshaped.
         """
-        p1, p2 = self.patch_size
-        u_new = rearrange(u, "b (h w) r -> b 1 r h w", h=x.shape[-2] // p1)
-        v_new = rearrange(v, "b (c p1 p2) r -> b c r p1 p2", p1=p1, p2=p2)
+        p, q = self.patch_size
+        u_new = rearrange(u, "b (h w) r -> b 1 r h w", h=x.shape[-2] // p)
+        v_new = rearrange(v, "b (c p q) r -> b c r p q", p=p, q=q)
         return u_new, v_new
 
     def depatchify(self, x: Tensor, size: Tuple[int, int]) -> Tensor:
@@ -372,13 +376,13 @@ class PatchSVD(SVD):
         Returns:
             Tensor: The reconstructed tensor.
         """
-        p1, p2 = self.patch_size
+        p, q = self.patch_size
         patches = rearrange(
-            x, "b (h w) (c p1 p2) -> b c (h p1) (w p2)", p1=p1, p2=p2, h=size[0] // p1
+            x, "b (h w) (c p q) -> b c (h p) (w q)", p=p, q=q, h=size[0] // p
         )
         return patches
 
-    def compress(
+    def encode(
         self,
         x: Tensor,
         compression_ratio: Optional[float] = None,
@@ -413,7 +417,7 @@ class PatchSVD(SVD):
         )
         return u, v
 
-    def decompress(self, x: Tuple[Tensor, Tensor], size: Tuple[int, int]) -> Tensor:
+    def decode(self, x: Tuple[Tensor, Tensor], size: Tuple[int, int]) -> Tensor:
         """Decompress the input tensor from its compressed patch form.
 
         Args:
@@ -437,399 +441,152 @@ class PatchSVD(SVD):
         Returns:
             Tensor: The decompressed tensor, after compression and decompression.
         """
-        compressed_patches = self.compress(x, *args, **kwargs)
-        decompressed_image = self.decompress(compressed_patches, x.shape[-2:])
+        compressed_patches = self.encode(x, *args, **kwargs)
+        decompressed_image = self.decode(compressed_patches, x.shape[-2:])
         return decompressed_image
 
 
-def filter_topk_elements(x, k):
-    # Calculate the absolute values of X
-    absolute_x = torch.abs(x)
+class HOSVD(Compression):
+    """Implements Higher-Order Singular Value Decomposition (HOSVD) based compression."""
 
-    # Flatten the tensor to work with absolute values
-    flattened_x = torch.flatten(absolute_x, -2, -1)
-
-    # Use kthvalue to find the k largest value and it index
-    kth_value = torch.kthvalue(flattened_x, flattened_x.shape[-1] - k + 1).values
-
-    kth_value_unsqueezed = kth_value.unsqueeze(-1).unsqueeze(-1)
-
-    # Use torch.where to create a mask and apply it directly
-    y = torch.where(absolute_x >= kth_value_unsqueezed, x, 0.0)
-    return y
-
-
-class LSD(Compress):
-    """Implements Low-Rank Plus Sparse Decomposition (LSD) based compression."""
-
-    def __init__(self, num_iters: int = 100, verbose: bool = False) -> None:
-        super().__init__()
-        self.num_iters = num_iters
-        self.verbose = verbose
-
-    def get_rank(
-        self, size: Tuple[int, int], compression_ratio: float, alpha: float
-    ) -> int:
-        size = _pair(size)
-        num_rows, num_cols = size
-        numerator = num_rows * num_cols * (1 - 2 * alpha * compression_ratio)
-        denominator = (num_rows + num_cols) * compression_ratio
-        rank = max(math.floor(numerator / denominator), 1)
-        return rank
-
-    def get_alpha(
-        self, size: Tuple[int, int], compression_ratio: float, rank: int
-    ) -> int:
-        size = _pair(size)
-        num_rows, num_cols = size
-        numel = num_rows * num_cols
-        numerator = numel - compression_ratio * rank * (num_rows + num_cols)
-        denominator = 2 * compression_ratio * numel
-        alpha = max(numerator / denominator, 0)
-        alpha = math.floor(alpha * numel) / numel
-        return alpha
-
-    def get_compression_ratio(
-        self, size: Tuple[int, int], rank: int, alpha: float
-    ) -> float:
+    def get_rank(self, size: Tuple[int, int], compression_ratio: float) -> int:
         size = _pair(size)
         num_rows, num_cols = size
         df_input = num_rows * num_cols  # Degrees of freedom of the input matrix
-        df_lowrank = rank * (
-            num_rows + num_cols
-        )  # Degrees of freedom of the low-rank matrix
-        df_sparse = (
-            math.floor(num_rows * num_cols * alpha) * 2
-        )  # Degrees of freedom of the sparse matrix
-        compression_ratio = df_input / (df_lowrank + df_sparse)
+        df_lowrank = num_rows + num_cols  # Degrees of freedom of the low-rank matrix
+        rank = max(math.floor(df_input / (compression_ratio * df_lowrank)), 1)
+        return rank
+
+    def get_compression_ratio(
+        self, size: Sequence[int], rank: Union[int, Sequence[int]]
+    ) -> float:
+        df_input = prod(size)  # Degrees of freedom of the input matrix
+        df_core = prod(rank)  # Degrees of freedom of the core
+        df_factors = sum(
+            s * r for s, r in zip(size, rank)
+        )  # Degrees of freedom of the factors
+        compression_ratio = df_input / (df_core + df_factors)
         return compression_ratio
 
-    def update_uv(self, x: Tensor, s: Optional[Tensor], rank: int):
-        e = x - s if isinstance(s, Tensor) else x
-        u, s, vt = torch.linalg.svd(e, full_matrices=False)
-        u, s, vt = u[..., :rank], s[..., :rank], vt[..., :rank, :]
-
-        u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
-        v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), vt)
-        return u, v
-
-    def update_s(self, x: Tensor, u: Tensor, v: Tensor, alpha: float):
-        if alpha == 0:
-            s = torch.zeros_like(x)
-        else:
-            e = x - u @ v.transpose(-2, -1)
-            num_rows, num_cols = x.shape[-2:]
-            zero_norm = math.floor(alpha * num_rows * num_cols)
-            if zero_norm == 0:
-                s = torch.zeros_like(x)
-            else:
-                s = filter_topk_elements(e, zero_norm)
-            # update formula for l1 regularization
-            # lam = (1 - alpha) / alpha
-            # s = torch.relu(torch.abs(e) - lam / 2)
-        return s
-
-    def compress(
-        self, x: Tensor, alpha: float, rank: int = None, compression_ratio: float = None
-    ) -> Tuple[Tensor, Tensor, Tensor]:
-        # x: B × * × M × N
-        size = x.shape[-2:]
-
-        # init
-        u, v, s = None, None, None
-
-        if rank is None:
-            assert (
-                compression_ratio is not None
-            ), "at least rank or compression ration should be provided"
-            rank = self.get_rank(size, compression_ratio, alpha)
-
-        # iterate
-        for it in range(1, self.num_iters + 1):
-            u, v = self.update_uv(x, s, rank)
-
-            s = self.update_s(x, u, v, alpha)
-
-            if self.verbose:
-                loss = self.loss(x, (u, v, s))
-                print(f"Iter {it}, loss = {loss}")
-
-        self.real_compression_ratio = self.get_compression_ratio(size, rank, alpha)
-        return u, v, s
-
-    def decompress(self, x: Tuple[Tensor, Tensor, Tensor]) -> Tensor:
-        u, v, s = x
-        y = u @ v.transpose(-2, -1) + s
-        return y
-
-
-class PatchLSD(LSD):
-    """Implements Patch Low-Rank Plus Sparse Decomposition (PatchLSD) based compression."""
-
-    def __init__(
+    def encode(
         self,
-        patch_size: Tuple[int, int] = (8, 8),
-        num_iters: int = 100,
-        verbose: bool = False,
-    ) -> None:
-        super().__init__()
-        self.num_iters = num_iters
-        self.verbose = verbose
-        self.patch_size = _pair(patch_size)
+        x: Tensor,
+        rank: Sequence[int] = None,
+        compression_ratio: Optional[float] = None,
+    ) -> Tensor:
 
-    def patchify(self, x: Tensor) -> Tensor:
-        p1, p2 = self.patch_size
-        patches = rearrange(x, "b c (h p1) (w p2) -> b (h w) (c p1 p2)", p1=p1, p2=p2)
-        return patches
+        assert (rank is not None) or (
+            compression_ratio is not None
+        ), "Either 'rank' or 'compression_ratio' must be specified."
 
-    def depatchify_uv(self, x: Tensor, u: Tensor, v: Tensor) -> Tuple[Tensor, Tensor]:
-        p1, p2 = self.patch_size
-        u_new = rearrange(u, "b (h w) r -> b 1 r h w", h=x.shape[-2] // p1)
-        v_new = rearrange(v, "b (c p1 p2) r -> b c r p1 p2", p1=p1, p2=p2)
-        return u_new, v_new
-
-    def depatchify(self, x: Tensor, size: Tuple[int, int]) -> Tensor:
-        p1, p2 = self.patch_size
-        patches = rearrange(
-            x, "b (h w) (c p1 p2) -> b c (h p1) (w p2)", p1=p1, p2=p2, h=size[0] // p1
-        )
-        return patches
-
-    def compress(
-        self, x: Tensor, alpha: float, rank: int = None, compression_ratio: float = None
-    ) -> Tuple[Tensor, Tensor, Tensor]:
-        # x: B × * × M × N
-
-        patches = self.patchify(x)
-
+        original_size = x.shape[1:]
         if rank is None:
-            assert (
-                compression_ratio is not None
-            ), "at least rank or compression ration should be provided"
-            size = patches.shape[-2:]
-            rank = self.get_rank(size, compression_ratio, alpha)
+            rank = self.get_rank(original_size, compression_ratio)
 
-        # init
-        u, v, s = None, None, None
-
-        # iterate
-        for it in range(1, self.num_iters + 1):
-            u, v = self.update_uv(patches, s, rank)
-
-            s = self.update_s(patches, u, v, alpha)
-
-            if self.verbose:
-                loss = self.loss(x, (u, v, s), x.shape[-2:])
-                print(f"Iter {it}, loss = {loss}")
+        core, factors = batch_hosvd(x, rank)
 
         self.real_compression_ratio = self.get_compression_ratio(
-            patches.shape[-2:], rank, alpha
+            size=original_size, rank=rank
         )
-        return u, v, s
+        return {"core": core, "factors": factors}
 
-    def decompress(
-        self, x: Tuple[Tensor, Tensor, Tensor], size: Tuple[int, int]
-    ) -> Tensor:
-        u, v, s = x
-        reconstructed_patches = u @ v.transpose(-2, -1) + s
-        reconstructed_image = self.depatchify(reconstructed_patches, size)
+    def decode(self, encoded: dict) -> Tensor:
+        core, factors = encoded["core"], encoded["factors"]
+        return batched_multi_mode_product(core, factors, transpose=False)
+
+
+class PatchHOSVD(HOSVD):
+    """Implements HOSVD-based compression with patchification."""
+
+    def __init__(self, patch_size: Tuple[int, int] = (8, 8)) -> None:
+        super().__init__()
+        self.patch_size = _pair(patch_size)
+
+    def tensorize(self, x: Tensor) -> Tensor:
+        p, q = self.patch_size
+        patches = rearrange(x, "b c (h p) (w q) -> b (h w) p q c", p=p, q=q)
+        return patches
+
+    def detensorize(self, x: Tensor, size: Tuple[int, int]) -> Tensor:
+        p, q = self.patch_size
+        patches = rearrange(
+            x, "b (h w) p q c -> b c (h p) (w q)", p=p, q=q, h=size[-2] // p
+        )
+        return patches
+
+    def get_optimal_rank(self, x: Tensor, compression_ratio: float):
+        _, h, w = x.shape[1:]
+        tensor = self.tensorize(x)
+        n, p, q, c = tensor.shape[1:]
+
+        core, factors = batch_hosvd(tensor, (n, p, q, c))
+        r1_min = (n * p * q * c / compression_ratio - c**2 - p**2 - q**2) / (
+            n + c * p * q
+        )
+        r1_min = min(max(1, math.floor(r1_min)), n)
+        r1_max = (n * p * q * c / compression_ratio - c - p - q) / (n + 1)
+        r1_max = min(max(1, math.ceil(r1_max)), n)
+        metric_values = {}
+        for r1 in range(r1_min, r1_max + 1):
+            r2 = Symbol("r2", real=True)
+            df_input = n * p * q * c
+            df_core = r1 * r2 * r2 * c
+            df_factors = r1 * n + r2 * p + r2 * q + c * c
+            r2s = solve(df_input - compression_ratio * (df_core + df_factors), r2)
+            r2s = [
+                a.evalf() for a in r2s if isinstance(a.evalf(), Real) and a.evalf() > 0
+            ]
+            if len(r2s) == 0:
+                continue
+
+            r2 = min(r2s)
+            r2 = min(int(math.floor(r2)), p)
+            truncated_core = core[:, :r1, :r2, :r2, :]
+            truncated_factors = [
+                factors[0][:, :, :r1],
+                factors[1][:, :, :r2],
+                factors[2][:, :, :r2],
+                factors[3],
+            ]
+            reconstructed_tensor = batched_multi_mode_product(
+                truncated_core, truncated_factors, transpose=False
+            )
+            reconstructed_image = self.detensorize(reconstructed_tensor, (h, w))
+            metric_values[(r1, r2)] = ssim(x, reconstructed_image)
+
+        r1, r2 = max(metric_values, key=metric_values.get)
+        return r1, r2, r2, c
+
+    def encode(
+        self,
+        x: Tensor,
+        rank: Tuple[int, int, int, int] = None,
+        compression_ratio: Optional[float] = None,
+    ) -> Tuple[Tensor, Tensor]:
+
+        assert (rank is not None) or (
+            compression_ratio is not None
+        ), "Either 'rank' or 'compression_ratio' must be specified."
+
+        tensor = self.tensorize(x)
+        original_size = tensor.shape[1:]
+
+        if rank is None:
+            rank = self.get_optimal_rank(x, compression_ratio)
+
+        core, factors = batch_hosvd(tensor, rank)
+
+        self.real_compression_ratio = self.get_compression_ratio(
+            size=original_size, rank=rank
+        )
+        return {"core": core, "factors": factors}
+
+    def decode(self, encoded: dict, size: Tuple[int, int]) -> Tensor:
+        reconstructed_tensor = super().decode(encoded)
+        reconstructed_image = self.detensorize(reconstructed_tensor, size)
         return reconstructed_image
 
     def forward(self, x: Tensor, *args, **kwargs) -> Tensor:
-        compressed_patches = self.compress(x, *args, **kwargs)
-        decompressed_image = self.decompress(compressed_patches, x.shape[-2:])
-        return decompressed_image
-
-
-# class ALSD(Compress):
-#     """Implements Low-Rank Plus Sparse Decomposition (LSD) based compression."""
-
-#     def __init__(self, num_iters: int = 100, verbose: bool = False) -> None:
-#         super().__init__()
-#         self.num_iters = num_iters
-#         self.verbose = verbose
-
-#     def get_compression_ratio(
-#         self, size: Tuple[int, int], rank: int, alpha: float
-#     ) -> float:
-#         size = _pair(size)
-#         num_rows, num_cols = size
-#         df_input = num_rows * num_cols  # Degrees of freedom of the input matrix
-#         df_lowrank = rank * (
-#             num_rows + num_cols
-#         )  # Degrees of freedom of the low-rank matrix
-#         df_sparse = (
-#             num_rows * num_cols * alpha * 2
-#         )  # Degrees of freedom of the sparse matrix
-#         compression_ratio = df_input / (df_lowrank + df_sparse)
-#         return compression_ratio
-
-#     def get_rank(
-#         self, size: Tuple[int, int], compression_ratio: float, alpha: float
-#     ) -> int:
-#         size = _pair(size)
-#         num_rows, num_cols = size
-#         numerator = num_rows * num_cols * (1 - 2 * alpha * compression_ratio)
-#         denominator = (num_rows + num_cols) * compression_ratio
-#         rank = max(math.floor(numerator / denominator), 1)
-#         return rank
-
-#     def get_alpha(
-#         self, size: Tuple[int, int], compression_ratio: float, rank: int
-#     ) -> int:
-#         size = _pair(size)
-#         num_rows, num_cols = size
-#         numerator = num_rows * num_cols - compression_ratio * rank * (num_rows + num_cols)
-#         denominator = 2 * compression_ratio * num_rows * num_cols
-#         alpha = max(numerator / denominator, 0)
-#         return alpha
-
-#     def update_uv(self, x: Tensor, s: Optional[Tensor], rank: int):
-#         e = x - s if isinstance(s, Tensor) else x
-#         u, s, vt = torch.linalg.svd(e, full_matrices=False)
-#         u, s, vt = u[..., :rank], s[..., :rank], vt[..., :rank, :]
-
-#         u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
-#         v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), vt)
-#         return u, v
-
-#     def update_s(self, x: Tensor, u: Tensor, v: Tensor, alpha: float):
-#         if alpha == 0.0:
-#             s = torch.zeros_like(x)
-#         else:
-#             e = x - u @ v.transpose(-2, -1)
-#             num_rows, num_cols = x.shape[-2:]
-#             zero_norm = math.floor(alpha * (num_rows * num_cols))
-#             s = filter_topk_elements(e, zero_norm)
-#             # lam = (1 - alpha) / alpha
-#             # s = torch.relu(torch.abs(e) - lam / 2)
-#         return s
-
-#     def compress(
-#         self,
-#         x: Tensor,
-#         compression_ratio: float,
-#     ) -> Tuple[Tensor, Tensor, Tensor]:
-#         # x: B × * × M × N
-#         size = x.shape[-2:]
-
-#         # init
-#         u, v, s = None, None, None
-
-#         alpha = 0.0
-#         rank = self.get_rank(size, compression_ratio, alpha)
-
-#         # iterate
-#         for it in range(1, self.num_iters + 1):
-#             rank_values = [*range(1, rank + 1)]
-#             alpha_values = []
-#             loss_values = []
-#             uu = []
-#             vv = []
-#             ss = []
-#             for r in rank_values:
-#                 alpha = self.get_alpha(size, compression_ratio, r)
-#                 alpha_values.append(alpha)
-
-#                 u, v = self.update_uv(x, s, r)
-#                 s = self.update_s(x, u, v, alpha)
-
-#                 uu.append(u)
-#                 vv.append(v)
-#                 ss.append(s)
-#                 loss_values.append(self.loss(x, (u, v, s)))
-
-#             j = torch.stack(loss_values).flatten(1).mean(1).argmin(0).item()
-#             rank, alpha = rank_values[j], alpha_values[j]
-#             loss = loss_values[j]
-#             u, v, s = uu[j], vv[j], ss[j]
-
-#             if self.verbose:
-#                 loss = self.loss(x, (u, v, s))
-#                 print(f"Iter {it}, loss = {loss}")
-
-#         self.real_compression_ratio = self.get_compression_ratio(size, rank, alpha)
-#         return u, v, s
-
-#     def decompress(self, x: Tuple[Tensor, Tensor, Tensor]) -> Tensor:
-#         u, v, s = x
-#         y = u @ v.transpose(-2, -1) + s
-#         return y
-
-
-# class PatchALSD(ALSD):
-#     """Implements Patch Low-Rank Plus Sparse Decomposition (PatchLSD) based compression."""
-
-#     def __init__(
-#         self,
-#         patch_size: Tuple[int, int] = (8, 8),
-#         num_iters: int = 100,
-#         verbose: bool = False,
-#     ) -> None:
-#         super().__init__()
-#         self.num_iters = num_iters
-#         self.verbose = verbose
-#         self.patch_size = _pair(patch_size)
-
-#     def patchify(self, x: Tensor) -> Tensor:
-#         p1, p2 = self.patch_size
-#         patches = rearrange(x, "b c (h p1) (w p2) -> b (h w) (c p1 p2)", p1=p1, p2=p2)
-#         return patches
-
-#     def depatchify_uv(self, x: Tensor, u: Tensor, v: Tensor) -> Tuple[Tensor, Tensor]:
-#         p1, p2 = self.patch_size
-#         u_new = rearrange(u, "b (h w) r -> b 1 r h w", h=x.shape[-2] // p1)
-#         v_new = rearrange(v, "b (c p1 p2) r -> b c r p1 p2", p1=p1, p2=p2)
-#         return u_new, v_new
-
-#     def depatchify(self, x: Tensor, size: Tuple[int, int]) -> Tensor:
-#         p1, p2 = self.patch_size
-#         patches = rearrange(
-#             x, "b (h w) (c p1 p2) -> b c (h p1) (w p2)", p1=p1, p2=p2, h=size[0] // p1
-#         )
-#         return patches
-
-#     def compress(
-#         self,
-#         x: Tensor,
-#         compression_ratio: float,
-#         alpha: float,
-#     ) -> Tuple[Tensor, Tensor, Tensor]:
-#         # x: B × * × M × N
-
-#         patches = self.patchify(x)
-
-#         size = patches.shape[-2:]
-
-#         # init
-#         u, v, s = None, None, None
-
-#         rank = self.get_rank(size, compression_ratio, alpha)
-
-#         # iterate
-#         for it in range(1, self.num_iters + 1):
-#             u, v = self.update_uv(patches, s, rank)
-
-#             s = self.update_s(patches, u, v, alpha)
-
-#             if self.verbose:
-#                 loss = self.loss(x, (u, v, s), x.shape[-2:])
-#                 print(f"Iter {it}, loss = {loss}")
-
-#         self.real_compression_ratio = self.get_compression_ratio(
-#             patches.shape[-2:], rank, alpha
-#         )
-#         return u, v, s
-
-#     def decompress(
-#         self, x: Tuple[Tensor, Tensor, Tensor], size: Tuple[int, int]
-#     ) -> Tensor:
-#         u, v, s = x
-#         reconstructed_patches = u @ v.transpose(-2, -1) + s
-#         reconstructed_image = self.depatchify(reconstructed_patches, size)
-#         return reconstructed_image
-
-#     def forward(self, x: Tensor, *args, **kwargs) -> Tensor:
-#         compressed_patches = self.compress(x, *args, **kwargs)
-#         decompressed_image = self.decompress(compressed_patches, x.shape[-2:])
-#         return decompressed_image
+        encoded_image = self.encode(x, *args, **kwargs)
+        decoded_image = self.decode(encoded_image, size=x.shape[1:])
+        return decoded_image

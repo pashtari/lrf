@@ -1,4 +1,11 @@
+from functools import reduce
+from operator import mul
+
 import torch
+
+
+def prod(x):
+    return reduce(mul, x, 1)
 
 
 def zscore_normalize(tensor, dim=(-2, -1), eps=1e-8):

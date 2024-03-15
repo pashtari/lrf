@@ -60,7 +60,7 @@ class InterpolateModel(nn.Module):
                 z = x
                 self.real_compression_ratio = 1
             else:
-                z = self.interpolate.compress(x, compression_ratio=compression_ratio)
+                z = self.interpolate.encode(x, compression_ratio=compression_ratio)
                 self.real_compression_ratio = self.interpolate.real_compression_ratio
             if self.rescale and compression_ratio != 1:
                 z = self.interpolate.decompress(z, original_size=self.original_size)
