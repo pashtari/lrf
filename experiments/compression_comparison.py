@@ -9,7 +9,7 @@ from src.models import compression as com
 
 
 # Load the astronaut image
-image = data.astronaut()
+image = data.cat()
 
 # Convert the image to float and resize
 image = img_as_float(image)
@@ -155,9 +155,20 @@ for rank in range(6, 224, 8):
 
 # Patch HOSVD
 for ratio in range(1, 56, 1):
+    # if ratio == 37:
+    #     continue
     patch_hosvd = com.PatchHOSVD(patch_size=(8, 8))
     compressed_patch_hosvd = patch_hosvd(image, compression_ratio=ratio)  # .clip(0, 1)
     if patch_hosvd.real_compression_ratio >= 1:
+        if ssim_values["Patch HOSVD"]:
+            ssim_current = com.ssim(image, compressed_patch_hosvd).item()
+            ssim_last = ssim_values["Patch HOSVD"][-1]
+            if abs(ssim_last - ssim_current) / ssim_last <= 1e-2:
+                del compression_ratios["Patch HOSVD"][-1]
+                del compressed_images["Patch HOSVD"][-1]
+                del ssim_values["Patch HOSVD"][-1]
+                del psnr_values["Patch HOSVD"][-1]
+
         compression_ratios["Patch HOSVD"].append(patch_hosvd.real_compression_ratio)
         compressed_images["Patch HOSVD"].append(compressed_patch_hosvd)
         psnr_values["Patch HOSVD"].append(com.psnr(image, compressed_patch_hosvd).item())
@@ -173,7 +184,7 @@ ssim_values = {k: ssim_values[k] for k in selected_methods}
 # Plotting the results: PSNR
 plt.figure()
 for method, values in psnr_values.items():
-    plt.plot(compression_ratios[method], values, marker="o", label=method)
+    plt.plot(compression_ratios[method], values, marker="o", markersize=5, label=method)
 
 plt.xlabel("Compression Ratio")
 plt.ylabel("PSNR")
@@ -191,7 +202,7 @@ plt.show()
 # Plotting the results: SSIM
 plt.figure()
 for method, values in ssim_values.items():
-    plt.plot(compression_ratios[method], values, marker="o", label=method)
+    plt.plot(compression_ratios[method], values, marker="o", markersize=5, label=method)
 
 plt.xlabel("Compression Ratio")
 plt.ylabel("SSIM")
@@ -208,7 +219,7 @@ plt.show()
 
 
 # Plotting the compressed images for each method and compression ratio
-selected_ratios = [1.25, 2.5, 4, 10, 15]
+selected_ratios = [1.25, 2.5, 4, 10, 15, 55]
 fig, axs = plt.subplots(
     len(selected_ratios),
     len(selected_methods),
