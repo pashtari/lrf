@@ -1,2 +1,2 @@
 from .hosvd import *
-from .operations import *
+from .tt import *

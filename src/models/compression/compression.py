@@ -6,7 +6,7 @@ import math
 import torch
 from torch import nn, Tensor
 import torch.nn.functional as F
-from torch.nn.modules.utils import _pair
+from torch.nn.modules.utils import _pair, _triple, _ntuple
 import torch_dct as dct
 from einops import rearrange
 from sympy import Symbol, solve
@@ -14,7 +14,14 @@ from sympy import Symbol, solve
 
 from .metrics import relative_error, ssim
 from .utils import zscore_normalize, prod
-from ..decomposition import batch_hosvd, batched_multi_mode_product
+from ..decomposition import (
+    hosvd_rank_feasible_ranges,
+    batched_hosvd,
+    batched_multi_mode_product,
+    tt_rank_feasible_ranges,
+    batched_ttd,
+    batched_contract_tt,
+)
 
 
 class Compression(ABC, nn.Module):
@@ -450,20 +457,27 @@ class HOSVD(Compression):
     """Implements Higher-Order Singular Value Decomposition (HOSVD) based compression."""
 
     def get_rank(self, size: Tuple[int, int], compression_ratio: float) -> int:
-        size = _pair(size)
-        num_rows, num_cols = size
-        df_input = num_rows * num_cols  # Degrees of freedom of the input matrix
-        df_lowrank = num_rows + num_cols  # Degrees of freedom of the low-rank matrix
-        rank = max(math.floor(df_input / (compression_ratio * df_lowrank)), 1)
+        size = _triple(size)
+        h, w, c = size
+        r = Symbol("r", real=True)
+        df_input = h * w * c  # Degrees of freedom of the input tensor (image)
+        df_core = r * r * c  # Degrees of freedom of the core
+        df_factors = r * h + r * w + c * c  # Degrees of freedom of the factors
+        rs = solve(df_input - compression_ratio * (df_core + df_factors), r)
+        rs = [a.evalf() for a in rs if isinstance(a.evalf(), Real) and a.evalf() > 0]
+        r = min(rs)
+        r = min(int(math.floor(r)), h, w)
+        rank = (r, r, c)
         return rank
 
     def get_compression_ratio(
         self, size: Sequence[int], rank: Union[int, Sequence[int]]
     ) -> float:
+        ranks = _ntuple(len(size))(rank)
         df_input = prod(size)  # Degrees of freedom of the input matrix
-        df_core = prod(rank)  # Degrees of freedom of the core
+        df_core = prod(ranks)  # Degrees of freedom of the core
         df_factors = sum(
-            s * r for s, r in zip(size, rank)
+            s * r for s, r in zip(size, ranks)
         )  # Degrees of freedom of the factors
         compression_ratio = df_input / (df_core + df_factors)
         return compression_ratio
@@ -483,7 +497,7 @@ class HOSVD(Compression):
         if rank is None:
             rank = self.get_rank(original_size, compression_ratio)
 
-        core, factors = batch_hosvd(x, rank)
+        core, factors = batched_hosvd(x, rank=rank)
 
         self.real_compression_ratio = self.get_compression_ratio(
             size=original_size, rank=rank
@@ -517,21 +531,20 @@ class PatchHOSVD(HOSVD):
     def get_optimal_rank(self, x: Tensor, compression_ratio: float):
         _, h, w = x.shape[1:]
         tensor = self.tensorize(x)
-        n, p, q, c = tensor.shape[1:]
-
-        core, factors = batch_hosvd(tensor, (n, p, q, c))
-        r1_min = (n * p * q * c / compression_ratio - c**2 - p**2 - q**2) / (
-            n + c * p * q
+        n, p, q, c = size = tensor.shape[1:]
+        rank_ranges = hosvd_rank_feasible_ranges(
+            size, compression_ratio, (None, None, None, c)
         )
-        r1_min = min(max(1, math.floor(r1_min)), n)
-        r1_max = (n * p * q * c / compression_ratio - c - p - q) / (n + 1)
-        r1_max = min(max(1, math.ceil(r1_max)), n)
+        (r1_min, r1_max), (_, r2_max), *_ = rank_ranges
+        df_input = prod(size)  # Degrees of freedom of the input tensor
+        core, factors = batched_hosvd(tensor, rank=(r1_max, r2_max, r2_max, c))
         metric_values = {}
         for r1 in range(r1_min, r1_max + 1):
             r2 = Symbol("r2", real=True)
-            df_input = n * p * q * c
-            df_core = r1 * r2 * r2 * c
-            df_factors = r1 * n + r2 * p + r2 * q + c * c
+            df_core = r1 * r2 * r2 * c  # Degrees of freedom of the core
+            df_factors = (
+                r1 * n + r2 * p + r2 * q + c * c
+            )  # Degrees of freedom of the factors
             r2s = solve(df_input - compression_ratio * (df_core + df_factors), r2)
             r2s = [
                 a.evalf() for a in r2s if isinstance(a.evalf(), Real) and a.evalf() > 0
@@ -574,7 +587,7 @@ class PatchHOSVD(HOSVD):
         if rank is None:
             rank = self.get_optimal_rank(x, compression_ratio)
 
-        core, factors = batch_hosvd(tensor, rank)
+        core, factors = batched_hosvd(tensor, rank=rank)
 
         self.real_compression_ratio = self.get_compression_ratio(
             size=original_size, rank=rank
@@ -583,6 +596,140 @@ class PatchHOSVD(HOSVD):
 
     def decode(self, encoded: dict, size: Tuple[int, int]) -> Tensor:
         reconstructed_tensor = super().decode(encoded)
+        reconstructed_image = self.detensorize(reconstructed_tensor, size)
+        return reconstructed_image
+
+    def forward(self, x: Tensor, *args, **kwargs) -> Tensor:
+        encoded_image = self.encode(x, *args, **kwargs)
+        decoded_image = self.decode(encoded_image, size=x.shape[1:])
+        return decoded_image
+
+
+class TTD(Compression):
+    """Implements Tensor Train (TT) decomposition based compression."""
+
+    def get_rank(self, size: Tuple[int, int], compression_ratio: float) -> int:
+        pass
+
+    def get_compression_ratio(
+        self, size: Sequence[int], rank: Union[int, Sequence[int]]
+    ) -> float:
+        ranks = _ntuple(len(size) - 1)(rank)
+        ranks = [1, *ranks, 1]  # Including tha end ranks
+        df_input = prod(size)  # Degrees of freedom of the input tensor
+        df_factors = sum(
+            ranks[i] * s * ranks[i + 1] for i, s in enumerate(size)
+        )  # Degrees of freedom of the factors
+        compression_ratio = df_input / df_factors
+        return compression_ratio
+
+    def encode(
+        self,
+        x: Tensor,
+        rank: Sequence[int] = None,
+        compression_ratio: Optional[float] = None,
+    ) -> Tensor:
+
+        assert (rank is not None) or (
+            compression_ratio is not None
+        ), "Either 'rank' or 'compression_ratio' must be specified."
+
+        original_size = x.shape[1:]
+        if rank is None:
+            rank = self.get_rank(original_size, compression_ratio)
+
+        factors = batched_ttd(x, rank=rank)
+
+        self.real_compression_ratio = self.get_compression_ratio(
+            size=original_size, rank=rank
+        )
+        return factors
+
+    def decode(self, factors: Sequence[Tensor]) -> Tensor:
+        return batched_contract_tt(factors)
+
+
+class PatchTTD(TTD):
+    """Implements TTD-based compression with patchification."""
+
+    def __init__(self, patch_size: Tuple[int, int] = (8, 8)) -> None:
+        super().__init__()
+        self.patch_size = _pair(patch_size)
+
+    def tensorize(self, x: Tensor) -> Tensor:
+        p, q = self.patch_size
+        patches = rearrange(x, "b c (h p) (w q) -> b (h w) p q c", p=p, q=q)
+        return patches
+
+    def detensorize(self, x: Tensor, size: Tuple[int, int]) -> Tensor:
+        p, q = self.patch_size
+        patches = rearrange(
+            x, "b (h w) p q c -> b c (h p) (w q)", p=p, q=q, h=size[-2] // p
+        )
+        return patches
+
+    def get_optimal_rank(self, x: Tensor, compression_ratio: float):
+        _, h, w = x.shape[1:]
+        tensor = self.tensorize(x)
+        n, p, q, c = size = tensor.shape[1:]
+        rank_ranges = tt_rank_feasible_ranges(size, compression_ratio)
+        (r1_min, r1_max), (r2_min, r2_max), _ = rank_ranges
+        df_input = prod(size)  # Degrees of freedom of the input tensor
+        factors = batched_ttd(tensor, rank=(r1_max, r2_max, c))
+        metric_values = {}
+        for r1 in range(r1_min, r1_max + 1):
+            r2 = Symbol("r2", real=True)
+            df_factors = (
+                r1 * n + r1 * p * r2 + r2 * q * c + c * c
+            )  # Degrees of freedom of the factors
+            r2s = solve(df_input - compression_ratio * df_factors, r2)
+            r2s = [
+                a.evalf() for a in r2s if isinstance(a.evalf(), Real) and a.evalf() > 0
+            ]
+            if len(r2s) == 0:
+                continue
+
+            r2 = min(r2s)
+            r2 = max(min(int(math.floor(r2)), r2_min), r2_max)
+            truncated_factors = [
+                factors[0][..., :, :r1],
+                factors[1][..., :r1, :, :r2],
+                factors[2][..., :r2, :, :c],
+                factors[3][..., :c, :],
+            ]
+            reconstructed_tensor = batched_contract_tt(truncated_factors)
+            reconstructed_image = self.detensorize(reconstructed_tensor, (h, w))
+            metric_values[(r1, r2)] = ssim(x, reconstructed_image)
+
+        r1, r2 = max(metric_values, key=metric_values.get)
+        return r1, r2, c
+
+    def encode(
+        self,
+        x: Tensor,
+        rank: Tuple[int, int, int, int] = None,
+        compression_ratio: Optional[float] = None,
+    ) -> Tuple[Tensor, Tensor]:
+
+        assert (rank is not None) or (
+            compression_ratio is not None
+        ), "Either 'rank' or 'compression_ratio' must be specified."
+
+        tensor = self.tensorize(x)
+        original_size = tensor.shape[1:]
+
+        if rank is None:
+            rank = self.get_optimal_rank(x, compression_ratio)
+
+        factors = batched_ttd(tensor, rank=rank)
+
+        self.real_compression_ratio = self.get_compression_ratio(
+            size=original_size, rank=rank
+        )
+        return factors
+
+    def decode(self, factors: Sequence[Tensor], size: Tuple[int, int]) -> Tensor:
+        reconstructed_tensor = super().decode(factors)
         reconstructed_image = self.detensorize(reconstructed_tensor, size)
         return reconstructed_image
 

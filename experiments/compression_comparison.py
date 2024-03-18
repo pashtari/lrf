@@ -10,6 +10,9 @@ from src.models import compression as com
 
 # Load the astronaut image
 image = data.cat()
+# image = imread(
+#     "/Users/pooya/Library/CloudStorage/OneDrive-KULeuven/research/projects/lsvd/data/clic2024/clic2024_validation_image/07113e38700d3f0dab7a9f34d451298a54de3cef3bc4e03945d5fead4f513ecd.png"
+# )
 
 # Convert the image to float and resize
 image = img_as_float(image)
@@ -19,11 +22,11 @@ image = resize(image, (224, 224), preserve_range=True)
 # Visualize image
 plt.imshow(image)
 plt.axis("off")
-plt.title("Astronaut Image")
+plt.title("Cat Image")
 plt.show()
 
 # Convert to channel-first pytorch tensor
-image = torch.tensor(image, dtype=torch.float64).permute(-1, 0, 1).unsqueeze(0)
+image = torch.tensor(image, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
 
 
 # Store errors and compressed images for each method and compression ratio
@@ -37,6 +40,8 @@ compression_ratios = {
     "Patch SVD": [],
     "HOSVD": [],
     "Patch HOSVD": [],
+    "TTD": [],
+    "Patch TTD": [],
 }
 
 compressed_images = {
@@ -49,6 +54,8 @@ compressed_images = {
     "Patch SVD": [],
     "HOSVD": [],
     "Patch HOSVD": [],
+    "TTD": [],
+    "Patch TTD": [],
 }
 
 psnr_values = {
@@ -59,6 +66,8 @@ psnr_values = {
     "Patch SVD": [],
     "HOSVD": [],
     "Patch HOSVD": [],
+    "TTD": [],
+    "Patch TTD": [],
 }
 ssim_values = {
     "Interpolation": [],
@@ -68,6 +77,8 @@ ssim_values = {
     "Patch SVD": [],
     "HOSVD": [],
     "Patch HOSVD": [],
+    "TTD": [],
+    "Patch TTD": [],
 }
 
 # Calculate reconstructed images and metric values for each method
@@ -154,7 +165,7 @@ for rank in range(6, 224, 8):
 
 
 # Patch HOSVD
-for ratio in range(1, 56, 1):
+for ratio in np.linspace(1, 55, 50):
     # if ratio == 37:
     #     continue
     patch_hosvd = com.PatchHOSVD(patch_size=(8, 8))
@@ -163,7 +174,7 @@ for ratio in range(1, 56, 1):
         if ssim_values["Patch HOSVD"]:
             ssim_current = com.ssim(image, compressed_patch_hosvd).item()
             ssim_last = ssim_values["Patch HOSVD"][-1]
-            if abs(ssim_last - ssim_current) / ssim_last <= 1e-2:
+            if abs(ssim_last - ssim_current) / ssim_last <= 1e-3:
                 del compression_ratios["Patch HOSVD"][-1]
                 del compressed_images["Patch HOSVD"][-1]
                 del ssim_values["Patch HOSVD"][-1]
@@ -175,7 +186,36 @@ for ratio in range(1, 56, 1):
         ssim_values["Patch HOSVD"].append(com.ssim(image, compressed_patch_hosvd).item())
 
 
-selected_methods = ["Interpolation", "SVD", "HOSVD", "DCT", "Patch SVD", "Patch HOSVD"]
+# # TTD
+# for rank in range(6, 224, 8):
+#     ttd = com.TTD()
+#     compressed_ttd = ttd(image, rank=(3, rank))  # .clip(0, 1)
+#     if ttd.real_compression_ratio >= 1:
+#         compression_ratios["TTD"].append(ttd.real_compression_ratio)
+#         compressed_images["TTD"].append(compressed_ttd)
+#         psnr_values["TTD"].append(com.psnr(image, compressed_ttd).item())
+#         ssim_values["TTD"].append(com.ssim(image, compressed_ttd).item())
+
+
+# # Patch TTD
+# for ratio in np.linspace(1, 55, 50):
+#     patch_ttd = com.PatchTTD()
+#     compressed_patch_ttd = patch_ttd(image, compression_ratio=ratio)  # .clip(0, 1)
+#     if patch_ttd.real_compression_ratio >= 1:
+#         compression_ratios["Patch TTD"].append(patch_ttd.real_compression_ratio)
+#         compressed_images["Patch TTD"].append(compressed_patch_ttd)
+#         psnr_values["Patch TTD"].append(com.psnr(image, compressed_patch_ttd).item())
+#         ssim_values["Patch TTD"].append(com.ssim(image, compressed_patch_ttd).item())
+
+
+selected_methods = [
+    "Interpolation",
+    "SVD",
+    "HOSVD",
+    "DCT",
+    "Patch SVD",
+    "Patch HOSVD",
+]
 compression_ratios = {k: compression_ratios[k] for k in selected_methods}
 compressed_images = {k: compressed_images[k] for k in selected_methods}
 psnr_values = {k: psnr_values[k] for k in selected_methods}
@@ -184,7 +224,7 @@ ssim_values = {k: ssim_values[k] for k in selected_methods}
 # Plotting the results: PSNR
 plt.figure()
 for method, values in psnr_values.items():
-    plt.plot(compression_ratios[method], values, marker="o", markersize=5, label=method)
+    plt.plot(compression_ratios[method], values, marker="o", markersize=4, label=method)
 
 plt.xlabel("Compression Ratio")
 plt.ylabel("PSNR")
@@ -202,7 +242,7 @@ plt.show()
 # Plotting the results: SSIM
 plt.figure()
 for method, values in ssim_values.items():
-    plt.plot(compression_ratios[method], values, marker="o", markersize=5, label=method)
+    plt.plot(compression_ratios[method], values, marker="o", markersize=4, label=method)
 
 plt.xlabel("Compression Ratio")
 plt.ylabel("SSIM")
