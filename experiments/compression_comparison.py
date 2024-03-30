@@ -1,57 +1,78 @@
 import numpy as np
 import torch
+from torchvision.transforms import v2
 import matplotlib.pyplot as plt
-from skimage import data, img_as_float
-from skimage.transform import resize
+from skimage import data
 from skimage.io import imread
 
 from src.models import compression as com
 
 
 # Load the astronaut image
-image = data.cat()
-# image = imread(
-#     "/Users/pooya/Library/CloudStorage/OneDrive-KULeuven/research/projects/lsvd/data/clic2024/clic2024_validation_image/07113e38700d3f0dab7a9f34d451298a54de3cef3bc4e03945d5fead4f513ecd.png"
-# )
+# image = data.astronaut()
+image = imread(
+    "/Users/pooya/Library/CloudStorage/OneDrive-KULeuven/research/projects/lsvd/data/kodak/kodim15.png"
+)
 
-# Convert the image to float and resize
-image = img_as_float(image)
-image = resize(image, (224, 224), preserve_range=True)
+
+# transforms = v2.Compose([v2.ToImage(), v2.Resize(size=(224, 224), interpolation=2)])
+transforms = v2.Compose([v2.ToImage()])
+
+
+# Transform the input image
+image = torch.tensor(transforms(image))
 
 
 # Visualize image
-plt.imshow(image)
+plt.imshow(image.permute(1, 2, 0))
 plt.axis("off")
-plt.title("Cat Image")
+plt.title("Original Image")
 plt.show()
 
-# Convert to channel-first pytorch tensor
-image = torch.tensor(image, dtype=torch.float32).permute(-1, 0, 1).unsqueeze(0)
 
-
-# Store errors and compressed images for each method and compression ratio
+# Store errors and compressed images for each method and CR/bpp
 compression_ratios = {
     "Interpolation": [],
     "Interpolation - Antialias": [],
     "Interpolation - Low": [],
     "DCT": [],
     "DCT - Low": [],
+    "JPEG": [],
     "SVD": [],
     "Patch SVD": [],
+    "Patch IMF": [],
     "HOSVD": [],
     "Patch HOSVD": [],
     "TTD": [],
     "Patch TTD": [],
 }
 
-compressed_images = {
+bpps = {
     "Interpolation": [],
     "Interpolation - Antialias": [],
     "Interpolation - Low": [],
     "DCT": [],
     "DCT - Low": [],
+    "JPEG": [],
     "SVD": [],
     "Patch SVD": [],
+    "Patch IMF": [],
+    "HOSVD": [],
+    "Patch HOSVD": [],
+    "TTD": [],
+    "Patch TTD": [],
+}
+
+reconstructed_images = {
+    "Interpolation": [],
+    "Interpolation - Antialias": [],
+    "Interpolation - Low": [],
+    "DCT": [],
+    "DCT - Low": [],
+    "JPEG": [],
+    "SVD": [],
+    "Patch SVD": [],
+    "Patch IMF": [],
     "HOSVD": [],
     "Patch HOSVD": [],
     "TTD": [],
@@ -62,8 +83,10 @@ psnr_values = {
     "Interpolation": [],
     "Interpolation - Antialias": [],
     "DCT": [],
+    "JPEG": [],
     "SVD": [],
     "Patch SVD": [],
+    "Patch IMF": [],
     "HOSVD": [],
     "Patch HOSVD": [],
     "TTD": [],
@@ -73,8 +96,10 @@ ssim_values = {
     "Interpolation": [],
     "Interpolation - Antialias": [],
     "DCT": [],
+    "JPEG": [],
     "SVD": [],
     "Patch SVD": [],
+    "Patch IMF": [],
     "HOSVD": [],
     "Patch HOSVD": [],
     "TTD": [],
@@ -83,200 +108,261 @@ ssim_values = {
 
 # Calculate reconstructed images and metric values for each method
 
-# Interpolation
-for new_size in range(32, 224, 16):
-    interpolate = com.Interpolate(mode="bilinear", antialias=False)
-    compressed_interpolate = interpolate(image, new_size=new_size)  # .clip(0, 1)
-    compression_ratios["Interpolation"].append(interpolate.real_compression_ratio)
-    compressed_images["Interpolation"].append(compressed_interpolate)
-    psnr_values["Interpolation"].append(com.psnr(image, compressed_interpolate).item())
-    ssim_values["Interpolation"].append(com.ssim(image, compressed_interpolate).item())
+# # Interpolation
+# for new_size in range(32, 224, 16):
+#     interpolate = com.Interpolate(mode="bilinear", antialias=False)
+#     reconstructed_interpolate = interpolate(image, new_size=new_size)
+#     compression_ratios["Interpolation"].append(interpolate.real_compression_ratio)
+#     reconstructed_images["Interpolation"].append(reconstructed_interpolate)
+#     psnr_values["Interpolation"].append(com.psnr(image, reconstructed_interpolate))
+#     ssim_values["Interpolation"].append(com.ssim(image, reconstructed_interpolate))
 
-# Interpolation - Antialias
-for new_size in range(32, 224, 16):
-    interpolate = com.Interpolate(mode="bilinear", antialias=True)
-    compressed_interpolate = interpolate(image, new_size=new_size)  # .clip(0, 1)
-    compression_ratios["Interpolation - Antialias"].append(
-        interpolate.real_compression_ratio
-    )
-    compressed_images["Interpolation - Antialias"].append(compressed_interpolate)
-    psnr_values["Interpolation - Antialias"].append(
-        com.psnr(image, compressed_interpolate).item()
-    )
-    ssim_values["Interpolation - Antialias"].append(
-        com.ssim(image, compressed_interpolate).item()
-    )
+# # Interpolation - Antialias
+# for new_size in range(32, 224, 16):
+#     interpolate = com.Interpolate(mode="bilinear", antialias=True)
+#     reconstructed_interpolate = interpolate(image, new_size=new_size)
+#     compression_ratios["Interpolation - Antialias"].append(
+#         interpolate.real_compression_ratio
+#     )
+#     reconstructed_images["Interpolation - Antialias"].append(reconstructed_interpolate)
+#     psnr_values["Interpolation - Antialias"].append(
+#         com.psnr(image, reconstructed_interpolate)
+#     )
+#     ssim_values["Interpolation - Antialias"].append(
+#         com.ssim(image, reconstructed_interpolate)
+#     )
 
-# Interpolation - low
-for new_size in range(32, 224, 16):
-    interpolate = com.Interpolate(mode="bilinear")
-    compressed_interpolate_low = interpolate.encode(
-        image, new_size=new_size
-    )  # .clip(0, 1)
-    compression_ratios["Interpolation - Low"].append(interpolate.real_compression_ratio)
-    compressed_images["Interpolation - Low"].append(compressed_interpolate_low)
+# # Interpolation - low
+# for new_size in range(32, 224, 16):
+#     interpolate = com.Interpolate(mode="bilinear")
+#     reconstructed_interpolate_low = interpolate.encode(
+#         image, new_size=new_size
+#     )
+#     compression_ratios["Interpolation - Low"].append(interpolate.real_compression_ratio)
+#     reconstructed_images["Interpolation - Low"].append(reconstructed_interpolate_low)
 
-# DCT
-for cutoff in range(32, 224, 16):
-    dct = com.DCT()
-    compressed_dct = dct(image, cutoff=cutoff)  # .clip(0, 1)
-    compression_ratios["DCT"].append(dct.real_compression_ratio)
-    compressed_images["DCT"].append(compressed_dct)
-    psnr_values["DCT"].append(com.psnr(image, compressed_dct).item())
-    ssim_values["DCT"].append(com.ssim(image, compressed_dct).item())
+# # DCT
+# for cutoff in range(32, 224, 16):
+#     dct = com.DCT()
+#     reconstructed_dct = dct(image, cutoff=cutoff)
+#     compression_ratios["DCT"].append(dct.real_compression_ratio)
+#     reconstructed_images["DCT"].append(reconstructed_dct)
+#     psnr_values["DCT"].append(com.psnr(image, reconstructed_dct))
+#     ssim_values["DCT"].append(com.ssim(image, reconstructed_dct))
 
-# DCT low
-for cutoff in range(32, 224, 16):
-    dct = com.DCT()
-    compressed_dct_low = com.minmax_normalize(dct(image, cutoff=cutoff, pad=False))
-    compression_ratios["DCT - Low"].append(dct.real_compression_ratio)
-    compressed_images["DCT - Low"].append(compressed_dct_low)
+# # DCT low
+# for cutoff in range(32, 224, 16):
+#     dct = com.DCT()
+#     reconstructed_dct_low = com.minmax_normalize(dct(image, cutoff=cutoff, pad=False))
+#     compression_ratios["DCT - Low"].append(dct.real_compression_ratio)
+#     reconstructed_images["DCT - Low"].append(reconstructed_dct_low)
 
-# SVD
-for rank in range(2, 224, 8):
-    svd = com.SVD()
-    compressed_svd = svd(image, rank=rank)  # .clip(0, 1)
-    if svd.real_compression_ratio >= 1:
-        compression_ratios["SVD"].append(svd.real_compression_ratio)
-        compressed_images["SVD"].append(compressed_svd)
-        psnr_values["SVD"].append(com.psnr(image, compressed_svd).item())
-        ssim_values["SVD"].append(com.ssim(image, compressed_svd).item())
+
+# JPEG
+for quality in range(1, 95, 2):
+    enocoded = com.jpeg_encode(image, quality=quality)
+    reconstructed = com.jpeg_decode(enocoded)
+
+    real_compression_ratio = com.get_compression_ratio(image, enocoded)
+    real_bpp = com.get_bbp(image.shape[-2:], enocoded)
+
+    compression_ratios["JPEG"].append(real_compression_ratio)
+    bpps["JPEG"].append(real_bpp)
+    reconstructed_images["JPEG"].append(reconstructed)
+    psnr_values["JPEG"].append(com.psnr(image, reconstructed))
+    ssim_values["JPEG"].append(com.ssim(image, reconstructed))
+
+
+# # SVD
+# for quality in np.linspace(0.0, 0.08, 20):
+#     enocoded = com.svd_encode(image, quality=quality, dtype=torch.int8)
+#     reconstructed = com.svd_decode(enocoded)
+
+#     real_compression_ratio = com.get_compression_ratio(image, enocoded)
+#     real_bpp = com.get_bbp(image.shape[-2:], enocoded)
+
+#     compression_ratios["SVD"].append(real_compression_ratio)
+#     bpps["SVD"].append(real_bpp)
+#     reconstructed_images["SVD"].append(reconstructed)
+#     psnr_values["SVD"].append(com.psnr(image, reconstructed))
+#     ssim_values["SVD"].append(com.ssim(image, reconstructed))
+
 
 # Patch SVD
-for rank in range(3, 193, 4):
-    patch_svd = com.PatchSVD(patch_size=(8, 8))
-    compressed_patch_svd = patch_svd(image, rank=rank)  # .clip(0, 1)
-    if patch_svd.real_compression_ratio >= 1:
-        compression_ratios["Patch SVD"].append(patch_svd.real_compression_ratio)
-        compressed_images["Patch SVD"].append(compressed_patch_svd)
-        psnr_values["Patch SVD"].append(com.psnr(image, compressed_patch_svd).item())
-        ssim_values["Patch SVD"].append(com.ssim(image, compressed_patch_svd).item())
+for quality in np.linspace(0.0, 0.2, 20):
+    enocoded = com.patch_svd_encode(
+        image, quality=quality, patch_size=(8, 8), dtype=torch.int8
+    )
+    reconstructed = com.patch_svd_decode(enocoded)
+
+    real_compression_ratio = com.get_compression_ratio(image, enocoded)
+    real_bpp = com.get_bbp(image.shape[-2:], enocoded)
+
+    compression_ratios["Patch SVD"].append(real_compression_ratio)
+    bpps["Patch SVD"].append(real_bpp)
+    reconstructed_images["Patch SVD"].append(reconstructed)
+    psnr_values["Patch SVD"].append(com.psnr(image, reconstructed))
+    ssim_values["Patch SVD"].append(com.ssim(image, reconstructed))
 
 
-# HOSVD
-for rank in range(6, 224, 8):
-    hosvd = com.HOSVD()
-    compressed_hosvd = hosvd(image, rank=(3, rank, rank))  # .clip(0, 1)
-    if hosvd.real_compression_ratio >= 1:
-        compression_ratios["HOSVD"].append(hosvd.real_compression_ratio)
-        compressed_images["HOSVD"].append(compressed_hosvd)
-        psnr_values["HOSVD"].append(com.psnr(image, compressed_hosvd).item())
-        ssim_values["HOSVD"].append(com.ssim(image, compressed_hosvd).item())
+# Patch IMF
+for quality in np.linspace(0.0, 0.3, 30):
+    enocoded = com.patch_imf_encode(
+        image, quality=quality, patch_size=(8, 8), dtype=torch.int8, num_iters=10
+    )
+    reconstructed = com.patch_imf_decode(enocoded)
+
+    real_compression_ratio = com.get_compression_ratio(image, enocoded)
+    real_bpp = com.get_bbp(image.shape[-2:], enocoded)
+
+    compression_ratios["Patch IMF"].append(real_compression_ratio)
+    bpps["Patch IMF"].append(real_bpp)
+    reconstructed_images["Patch IMF"].append(reconstructed)
+    psnr_values["Patch IMF"].append(com.psnr(image, reconstructed))
+    ssim_values["Patch IMF"].append(com.ssim(image, reconstructed))
 
 
-# Patch HOSVD
-for ratio in np.linspace(1, 55, 50):
-    # if ratio == 37:
-    #     continue
-    patch_hosvd = com.PatchHOSVD(patch_size=(8, 8))
-    compressed_patch_hosvd = patch_hosvd(image, compression_ratio=ratio)  # .clip(0, 1)
-    if patch_hosvd.real_compression_ratio >= 1:
-        if ssim_values["Patch HOSVD"]:
-            ssim_current = com.ssim(image, compressed_patch_hosvd).item()
-            ssim_last = ssim_values["Patch HOSVD"][-1]
-            if abs(ssim_last - ssim_current) / ssim_last <= 1e-3:
-                del compression_ratios["Patch HOSVD"][-1]
-                del compressed_images["Patch HOSVD"][-1]
-                del ssim_values["Patch HOSVD"][-1]
-                del psnr_values["Patch HOSVD"][-1]
+# # HOSVD
+# for rank in range(1, 63, 4):
+#     enocoded = com.hosvd_encode(image, rank=(3, rank, rank), dtype=torch.int16)
+#     reconstructed = com.hosvd_decode(enocoded)
 
-        compression_ratios["Patch HOSVD"].append(patch_hosvd.real_compression_ratio)
-        compressed_images["Patch HOSVD"].append(compressed_patch_hosvd)
-        psnr_values["Patch HOSVD"].append(com.psnr(image, compressed_patch_hosvd).item())
-        ssim_values["Patch HOSVD"].append(com.ssim(image, compressed_patch_hosvd).item())
+#     real_compression_ratio = com.get_compression_ratio(image, enocoded)
+#     real_bpp = com.get_bbp(image.shape[-2:], enocoded)
+
+#     compression_ratios["HOSVD"].append(real_compression_ratio)
+#     bpps["HOSVD"].append(real_bpp)
+#     reconstructed_images["HOSVD"].append(reconstructed)
+#     psnr_values["HOSVD"].append(com.psnr(image, reconstructed))
+#     ssim_values["HOSVD"].append(com.ssim(image, reconstructed))
+
+
+# # Patch HOSVD
+# for b in np.linspace(0.15, 6.25, 15):
+#     print(f"HOSVD: bpp: {b:.2f}")
+#     enocoded = com.patch_hosvd_encode(
+#         image, bpp=b, patch_size=(8, 8), dtype=torch.int16
+#     )
+#     reconstructed = com.patch_hosvd_decode(enocoded)
+
+#     real_compression_ratio = com.get_compression_ratio(image, enocoded)
+#     real_bpp = com.get_bbp(image.shape[-2:], enocoded)
+
+#     # if real_compression_ratio >= 1:
+#     #     # if ssim_values["Patch HOSVD"]:
+#     #     #     ssim_current = com.ssim(image, reconstructed)
+#     #     #     ssim_last = ssim_values["Patch HOSVD"][-1]
+#     #     #     if abs(ssim_last - ssim_current) / ssim_last <= 1e-3:
+#     #     #         del compression_ratios["Patch HOSVD"][-1]
+#     #     #         del bpps["Patch HOSVD"][-1]
+#     #     #         del reconstructed_images["Patch HOSVD"][-1]
+#     #     #         del ssim_values["Patch HOSVD"][-1]
+#     #     #         del psnr_values["Patch HOSVD"][-1]
+
+#     compression_ratios["Patch HOSVD"].append(real_compression_ratio)
+#     bpps["Patch HOSVD"].append(real_bpp)
+#     reconstructed_images["Patch HOSVD"].append(reconstructed)
+#     psnr_values["Patch HOSVD"].append(com.psnr(image, reconstructed))
+#     ssim_values["Patch HOSVD"].append(com.ssim(image, reconstructed))
 
 
 # # TTD
 # for rank in range(6, 224, 8):
 #     ttd = com.TTD()
-#     compressed_ttd = ttd(image, rank=(3, rank))  # .clip(0, 1)
+#     reconstructed_ttd = ttd(image, rank=(3, rank))
 #     if ttd.real_compression_ratio >= 1:
 #         compression_ratios["TTD"].append(ttd.real_compression_ratio)
-#         compressed_images["TTD"].append(compressed_ttd)
-#         psnr_values["TTD"].append(com.psnr(image, compressed_ttd).item())
-#         ssim_values["TTD"].append(com.ssim(image, compressed_ttd).item())
+#         reconstructed_images["TTD"].append(reconstructed_ttd)
+#         psnr_values["TTD"].append(com.psnr(image, reconstructed_ttd))
+#         ssim_values["TTD"].append(com.ssim(image, reconstructed_ttd))
 
 
 # # Patch TTD
 # for ratio in np.linspace(1, 55, 50):
 #     patch_ttd = com.PatchTTD()
-#     compressed_patch_ttd = patch_ttd(image, compression_ratio=ratio)  # .clip(0, 1)
+#     reconstructed_patch_ttd = patch_ttd(image, compression_ratio=ratio)
 #     if patch_ttd.real_compression_ratio >= 1:
 #         compression_ratios["Patch TTD"].append(patch_ttd.real_compression_ratio)
-#         compressed_images["Patch TTD"].append(compressed_patch_ttd)
-#         psnr_values["Patch TTD"].append(com.psnr(image, compressed_patch_ttd).item())
-#         ssim_values["Patch TTD"].append(com.ssim(image, compressed_patch_ttd).item())
+#         reconstructed_images["Patch TTD"].append(reconstructed_patch_ttd)
+#         psnr_values["Patch TTD"].append(com.psnr(image, reconstructed_patch_ttd))
+#         ssim_values["Patch TTD"].append(com.ssim(image, reconstructed_patch_ttd))
 
 
 selected_methods = [
-    "Interpolation",
-    "SVD",
-    "HOSVD",
-    "DCT",
+    # "Interpolation",
+    # "SVD",
+    # "HOSVD",
+    # "TTD",
+    # "DCT",
+    "JPEG",
     "Patch SVD",
-    "Patch HOSVD",
+    "Patch IMF",
+    # "Patch HOSVD",
 ]
-compression_ratios = {k: compression_ratios[k] for k in selected_methods}
-compressed_images = {k: compressed_images[k] for k in selected_methods}
+bpps = {k: bpps[k] for k in selected_methods}
+reconstructed_images = {k: reconstructed_images[k] for k in selected_methods}
 psnr_values = {k: psnr_values[k] for k in selected_methods}
 ssim_values = {k: ssim_values[k] for k in selected_methods}
 
-# Plotting the results: PSNR
+# Plotting the results: PSNR vs bpp
 plt.figure()
 for method, values in psnr_values.items():
-    plt.plot(compression_ratios[method], values, marker="o", markersize=4, label=method)
+    plt.plot(bpps[method], values, marker="o", markersize=4, label=method)
 
-plt.xlabel("Compression Ratio")
-plt.ylabel("PSNR")
+plt.xlabel("bpp")
+plt.ylabel("PSNR (dB)")
 plt.title("Comprison of Different Compression Methods")
-plt.xticks(np.arange(1, max(compression_ratios["SVD"]) + 1, 4))
+# plt.xticks(np.arange(1, 13, 1))
+plt.xlim(0, 2)
 plt.legend()
 plt.grid()
 plt.savefig(
-    "experiments/compression_methods_comparison_psnr.pdf",
+    "experiments/compression_methods_comparison_psnr-bpp.pdf",
     format="pdf",
     dpi=600,
 )
 plt.show()
 
-# Plotting the results: SSIM
+
+# Plotting the results: SSIM vs bpp
 plt.figure()
 for method, values in ssim_values.items():
-    plt.plot(compression_ratios[method], values, marker="o", markersize=4, label=method)
+    plt.plot(bpps[method], values, marker="o", markersize=4, label=method)
 
-plt.xlabel("Compression Ratio")
+plt.xlabel("bpp")
 plt.ylabel("SSIM")
 plt.title("Comprison of Different Compression Methods")
-plt.xticks(np.arange(1, max(compression_ratios["SVD"]) + 1, 4))
+# plt.xticks(np.arange(1, 13, 1))
+plt.xlim(0, 2)
 plt.legend()
 plt.grid()
 plt.savefig(
-    "experiments/compression_methods_comparison_ssim.pdf",
+    "experiments/compression_methods_comparison_ssim-bpp.pdf",
     format="pdf",
     dpi=600,
 )
 plt.show()
 
 
-# Plotting the compressed images for each method and compression ratio
-selected_ratios = [1.25, 2.5, 4, 10, 15, 55]
+# Plotting the compressed images for each method and bpp
+selected_bpps = [1, 0.5, 0.3, 0.2, 0.15, 0.1]
 fig, axs = plt.subplots(
-    len(selected_ratios),
+    len(selected_bpps),
     len(selected_methods),
-    figsize=(5 * len(selected_methods), 5 * len(selected_ratios)),
+    figsize=(6 * len(selected_methods), 5 * len(selected_bpps)),
 )
 
 # Setting titles for columns
 for ax, method in zip(axs[0], selected_methods):
     ax.set_title(method, fontsize=24)
 
-for i, ratio in enumerate(selected_ratios):
+for i, bbp in enumerate(selected_bpps):
     for j, method in enumerate(selected_methods):
-        ii = np.argmin(np.abs(np.array(compression_ratios[method]) - ratio))
-        compressed_image = compressed_images[method][ii]
-        axs[i, j].imshow(compressed_image.squeeze(0).permute(1, 2, 0).clip(0, 1))
-        real_ratio = compression_ratios[method][ii]
-        axs[i, j].set_ylabel(f"Ratio = {real_ratio:.2f}", rotation=90, fontsize=18)
+        ii = np.argmin(np.abs(np.array(bpps[method]) - bbp))
+        reconstructed_image = reconstructed_images[method][ii]
+        axs[i, j].imshow(reconstructed_image.permute(1, 2, 0))
+        real_bpp = bpps[method][ii]
+        axs[i, j].set_ylabel(f"bpp = {real_bpp:.2f}", rotation=90, fontsize=18)
         axs[i, j].tick_params(
             axis="both",
             which="both",

@@ -3,6 +3,16 @@ import torch
 from src.models import decomposition as decom
 
 
+def test_imf():
+    x = torch.randint(0, 256, size=(1, 784, 192))
+    imf = decom.IMF(rank=5, num_iters=10, verbose=True)
+    u, v = imf.decompose(x)
+    return u, v
+
+
+u, v = test_imf()
+
+
 def test_hosvd_rank_upper_bounds():
     upper_bounds = decom.hosvd_rank_upper_bounds([100, 5, 6])
     assert tuple(upper_bounds) == (30, 5, 6)
