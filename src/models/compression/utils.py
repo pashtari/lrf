@@ -6,6 +6,8 @@ import json
 import torch
 from torch import Tensor
 import torch.nn.functional as F
+import torchvision.transforms.v2.functional as FT
+from PIL import Image
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
@@ -28,6 +30,26 @@ def minmax_normalize(tensor, dim=(-2, -1), eps=1e-8):
     max_val = torch.amax(tensor, dim=dim, keepdim=True)
     normalized_tensor = (tensor - min_val) / (max_val - min_val + eps)
     return normalized_tensor
+
+
+def rgb_to_ycbcr(img):
+    # Convert the PyTorch tensor to a PIL image
+    img_rgb = FT.to_pil_image(img)
+    # Convert the image to YCbCr color space
+    img_ycbcr = img_rgb.convert("YCbCr")
+    # Convert the PIL image to a PyTorch tensor
+    img_ycbcr = FT.pil_to_tensor(img_ycbcr)
+    return img_ycbcr
+
+
+def ycbcr_to_rgb(img):
+    # Convert the PyTorch tensor to a PIL image
+    img_rgb = FT.to_pil_image(img)
+    # Convert the image to RGB color space
+    img_ycbcr = img_rgb.convert("RGB")
+    # Convert the PIL image to a PyTorch tensor
+    img_ycbcr = FT.pil_to_tensor(img_ycbcr)
+    return img_ycbcr
 
 
 def pad_image(img, patch_size, *args, **kwargs):

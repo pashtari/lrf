@@ -11,7 +11,7 @@ from src.models import compression as com
 # Load the astronaut image
 # image = data.astronaut()
 image = imread(
-    "/Users/pooya/Library/CloudStorage/OneDrive-KULeuven/research/projects/lsvd/data/kodak/kodim15.png"
+    "/Users/pooya/Library/CloudStorage/OneDrive-KULeuven/research/projects/lsvd/data/kodak/kodim21.png"
 )
 
 
@@ -159,7 +159,7 @@ ssim_values = {
 
 
 # JPEG
-for quality in range(1, 95, 2):
+for quality in range(1, 95, 1):
     enocoded = com.jpeg_encode(image, quality=quality)
     reconstructed = com.jpeg_decode(enocoded)
 
@@ -189,7 +189,7 @@ for quality in range(1, 95, 2):
 
 
 # Patch SVD
-for quality in np.linspace(0.0, 0.2, 20):
+for quality in np.linspace(0.0, 0.2, 50):
     enocoded = com.patch_svd_encode(
         image, quality=quality, patch_size=(8, 8), dtype=torch.int8
     )
@@ -206,7 +206,7 @@ for quality in np.linspace(0.0, 0.2, 20):
 
 
 # Patch IMF
-for quality in np.linspace(0.0, 0.3, 30):
+for quality in np.linspace(0.0, 0.2, 50):
     enocoded = com.patch_imf_encode(
         image, quality=quality, patch_size=(8, 8), dtype=torch.int8, num_iters=10
     )
@@ -345,7 +345,7 @@ plt.show()
 
 
 # Plotting the compressed images for each method and bpp
-selected_bpps = [1, 0.5, 0.3, 0.2, 0.15, 0.1]
+selected_bpps = [1, 0.5, 0.3, 0.2, 0.15, 0.1, 0.05]
 fig, axs = plt.subplots(
     len(selected_bpps),
     len(selected_methods),

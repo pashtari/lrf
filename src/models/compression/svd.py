@@ -189,15 +189,6 @@ def patch_svd_encode(
     u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
     v = torch.einsum("...r, ...rj -> ...rj", torch.sqrt(s), v)
 
-    # import numpy as np
-    # import matplotlib.pyplot as plt
-
-    # counts, bins = np.histogram(u.flatten().numpy())
-    # plt.hist(bins[:-1], bins, weights=counts)
-
-    # counts, bins = np.histogram(v.flatten().numpy())
-    # plt.hist(bins[:-1], bins, weights=counts)
-
     if not dtype.is_floating_point:
         u, *qtz_u = quantize(u, target_dtype=dtype)
         v, *qtz_v = quantize(v, target_dtype=dtype)
