@@ -32,12 +32,9 @@ plt.show()
 
 # Store errors and compressed images for each method and CR/bpp
 compression_ratios = {
-    "Interpolation": [],
-    "Interpolation - Antialias": [],
-    "Interpolation - Low": [],
-    "DCT": [],
-    "DCT - Low": [],
     "JPEG": [],
+    "JPEG2000": [],
+    "WEBP": [],
     "SVD": [],
     "Patch SVD": [],
     "Patch IMF": [],
@@ -48,12 +45,9 @@ compression_ratios = {
 }
 
 bpps = {
-    "Interpolation": [],
-    "Interpolation - Antialias": [],
-    "Interpolation - Low": [],
-    "DCT": [],
-    "DCT - Low": [],
     "JPEG": [],
+    "JPEG2000": [],
+    "WEBP": [],
     "SVD": [],
     "Patch SVD": [],
     "Patch IMF": [],
@@ -64,12 +58,9 @@ bpps = {
 }
 
 reconstructed_images = {
-    "Interpolation": [],
-    "Interpolation - Antialias": [],
-    "Interpolation - Low": [],
-    "DCT": [],
-    "DCT - Low": [],
     "JPEG": [],
+    "JPEG2000": [],
+    "WEBP": [],
     "SVD": [],
     "Patch SVD": [],
     "Patch IMF": [],
@@ -80,10 +71,9 @@ reconstructed_images = {
 }
 
 psnr_values = {
-    "Interpolation": [],
-    "Interpolation - Antialias": [],
-    "DCT": [],
     "JPEG": [],
+    "JPEG2000": [],
+    "WEBP": [],
     "SVD": [],
     "Patch SVD": [],
     "Patch IMF": [],
@@ -93,10 +83,9 @@ psnr_values = {
     "Patch TTD": [],
 }
 ssim_values = {
-    "Interpolation": [],
-    "Interpolation - Antialias": [],
-    "DCT": [],
     "JPEG": [],
+    "JPEG2000": [],
+    "WEBP": [],
     "SVD": [],
     "Patch SVD": [],
     "Patch IMF": [],
@@ -108,60 +97,11 @@ ssim_values = {
 
 # Calculate reconstructed images and metric values for each method
 
-# # Interpolation
-# for new_size in range(32, 224, 16):
-#     interpolate = com.Interpolate(mode="bilinear", antialias=False)
-#     reconstructed_interpolate = interpolate(image, new_size=new_size)
-#     compression_ratios["Interpolation"].append(interpolate.real_compression_ratio)
-#     reconstructed_images["Interpolation"].append(reconstructed_interpolate)
-#     psnr_values["Interpolation"].append(com.psnr(image, reconstructed_interpolate))
-#     ssim_values["Interpolation"].append(com.ssim(image, reconstructed_interpolate))
-
-# # Interpolation - Antialias
-# for new_size in range(32, 224, 16):
-#     interpolate = com.Interpolate(mode="bilinear", antialias=True)
-#     reconstructed_interpolate = interpolate(image, new_size=new_size)
-#     compression_ratios["Interpolation - Antialias"].append(
-#         interpolate.real_compression_ratio
-#     )
-#     reconstructed_images["Interpolation - Antialias"].append(reconstructed_interpolate)
-#     psnr_values["Interpolation - Antialias"].append(
-#         com.psnr(image, reconstructed_interpolate)
-#     )
-#     ssim_values["Interpolation - Antialias"].append(
-#         com.ssim(image, reconstructed_interpolate)
-#     )
-
-# # Interpolation - low
-# for new_size in range(32, 224, 16):
-#     interpolate = com.Interpolate(mode="bilinear")
-#     reconstructed_interpolate_low = interpolate.encode(
-#         image, new_size=new_size
-#     )
-#     compression_ratios["Interpolation - Low"].append(interpolate.real_compression_ratio)
-#     reconstructed_images["Interpolation - Low"].append(reconstructed_interpolate_low)
-
-# # DCT
-# for cutoff in range(32, 224, 16):
-#     dct = com.DCT()
-#     reconstructed_dct = dct(image, cutoff=cutoff)
-#     compression_ratios["DCT"].append(dct.real_compression_ratio)
-#     reconstructed_images["DCT"].append(reconstructed_dct)
-#     psnr_values["DCT"].append(com.psnr(image, reconstructed_dct))
-#     ssim_values["DCT"].append(com.ssim(image, reconstructed_dct))
-
-# # DCT low
-# for cutoff in range(32, 224, 16):
-#     dct = com.DCT()
-#     reconstructed_dct_low = com.minmax_normalize(dct(image, cutoff=cutoff, pad=False))
-#     compression_ratios["DCT - Low"].append(dct.real_compression_ratio)
-#     reconstructed_images["DCT - Low"].append(reconstructed_dct_low)
-
 
 # JPEG
-for quality in range(1, 95, 1):
-    enocoded = com.jpeg_encode(image, quality=quality)
-    reconstructed = com.jpeg_decode(enocoded)
+for quality in range(0, 91, 2):
+    enocoded = com.pil_encode(image, format="JPEG", quality=quality)
+    reconstructed = com.pil_decode(enocoded)
 
     real_compression_ratio = com.get_compression_ratio(image, enocoded)
     real_bpp = com.get_bbp(image.shape[-2:], enocoded)
@@ -172,6 +112,34 @@ for quality in range(1, 95, 1):
     psnr_values["JPEG"].append(com.psnr(image, reconstructed))
     ssim_values["JPEG"].append(com.ssim(image, reconstructed))
 
+
+# # JPEG2000
+# for quality in range(1, 95, 2):
+#     enocoded = com.pil_encode(image, format="JPEG2000", quality=quality)
+#     reconstructed = com.pil_decode(enocoded)
+
+#     real_compression_ratio = com.get_compression_ratio(image, enocoded)
+#     real_bpp = com.get_bbp(image.shape[-2:], enocoded)
+
+#     compression_ratios["JPEG2000"].append(real_compression_ratio)
+#     bpps["JPEG2000"].append(real_bpp)
+#     reconstructed_images["JPEG2000"].append(reconstructed)
+#     psnr_values["JPEG2000"].append(com.psnr(image, reconstructed))
+#     ssim_values["JPEG2000"].append(com.ssim(image, reconstructed))
+
+# WebP
+for quality in range(0, 92, 2):
+    enocoded = com.pil_encode(image, format="WEBP", quality=quality, alpha_quality=0)
+    reconstructed = com.pil_decode(enocoded)
+
+    real_compression_ratio = com.get_compression_ratio(image, enocoded)
+    real_bpp = com.get_bbp(image.shape[-2:], enocoded)
+
+    compression_ratios["WEBP"].append(real_compression_ratio)
+    bpps["WEBP"].append(real_bpp)
+    reconstructed_images["WEBP"].append(reconstructed)
+    psnr_values["WEBP"].append(com.psnr(image, reconstructed))
+    ssim_values["WEBP"].append(com.ssim(image, reconstructed))
 
 # # SVD
 # for quality in np.linspace(0.0, 0.08, 20):
@@ -189,7 +157,7 @@ for quality in range(1, 95, 1):
 
 
 # Patch SVD
-for quality in np.linspace(0.0, 0.2, 50):
+for quality in np.linspace(0.0, 0.15, 50):
     enocoded = com.patch_svd_encode(
         image, quality=quality, patch_size=(8, 8), dtype=torch.int8
     )
@@ -206,7 +174,7 @@ for quality in np.linspace(0.0, 0.2, 50):
 
 
 # Patch IMF
-for quality in np.linspace(0.0, 0.2, 50):
+for quality in np.linspace(0.0, 0.3, 50):
     enocoded = com.patch_imf_encode(
         image, quality=quality, patch_size=(8, 8), dtype=torch.int8, num_iters=10
     )
@@ -289,12 +257,9 @@ for quality in np.linspace(0.0, 0.2, 50):
 
 
 selected_methods = [
-    # "Interpolation",
-    # "SVD",
-    # "HOSVD",
-    # "TTD",
-    # "DCT",
     "JPEG",
+    # "JPEG2000",
+    "WEBP",
     "Patch SVD",
     "Patch IMF",
     # "Patch HOSVD",

@@ -21,8 +21,15 @@ from .utils import (
 
 
 def imf_rank(size: Tuple[int, int], compression_ratio: float) -> int:
-    """Calculate the rank for IMF based on the compression ratio."""
+    """Calculate the rank for IMF based on the compression ratio.
 
+    Args:
+        size (Tuple[int, int]): _description_
+        compression_ratio (float): _description_
+
+    Returns:
+        int: The calculated rank.
+    """
     num_rows, num_cols = size
     df_input = num_rows * num_cols  # Degrees of freedom of the input matrix
     df_lowrank = num_rows + num_cols  # Degrees of freedom of the low-rank matrix
