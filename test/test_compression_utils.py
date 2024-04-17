@@ -4,7 +4,7 @@ from skimage import data
 from skimage.util import img_as_float32
 from matplotlib import pyplot as plt
 
-from src.models import compression as com
+import compression as com
 
 # Load the astronaut image from skimage and convert it to YCbCr
 img_rgb = torch.tensor(img_as_float32(data.astronaut())).permute(2, 0, 1)

@@ -1,0 +1,8 @@
+# --------- image compression --------- #
+git+https://github.com/pashtari/lrf.git
+
+# --------- visualization --------- #
+matplotlib==3.8.4
+
+# --------- others --------- #
+deepspeed==0.13.2

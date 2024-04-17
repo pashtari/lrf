@@ -1,2 +1,0 @@
-accuracy:
-    _target_: ignite.metrics.Accuracy

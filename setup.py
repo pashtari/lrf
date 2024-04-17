@@ -6,18 +6,15 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setup(
-    name="lsvd",
+    name="lrf",
     version="0.0.1",
-    description="A PyTorch implementation of LSVD",
+    description="A PyTorch implementation of low-rank factorization methods for image compression.",
     author="Pooya Ashtari and Pourya Behmandpoor",
     author_email="pooya.ash@gmail.com",
-    url="https://github.com/pashtari/lsvd",
-    packages=find_packages(),
-    entry_points={
-        "console_scripts": [
-            "train_command = src.train:main",
-            "eval_command = src.eval:main",
-        ]
+    url="https://github.com/pashtari/lrf",
+    project_urls={
+        "Bug Tracker": "https://github.com/pashtari/lrf/issues",
+        "Source Code": "https://github.com/pashtari/lrf",
     },
     classifiers=[
         "Programming Language :: Python :: 3",
@@ -26,18 +23,23 @@ setup(
         "Topic :: Scientific/Engineering",
     ],
     keywords=[
-        "machine learning",
-        "deep learning",
-        "image classification",
         "image compression",
+        "machine learning",
+        "low-rank factorization",
+        "integer matrix factorization",
         "singular value decomposition",
     ],
     packages=find_packages(),
     python_requires=">=3.10",
     install_requires=[
+        "numpy",
+        "scipy",
         "torch",
-        "torchvision",
-        "hydra-core",
         "einops",
+        "opt_einsum",
+        "torchvision",
+        "scikit-image",
+        "pillow",
+        "joblib",
     ],
 )

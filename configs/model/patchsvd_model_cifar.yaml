@@ -1,6 +1,0 @@
-_target_: src.models.PatchSVDModel
-num_classes: 10
-patch_size: 4
-domain: compressed
-rank: -1
-no_grad: true

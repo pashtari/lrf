@@ -1,6 +1,0 @@
-_target_: src.models.resnet50
-spatial_dims: 2
-num_classes: 10
-conv1_kernel_size: 3
-conv1_stride: 1
-no_maxpool: true

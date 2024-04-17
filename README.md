@@ -1,8 +1,8 @@
-This repo is the official implementation of LSVD.
+This repo provides PyTorch implementation of low-rank factorization (LRF) methods for data compression. This also includes the official implementation of "Quantization-free Image Compression Using Integer Matrix Factorization".
 
-## LSVD
+## Introduction
 
-**LSVD** ...
+**LRF for Image Compression** ...
 
 
 ## Installation
@@ -10,12 +10,12 @@ This repo is the official implementation of LSVD.
 First make sure that you have already installed [PyTorch](https://pytorch.org/get-started/locally/) since the details on how to do this depend on whether you have a CPU, GPU, etc. Then, clone the repository and install the requirements:
 
 ```bash
-$ pip install -r requirements.txt
+$ pip install git+https://github.com/pashtari/factorizer.git
 ```
 
 
-## To-do
-- remove subset in cifar10 
+## Get Started
+- 
 
 ## Contact
 
