@@ -9,9 +9,9 @@ from src.models import compression as com
 
 
 # Load the astronaut image
-# image = data.astronaut()
+image = data.astronaut()
 image = imread(
-    "/Users/pooya/Library/CloudStorage/OneDrive-KULeuven/research/projects/lsvd/data/kodak/kodim21.png"
+    "/Users/pooya/Library/CloudStorage/OneDrive-KULeuven/research/projects/lsvd/data/kodak/kodim15.png"
 )
 
 
@@ -37,11 +37,10 @@ compression_ratios = {
     "WEBP": [],
     "SVD": [],
     "Patch SVD": [],
-    "Patch IMF": [],
+    "Patch IMF - RGB": [],
+    "Patch IMF - YCbCr": [],
     "HOSVD": [],
     "Patch HOSVD": [],
-    "TTD": [],
-    "Patch TTD": [],
 }
 
 bpps = {
@@ -50,11 +49,10 @@ bpps = {
     "WEBP": [],
     "SVD": [],
     "Patch SVD": [],
-    "Patch IMF": [],
+    "Patch IMF - RGB": [],
+    "Patch IMF - YCbCr": [],
     "HOSVD": [],
     "Patch HOSVD": [],
-    "TTD": [],
-    "Patch TTD": [],
 }
 
 reconstructed_images = {
@@ -63,11 +61,10 @@ reconstructed_images = {
     "WEBP": [],
     "SVD": [],
     "Patch SVD": [],
-    "Patch IMF": [],
+    "Patch IMF - RGB": [],
+    "Patch IMF - YCbCr": [],
     "HOSVD": [],
     "Patch HOSVD": [],
-    "TTD": [],
-    "Patch TTD": [],
 }
 
 psnr_values = {
@@ -76,11 +73,10 @@ psnr_values = {
     "WEBP": [],
     "SVD": [],
     "Patch SVD": [],
-    "Patch IMF": [],
+    "Patch IMF - RGB": [],
+    "Patch IMF - YCbCr": [],
     "HOSVD": [],
     "Patch HOSVD": [],
-    "TTD": [],
-    "Patch TTD": [],
 }
 ssim_values = {
     "JPEG": [],
@@ -88,18 +84,17 @@ ssim_values = {
     "WEBP": [],
     "SVD": [],
     "Patch SVD": [],
-    "Patch IMF": [],
+    "Patch IMF - RGB": [],
+    "Patch IMF - YCbCr": [],
     "HOSVD": [],
     "Patch HOSVD": [],
-    "TTD": [],
-    "Patch TTD": [],
 }
 
 # Calculate reconstructed images and metric values for each method
 
 
 # JPEG
-for quality in range(0, 91, 2):
+for quality in range(0, 30, 1):
     enocoded = com.pil_encode(image, format="JPEG", quality=quality)
     reconstructed = com.pil_decode(enocoded)
 
@@ -127,19 +122,19 @@ for quality in range(0, 91, 2):
 #     psnr_values["JPEG2000"].append(com.psnr(image, reconstructed))
 #     ssim_values["JPEG2000"].append(com.ssim(image, reconstructed))
 
-# WebP
-for quality in range(0, 92, 2):
-    enocoded = com.pil_encode(image, format="WEBP", quality=quality, alpha_quality=0)
-    reconstructed = com.pil_decode(enocoded)
+# # WebP
+# for quality in range(0, 50, 1):
+#     enocoded = com.pil_encode(image, format="WEBP", quality=quality, alpha_quality=0)
+#     reconstructed = com.pil_decode(enocoded)
 
-    real_compression_ratio = com.get_compression_ratio(image, enocoded)
-    real_bpp = com.get_bbp(image.shape[-2:], enocoded)
+#     real_compression_ratio = com.get_compression_ratio(image, enocoded)
+#     real_bpp = com.get_bbp(image.shape[-2:], enocoded)
 
-    compression_ratios["WEBP"].append(real_compression_ratio)
-    bpps["WEBP"].append(real_bpp)
-    reconstructed_images["WEBP"].append(reconstructed)
-    psnr_values["WEBP"].append(com.psnr(image, reconstructed))
-    ssim_values["WEBP"].append(com.ssim(image, reconstructed))
+#     compression_ratios["WEBP"].append(real_compression_ratio)
+#     bpps["WEBP"].append(real_bpp)
+#     reconstructed_images["WEBP"].append(reconstructed)
+#     psnr_values["WEBP"].append(com.psnr(image, reconstructed))
+#     ssim_values["WEBP"].append(com.ssim(image, reconstructed))
 
 # # SVD
 # for quality in np.linspace(0.0, 0.08, 20):
@@ -157,7 +152,7 @@ for quality in range(0, 92, 2):
 
 
 # Patch SVD
-for quality in np.linspace(0.0, 0.15, 50):
+for quality in np.linspace(0.0, 0.05, 20):
     enocoded = com.patch_svd_encode(
         image, quality=quality, patch_size=(8, 8), dtype=torch.int8
     )
@@ -173,21 +168,53 @@ for quality in np.linspace(0.0, 0.15, 50):
     ssim_values["Patch SVD"].append(com.ssim(image, reconstructed))
 
 
-# Patch IMF
-for quality in np.linspace(0.0, 0.3, 50):
+# Patch IMF - RGB
+for quality in np.linspace(0.0, 0.1, 50):
     enocoded = com.patch_imf_encode(
-        image, quality=quality, patch_size=(8, 8), dtype=torch.int8, num_iters=10
+        image,
+        color_space="RGB",
+        quality=quality,
+        patch_size=(8, 8),
+        bounds=(-16, 15),
+        dtype=torch.int8,
+        num_iters=10,
+        verbose=False,
     )
-    reconstructed = com.patch_imf_decode(enocoded)
+    reconstructed = com.patch_imf_decode(enocoded, color_space="RGB")
 
     real_compression_ratio = com.get_compression_ratio(image, enocoded)
     real_bpp = com.get_bbp(image.shape[-2:], enocoded)
 
-    compression_ratios["Patch IMF"].append(real_compression_ratio)
-    bpps["Patch IMF"].append(real_bpp)
-    reconstructed_images["Patch IMF"].append(reconstructed)
-    psnr_values["Patch IMF"].append(com.psnr(image, reconstructed))
-    ssim_values["Patch IMF"].append(com.ssim(image, reconstructed))
+    compression_ratios["Patch IMF - RGB"].append(real_compression_ratio)
+    bpps["Patch IMF - RGB"].append(real_bpp)
+    reconstructed_images["Patch IMF - RGB"].append(reconstructed)
+    psnr_values["Patch IMF - RGB"].append(com.psnr(image, reconstructed))
+    ssim_values["Patch IMF - RGB"].append(com.ssim(image, reconstructed))
+
+
+# Patch IMF - YCbCr
+for quality in np.linspace(0.0, 0.25, 50):
+    enocoded = com.patch_imf_encode(
+        image,
+        color_space="YCbCr",
+        scale_factor=(0.5, 0.5),
+        quality=(quality, quality / 2, quality / 2),
+        patch_size=(8, 8),
+        bounds=(-16, 15),
+        dtype=torch.int8,
+        num_iters=10,
+        verbose=False,
+    )
+    reconstructed = com.patch_imf_decode(enocoded, color_space="YCbCr")
+
+    real_compression_ratio = com.get_compression_ratio(image, enocoded)
+    real_bpp = com.get_bbp(image.shape[-2:], enocoded)
+
+    compression_ratios["Patch IMF - YCbCr"].append(real_compression_ratio)
+    bpps["Patch IMF - YCbCr"].append(real_bpp)
+    reconstructed_images["Patch IMF - YCbCr"].append(reconstructed)
+    psnr_values["Patch IMF - YCbCr"].append(com.psnr(image, reconstructed))
+    ssim_values["Patch IMF - YCbCr"].append(com.ssim(image, reconstructed))
 
 
 # # HOSVD
@@ -208,9 +235,7 @@ for quality in np.linspace(0.0, 0.3, 50):
 # # Patch HOSVD
 # for b in np.linspace(0.15, 6.25, 15):
 #     print(f"HOSVD: bpp: {b:.2f}")
-#     enocoded = com.patch_hosvd_encode(
-#         image, bpp=b, patch_size=(8, 8), dtype=torch.int16
-#     )
+#     enocoded = com.patch_hosvd_encode(image, bpp=b, patch_size=(8, 8), dtype=torch.int16)
 #     reconstructed = com.patch_hosvd_decode(enocoded)
 
 #     real_compression_ratio = com.get_compression_ratio(image, enocoded)
@@ -234,34 +259,14 @@ for quality in np.linspace(0.0, 0.3, 50):
 #     ssim_values["Patch HOSVD"].append(com.ssim(image, reconstructed))
 
 
-# # TTD
-# for rank in range(6, 224, 8):
-#     ttd = com.TTD()
-#     reconstructed_ttd = ttd(image, rank=(3, rank))
-#     if ttd.real_compression_ratio >= 1:
-#         compression_ratios["TTD"].append(ttd.real_compression_ratio)
-#         reconstructed_images["TTD"].append(reconstructed_ttd)
-#         psnr_values["TTD"].append(com.psnr(image, reconstructed_ttd))
-#         ssim_values["TTD"].append(com.ssim(image, reconstructed_ttd))
-
-
-# # Patch TTD
-# for ratio in np.linspace(1, 55, 50):
-#     patch_ttd = com.PatchTTD()
-#     reconstructed_patch_ttd = patch_ttd(image, compression_ratio=ratio)
-#     if patch_ttd.real_compression_ratio >= 1:
-#         compression_ratios["Patch TTD"].append(patch_ttd.real_compression_ratio)
-#         reconstructed_images["Patch TTD"].append(reconstructed_patch_ttd)
-#         psnr_values["Patch TTD"].append(com.psnr(image, reconstructed_patch_ttd))
-#         ssim_values["Patch TTD"].append(com.ssim(image, reconstructed_patch_ttd))
-
-
 selected_methods = [
     "JPEG",
     # "JPEG2000",
-    "WEBP",
+    # "WEBP",
+    # "SVD",
     "Patch SVD",
-    "Patch IMF",
+    "Patch IMF - RGB",
+    "Patch IMF - YCbCr",
     # "Patch HOSVD",
 ]
 bpps = {k: bpps[k] for k in selected_methods}
@@ -278,7 +283,8 @@ plt.xlabel("bpp")
 plt.ylabel("PSNR (dB)")
 plt.title("Comprison of Different Compression Methods")
 # plt.xticks(np.arange(1, 13, 1))
-plt.xlim(0, 2)
+plt.xlim(0.05, 0.35)
+# plt.ylim(20, 30)
 plt.legend()
 plt.grid()
 plt.savefig(
@@ -298,7 +304,8 @@ plt.xlabel("bpp")
 plt.ylabel("SSIM")
 plt.title("Comprison of Different Compression Methods")
 # plt.xticks(np.arange(1, 13, 1))
-plt.xlim(0, 2)
+plt.xlim(0.05, 0.35)
+# plt.ylim(0.5, 0.8)
 plt.legend()
 plt.grid()
 plt.savefig(
@@ -310,7 +317,7 @@ plt.show()
 
 
 # Plotting the compressed images for each method and bpp
-selected_bpps = [1, 0.5, 0.3, 0.2, 0.15, 0.1, 0.05]
+selected_bpps = [0.3, 0.2, 0.15, 0.1, 0.05]
 fig, axs = plt.subplots(
     len(selected_bpps),
     len(selected_methods),

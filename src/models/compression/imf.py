@@ -3,14 +3,20 @@ import math
 
 import torch
 from torch import Tensor
-import torchvision.transforms.v2.functional as F
+from torch.nn.modules.utils import _triple
 from einops import rearrange
 
 from ..decomposition import IMF
 from .utils import (
+    rgb_to_ycbcr,
+    ycbcr_to_rgb,
+    chroma_downsampling,
+    chroma_upsampling,
     pad_image,
     unpad_image,
     to_dtype,
+    pack_tensor,
+    unpack_tensor,
     dict_to_bytes,
     bytes_to_dict,
     combine_bytes,
@@ -30,6 +36,7 @@ def imf_rank(size: Tuple[int, int], compression_ratio: float) -> int:
     Returns:
         int: The calculated rank.
     """
+
     num_rows, num_cols = size
     df_input = num_rows * num_cols  # Degrees of freedom of the input matrix
     df_lowrank = num_rows + num_cols  # Degrees of freedom of the low-rank matrix
@@ -66,7 +73,7 @@ def patch_imf_depatchify(
     return patches
 
 
-def patch_imf_encode(
+def patch_imf_rgb_encode(
     image: Tensor,
     rank: Optional[int] = None,
     quality: Optional[float] = None,
@@ -74,9 +81,9 @@ def patch_imf_encode(
     bpp: Optional[float] = None,
     patch_size: Tuple[int, int] = (8, 8),
     dtype: torch.dtype = None,
-    **kwargs
+    **kwargs,
 ) -> Dict:
-    """Compress an input image using Patch imf."""
+    """Compress an input image using Patch IMF (RGB)."""
 
     assert (rank, quality, compression_ratio, bpp) != (
         None,
@@ -104,6 +111,8 @@ def patch_imf_encode(
             compression_ratio = 8 * element_bytes * image_padded.shape[0] / bpp
             rank = imf_rank(patches.shape[-2:], compression_ratio)
 
+    patches = patches.float()  # * 10
+
     imf = IMF(rank=rank, **kwargs)
     u, v = imf.decompose(patches.unsqueeze(0))
 
@@ -113,6 +122,7 @@ def patch_imf_encode(
         "original size": orig_size,
         "padded size": padded_size,
         "patch size": patch_size,
+        "rank": rank,
     }
     encoded_metadata = dict_to_bytes(metadata)
 
@@ -123,8 +133,10 @@ def patch_imf_encode(
     return encoded_image
 
 
-def patch_imf_decode(encoded_image: bytes, dtype: torch.dtype = torch.uint8) -> Tensor:
-    """Decompress an Patch IMF-enocded image."""
+def patch_imf_rgb_decode(
+    encoded_image: bytes, dtype: torch.dtype = torch.uint8
+) -> Tensor:
+    """Decompress an Patch IMF (RGB)-enocded image."""
 
     encoded_metadata, encoded_factors = separate_bytes(encoded_image)
 
@@ -134,12 +146,109 @@ def patch_imf_decode(encoded_image: bytes, dtype: torch.dtype = torch.uint8) -> 
     patch_size = metadata["patch size"]
 
     u, v = decode_tensors(encoded_factors)
-    u, v = u.to(torch.float32), v.to(torch.float32)
+    u, v = u.float(), v.float()
 
-    reconstructed_patches = u @ v.transpose(-2, -1)
-    reconstructed_patches = to_dtype(reconstructed_patches, dtype)
-    reconstructed_image = patch_imf_depatchify(
-        reconstructed_patches, padded_size, patch_size
-    )
-    reconstructed_image = unpad_image(reconstructed_image, orig_size)
-    return reconstructed_image
+    patches = u @ v.transpose(-2, -1)
+    # patches = patches / 10
+
+    patches = to_dtype(patches, dtype)
+    image = patch_imf_depatchify(patches, padded_size, patch_size)
+    image = unpad_image(image, orig_size)
+    return image
+
+
+def patch_imf_ycbcr_encode(
+    image: Tensor,
+    quality: Optional[float | tuple[float, float, float]] = None,
+    scale_factor: tuple[float, float] = (0.5, 0.5),
+    patch_size: tuple[int, int] = (8, 8),
+    bounds: tuple[None | float, None | float] = (None, None),
+    dtype: torch.dtype = None,
+    **kwargs,
+) -> Dict:
+    """Compress an input image using Patch IMF (YCbCr)."""
+
+    quality = _triple(quality)
+
+    dtype = image.dtype if dtype is None else dtype
+
+    ycbcr_img = rgb_to_ycbcr(image)
+    y, cb, cr = chroma_downsampling(ycbcr_img, scale_factor=scale_factor)
+
+    metadata = {"patch size": patch_size, "original size": [], "padded size": []}
+    factors = []
+
+    for i, channel in enumerate((y, cb, cr)):
+        channel_padded = pad_image(channel, patch_size, mode="reflect")
+        padded_size = channel_padded.shape[-2:]
+
+        patches = patch_imf_patchify(channel_padded, patch_size)
+        # patches = patches * 10
+
+        assert quality[i] >= 0 and quality[i] <= 1, "'quality' must be between 0 and 1."
+        rank = max(round(min(patches.shape[-2:]) * quality[i]), 1)
+
+        imf = IMF(rank=rank, bounds=bounds, **kwargs)
+        u, v = imf.decompose(patches.unsqueeze(0))
+
+        u, v = u.squeeze(0).to(dtype), v.squeeze(0).to(dtype)
+
+        metadata["original size"].append(channel.shape[-2:])
+        metadata["padded size"].append(padded_size)
+        factors.extend([u, v])
+
+    encoded_metadata = dict_to_bytes(metadata)
+
+    encoded_factors = encode_tensors(factors)
+
+    encoded_image = combine_bytes(encoded_metadata, encoded_factors)
+    return encoded_image
+
+
+def patch_imf_ycbcr_decode(
+    encoded_image: bytes, dtype: torch.dtype = torch.uint8
+) -> Tensor:
+    """Decompress an Patch IMF (YCbCr)-enocded image."""
+
+    encoded_metadata, encoded_factors = separate_bytes(encoded_image)
+
+    metadata = bytes_to_dict(encoded_metadata)
+
+    u_y, v_y, u_cb, v_cb, u_cr, v_cr = decode_tensors(encoded_factors)
+
+    ycbcr = []
+    for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
+        u, v = u.float(), v.float()
+        patches = u @ v.mT
+        # patches = patches / 10
+        channel = patch_imf_depatchify(
+            patches, metadata["padded size"][i], metadata["patch size"]
+        )
+        ycbcr.append(unpad_image(channel, metadata["original size"][i]))
+
+    ycbcr_img = chroma_upsampling(ycbcr, size=metadata["original size"][0])
+    rgb_img = ycbcr_to_rgb(ycbcr_img)
+    rgb_img = to_dtype(rgb_img, dtype=dtype)
+    return rgb_img
+
+
+def patch_imf_encode(*args, color_space="RGB", **kwargs):
+    assert color_space in (
+        "RGB",
+        "YCbCr",
+    ), "`color_space` must be one of 'RGB' or 'YCbCr'."
+    if color_space == "RGB":
+        return patch_imf_rgb_encode(*args, **kwargs)
+    else:
+        return patch_imf_ycbcr_encode(*args, **kwargs)
+
+
+def patch_imf_decode(*args, color_space="RGB", **kwargs):
+    assert color_space in (
+        "RGB",
+        "YCbCr",
+    ), "`color_space` must be one of 'RGB' or 'YCbCr'."
+    if color_space == "RGB":
+        return patch_imf_rgb_decode(*args, **kwargs)
+    else:
+        return patch_imf_ycbcr_decode(*args, **kwargs)

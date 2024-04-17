@@ -1,17 +1,12 @@
-import os
 from functools import reduce
 from operator import mul
 import json
+import zlib
 
 import torch
 from torch import Tensor
 import torch.nn.functional as F
-import torchvision.transforms.v2.functional as FT
-from PIL import Image
 import numpy as np
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
-import zstandard as zstd
 
 
 def prod(x):
@@ -32,23 +27,59 @@ def minmax_normalize(tensor, dim=(-2, -1), eps=1e-8):
     return normalized_tensor
 
 
-def rgb_to_ycbcr(img):
-    # Convert the PyTorch tensor to a PIL image
-    img_rgb = FT.to_pil_image(img)
-    # Convert the image to YCbCr color space
-    img_ycbcr = img_rgb.convert("YCbCr")
-    # Convert the PIL image to a PyTorch tensor
-    img_ycbcr = FT.pil_to_tensor(img_ycbcr)
-    return img_ycbcr
+def rgb_to_ycbcr(rgb_img):
+    # Transformation matrix from RGB to YCbCr
+    transform_matrix = torch.tensor(
+        [[0.299, 0.587, 0.114], [-0.168736, -0.331264, 0.5], [0.5, -0.418688, -0.081312]],
+        device=rgb_img.device,
+    )
+
+    # Offset for Cb and Cr channels
+    offset = torch.tensor([0, 128, 128], device=rgb_img.device).view(3, 1, 1)
+
+    # Apply the transformation
+    ycbcr_img = offset + torch.einsum(
+        "ij, j... -> i...", transform_matrix, rgb_img.float()
+    )
+
+    return ycbcr_img
 
 
-def ycbcr_to_rgb(img):
-    # Convert the PyTorch tensor to a PIL image
-    img_rgb = FT.to_pil_image(img)
-    # Convert the image to RGB color space
-    img_ycbcr = img_rgb.convert("RGB")
-    # Convert the PIL image to a PyTorch tensor
-    img_ycbcr = FT.pil_to_tensor(img_ycbcr)
+def ycbcr_to_rgb(ycbcr_img):
+    # Transformation matrix from YCbCr to RGB
+    transform_matrix = torch.tensor(
+        [[1.0, 0.0, 1.40200], [1.0, -0.344136, -0.714136], [1.0, 1.77200, 0.0]],
+        device=ycbcr_img.device,
+    )
+
+    # The offsets for the Cb and Cr channels
+    offset = torch.tensor([0.0, -128.0, -128.0], device=ycbcr_img.device).view(3, 1, 1)
+
+    # Apply the transformation
+    rgb_img = torch.einsum(
+        "ij, j... -> i...", transform_matrix, ycbcr_img.float() + offset
+    )
+
+    return rgb_img
+
+
+def chroma_downsampling(img_ycbcr, **kwargs):
+    # Luminance channel (Y) remains unchanged
+    Y = img_ycbcr[0:1, :, :]
+    # Downsample Cb channel
+    Cb = F.interpolate(img_ycbcr[None, 1:2, :, :], **kwargs).squeeze(0)
+    # Downsample Cr channel
+    Cr = F.interpolate(img_ycbcr[None, 2:3, :, :], **kwargs).squeeze(0)
+    return Y, Cb, Cr
+
+
+def chroma_upsampling(ycbcr, **kwargs):
+    Y, Cb, Cr = ycbcr
+    # Upsample Cb channel
+    Cb = F.interpolate(Cb[None, :, :], **kwargs).squeeze(0)
+    # Upsample Cr channel
+    Cr = F.interpolate(Cr[None, :, :], **kwargs).squeeze(0)
+    img_ycbcr = torch.cat((Y, Cb, Cr), dim=0)
     return img_ycbcr
 
 
@@ -115,13 +146,10 @@ def to_dtype(tensor, dtype):
     """
     # Determine the range of the target dtype
     dtype_min, dtype_max = None, None
-    if dtype in (torch.int8, torch.int16, torch.int32, torch.int64):
+    if dtype in (torch.int8, torch.uint8, torch.int16, torch.int32, torch.int64):
         info = torch.iinfo(dtype)
         dtype_min, dtype_max = info.min, info.max
-    elif dtype in (torch.uint8,):
-        info = torch.iinfo(dtype)
-        dtype_min, dtype_max = info.min, info.max
-    elif dtype in (torch.float32, torch.float64):
+    elif dtype in (torch.float16, torch.float32, torch.float64):
         info = torch.finfo(dtype)
         dtype_min, dtype_max = info.min, info.max
     else:
@@ -131,66 +159,6 @@ def to_dtype(tensor, dtype):
     clamped_tensor = torch.clamp(tensor, dtype_min, dtype_max).to(dtype)
 
     return clamped_tensor
-
-
-def compute_bins(num_bins, num_samples=1000000):
-    np.random.seed(42)
-
-    x = np.random.normal(loc=0, scale=1, size=(num_samples, 1))
-    scaler = StandardScaler()
-    x = scaler.fit_transform(x)
-
-    uniform_edges = np.linspace(x.min(), x.max(), num_bins + 1)
-    init = (uniform_edges[1:] + uniform_edges[:-1]) * 0.5
-    init = init.reshape(-1, 1)
-
-    kmeans = KMeans(n_clusters=num_bins, init=init, n_init=1)
-    kmeans.fit(x)
-
-    bin_centers = kmeans.cluster_centers_.flatten()
-    bin_centers.sort()
-    bin_edges = (bin_centers[1:] + bin_centers[:-1]) * 0.5
-
-    bin_centers = torch.from_numpy(bin_centers).to(torch.float32)
-    bin_edges = torch.from_numpy(bin_edges).to(torch.float32)
-    return bin_centers, bin_edges
-
-
-_bin_centers, _ = compute_bins(num_bins=256)
-_bin_centers_path = os.path.join(os.path.dirname(__file__), "bin_centers.pt")
-torch.save(_bin_centers, _bin_centers_path)
-
-
-def kbins_quantize(tensor, bin_centers=None):
-    if bin_centers is None:
-        bin_centers_path = os.path.join(os.path.dirname(__file__), "bin_centers.pt")
-        bin_centers = torch.load(bin_centers_path)
-
-    # Find mean and std values in the tensor
-    mean, std = tensor.mean(), tensor.std()
-
-    # Normalize the tensor
-    tensor = (tensor - mean) / std
-
-    # Quantize
-    bin_edges = (bin_centers[1:] + bin_centers[:-1]) * 0.5
-    quantized = torch.bucketize(tensor, bin_edges)
-
-    return quantized.to(torch.uint8), mean.item(), std.item()
-
-
-def kbins_dequantize(quantized_tensor, mean, std, bin_centers=None):
-    if bin_centers is None:
-        bin_centers_path = os.path.join(os.path.dirname(__file__), "bin_centers.pt")
-        bin_centers = torch.load(bin_centers_path)
-
-    # Quantize
-    tensor = bin_centers[quantized_tensor.to(torch.int)]
-
-    # Denormalize
-    dequantized = std * tensor + mean
-
-    return dequantized
 
 
 def quantize(tensor, target_dtype):
@@ -295,6 +263,54 @@ def get_bbp(size, compressed):
     return compressed_memory * 8 / num_pixels
 
 
+def pack_tensor(tensor, min_value):
+    # Convert to numpy array
+    numpy_array = tensor.clone().numpy().astype(np.int32)
+
+    # Add 16 to all elements to make them positive
+    numpy_array -= min_value
+
+    # Convert to uint8
+    numpy_array = numpy_array.astype(np.uint8)
+
+    # Convert to binary array
+    binary_array = np.unpackbits(numpy_array).reshape(-1, 8)
+
+    # Pick the last 5 bits
+    binary_array = binary_array[..., -5:]
+
+    # Pack the elements into bits in a uint8 array
+    packed_array = np.packbits(binary_array)
+
+    return torch.from_numpy(packed_array)
+
+
+def unpack_tensor(packed_tensor, shape, min_value, dtype):
+    # Convert to numpy array
+    packed_array = packed_tensor.clone().numpy()
+
+    # Unpack the binary array
+    binary_array = np.unpackbits(packed_array)
+
+    # Unpad and reshape binary array
+    numel = prod(shape)
+    num_bits_per_elements = binary_array.size // prod(shape)
+    num_bits = numel * num_bits_per_elements
+    binary_array = binary_array[:num_bits].reshape(-1, num_bits_per_elements)
+
+    # Zero pad, prepend
+    pad_width = 8 - num_bits_per_elements
+    binary_array = np.pad(binary_array, pad_width=((0, 0), (pad_width, 0)))
+
+    # Pack the elements into bits in a uint8 array
+    numpy_array = np.packbits(binary_array, axis=-1).reshape(*shape).astype(np.int32)
+
+    # Subtract 16 from all elements to restore the original values
+    numpy_array += min_value
+
+    return torch.from_numpy(numpy_array).to(dtype)
+
+
 def combine_bytes(payload1: bytes, payload2: bytes) -> bytes:
     """
     Encodes two bytes objects into a single bytes object.
@@ -361,9 +377,8 @@ def encode_tensor(tensor):
     # Convert the tensor to bytes
     array_bytes = tensor.numpy().tobytes()
 
-    # Encode the bytes using Zstandard
-    compressor = zstd.ZstdCompressor()
-    array_bytes = compressor.compress(array_bytes)
+    # Encode the bytes using a lossless compression
+    array_bytes = zlib.compress(array_bytes)
 
     # Prepare metadata
     metadata = {"shape": tensor.shape, "dtype": str(tensor.dtype).split(".")[-1]}
@@ -393,12 +408,11 @@ def decode_tensor(encoded_tensor):
     dtype = metadata["dtype"]
 
     # Decode the array data
-    decompressor = zstd.ZstdDecompressor()
-    decoded_array = decompressor.decompress(array_bytes)
+    decoded_array = zlib.decompress(array_bytes)
 
     # Convert back to tensor
     decoded_tensor = torch.from_numpy(
-        np.frombuffer(decoded_array, dtype=getattr(np, dtype)).reshape(shape)
+        np.frombuffer(decoded_array, dtype=np.dtype(dtype)).reshape(shape)
     )
 
     return decoded_tensor
@@ -452,42 +466,3 @@ def decode_tensors(all_data):
         offset += part_length
 
     return tuple(tensors)
-
-
-# # Create a random tensor for testing
-# original_tensor = (2 * torch.rand(784 * 16, 4) - 1).to(torch.int16)
-
-# ###### tensor ######
-# # Encode the tensor
-# encoded_tensor = encode_tensor(original_tensor)
-
-# # Decode the tensor
-# decoded_tensor = decode_tensor(encoded_tensor)
-
-# # Verify if the original tensor and decoded tensor are equal
-# are_equal = torch.equal(original_tensor, decoded_tensor)
-
-# # Compute the encodeion ratio
-# original_size = original_tensor.element_size() * original_tensor.numel()
-# encoded_size = len(encoded_tensor)
-# encodeion_ratio = original_size / encoded_size
-
-# print(f"Equal? {are_equal}")
-# print(f"Original size: {original_size} bytes")
-# print(f"Encoded size: {encoded_size} bytes")
-# print(f"Encodeion ratio: {encodeion_ratio:.3f}")
-
-
-# ###### Sequence of tensors ######
-# # Example usage:
-# tensor_tuple = (torch.randn(10, 10), torch.randn(5, 5, 5))
-
-# # Encode the tuple of tensors
-# encoded_data = encode_tensors(tensor_tuple)
-
-# # Decode back into a tuple of tensors
-# decoded_tensors = decode_tensors(encoded_data)
-
-# # Verify if decoded tensors match the original tensors
-# for original, decoded in zip(tensor_tuple, decoded_tensors):
-#     print(f"Equal? {torch.equal(original, decoded)}")

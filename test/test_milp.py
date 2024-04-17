@@ -1,11 +1,12 @@
 import numpy as np
-
+from joblib import Parallel, delayed
 import cvxpy as cp
-import pulp
-from pulp import GLPK, PULP_CBC_CMD, COIN, HiGHS, COPT
+
+# import pulp
+# from pulp import GLPK, PULP_CBC_CMD, COIN, HiGHS, COPT
 
 
-def solve_least_absolute_errors(A, B, contruct_bound=(None, None), *args, **kwargs):
+def _least_absolute_errors(A, B, contruct_bound=(None, None), *args, **kwargs):
     M, N = B.shape
     _, P = A.shape
 
@@ -39,46 +40,58 @@ def solve_least_absolute_errors(A, B, contruct_bound=(None, None), *args, **kwar
     return X.value
 
 
-def solve_least_absolute_errors1(A, B, *args, **kwargs):
-    M, N = B.shape
-    _, P = A.shape
+def least_absolute_errors(A, B, *args, parallel=True, **kwargs):
+    if parallel:
 
-    # Create the problem
-    prob = pulp.LpProblem("Least Absolute Errors", pulp.LpMinimize)
+        def lae(b):
+            return _least_absolute_errors(A, b.reshape(-1, 1), *args, **kwargs)
 
-    # Create variables for X
-    X = pulp.LpVariable.dicts("X", (range(P), range(N)), cat="Integer")
-
-    # Create variables for C^+ and C^-
-    C_plus = pulp.LpVariable.dicts(
-        "C_plus", (range(M), range(N)), lowBound=0, cat="Continuous"
-    )
-    C_minus = pulp.LpVariable.dicts(
-        "C_minus", (range(M), range(N)), lowBound=0, cat="Continuous"
-    )
-
-    # Objective function
-    prob += pulp.lpSum([C_plus[m][n] + C_minus[m][n] for m in range(M) for n in range(N)])
-
-    # Constraints
-    for m in range(M):
-        for n in range(N):
-            prob += (
-                B[m][n] - pulp.lpSum([A[m][p] * X[p][n] for p in range(P)])
-                == C_plus[m][n] - C_minus[m][n],
-                f"Constraint_pos_neg_{m}_{n}",
-            )
-
-    # Solve the problem
-    prob.solve(*args, **kwargs)
-
-    # Extract the solution for X
-    X_opt = np.array([[X[p][n].varValue for n in range(N)] for p in range(P)])
-
-    return X_opt
+        results = Parallel(n_jobs=-1)(delayed(lae)(b) for b in B.T)
+        return np.hstack(results)
+    else:
+        return _least_absolute_errors(A, B, *args, **kwargs)
 
 
-# def solve_least_absolute_errors2(A, B):
+# def least_absolute_errors1(A, B, *args, **kwargs):
+#     M, N = B.shape
+#     _, P = A.shape
+
+#     # Create the problem
+#     prob = pulp.LpProblem("Least Absolute Errors", pulp.LpMinimize)
+
+#     # Create variables for X
+#     X = pulp.LpVariable.dicts("X", (range(P), range(N)), cat="Integer")
+
+#     # Create variables for C^+ and C^-
+#     C_plus = pulp.LpVariable.dicts(
+#         "C_plus", (range(M), range(N)), lowBound=0, cat="Continuous"
+#     )
+#     C_minus = pulp.LpVariable.dicts(
+#         "C_minus", (range(M), range(N)), lowBound=0, cat="Continuous"
+#     )
+
+#     # Objective function
+#     prob += pulp.lpSum([C_plus[m][n] + C_minus[m][n] for m in range(M) for n in range(N)])
+
+#     # Constraints
+#     for m in range(M):
+#         for n in range(N):
+#             prob += (
+#                 B[m][n] - pulp.lpSum([A[m][p] * X[p][n] for p in range(P)])
+#                 == C_plus[m][n] - C_minus[m][n],
+#                 f"Constraint_pos_neg_{m}_{n}",
+#             )
+
+#     # Solve the problem
+#     prob.solve(*args, **kwargs)
+
+#     # Extract the solution for X
+#     X_opt = np.array([[X[p][n].varValue for n in range(N)] for p in range(P)])
+
+#     return X_opt
+
+
+# def least_absolute_errors2(A, B):
 #     M, N = B.shape
 #     _, P = A.shape
 
@@ -115,7 +128,7 @@ def solve_least_absolute_errors1(A, B, *args, **kwargs):
 # from scipy.optimize import linprog, milp, LinearConstraint
 
 
-# def solve_least_absolute_errors3(A, B):
+# def least_absolute_errors3(A, B):
 #     M, N = B.shape
 #     _, P = A.shape
 
@@ -163,15 +176,12 @@ import time
 import matplotlib.pyplot as plt
 
 # Example usage
-A = np.random.randint(0, 10, size=(784, 10))
-B = np.random.randint(0, 256, size=(784, 1))
+A = np.random.randint(0, 10, size=(64, 5))
+B = np.random.randint(0, 256, size=(64, 784))
 
-X_star = solve_least_absolute_errors(
-    A, B, contruct_bound=(0, 255), solver="GLPK_MI", warm_start=True
-)
-X_star1 = solve_least_absolute_errors1(A, B, GLPK(msg=False))
+X_star = least_absolute_errors(A, B, contruct_bound=(0, 255), solver="GLPK_MI")
 
-np.allclose(X_star, X_star1)
+# np.allclose(X_star, X_star1)
 
 
 X = np.random.rand(5, 1)
@@ -196,7 +206,9 @@ execution_times = []
 solver_names = []
 for solver in solvers:
     start_time = time.time()
-    solve_least_absolute_errors(A, B, solver=solver)  # Execute the function
+    least_absolute_errors(
+        A, B, contruct_bound=(0, 255), solver=solver
+    )  # Execute the function
     end_time = time.time()
     execution_times.append(end_time - start_time)
     solver_names.append(solver)
@@ -213,7 +225,7 @@ plt.show()
 # import numpy as np
 
 
-# def solve_modified_linear_program(c, A, b_prime, x_optimal):
+# def modified_linear_program(c, A, b_prime, x_optimal):
 #     """
 #     Solves the modified linear program:
 #     minimize c^T x
@@ -278,5 +290,5 @@ plt.show()
 # b_prime = np.array([5, 8])
 # x_optimal_initial = np.array([1, 2, 0])
 
-# modified_solution = solve_modified_linear_program(c, A, b_prime, x_optimal_initial)
+# modified_solution = modified_linear_program(c, A, b_prime, x_optimal_initial)
 # print("Modified solution:", modified_solution)

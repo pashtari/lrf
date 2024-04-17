@@ -3,7 +3,7 @@ import math
 
 import torch
 from torch import Tensor
-import torchvision.transforms.v2.functional as F
+import torchvision.transforms.v2.functional as FT
 from einops import rearrange
 
 from .utils import (
@@ -71,7 +71,7 @@ def svd_encode(
 
     dtype = image.dtype if dtype is None else dtype
 
-    image = F.to_dtype(image, dtype=torch.float32, scale=True)
+    image = FT.to_dtype(image, dtype=torch.float32, scale=True)
 
     u, s, v = torch.linalg.svd(image, full_matrices=False)
     u, s, v = u[..., :rank], s[..., :rank], v[..., :rank, :]
@@ -109,7 +109,7 @@ def svd_decode(encoded_image: bytes, dtype: torch.dtype = torch.uint8) -> Tensor
     v = v if qtz_v is None else dequantize(v, *qtz_v)
 
     x = u @ v
-    x = F.to_dtype(x.clamp(0, 1), dtype=dtype, scale=True)
+    x = FT.to_dtype(x.clamp(0, 1), dtype=dtype, scale=True)
     return x
 
 
@@ -169,7 +169,7 @@ def patch_svd_encode(
     image_padded = pad_image(image, patch_size, mode="reflect")
     padded_size = image_padded.shape[-2:]
     element_bytes = image_padded.element_size()
-    image_padded = F.to_dtype(image_padded, dtype=torch.float32, scale=True)
+    image_padded = FT.to_dtype(image_padded, dtype=torch.float32, scale=True)
 
     patches = patch_svd_patchify(image_padded, patch_size)
 
@@ -227,12 +227,8 @@ def patch_svd_decode(encoded_image: bytes, dtype: torch.dtype = torch.uint8) -> 
     u = u if qtz_u is None else dequantize(u, *qtz_u)
     v = v if qtz_v is None else dequantize(v, *qtz_v)
 
-    reconstructed_patches = u @ v
-    reconstructed_image = patch_svd_depatchify(
-        reconstructed_patches, padded_size, patch_size
-    )
-    reconstructed_image = F.to_dtype(
-        reconstructed_image.clamp(0, 1), dtype=dtype, scale=True
-    )
-    reconstructed_image = unpad_image(reconstructed_image, orig_size)
-    return reconstructed_image
+    patches = u @ v
+    image = patch_svd_depatchify(patches, padded_size, patch_size)
+    image = FT.to_dtype(image.clamp(0, 1), dtype=dtype, scale=True)
+    image = unpad_image(image, orig_size)
+    return image
