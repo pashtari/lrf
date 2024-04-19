@@ -2,6 +2,7 @@ __pycache__
 .DS_Store
 ._*
 *.pkl
+*.egg-info/
 
 sshfs.sh
 

@@ -263,54 +263,6 @@ def get_bbp(size, compressed):
     return compressed_memory * 8 / num_pixels
 
 
-def pack_tensor(tensor, min_value):
-    # Convert to numpy array
-    numpy_array = tensor.clone().numpy().astype(np.int32)
-
-    # Add 16 to all elements to make them positive
-    numpy_array -= min_value
-
-    # Convert to uint8
-    numpy_array = numpy_array.astype(np.uint8)
-
-    # Convert to binary array
-    binary_array = np.unpackbits(numpy_array).reshape(-1, 8)
-
-    # Pick the last 5 bits
-    binary_array = binary_array[..., -5:]
-
-    # Pack the elements into bits in a uint8 array
-    packed_array = np.packbits(binary_array)
-
-    return torch.from_numpy(packed_array)
-
-
-def unpack_tensor(packed_tensor, shape, min_value, dtype):
-    # Convert to numpy array
-    packed_array = packed_tensor.clone().numpy()
-
-    # Unpack the binary array
-    binary_array = np.unpackbits(packed_array)
-
-    # Unpad and reshape binary array
-    numel = prod(shape)
-    num_bits_per_elements = binary_array.size // prod(shape)
-    num_bits = numel * num_bits_per_elements
-    binary_array = binary_array[:num_bits].reshape(-1, num_bits_per_elements)
-
-    # Zero pad, prepend
-    pad_width = 8 - num_bits_per_elements
-    binary_array = np.pad(binary_array, pad_width=((0, 0), (pad_width, 0)))
-
-    # Pack the elements into bits in a uint8 array
-    numpy_array = np.packbits(binary_array, axis=-1).reshape(*shape).astype(np.int32)
-
-    # Subtract 16 from all elements to restore the original values
-    numpy_array += min_value
-
-    return torch.from_numpy(numpy_array).to(dtype)
-
-
 def combine_bytes(payload1: bytes, payload2: bytes) -> bytes:
     """
     Encodes two bytes objects into a single bytes object.
