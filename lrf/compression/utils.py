@@ -1,4 +1,5 @@
-from functools import reduce
+from typing import Sequence
+import functools
 from operator import mul
 import json
 import zlib
@@ -10,7 +11,7 @@ import numpy as np
 
 
 def prod(x):
-    return reduce(mul, x, 1)
+    return functools.reduce(mul, x, 1)
 
 
 def zscore_normalize(tensor, dim=(-2, -1), eps=1e-8):
@@ -263,14 +264,18 @@ def get_bbp(size, compressed):
     return compressed_memory * 8 / num_pixels
 
 
-def combine_bytes(payload1: bytes, payload2: bytes) -> bytes:
+def _combine_bytes(payload1: bytes, payload2: bytes) -> bytes:
     """
     Encodes two bytes objects into a single bytes object.
 
-    :param payload1: First bytes object to encode.
-    :param payload2: Second bytes object to encode.
-    :return: A single combined bytes object containing both payloads.
+    Args:
+    - payload1: First bytes object to encode.
+    - payload2: Second bytes object to encode.
+
+    Returns:
+    - A single combined bytes object containing both payloads.
     """
+
     if not isinstance(payload1, bytes) or not isinstance(payload2, bytes):
         raise TypeError("Both payload1 and payload2 must be bytes objects.")
 
@@ -282,13 +287,17 @@ def combine_bytes(payload1: bytes, payload2: bytes) -> bytes:
     return len_payload1 + payload1 + payload2
 
 
-def separate_bytes(combined: bytes) -> (bytes, bytes):
+def _separate_bytes(combined: bytes) -> (bytes, bytes):
     """
     Decodes the combined bytes object back into two original bytes objects.
 
-    :param combined: The combined bytes object containing both payloads.
-    :return: A tuple containing the two original bytes objects (payload1, payload2).
+    Args:
+    - combined: The combined bytes object containing both payloads.
+
+    Return:
+    - A tuple containing the two original bytes objects (payload1, payload2).
     """
+
     if not isinstance(combined, bytes):
         raise TypeError("Combined must be a bytes object.")
 
@@ -299,6 +308,32 @@ def separate_bytes(combined: bytes) -> (bytes, bytes):
     payload1 = combined[4 : 4 + len_payload1]
     payload2 = combined[4 + len_payload1 :]
     return payload1, payload2
+
+
+def combine_bytes(payloads: Sequence[bytes]) -> bytes:
+    return functools.reduce(_combine_bytes, payloads)
+
+
+def separate_bytes(combined: bytes, num_payloads: int = 2) -> tuple[bytes, ...]:
+    """
+    Splits the combined bytes object into its parts (payloads).
+
+    Args:
+    - combined: The combined bytes object containing multiple payloads.
+    - num_payloads: The number of payloads.
+
+    Return:
+    - A tuple containing the original bytes objects (payloads).
+    """
+
+    payloads = []
+    payload1 = combined
+    for _ in range(num_payloads - 1):
+        payload1, payload2 = _separate_bytes(payload1)
+        payloads.insert(0, payload2)
+
+    payloads.insert(0, payload1)
+    return tuple(payloads)
 
 
 def dict_to_bytes(dictionary: dict) -> bytes:
@@ -337,7 +372,7 @@ def encode_tensor(tensor):
     metadata_bytes = dict_to_bytes(metadata)
 
     # Combine metadata and tensor data into a single bytes object
-    encoded_tensor = combine_bytes(metadata_bytes, array_bytes)
+    encoded_tensor = combine_bytes([metadata_bytes, array_bytes])
     return encoded_tensor
 
 
@@ -351,6 +386,7 @@ def decode_tensor(encoded_tensor):
     Returns:
     torch.Tensor: The decoded tensor.
     """
+
     # Extract metadata and array data
     metadata_bytes, array_bytes = separate_bytes(encoded_tensor)
 
@@ -370,51 +406,56 @@ def decode_tensor(encoded_tensor):
     return decoded_tensor
 
 
-def encode_tensors(tensors):
-    """
-    Encode a sequence of PyTorch tensors, returning a single bytes object
-    containing the encoded data and metadata for each tensor.
+def encode_matrix(matrix: Tensor, mode: str = "col") -> bytes:
+    assert len(matrix.shape) == 2, "'matrix' must be a 2D tensor."
+    assert mode in {"col", "row"}, "'mode' must be either 'col' or 'row'."
 
-    Parameters:
-    tensors (Sequence of torch.Tensor): The sequence of tensors to encode.
+    if mode == "col":
+        fibers = matrix.split(split_size=1, dim=1)
 
-    Returns:
-    bytes: A single bytes object containing all encoded tensors and their metadata.
-    """
-    encoded_parts = []
+    else:  # row
+        fibers = matrix.split(split_size=1, dim=0)
 
-    for tensor in tensors:
-        encoded_tensor = encode_tensor(tensor)
-        part_length = len(encoded_tensor)
-        encoded_parts.append(part_length.to_bytes(4, "big") + encoded_tensor)
+    encoded_fibers = []
+    for fiber in fibers:
+        encoded_fiber = fiber.numpy().tobytes()
+        encoded_fiber = zlib.compress(encoded_fiber)
+        encoded_fibers.append(encoded_fiber)
 
-    # Prefix the total number of tensors as 4 bytes
-    total_tensors = len(tensors)
-    all_data = total_tensors.to_bytes(4, "big") + b"".join(encoded_parts)
+    metadata = {
+        "num_fibers": len(fibers),
+        "mode": mode,
+        "dtype": str(matrix.dtype).split(".")[-1],
+    }
+    encoded_metadata = dict_to_bytes(metadata)
 
-    return all_data
+    encoded_fibers = combine_bytes(encoded_fibers)
+    encodeld_matrix = combine_bytes([encoded_metadata, encoded_fibers])
+
+    return encodeld_matrix
 
 
-def decode_tensors(all_data):
-    """
-    Decode a bytes object back into a tuple of PyTorch tensors.
+def decode_matrix(encodeld_matrix: bytes, mode: str = "col") -> Tensor:
+    assert mode in {"col", "row"}, "'mode' must be either 'col' or 'row'."
 
-    Parameters:
-    all_data (bytes): The bytes object containing all encoded tensors and their metadata.
+    encoded_metadata, encoded_fibers = separate_bytes(encodeld_matrix)
 
-    Returns:
-    tuple: A tuple of decoded PyTorch tensors.
-    """
-    total_tensors = int.from_bytes(all_data[:4], "big")
-    offset = 4
-    tensors = []
+    metadata = bytes_to_dict(encoded_metadata)
+    num_fibers = metadata["num_fibers"]
+    mode = metadata["mode"]
+    dtype = metadata["dtype"]
 
-    for _ in range(total_tensors):
-        part_length = int.from_bytes(all_data[offset : offset + 4], "big")
-        offset += 4  # Move past the length prefix
-        tensor_data = all_data[offset : offset + part_length]
-        tensor = decode_tensor(tensor_data)
-        tensors.append(tensor)
-        offset += part_length
+    encoded_fibers = separate_bytes(encoded_fibers, num_payloads=num_fibers)
+    fibers = []
+    for encoded_fiber in encoded_fibers:
+        encoded_fiber = zlib.decompress(encoded_fiber)
+        fiber = np.frombuffer(encoded_fiber, dtype=np.dtype(dtype))
+        fibers.append(fiber)
 
-    return tuple(tensors)
+    if mode == "col":
+        matrix = np.stack(fibers, axis=1)
+
+    else:  # row
+        matrix = np.stack(fibers, axis=0)
+
+    return torch.from_numpy(matrix)

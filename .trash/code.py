@@ -88,3 +88,181 @@ def coordinate_channels(shape):
     coordinates = torch.stack((grid_y, grid_x))
 
     return coordinates
+
+
+def encode_model(model, *args, **kwargs):
+    buffer = io.BytesIO()
+    joblib.dump(model, buffer, *args, **kwargs)
+    return buffer.getvalue()
+
+
+def decode_model(encodel_model, *args, **kwargs):
+    buffer = io.BytesIO(encodel_model)
+    model = joblib.load(buffer)
+    return model
+
+
+def to_zigzag_u(u: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int]) -> Tensor:
+    """Reorder the u factor matrix with zigzag pattern."""
+
+    u = rearrange(u, "(h w) r -> r h w", h=size[0] // patch_size[0])
+    u = zigzag_flatten(u).mT
+    return u
+
+
+def from_zigzag_u(
+    u: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int]
+) -> Tensor:
+    """Convert the zigzag-ordered factor matrix u back to the original one."""
+
+    grid_size = size[0] // patch_size[0], size[1] // patch_size[1]
+    u = zigzag_unflatten(u.mT, grid_size)
+    u = rearrange(u, "r h w -> (h w) r")
+    return u
+
+
+def to_zigzag_v(v: Tensor, patch_size: Tuple[int, int]) -> Tensor:
+    """Reorder the v factor matrix with zigzag pattern."""
+
+    p, q = patch_size
+    v = rearrange(v, "(c p q) r -> (c r) p q", p=p, q=q)
+    v = zigzag_flatten(v).mT
+    return v
+
+
+def from_zigzag_v(v: Tensor, patch_size: Tuple[int, int], rank: int) -> Tensor:
+    """Convert the zigzag-ordered factor matrix v back to the original one."""
+
+    v = zigzag_unflatten(v.mT, patch_size)
+    v = rearrange(v, "(c r) p q -> (c p q) r", r=rank)
+    return v
+
+
+def zigzag_flatten(x):
+    assert x.dim() >= 2, "Input tensor must be at least 2D"
+    M, N = x.shape[-2:]
+
+    # Create an empty list to store the zigzag-flattened elements
+    flattened = []
+
+    # Iterate over the diagonals
+    for i in range(M + N - 1):
+        # Get the diagonal elements
+        diag = x.flip(dims=[-2]).diagonal(offset=(i - M + 1), dim1=-2, dim2=-1)
+
+        # Reverse the elements if the index is odd
+        if i % 2 == 1:
+            diag = diag.flip(dims=[-1])
+
+        # Append the elements to the list
+        flattened.append(diag)
+
+    # Concatenate the elements in the list to get the flattened tensor
+    flattened = torch.cat(flattened, dim=-1)
+
+    return flattened
+
+
+def zigzag_unflatten(x, shape):
+    M, N = shape
+    assert M * N == x.shape[-1]
+
+    m, n = torch.meshgrid(torch.arange(M), torch.arange(N))
+
+    # Create an empty tensor to store the unflattened elements
+    unflattened = torch.empty_like(x).reshape(*x.shape[:-1], M, N)
+
+    # Iterate over the diagonals
+    start_diag = 0
+    for i in range(M + N - 1):
+        # Get the length of the diagonal
+        length = min(i + 1, M + N - i - 1, M, N)
+
+        diag = x[..., start_diag : start_diag + length].clone()
+        start_diag += length
+
+        if i % 2 == 0:
+            diag = diag.flip(dims=[-1])
+
+        print(diag)
+
+        # # Fill the diagonal elements in the tensor
+        unflattened[..., m + n == i] = diag
+
+    return unflattened
+
+
+# M, N = 4, 11
+# # Create a 3x4 toy tensor
+# x = torch.arange(3 * M * N).reshape(3, M, N)
+
+# # Apply the zigzag_flatten function
+# flattened_x = zigzag_flatten(x)
+
+# # Print the original and flattened tensors
+# print("Original tensor:")
+# print(x)
+# print("\nFlattened tensor:")
+# print(flattened_x)
+
+
+# # Test the function on a zigzag flattened tensor
+# print("Original tensor:")
+# x_hat = zigzag_unflatten(flattened_x, (M, N))
+# print(x_hat)
+
+# print("Is reconstructed tensor equel to the original one?")
+# print(torch.equal(x_hat, x))
+
+
+def apply(fun):
+    """A decorator that applies a function to all elements in a list."""
+
+    @functools.wraps(fun)
+    def wrapper(*args, **kwargs):
+        return list(map(fun, *args, **kwargs))
+
+    return wrapper
+
+
+@apply
+def run_length_encode(x):
+    if x.numel() == 0:
+        return torch.empty(0, dtype=x.dtype), torch.empty(0, dtype=torch.int32)
+
+    # Find places where the value changes
+    diffs = x[1:] != x[:-1]
+    # Find indices where the value changes
+    indices = torch.where(diffs)[0] + 1
+    # Append the final index for the last element
+    indices = torch.cat((indices, torch.tensor([x.numel()], device=x.device)))
+    # Calculate lengths
+    lengths = torch.diff(torch.cat((torch.tensor([0], device=x.device), indices)))
+    values = x[indices - lengths]
+
+    return values, lengths
+
+
+@apply
+def run_length_decode(rle):
+    values, lengths = rle
+    return torch.repeat_interleave(values, lengths)
+
+
+# # Example to test the implementation
+# x = torch.tensor(
+#     [[1, 1, 2, 2, 3], [4, 4, 4, 5, 5], [2, 7, 7, 7, 8]],
+# )
+
+# x_rle = run_length_encode(x)
+# print("Encoded Values:", [*zip(*x_rle)][0])
+# print("Encoded Counts:", [*zip(*x_rle)][1])
+
+# x_hat = run_length_decode(x_rle)
+# print("Decoded Tensor:", x_hat)
+
+# # Verify if the original and decoded tensors are identical
+# print(
+#     "Is the original tensor equal to the decoded tensor?",
+#     torch.equal(x, torch.stack(x_hat)),
+# )

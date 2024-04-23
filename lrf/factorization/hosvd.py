@@ -1,6 +1,7 @@
 from typing import Sequence, Optional
 
 import torch
+from torch import nn
 from torch.nn.modules.utils import _ntuple
 import opt_einsum as oe
 
@@ -150,6 +151,7 @@ def multi_mode_product(tensor, matrices, modes=None, transpose=False):
             output_inds.append(mode)
 
     args.append(output_inds)
+
     return oe.contract(*args)
 
 
@@ -173,6 +175,7 @@ def batched_multi_mode_product(tensor, matrices, modes=None, transpose=False):
             output_inds.append(mode)
 
     args.append(output_inds)
+
     return oe.contract(*args)
 
 
@@ -195,17 +198,17 @@ def hosvd(x, rank=None):
 batched_hosvd = torch.vmap(hosvd, in_dims=(0,))
 
 
-# class HOSVD(nn.Module):
-#     def __init__(self, rank=None):
-#         super().__init__()
-#         self.rank = rank
+class HOSVD(nn.Module):
+    def __init__(self, rank=None):
+        super().__init__()
+        self.rank = rank
 
-#     def fit(self, x):
-#         return hosvd(x, rank=self.rank)
+    def decompose(self, x):
+        return hosvd(x, rank=self.rank)
 
-#     def reconstruct(self, core, factors):
-#         return multi_mode_product(core, factors, transpose=False)
+    def reconstruct(self, core, factors):
+        return multi_mode_product(core, factors, transpose=False)
 
-#     def forward(self, x):
-#         core, factors = self.fit(x)
-#         return self.reconstruct(core, factors)
+    def forward(self, x):
+        core, factors = self.fit(x)
+        return self.reconstruct(core, factors)

@@ -19,8 +19,8 @@ from lrf.compression.utils import (
     bytes_to_dict,
     combine_bytes,
     separate_bytes,
-    encode_tensors,
-    decode_tensors,
+    encode_matrix,
+    decode_matrix,
 )
 
 
@@ -34,7 +34,7 @@ def imf_rank(size: Tuple[int, int], compression_ratio: float) -> int:
     return rank
 
 
-def patchify(x: Tensor, patch_size: Tuple[int, int] = (8, 8)) -> Tensor:
+def patchify(x: Tensor, patch_size: Tuple[int, int]) -> Tensor:
     """Splits an input image into patches."""
 
     p, q = patch_size
@@ -42,9 +42,7 @@ def patchify(x: Tensor, patch_size: Tuple[int, int] = (8, 8)) -> Tensor:
     return patches
 
 
-def depatchify(
-    x: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int] = (8, 8)
-) -> Tensor:
+def depatchify(x: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int]) -> Tensor:
     """Reconstruct the original image from its patches."""
 
     p, q = patch_size
@@ -53,13 +51,13 @@ def depatchify(
 
 
 def depatchify_uv(
-    u: Tensor, v: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int] = (8, 8)
+    u: Tensor, v: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int]
 ) -> Tuple[Tensor, Tensor]:
     """Reshape the u and v matrices into their original spatial dimensions."""
 
     p, q = patch_size
-    u_new = rearrange(u, "(h w) r -> 1 r h w", h=size[0] // p)
-    v_new = rearrange(v, "(c p q) r -> c r p q", p=p, q=q)
+    u_new = rearrange(u, "(h w) r -> r h w", h=size[0] // p)
+    v_new = rearrange(v, "(c p q) r -> r c p q", p=p, q=q)
     return u_new, v_new
 
 
@@ -117,7 +115,9 @@ def imf_encode(
 
         imf = IMF(rank=rank, **kwargs)
         u, v = imf.decompose(x.unsqueeze(0))
-        factors = u.squeeze(0).to(dtype), v.squeeze(0).to(dtype)
+        u, v = u.squeeze(0).to(dtype), v.squeeze(0).to(dtype)
+
+        factors = [u, v]
 
     else:  # color_space == "YCbCr"
         quality = _triple(quality)
@@ -132,6 +132,7 @@ def imf_encode(
         ycbcr = rgb_to_ycbcr(image)
         y, cb, cr = chroma_downsampling(ycbcr, scale_factor=scale_factor)
         factors = []
+        metadata["rank"] = []
         for i, channel in enumerate((y, cb, cr)):
             if patch:
                 x = pad_image(channel, patch_size, mode="reflect")
@@ -154,6 +155,8 @@ def imf_encode(
                 ), "'quality' must be between 0 and 1."
                 R = max(round(min(x.shape[-2:]) * quality[i] / 100), 1)
 
+            metadata["rank"].append(R)
+
             imf = IMF(rank=R, **kwargs)
             u, v = imf.decompose(x.unsqueeze(0))
             u, v = u.squeeze(0).to(dtype), v.squeeze(0).to(dtype)
@@ -162,9 +165,9 @@ def imf_encode(
 
     encoded_metadata = dict_to_bytes(metadata)
 
-    encoded_factors = encode_tensors(factors)
+    encoded_factors = combine_bytes([encode_matrix(factor) for factor in factors])
 
-    encoded_image = combine_bytes(encoded_metadata, encoded_factors)
+    encoded_image = combine_bytes([encoded_metadata, encoded_factors])
 
     return encoded_image
 
@@ -173,21 +176,28 @@ def imf_decode(encoded_image: bytes) -> Tensor:
     """Decompress an IMF-enocded image."""
 
     encoded_metadata, encoded_factors = separate_bytes(encoded_image)
-
     metadata = bytes_to_dict(encoded_metadata)
 
     if metadata["color space"] == "RGB":
-        u, v = decode_tensors(encoded_factors)
+        encoded_u, encoded_v = separate_bytes(encoded_factors)
+        u, v = decode_matrix(encoded_u), decode_matrix(encoded_v)
+
         u, v = u.float(), v.float()
         x = u @ v.mT
         # x = x / 10
+
         if metadata["patch"]:
             image = depatchify(x, metadata["padded size"], metadata["patch size"])
             image = unpad_image(image, metadata["original size"])
         else:
             image = x
     else:  # color_space == "YCbCr"
-        u_y, v_y, u_cb, v_cb, u_cr, v_cr = decode_tensors(encoded_factors)
+        encoded_factors = separate_bytes(encoded_factors, num_payloads=6)
+
+        u_y, v_y = decode_matrix(encoded_factors[0]), decode_matrix(encoded_factors[1])
+        u_cb, v_cb = decode_matrix(encoded_factors[2]), decode_matrix(encoded_factors[3])
+        u_cr, v_cr = decode_matrix(encoded_factors[4]), decode_matrix(encoded_factors[5])
+
         ycbcr = []
         for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
             u, v = u.float(), v.float()

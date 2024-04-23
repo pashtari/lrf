@@ -15,8 +15,8 @@ from lrf.compression.utils import (
     bytes_to_dict,
     combine_bytes,
     separate_bytes,
-    encode_tensors,
-    decode_tensors,
+    encode_matrix,
+    decode_matrix,
 )
 
 
@@ -121,10 +121,9 @@ def svd_encode(
     metadata["quantization"] = {"u": qtz_u, "v": qtz_v}
     encoded_metadata = dict_to_bytes(metadata)
 
-    factors = (u, v)
-    encoded_factors = encode_tensors(factors)
+    encoded_factors = combine_bytes([encode_matrix(u), encode_matrix(v)])
 
-    encoded_image = combine_bytes(encoded_metadata, encoded_factors)
+    encoded_image = combine_bytes([encoded_metadata, encoded_factors])
 
     return encoded_image
 
@@ -136,7 +135,8 @@ def svd_decode(encoded_image: bytes) -> Tensor:
 
     metadata = bytes_to_dict(encoded_metadata)
 
-    u, v = decode_tensors(encoded_factors)
+    encoded_u, encoded_v = separate_bytes(encoded_factors)
+    u, v = decode_matrix(encoded_u), decode_matrix(encoded_v)
 
     qtz = metadata["quantization"]
     qtz_u, qtz_v = qtz["u"], qtz["v"]

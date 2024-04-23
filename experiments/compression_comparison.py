@@ -7,10 +7,9 @@ from skimage.io import imread
 
 import lrf
 
-
 # Load the astronaut image
 # image = data.astronaut()
-image = imread("./data/kodak/kodim04.png")
+image = imread("./data/kodak/kodim15.png")
 
 
 # transforms = v2.Compose([v2.ToImage(), v2.Resize(size=(224, 224), interpolation=2)])
@@ -20,12 +19,11 @@ transforms = v2.Compose([v2.ToImage()])
 # Transform the input image
 image = torch.tensor(transforms(image))
 
-
-# # Visualize image
-# plt.imshow(image.permute(1, 2, 0))
-# plt.axis("off")
-# plt.title("Original Image")
-# plt.show()
+# Visualize image
+plt.imshow(image.permute(1, 2, 0))
+plt.axis("off")
+plt.title("Original Image")
+plt.show()
 
 
 # Store errors and compressed images for each method and CR/bpp
@@ -105,19 +103,19 @@ for quality in range(0, 30, 1):
 #     psnr_values["WEBP"].append(lrf.psnr(image, reconstructed))
 #     ssim_values["WEBP"].append(lrf.ssim(image, reconstructed))
 
-# SVD
-for quality in np.linspace(0.0, 8, 20):
-    enocoded = lrf.svd_encode(image, quality=quality, patch=False, dtype=torch.int8)
-    reconstructed = lrf.svd_decode(enocoded)
+# # SVD
+# for quality in np.linspace(0.0, 8, 20):
+#     enocoded = lrf.svd_encode(image, quality=quality, patch=False, dtype=torch.int8)
+#     reconstructed = lrf.svd_decode(enocoded)
 
-    real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-    real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+#     real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
+#     real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
 
-    compression_ratios["SVD"].append(real_compression_ratio)
-    bpps["SVD"].append(real_bpp)
-    reconstructed_images["SVD"].append(reconstructed)
-    psnr_values["SVD"].append(lrf.psnr(image, reconstructed))
-    ssim_values["SVD"].append(lrf.ssim(image, reconstructed))
+#     compression_ratios["SVD"].append(real_compression_ratio)
+#     bpps["SVD"].append(real_bpp)
+#     reconstructed_images["SVD"].append(reconstructed)
+#     psnr_values["SVD"].append(lrf.psnr(image, reconstructed))
+#     ssim_values["SVD"].append(lrf.ssim(image, reconstructed))
 
 
 # Patch SVD
@@ -163,7 +161,7 @@ for quality in np.linspace(0.0, 10, 50):
 
 
 # Patch IMF - YCbCr
-for quality in np.linspace(0.0, 25, 50):
+for quality in np.linspace(0, 25, 50):
     enocoded = lrf.imf_encode(
         image,
         color_space="YCbCr",
@@ -172,7 +170,6 @@ for quality in np.linspace(0.0, 25, 50):
         patch=True,
         patch_size=(8, 8),
         bounds=(-16, 15),
-        alpha=1.0,
         dtype=torch.int8,
         num_iters=10,
         verbose=False,
