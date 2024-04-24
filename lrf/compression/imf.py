@@ -1,4 +1,4 @@
-from typing import Tuple, Optional, Dict
+from typing import Optional, Dict
 import math
 
 import torch
@@ -24,7 +24,7 @@ from lrf.compression.utils import (
 )
 
 
-def imf_rank(size: Tuple[int, int], compression_ratio: float) -> int:
+def imf_rank(size: tuple[int, int], compression_ratio: float) -> int:
     """Calculate the rank for IMF based on the compression ratio."""
 
     num_rows, num_cols = size
@@ -34,7 +34,7 @@ def imf_rank(size: Tuple[int, int], compression_ratio: float) -> int:
     return rank
 
 
-def patchify(x: Tensor, patch_size: Tuple[int, int]) -> Tensor:
+def patchify(x: Tensor, patch_size: tuple[int, int]) -> Tensor:
     """Splits an input image into patches."""
 
     p, q = patch_size
@@ -42,7 +42,7 @@ def patchify(x: Tensor, patch_size: Tuple[int, int]) -> Tensor:
     return patches
 
 
-def depatchify(x: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int]) -> Tensor:
+def depatchify(x: Tensor, size: tuple[int, int], patch_size: tuple[int, int]) -> Tensor:
     """Reconstruct the original image from its patches."""
 
     p, q = patch_size
@@ -51,8 +51,8 @@ def depatchify(x: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int]) ->
 
 
 def depatchify_uv(
-    u: Tensor, v: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int]
-) -> Tuple[Tensor, Tensor]:
+    u: Tensor, v: Tensor, size: tuple[int, int], patch_size: tuple[int, int]
+) -> tuple[Tensor, Tensor]:
     """Reshape the u and v matrices into their original spatial dimensions."""
 
     p, q = patch_size
@@ -68,7 +68,7 @@ def imf_encode(
     color_space="YCbCr",
     scale_factor: tuple[float, float] = (0.5, 0.5),
     patch: bool = True,
-    patch_size: Tuple[int, int] = (8, 8),
+    patch_size: tuple[int, int] = (8, 8),
     dtype: torch.dtype = None,
     **kwargs,
 ) -> Dict:

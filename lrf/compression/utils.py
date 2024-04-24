@@ -117,7 +117,7 @@ def unpad_image(padded_img, orig_size):
 
     Args:
     - orig_size (torch.Tensor): The padded image tensor of shape (C, H', W').
-    - orig_size (Tuple[int, int]): The original size of the image before padding.
+    - orig_size (tuple[int, int]): The original size of the image before padding.
 
     Returns:
     - torch.Tensor: The original image tensor of shape (C, H_orig, W_orig).

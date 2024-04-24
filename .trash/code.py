@@ -1,5 +1,18 @@
+import functools
+from operator import mul
+import math
+import io
+
+
 import torch
+from torch import Tensor
 import numpy as np
+from einops import rearrange
+import joblib
+
+
+def prod(x):
+    return functools.reduce(mul, x, 1)
 
 
 def pack_tensor(tensor, min_value):
@@ -102,7 +115,7 @@ def decode_model(encodel_model, *args, **kwargs):
     return model
 
 
-def to_zigzag_u(u: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int]) -> Tensor:
+def to_zigzag_u(u: Tensor, size: tuple[int, int], patch_size: tuple[int, int]) -> Tensor:
     """Reorder the u factor matrix with zigzag pattern."""
 
     u = rearrange(u, "(h w) r -> r h w", h=size[0] // patch_size[0])
@@ -111,7 +124,7 @@ def to_zigzag_u(u: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int]) -
 
 
 def from_zigzag_u(
-    u: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int]
+    u: Tensor, size: tuple[int, int], patch_size: tuple[int, int]
 ) -> Tensor:
     """Convert the zigzag-ordered factor matrix u back to the original one."""
 
@@ -121,7 +134,7 @@ def from_zigzag_u(
     return u
 
 
-def to_zigzag_v(v: Tensor, patch_size: Tuple[int, int]) -> Tensor:
+def to_zigzag_v(v: Tensor, patch_size: tuple[int, int]) -> Tensor:
     """Reorder the v factor matrix with zigzag pattern."""
 
     p, q = patch_size
@@ -130,7 +143,7 @@ def to_zigzag_v(v: Tensor, patch_size: Tuple[int, int]) -> Tensor:
     return v
 
 
-def from_zigzag_v(v: Tensor, patch_size: Tuple[int, int], rank: int) -> Tensor:
+def from_zigzag_v(v: Tensor, patch_size: tuple[int, int], rank: int) -> Tensor:
     """Convert the zigzag-ordered factor matrix v back to the original one."""
 
     v = zigzag_unflatten(v.mT, patch_size)
@@ -266,3 +279,55 @@ def run_length_decode(rle):
 #     "Is the original tensor equal to the decoded tensor?",
 #     torch.equal(x, torch.stack(x_hat)),
 # )
+
+
+from torchvision.transforms import v2
+import matplotlib.pyplot as plt
+from skimage import data
+from skimage.io import imread
+
+import lrf
+
+# Load the astronaut image
+# image = data.astronaut()
+image = imread("./data/kodak/kodim15.png")
+
+
+# transforms = v2.Compose([v2.ToImage(), v2.Resize(size=(224, 224), interpolation=2)])
+transforms = v2.Compose([v2.ToImage()])
+
+
+# Transform the input image
+image = torch.tensor(transforms(image))
+
+
+def mask_image(x, portion=0.1):
+    step = max(round(1 / portion), 1)
+    mask = torch.zeros_like(x[0]).flatten()
+    mask[::step] = 1
+    x_masked = []
+    for c in range(3):
+        channel_masked = zigzag_flatten(x[c]) * mask
+        x_masked.append(channel_masked)
+
+    x_masked = run_length_encode(x_masked)
+    # x_masked = torch.stack(x_masked)
+    return x_masked
+
+
+masked_image = mask_image(image, 0.01)
+
+compressed_size = sum(
+    len(lrf.encode_matrix(masked_image[i][j].reshape(-1, 1)))
+    for i in range(3)
+    for j in range(2)
+)
+# compressed_size = len(lrf.encode_tensor(masked_image))
+
+print(f"bpp: {compressed_size*8/prod(image.shape[-2:])}")
+
+# Visualize image
+plt.imshow(image.permute(1, 2, 0))
+plt.axis("off")
+plt.title("Original Image")
+plt.show()

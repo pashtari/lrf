@@ -1,4 +1,4 @@
-from typing import Sequence, Tuple, Optional, Union, Dict
+from typing import Sequence, Optional, Union, Dict
 from numbers import Real
 import math
 
@@ -16,7 +16,7 @@ from lrf.compression.utils import prod, pad_image, unpad_image, quantize, dequan
 #### HOSVD compression ####
 
 
-def hosvd_rank(size: Tuple[int, int, int], compression_ratio: float) -> int:
+def hosvd_rank(size: tuple[int, int, int], compression_ratio: float) -> int:
     c, h, w = size
     r = Symbol("r", real=True)
     df_input = c * h * w  # Degrees of freedom of the input tensor (image)
@@ -86,21 +86,21 @@ def hosvd_decode(encoded: Dict, dtype: torch.dtype = torch.uint8) -> Tensor:
 #### Patch HOSVD compression ####
 
 
-def patch_hosvd_tensorize(x: Tensor, patch_size: Tuple[int, int] = (8, 8)) -> Tensor:
+def patch_hosvd_tensorize(x: Tensor, patch_size: tuple[int, int] = (8, 8)) -> Tensor:
     p, q = patch_size
     patches = rearrange(x, "c (h p) (w q) -> (h w) p q c", p=p, q=q)
     return patches
 
 
 def patch_hosvd_detensorize(
-    x: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int] = (8, 8)
+    x: Tensor, size: tuple[int, int], patch_size: tuple[int, int] = (8, 8)
 ) -> Tensor:
     patches = rearrange(x, "(h w) p q c -> c (h p) (w q)", h=size[0] // patch_size[0])
     return patches
 
 
 def patch_hosvd_optimal_rank(
-    x: Tensor, compression_ratio: float, patch_size: Tuple[int, int] = (8, 8)
+    x: Tensor, compression_ratio: float, patch_size: tuple[int, int] = (8, 8)
 ):
     x = F.to_dtype(x, dtype=torch.float32, scale=True)
     _, h, w = x.shape
@@ -145,12 +145,12 @@ def patch_hosvd_optimal_rank(
 
 def patch_hosvd_encode(
     x: Tensor,
-    rank: Optional[Tuple[int, int, int, int]] = None,
+    rank: Optional[tuple[int, int, int, int]] = None,
     compression_ratio: Optional[float] = None,
     bpp: Optional[float] = None,
-    patch_size: Tuple[int, int] = (8, 8),
+    patch_size: tuple[int, int] = (8, 8),
     dtype: torch.dtype = None,
-) -> Tuple[Tensor, Tensor]:
+) -> tuple[Tensor, Tensor]:
     """Ecnoder of the Patch Higher-Order Singular Value Decomposition (HOSVD) compression."""
 
     assert (rank, compression_ratio, bpp) != (

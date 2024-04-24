@@ -1,4 +1,4 @@
-from typing import Tuple, Optional, Dict
+from typing import Optional, Dict
 import math
 
 import torch
@@ -20,7 +20,7 @@ from lrf.compression.utils import (
 )
 
 
-def svd_rank(size: Tuple[int, int], compression_ratio: float) -> int:
+def svd_rank(size: tuple[int, int], compression_ratio: float) -> int:
     """Calculate the rank for SVD based on the compression ratio."""
 
     num_rows, num_cols = size
@@ -30,7 +30,7 @@ def svd_rank(size: Tuple[int, int], compression_ratio: float) -> int:
     return rank
 
 
-def svd_compression_ratio(size: Tuple[int, int], rank: int) -> float:
+def svd_compression_ratio(size: tuple[int, int], rank: int) -> float:
     """Calculate the compression ratio for SVD based on the rank."""
 
     num_rows, num_cols = size
@@ -40,7 +40,7 @@ def svd_compression_ratio(size: Tuple[int, int], rank: int) -> float:
     return compression_ratio
 
 
-def patchify(x: Tensor, patch_size: Tuple[int, int] = (8, 8)) -> Tensor:
+def patchify(x: Tensor, patch_size: tuple[int, int] = (8, 8)) -> Tensor:
     """Splits an input image into patches."""
 
     p, q = patch_size
@@ -49,7 +49,7 @@ def patchify(x: Tensor, patch_size: Tuple[int, int] = (8, 8)) -> Tensor:
 
 
 def depatchify(
-    x: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int] = (8, 8)
+    x: Tensor, size: tuple[int, int], patch_size: tuple[int, int] = (8, 8)
 ) -> Tensor:
     """Reconstruct the original image from its patches."""
 
@@ -59,8 +59,8 @@ def depatchify(
 
 
 def depatchify_uv(
-    u: Tensor, v: Tensor, size: Tuple[int, int], patch_size: Tuple[int, int] = (8, 8)
-) -> Tuple[Tensor, Tensor]:
+    u: Tensor, v: Tensor, size: tuple[int, int], patch_size: tuple[int, int] = (8, 8)
+) -> tuple[Tensor, Tensor]:
     """Reshape the u and v matrices into their original spatial dimensions."""
 
     p, q = patch_size
@@ -74,7 +74,7 @@ def svd_encode(
     rank: Optional[int] = None,
     quality: Optional[float] = None,
     patch: bool = True,
-    patch_size: Tuple[int, int] = (8, 8),
+    patch_size: tuple[int, int] = (8, 8),
     dtype: torch.dtype = None,
 ) -> Dict:
     """Compress an input image using SVD."""
