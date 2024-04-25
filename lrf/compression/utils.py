@@ -352,62 +352,6 @@ def bytes_to_dict(encoded_bytes: bytes) -> dict:
     return dictionary
 
 
-def encode_tensor(tensor):
-    """
-    Encode a PyTorch tensor and encode its shape and dtype using Zstandard algorithm,
-    returning a single bytes object containing both the encoded tensor data and its metadata.
-
-    Parameters:
-    tensor (torch.Tensor): The tensor to encode.
-
-    Returns:
-    bytes: A single bytes object containing both encoded data and metadata.
-    """
-    # Convert the tensor to bytes
-    array_bytes = tensor.numpy().tobytes()
-
-    # Encode the bytes using a lossless compression
-    array_bytes = zlib.compress(array_bytes)
-
-    # Prepare metadata
-    metadata = {"shape": tensor.shape, "dtype": str(tensor.dtype).split(".")[-1]}
-    metadata_bytes = dict_to_bytes(metadata)
-
-    # Combine metadata and tensor data into a single bytes object
-    encoded_tensor = combine_bytes([metadata_bytes, array_bytes])
-    return encoded_tensor
-
-
-def decode_tensor(encoded_tensor):
-    """
-    Decode a combined bytes object back into a PyTorch tensor using the encoded shape and dtype.
-
-    Parameters:
-    encoded_tensor (bytes): The combined bytes object containing both encoded data and metadata.
-
-    Returns:
-    torch.Tensor: The decoded tensor.
-    """
-
-    # Extract metadata and array data
-    metadata_bytes, array_bytes = separate_bytes(encoded_tensor)
-
-    # Decode metadata
-    metadata = bytes_to_dict(metadata_bytes)
-    shape = metadata["shape"]
-    dtype = metadata["dtype"]
-
-    # Decode the array data
-    decoded_array = zlib.decompress(array_bytes)
-
-    # Convert back to tensor
-    decoded_tensor = torch.from_numpy(
-        np.frombuffer(decoded_array, dtype=np.dtype(dtype)).reshape(shape)
-    )
-
-    return decoded_tensor
-
-
 def encode_matrix(matrix: Tensor, mode: str = "col") -> bytes:
     assert len(matrix.shape) == 2, "'matrix' must be a 2D tensor."
     assert mode in {"col", "row"}, "'mode' must be either 'col' or 'row'."
@@ -461,6 +405,69 @@ def decode_matrix(encodeld_matrix: bytes, mode: str = "col") -> Tensor:
         matrix = np.stack(fibers, axis=0)
 
     return torch.from_numpy(matrix)
+
+
+def encode_tensor(tensor, *args, **kwargs):
+    """
+    Encode a PyTorch tensor and encode its shape and dtype using Zstandard algorithm,
+    returning a single bytes object containing both the encoded tensor data and its metadata.
+
+    Parameters:
+    tensor (torch.Tensor): The tensor to encode.
+
+    Returns:
+    bytes: A single bytes object containing both encoded data and metadata.
+    """
+    if tensor.ndim == 2:
+        return encode_matrix(tensor, *args, **kwargs)
+
+    # Convert the tensor to bytes
+    encoded_array = tensor.numpy().tobytes()
+
+    # Encode the bytes using a lossless compression
+    encoded_array = zlib.compress(encoded_array)
+
+    # Prepare metadata
+    metadata = {"shape": tensor.shape, "dtype": str(tensor.dtype).split(".")[-1]}
+    encoded_metadata = dict_to_bytes(metadata)
+
+    # Combine metadata and tensor data into a single bytes object
+    encoded_tensor = combine_bytes([encoded_metadata, encoded_array])
+    return encoded_tensor
+
+
+def decode_tensor(encoded_tensor, *args, **kwargs):
+    """
+    Decode a combined bytes object back into a PyTorch tensor using the encoded shape and dtype.
+
+    Parameters:
+    encoded_tensor (bytes): The combined bytes object containing both encoded data and metadata.
+
+    Returns:
+    torch.Tensor: The decoded tensor.
+    """
+
+    # Extract metadata and array data
+    encoded_metadata, encoded_array = separate_bytes(encoded_tensor)
+
+    # Decode metadata
+    metadata = bytes_to_dict(encoded_metadata)
+
+    if "num_fibers" in metadata:
+        return decode_matrix(encoded_tensor)
+
+    shape = metadata["shape"]
+    dtype = metadata["dtype"]
+
+    # Decode the array data
+    array = zlib.decompress(encoded_array)
+
+    # Convert back to tensor
+    decoded_tensor = torch.from_numpy(
+        np.frombuffer(array, dtype=np.dtype(dtype)).reshape(shape)
+    )
+
+    return decoded_tensor
 
 
 def encode_model(model, compress="zlib", **kwargs):

@@ -19,8 +19,8 @@ from lrf.compression.utils import (
     bytes_to_dict,
     combine_bytes,
     separate_bytes,
-    encode_matrix,
-    decode_matrix,
+    encode_tensor,
+    decode_tensor,
 )
 
 
@@ -165,7 +165,7 @@ def imf_encode(
 
     encoded_metadata = dict_to_bytes(metadata)
 
-    encoded_factors = combine_bytes([encode_matrix(factor) for factor in factors])
+    encoded_factors = combine_bytes([encode_tensor(factor) for factor in factors])
 
     encoded_image = combine_bytes([encoded_metadata, encoded_factors])
 
@@ -180,7 +180,7 @@ def imf_decode(encoded_image: bytes) -> Tensor:
 
     if metadata["color space"] == "RGB":
         encoded_u, encoded_v = separate_bytes(encoded_factors)
-        u, v = decode_matrix(encoded_u), decode_matrix(encoded_v)
+        u, v = decode_tensor(encoded_u), decode_tensor(encoded_v)
 
         u, v = u.float(), v.float()
         x = u @ v.mT
@@ -194,9 +194,9 @@ def imf_decode(encoded_image: bytes) -> Tensor:
     else:  # color_space == "YCbCr"
         encoded_factors = separate_bytes(encoded_factors, num_payloads=6)
 
-        u_y, v_y = decode_matrix(encoded_factors[0]), decode_matrix(encoded_factors[1])
-        u_cb, v_cb = decode_matrix(encoded_factors[2]), decode_matrix(encoded_factors[3])
-        u_cr, v_cr = decode_matrix(encoded_factors[4]), decode_matrix(encoded_factors[5])
+        u_y, v_y = decode_tensor(encoded_factors[0]), decode_tensor(encoded_factors[1])
+        u_cb, v_cb = decode_tensor(encoded_factors[2]), decode_tensor(encoded_factors[3])
+        u_cr, v_cr = decode_tensor(encoded_factors[4]), decode_tensor(encoded_factors[5])
 
         ycbcr = []
         for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):

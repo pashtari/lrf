@@ -9,7 +9,7 @@ import lrf
 
 # Load the astronaut image
 # image = data.astronaut()
-image = imread("./data/kodak/kodim20.png")
+image = imread("./data/kodak/kodim17.png")
 
 
 # transforms = v2.Compose([v2.ToImage(), v2.Resize(size=(224, 224), interpolation=2)])
@@ -31,44 +31,39 @@ compression_ratios = {
     "JPEG": [],
     "WEBP": [],
     "SVD": [],
-    "Patch SVD": [],
-    "Patch IMF - RGB": [],
-    "Patch IMF - YCbCr": [],
+    "IMF - RGB": [],
+    "IMF - YCbCr": [],
 }
 
 bpps = {
     "JPEG": [],
     "WEBP": [],
     "SVD": [],
-    "Patch SVD": [],
-    "Patch IMF - RGB": [],
-    "Patch IMF - YCbCr": [],
+    "IMF - RGB": [],
+    "IMF - YCbCr": [],
 }
 
 reconstructed_images = {
     "JPEG": [],
     "WEBP": [],
     "SVD": [],
-    "Patch SVD": [],
-    "Patch IMF - RGB": [],
-    "Patch IMF - YCbCr": [],
+    "IMF - RGB": [],
+    "IMF - YCbCr": [],
 }
 
 psnr_values = {
     "JPEG": [],
     "WEBP": [],
     "SVD": [],
-    "Patch SVD": [],
-    "Patch IMF - RGB": [],
-    "Patch IMF - YCbCr": [],
+    "IMF - RGB": [],
+    "IMF - YCbCr": [],
 }
 ssim_values = {
     "JPEG": [],
     "WEBP": [],
     "SVD": [],
-    "Patch SVD": [],
-    "Patch IMF - RGB": [],
-    "Patch IMF - YCbCr": [],
+    "IMF - RGB": [],
+    "IMF - YCbCr": [],
 }
 
 # Calculate reconstructed images and metric values for each method
@@ -103,22 +98,7 @@ for quality in range(0, 30, 1):
 #     psnr_values["WEBP"].append(lrf.psnr(image, reconstructed))
 #     ssim_values["WEBP"].append(lrf.ssim(image, reconstructed))
 
-# # SVD
-# for quality in np.linspace(0.0, 8, 20):
-#     enocoded = lrf.svd_encode(image, quality=quality, patch=False, dtype=torch.int8)
-#     reconstructed = lrf.svd_decode(enocoded)
-
-#     real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-#     real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
-
-#     compression_ratios["SVD"].append(real_compression_ratio)
-#     bpps["SVD"].append(real_bpp)
-#     reconstructed_images["SVD"].append(reconstructed)
-#     psnr_values["SVD"].append(lrf.psnr(image, reconstructed))
-#     ssim_values["SVD"].append(lrf.ssim(image, reconstructed))
-
-
-# Patch SVD
+# SVD
 for quality in np.linspace(0.0, 5, 20):
     enocoded = lrf.svd_encode(
         image, quality=quality, patch=True, patch_size=(8, 8), dtype=torch.int8
@@ -128,14 +108,14 @@ for quality in np.linspace(0.0, 5, 20):
     real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
     real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
 
-    compression_ratios["Patch SVD"].append(real_compression_ratio)
-    bpps["Patch SVD"].append(real_bpp)
-    reconstructed_images["Patch SVD"].append(reconstructed)
-    psnr_values["Patch SVD"].append(lrf.psnr(image, reconstructed))
-    ssim_values["Patch SVD"].append(lrf.ssim(image, reconstructed))
+    compression_ratios["SVD"].append(real_compression_ratio)
+    bpps["SVD"].append(real_bpp)
+    reconstructed_images["SVD"].append(reconstructed)
+    psnr_values["SVD"].append(lrf.psnr(image, reconstructed))
+    ssim_values["SVD"].append(lrf.ssim(image, reconstructed))
 
 
-# Patch IMF - RGB
+# IMF - RGB
 for quality in np.linspace(0.0, 10, 50):
     enocoded = lrf.imf_encode(
         image,
@@ -153,14 +133,14 @@ for quality in np.linspace(0.0, 10, 50):
     real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
     real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
 
-    compression_ratios["Patch IMF - RGB"].append(real_compression_ratio)
-    bpps["Patch IMF - RGB"].append(real_bpp)
-    reconstructed_images["Patch IMF - RGB"].append(reconstructed)
-    psnr_values["Patch IMF - RGB"].append(lrf.psnr(image, reconstructed))
-    ssim_values["Patch IMF - RGB"].append(lrf.ssim(image, reconstructed))
+    compression_ratios["IMF - RGB"].append(real_compression_ratio)
+    bpps["IMF - RGB"].append(real_bpp)
+    reconstructed_images["IMF - RGB"].append(reconstructed)
+    psnr_values["IMF - RGB"].append(lrf.psnr(image, reconstructed))
+    ssim_values["IMF - RGB"].append(lrf.ssim(image, reconstructed))
 
 
-# Patch IMF - YCbCr
+# IMF - YCbCr
 for quality in np.linspace(0, 25, 50):
     enocoded = lrf.imf_encode(
         image,
@@ -179,20 +159,19 @@ for quality in np.linspace(0, 25, 50):
     real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
     real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
 
-    compression_ratios["Patch IMF - YCbCr"].append(real_compression_ratio)
-    bpps["Patch IMF - YCbCr"].append(real_bpp)
-    reconstructed_images["Patch IMF - YCbCr"].append(reconstructed)
-    psnr_values["Patch IMF - YCbCr"].append(lrf.psnr(image, reconstructed))
-    ssim_values["Patch IMF - YCbCr"].append(lrf.ssim(image, reconstructed))
+    compression_ratios["IMF - YCbCr"].append(real_compression_ratio)
+    bpps["IMF - YCbCr"].append(real_bpp)
+    reconstructed_images["IMF - YCbCr"].append(reconstructed)
+    psnr_values["IMF - YCbCr"].append(lrf.psnr(image, reconstructed))
+    ssim_values["IMF - YCbCr"].append(lrf.ssim(image, reconstructed))
 
 
 selected_methods = [
     "JPEG",
     # "WEBP",
-    # "SVD",
-    "Patch SVD",
-    "Patch IMF - RGB",
-    "Patch IMF - YCbCr",
+    "SVD",
+    "IMF - RGB",
+    "IMF - YCbCr",
 ]
 bpps = {k: bpps[k] for k in selected_methods}
 reconstructed_images = {k: reconstructed_images[k] for k in selected_methods}
