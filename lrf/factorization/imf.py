@@ -1,13 +1,14 @@
-from typing import Any, Optional, Callable
+from typing import Optional, Callable
 
 import numpy as np
 import torch
 from torch import Tensor
 from torch import nn
+from torch.nn.modules.utils import _pair
 import cvxpy as cp
 from joblib import Parallel, delayed
 
-from lrf.factorization.utils import dot, relative_error
+from lrf.factorization.utils import relative_error, soft_thresholding
 
 
 class RandInit(nn.Module):
@@ -22,8 +23,8 @@ class RandInit(nn.Module):
         (M, N), R = x.shape[-2:], self.rank
         u_shape = (*x.shape[:-2], M, R)
         v_shape = (*x.shape[:-2], N, R)
-        u = torch.randint(-128, 128, (M, R)).expand(u_shape).to(torch.float32)
-        v = torch.randint(-128, 128, (N, R)).expand(v_shape).to(torch.float32)
+        u = torch.randint(-128, 128, (M, R)).expand(u_shape).float()
+        v = torch.randint(-128, 128, (N, R)).expand(v_shape).float()
         return u, v
 
 
@@ -45,86 +46,25 @@ class SVDInit(nn.Module):
         return self.project(u), self.project(v)
 
 
-class LeastSquares(nn.Module):
-    """Least Squares."""
-
-    def __init__(
-        self,
-        project: Optional[Any] = None,
-        eps: float = 1e-8,
-    ):
-        super().__init__()
-        self.project = nn.Identity() if project is None else project
-        self.eps = eps
-
-    def update_u(self, x: Tensor, u: Tensor, v: Tensor) -> Tensor:
-        # x ≈ u @ t(v) --> u = ?
-        *_, M, N = x.shape
-        if M >= N:
-            u_new = x @ t(torch.linalg.pinv(v))
-        else:
-            a, b = x @ v, v.mT @ v
-            u_new = torch.linalg.solve(b, a.mT)
-            u_new = u_new.mT
-
-        return self.project(u_new)
-
-    def update_v(self, x: Tensor, u: Tensor, v: Tensor) -> Tensor:
-        # x ≈ u @ t(v) --> v = ?
-        return self.update_u(x.mT, v, u)
-
-    def forward(self, x: Tensor, factors: tuple[Tensor, Tensor]) -> tuple[Tensor, Tensor]:
-        u, v = factors
-        u = self.update_u(x, u, v)
-        v = self.update_v(x, u, v)
-        return u, v
-
-
-class ProjectedGradient(nn.Module):
-    "Projected gradient descent with line search for linear least squares."
-
-    def __init__(
-        self,
-        project: Optional[Any] = None,
-        eps: float = 1e-8,
-    ):
-        super().__init__()
-        self.project = nn.Identity() if project is None else project
-        self.eps = eps
-
-    def update_u(self, x: Tensor, u: Tensor, v: Tensor) -> Tensor:
-        # x ≈ u @ t(v) --> u = ?
-        a, b = x @ v, v.mT @ v
-        g = a - u @ b
-        η = (dot(g, g) + self.eps) / (dot(g, g @ b) + self.eps)
-        η = η.unsqueeze(-1)
-        u_new = self.project(u + η * g)
-        return u_new
-
-    def update_v(self, x: Tensor, u: Tensor, v: Tensor) -> Tensor:
-        # x ≈ u @ t(v) --> v = ?
-        return self.update_u(x.mT, v, u)
-
-    def forward(self, x: Tensor, factors: tuple[Tensor, Tensor]) -> tuple[Tensor, Tensor]:
-        u, v = factors
-        u = self.update_u(x, u, v)
-        v = self.update_v(x, u, v)
-        return u, v
-
-
 class CoordinateDescent(nn.Module):
     "Block coordinate descent update for linear least squares."
 
     def __init__(
         self,
-        project: Optional[tuple[Callable, Callable]] = None,
-        eps: float = 1e-8,
+        factor: int | tuple[int, int] = (0, 1),
+        project: Optional[Callable] = None,
+        l2: float | tuple[float, float] = 0,
+        l1_ratio: float = 0,
+        eps: float = 1e-16,
     ):
         super().__init__()
+        self.factor = _pair(factor)
         self.project = nn.Identity() if project is None else project
-        self.eps = eps
+        self.l2 = _pair(l2)
+        self.l1_ratio = l1_ratio
+        self.eps = eps  # avoids division by zero
 
-    def update_u(self, x: Tensor, u: Tensor, v: Tensor) -> Tensor:
+    def update_u(self, x: Tensor, u: Tensor, v: Tensor, l1: float, l2: float) -> Tensor:
         # x ≈ u @ t(v) --> u = ?
         R = u.shape[-1]
         a, b = x @ v, v.mT @ v
@@ -136,25 +76,33 @@ class CoordinateDescent(nn.Module):
                 uu = u_new[..., indices]
                 bb = b[..., indices, r : (r + 1)]
                 term2 = uu @ bb
-                numerator = term1 - term2
-                denominator = b[..., r : (r + 1), r : (r + 1)]
+                numerator = soft_thresholding(term1 - term2, l1)
+                denominator = b[..., r : (r + 1), r : (r + 1)] + l2
                 ur_new = (numerator + self.eps) / (denominator + self.eps)
                 u_new[..., r : (r + 1)] = self.project(ur_new)
         else:
-            numerator = a + self.eps
-            denominator = b + self.eps
-            u_new = self.project(numerator / denominator)
+            numerator = soft_thresholding(a, l1)
+            denominator = b + l2
+            u_new = (numerator + self.eps) / (denominator + self.eps)
+            u_new = self.project(u_new)
 
         return u_new
 
-    def update_v(self, x: Tensor, u: Tensor, v: Tensor) -> Tensor:
+    def update_v(self, x: Tensor, u: Tensor, v: Tensor, l1: float, l2: float) -> Tensor:
         # x ≈ u @ t(v) --> v = ?
-        return self.update_u(x.mT, v, u)
+        return self.update_u(x.mT, v, u, l1, l2)
 
     def forward(self, x: Tensor, factors: tuple[Tensor, Tensor]) -> tuple[Tensor, Tensor]:
         u, v = factors
-        u = self.update_u(x, u, v)
-        v = self.update_v(x, u, v)
+        *_, M, N = x.shape
+        l1_u = self.l2[0] * self.l1_ratio * N
+        l1_v = self.l2[1] * self.l1_ratio * M
+        l2_u = self.l2[0] * (1 - self.l1_ratio) * N
+        l2_v = self.l2[1] * (1 - self.l1_ratio) * M
+        if 0 in self.factor:
+            u = self.update_u(x, u, v, l1_u, l2_u)
+        if 1 in self.factor:
+            v = self.update_v(x, u, v, l1_v, l2_v)
         return u, v
 
 
@@ -251,10 +199,7 @@ class IMF(nn.Module):
         self.num_iters = num_iters
         self.bounds = tuple(bounds)
         self.init = SVDInit(rank=rank, project=self._project_to_int)
-        # self.init = RandInit(rank=rank)
-        self.solver = CoordinateDescent(project=self._project_to_int)
-        # self.solver = LeastSquares(project=self._project_to_int)
-        # self.solver = ProjectedGradient(project=self._project_to_int)
+        self.solver = CoordinateDescent(project=self._project_to_int, **kwargs)
         # self.solver = LeastAbsoluteErrors(construct_bound=(0, 255), solver="GLPK_MI")
         self.verbose = verbose
 
@@ -268,7 +213,7 @@ class IMF(nn.Module):
         # x: B × M × N
 
         # convert x to float
-        x = x.to(torch.float32)
+        x = x.float()
 
         # initialize
         u, v = self.init(x)

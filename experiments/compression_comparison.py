@@ -9,7 +9,7 @@ import lrf
 
 # Load the astronaut image
 # image = data.astronaut()
-image = imread("./data/kodak/kodim15.png")
+image = imread("./data/kodak/kodim20.png")
 
 
 # transforms = v2.Compose([v2.ToImage(), v2.Resize(size=(224, 224), interpolation=2)])

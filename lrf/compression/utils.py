@@ -3,11 +3,13 @@ import functools
 from operator import mul
 import json
 import zlib
+import io
 
 import torch
 from torch import Tensor
 import torch.nn.functional as F
 import numpy as np
+import joblib
 
 
 def prod(x):
@@ -459,3 +461,15 @@ def decode_matrix(encodeld_matrix: bytes, mode: str = "col") -> Tensor:
         matrix = np.stack(fibers, axis=0)
 
     return torch.from_numpy(matrix)
+
+
+def encode_model(model, compress="zlib", **kwargs):
+    buffer = io.BytesIO()
+    joblib.dump(model, buffer, compress=compress, **kwargs)
+    return buffer.getvalue()
+
+
+def decode_model(encodel_model, *args, **kwargs):
+    buffer = io.BytesIO(encodel_model)
+    model = joblib.load(buffer)
+    return model

@@ -15,6 +15,11 @@ def prod(x):
     return functools.reduce(mul, x, 1)
 
 
+def dot(x: Tensor, y: Tensor) -> Tensor:
+    out = (x * y).flatten(-2).sum(-1, keepdim=True)
+    return out
+
+
 def pack_tensor(tensor, min_value):
     # Convert to numpy array
     numpy_array = tensor.clone().numpy().astype(np.int32)
@@ -260,6 +265,61 @@ def run_length_encode(x):
 def run_length_decode(rle):
     values, lengths = rle
     return torch.repeat_interleave(values, lengths)
+
+
+class ILR(nn.Module):
+    """Implementation for integer linear regsression (ILR).
+
+    Y ≈ X B,
+    B ∈ Z
+    """
+
+    def __init__(
+        self,
+        num_iters: int = 10,
+        bounds: tuple[None | float, None | float] = (None, None),
+        verbose: bool = False,
+        **kwargs,
+    ) -> None:
+        super().__init__()
+        self.num_iters = num_iters
+        self.bounds = tuple(bounds)
+        self.solver = CoordinateDescent(factor=1, project=self._project_to_int, **kwargs)
+        self.verbose = verbose
+
+    def _project_to_int(self, x: Tensor):
+        x = torch.round(x)
+        if self.bounds != (None, None):
+            x = torch.clamp(x, self.bounds[0], self.bounds[1])
+        return x
+
+    def fit(self, x: Tensor, y: Tensor, *args, **kwargs) -> Tensor:
+        # x: B × M × N
+
+        # convert x to float
+        x, y = x.float(), y.float()
+
+        # init with OLS
+        b = self._project_to_int(torch.linalg.lstsq(x, y)[0].mT)
+
+        # iterate
+        for it in range(1, self.num_iters + 1):
+            _, b = self.solver(y, [x, b], *args, **kwargs)
+
+            if self.verbose:
+                loss = self.loss(x, b.mT, y)
+                print(f"iter {it}: loss = {loss}")
+
+        return b.mT
+
+    def predict(self, x: Tensor, b: Tensor) -> Tensor:
+        return x @ b
+
+    def loss(self, x: Tensor, b: Tensor, y: Tensor) -> Tensor:
+        return relative_error(y, self.predict(x, b))
+
+    def forward(self, x: Tensor, b: Tensor) -> Tensor:
+        return x @ b
 
 
 # # Example to test the implementation
