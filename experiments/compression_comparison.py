@@ -9,7 +9,7 @@ import lrf
 
 # Load the astronaut image
 # image = data.astronaut()
-image = imread("./data/kodak/kodim17.png")
+image = imread("./data/kodak/kodim04.png")
 
 
 # transforms = v2.Compose([v2.ToImage(), v2.Resize(size=(224, 224), interpolation=2)])
@@ -125,7 +125,7 @@ for quality in np.linspace(0.0, 10, 50):
         patch_size=(8, 8),
         bounds=(-16, 15),
         dtype=torch.int8,
-        num_iters=10,
+        num_iters=1,
         verbose=False,
     )
     reconstructed = lrf.imf_decode(enocoded)
@@ -187,7 +187,7 @@ plt.xlabel("bpp")
 plt.ylabel("PSNR (dB)")
 plt.title("Comprison of Different Compression Methods")
 # plt.xticks(np.arange(1, 13, 1))
-plt.xlim(0.05, 0.35)
+plt.xlim(0.05, 0.5)
 # plt.ylim(20, 30)
 plt.legend()
 plt.grid()
@@ -208,7 +208,7 @@ plt.xlabel("bpp")
 plt.ylabel("SSIM")
 plt.title("Comprison of Different Compression Methods")
 # plt.xticks(np.arange(1, 13, 1))
-plt.xlim(0.05, 0.35)
+plt.xlim(0.05, 0.5)
 # plt.ylim(0.5, 0.8)
 plt.legend()
 plt.grid()
@@ -221,7 +221,7 @@ plt.show()
 
 
 # Plotting the compressed images for each method and bpp
-selected_bpps = [0.3, 0.2, 0.15, 0.1, 0.05]
+selected_bpps = [0.4, 0.3, 0.2, 0.15, 0.1, 0.05]
 fig, axs = plt.subplots(
     len(selected_bpps),
     len(selected_methods),

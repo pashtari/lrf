@@ -130,7 +130,7 @@ def imf_encode(
             ), "Either 'rank' or 'quality' for each channel must be specified."
 
         ycbcr = rgb_to_ycbcr(image)
-        y, cb, cr = chroma_downsampling(ycbcr, scale_factor=scale_factor)
+        y, cb, cr = chroma_downsampling(ycbcr, scale_factor=scale_factor, mode="area")
         factors = []
         metadata["rank"] = []
         for i, channel in enumerate((y, cb, cr)):
@@ -175,7 +175,7 @@ def imf_encode(
 def imf_decode(encoded_image: bytes) -> Tensor:
     """Decompress an IMF-enocded image."""
 
-    encoded_metadata, encoded_factors = separate_bytes(encoded_image)
+    encoded_metadata, encoded_factors = separate_bytes(encoded_image, 2)
     metadata = bytes_to_dict(encoded_metadata)
 
     if metadata["color space"] == "RGB":
@@ -192,7 +192,7 @@ def imf_decode(encoded_image: bytes) -> Tensor:
         else:
             image = x
     else:  # color_space == "YCbCr"
-        encoded_factors = separate_bytes(encoded_factors, num_payloads=6)
+        encoded_factors = separate_bytes(encoded_factors, 6)
 
         u_y, v_y = decode_tensor(encoded_factors[0]), decode_tensor(encoded_factors[1])
         u_cb, v_cb = decode_tensor(encoded_factors[2]), decode_tensor(encoded_factors[3])
@@ -203,13 +203,14 @@ def imf_decode(encoded_image: bytes) -> Tensor:
             u, v = u.float(), v.float()
             x = u @ v.mT
             # x = x / 10
+
             if metadata["patch"]:
                 channel = depatchify(
                     x, metadata["padded size"][i], metadata["patch size"]
                 )
                 ycbcr.append(unpad_image(channel, metadata["original size"][i]))
 
-        image = chroma_upsampling(ycbcr, size=metadata["original size"][0])
+        image = chroma_upsampling(ycbcr, size=metadata["original size"][0], mode="area")
         image = ycbcr_to_rgb(image)
 
     image = to_dtype(image, getattr(torch, metadata["dtype"]))
