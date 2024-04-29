@@ -13,10 +13,17 @@
 export PATH="${VSC_DATA}/miniconda3/bin:${PATH}"
 source activate deepenv
 
-ROOT_DIR="${VSC_DATA}/projects/lsvd"
+ROOT_DIR="${VSC_DATA}/projects/experiments/pytorch-ignite-hydra-template"
 cd ${ROOT_DIR}/src
 
 TASK_NAME=resnet50_cifar100
 
 # Train
 python train.py dist.backend=nccl dist.nproc_per_node=2 dist.nnodes=1 task_name=train_${TASK_NAME} data=cifar100 metric=cifar model=resnet50_model_cifar model.num_classes=100
+
+CKPT_PATH=$(cat ${ROOT_DIR}/.temp/train_${TASK_NAME}.txt)
+
+# Eval
+python eval.py dist.backend=nccl dist.nproc_per_node=2 dist.nnodes=1 task_name=eval_${TASK_NAME} data=cifar10 metric=cifar handler.checkpoint.load_from=${CKPT_PATH} model=resnet50_model_cifar model.num_classes=100
+
+rm ${ROOT_DIR}/.temp/train_${TASK_NAME}.txt

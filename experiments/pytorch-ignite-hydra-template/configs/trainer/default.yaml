@@ -1,0 +1,32 @@
+lr: .5
+momentum: 0.9
+weight_decay: 0.00002
+
+max_epochs: 500
+warmup_epochs: 5
+warmup_decay: 0.01
+
+compile: false
+amp: false
+non_blocking: true
+val_every_epochs: 5
+
+loss:
+    _target_: torch.nn.CrossEntropyLoss
+    label_smoothing: 0.1
+
+optimizer:
+    _target_: torch.optim.SGD
+    _partial_: true
+    lr: ${trainer.lr}
+    momentum: ${trainer.momentum}
+    weight_decay: ${trainer.weight_decay}
+
+lr_scheduler:
+    _target_: src.scheduler.WarmupCosineAnnealingLR
+    _partial_: true
+    warmup_epochs: ${trainer.warmup_epochs}
+    max_epochs: ${trainer.max_epochs}
+    warmup_decay: ${trainer.warmup_decay}
+    lr_min: 0
+    last_epoch: -1

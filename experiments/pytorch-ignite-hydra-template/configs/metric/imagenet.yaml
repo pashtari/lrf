@@ -1,0 +1,6 @@
+top1_accuracy:
+    _target_: ignite.metrics.TopKCategoricalAccuracy
+    k: 1
+top5_accuracy:
+    _target_: ignite.metrics.TopKCategoricalAccuracy
+    k: 5
