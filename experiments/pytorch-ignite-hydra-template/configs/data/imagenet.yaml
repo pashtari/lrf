@@ -48,6 +48,7 @@ val_transform:
     _target_: torchvision.transforms.v2.Compose
     transforms:
         - _target_: torchvision.transforms.v2.ToImage
+        - _target_: torchvision.transforms.v2.Identity
         - _target_: torchvision.transforms.v2.Resize
           size: 256
           interpolation: 2

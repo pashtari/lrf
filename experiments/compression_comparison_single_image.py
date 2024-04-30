@@ -9,7 +9,7 @@ import lrf
 
 # Load the astronaut image
 # image = data.astronaut()
-image = imread("./data/kodak/kodim21.png")
+image = imread("./data/kodak/kodim23.png")
 
 
 # transforms = v2.Compose([v2.ToImage(), v2.Resize(size=(224, 224), interpolation=2)])
@@ -70,7 +70,7 @@ ssim_values = {
 
 
 # JPEG
-for quality in range(0, 30, 1):
+for quality in range(0, 80, 1):
     enocoded = lrf.pil_encode(image, format="JPEG", quality=quality)
     reconstructed = lrf.pil_decode(enocoded)
 
@@ -98,25 +98,25 @@ for quality in range(0, 30, 1):
 #     psnr_values["WEBP"].append(lrf.psnr(image, reconstructed))
 #     ssim_values["WEBP"].append(lrf.ssim(image, reconstructed))
 
-# # SVD
-# for quality in np.linspace(0.0, 5, 20):
-#     enocoded = lrf.svd_encode(
-#         image, quality=quality, patch=True, patch_size=(8, 8), dtype=torch.int8
-#     )
-#     reconstructed = lrf.svd_decode(enocoded)
+# SVD
+for quality in np.linspace(0.0, 7, 30):
+    enocoded = lrf.svd_encode(
+        image, quality=quality, patch=True, patch_size=(8, 8), dtype=torch.int8
+    )
+    reconstructed = lrf.svd_decode(enocoded)
 
-#     real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-#     real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+    real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
+    real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
 
-#     compression_ratios["SVD"].append(real_compression_ratio)
-#     bpps["SVD"].append(real_bpp)
-#     reconstructed_images["SVD"].append(reconstructed)
-#     psnr_values["SVD"].append(lrf.psnr(image, reconstructed))
-#     ssim_values["SVD"].append(lrf.ssim(image, reconstructed))
+    compression_ratios["SVD"].append(real_compression_ratio)
+    bpps["SVD"].append(real_bpp)
+    reconstructed_images["SVD"].append(reconstructed)
+    psnr_values["SVD"].append(lrf.psnr(image, reconstructed))
+    ssim_values["SVD"].append(lrf.ssim(image, reconstructed))
 
 
 # IMF - RGB
-for quality in np.linspace(0.0, 15, 50):
+for quality in np.linspace(0.0, 30, 50):
     enocoded = lrf.imf_encode(
         image,
         color_space="RGB",
@@ -141,7 +141,7 @@ for quality in np.linspace(0.0, 15, 50):
 
 
 # IMF - YCbCr
-for quality in np.linspace(0, 25, 50):
+for quality in np.linspace(0, 50, 50):
     enocoded = lrf.imf_encode(
         image,
         color_space="YCbCr",
@@ -169,7 +169,7 @@ for quality in np.linspace(0, 25, 50):
 selected_methods = [
     "JPEG",
     # "WEBP",
-    # "SVD",
+    "SVD",
     "IMF - RGB",
     "IMF - YCbCr",
 ]
@@ -221,7 +221,7 @@ plt.show()
 
 
 # Plotting the compressed images for each method and bpp
-selected_bpps = [0.4, 0.3, 0.2, 0.15, 0.1, 0.05]
+selected_bpps = [1, 0.75, 0.5, 0.4, 0.3, 0.2, 0.15, 0.1, 0.05]
 fig, axs = plt.subplots(
     len(selected_bpps),
     len(selected_methods),
