@@ -1,0 +1,16 @@
+defaults:
+    - _self_
+    - path: default
+    - hydra: default
+    - data: cifar10
+    - model: patchsvd_model_cifar
+    - handler: [pylogger]
+    - metric: cifar
+
+task_name: test
+seed: 42
+
+dist:
+    backend: null
+    nproc_per_node: null
+    nnodes: null

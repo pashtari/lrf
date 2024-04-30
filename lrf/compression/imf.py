@@ -7,6 +7,7 @@ from torch.nn.modules.utils import _triple
 from einops import rearrange
 
 from lrf.factorization import IMF
+from lrf.compression import batched_pil_encode, batched_pil_decode
 from lrf.compression.utils import (
     rgb_to_ycbcr,
     ycbcr_to_rgb,
@@ -35,7 +36,7 @@ def imf_rank(size: tuple[int, int], compression_ratio: float) -> int:
 
 
 def patchify(x: Tensor, patch_size: tuple[int, int]) -> Tensor:
-    """Splits an input image into patches."""
+    """Splits an input image into flattened patches."""
 
     p, q = patch_size
     patches = rearrange(x, "c (h p) (w q) -> (h w) (c p q)", p=p, q=q)
@@ -56,8 +57,16 @@ def depatchify_uv(
     """Reshape the u and v matrices into their original spatial dimensions."""
 
     p, q = patch_size
-    u_new = rearrange(u, "(h w) r -> r h w", h=size[0] // p)
+    u_new = rearrange(u, "(h w) r -> r 1 h w", h=size[0] // p)
     v_new = rearrange(v, "(c p q) r -> r c p q", p=p, q=q)
+    return u_new, v_new
+
+
+def patchify_uv(u: Tensor, v: Tensor) -> tuple[Tensor, Tensor]:
+    """Flatten spatial dimensions of the u and v matrices."""
+
+    u_new = rearrange(u, "r 1 h w -> (h w) r")
+    v_new = rearrange(v, "r c p q -> (c p q) r")
     return u_new, v_new
 
 
@@ -69,9 +78,11 @@ def imf_encode(
     scale_factor: tuple[float, float] = (0.5, 0.5),
     patch: bool = True,
     patch_size: tuple[int, int] = (8, 8),
+    bounds: tuple[float, float] = (-128, 127),
+    pil_kwargs: Dict = None,
     dtype: torch.dtype = None,
     **kwargs,
-) -> Dict:
+) -> bytes:
     """Compress an input image using Patch IMF (RGB)."""
 
     assert color_space in (
@@ -79,12 +90,19 @@ def imf_encode(
         "YCbCr",
     ), "`color_space` must be one of 'RGB' or 'YCbCr'."
 
+    pil_kwargs = (
+        {"lossless": True, "format": "WEBP", "quality": 100}
+        if pil_kwargs is None
+        else pil_kwargs
+    )
+
     dtype = image.dtype if dtype is None else dtype
 
     metadata = {
         "dtype": str(image.dtype).split(".")[-1],
         "color space": color_space,
         "patch": patch,
+        "bounds": bounds,
     }
 
     if color_space == "RGB":
@@ -93,33 +111,64 @@ def imf_encode(
             None,
         ), "Either 'rank' or 'quality' for each channel must be specified."
 
-        x = image.float()
         if patch:
+            x = image.float()
+
             x = pad_image(x, patch_size, mode="reflect")
             padded_size = x.shape[-2:]
             x = patchify(x, patch_size)
             # x =  x * 10
+
+            if rank is None:
+                assert (
+                    quality >= 0 and quality <= 100
+                ), "'quality' must be between 0 and 100."
+                rank = max(round(min(x.shape[-2:]) * quality / 100), 1)
+
             metadata.update(
                 {
                     "patch size": patch_size,
                     "original size": image.shape[-2:],
                     "padded size": padded_size,
+                    "rank": rank,
                 }
             )
 
-        if rank is None:
-            assert quality >= 0 and quality <= 100, "'quality' must be between 0 and 100."
-            rank = max(round(min(x.shape[-2:]) * quality / 100), 1)
+            imf = IMF(rank=rank, bounds=bounds, **kwargs)
+            u, v = imf.decompose(x.unsqueeze(0))
+            u, v = u.squeeze(0), v.squeeze(0)
 
-        metadata["rank"] = rank
+            u, v = u - bounds[0], v - bounds[0]
+            u, v = to_dtype(u, torch.uint8), to_dtype(v, torch.uint8)
 
-        imf = IMF(rank=rank, **kwargs)
-        u, v = imf.decompose(x.unsqueeze(0))
-        u, v = u.squeeze(0).to(dtype), v.squeeze(0).to(dtype)
+            u, v = depatchify_uv(u, v, padded_size, patch_size)
 
-        factors = [u, v]
+            encoded_metadata = dict_to_bytes(metadata)
+            encoded_factors = combine_bytes(
+                [batched_pil_encode(u, **pil_kwargs), batched_pil_encode(v, **pil_kwargs)]
+            )
+
+        else:
+            x = image.float()
+            if rank is None:
+                assert (
+                    quality >= 0 and quality <= 100
+                ), "'quality' must be between 0 and 100."
+                rank = max(round(min(x.shape[-2:]) * quality / 100), 1)
+
+            metadata["rank"] = rank
+
+            imf = IMF(rank=rank, bounds=bounds, **kwargs)
+            u, v = imf.decompose(x.unsqueeze(0))
+            u, v = u.squeeze(0), v.squeeze(0)
+
+            u, v = u.to(dtype), v.to(dtype)
+
+            encoded_metadata = dict_to_bytes(metadata)
+            encoded_factors = combine_bytes([encode_tensor(u), encode_tensor(v)])
 
     else:  # color_space == "YCbCr"
+
         quality = _triple(quality)
         rank = _triple(rank)
 
@@ -129,43 +178,74 @@ def imf_encode(
                 None,
             ), "Either 'rank' or 'quality' for each channel must be specified."
 
+        x = image.float()
+
         ycbcr = rgb_to_ycbcr(image)
         y, cb, cr = chroma_downsampling(ycbcr, scale_factor=scale_factor, mode="area")
-        factors = []
-        metadata["rank"] = []
-        for i, channel in enumerate((y, cb, cr)):
-            if patch:
+
+        if patch:
+            metadata["patch size"] = patch_size
+            metadata["original size"] = []
+            metadata["padded size"] = []
+            metadata["rank"] = []
+            factors = []
+            for i, channel in enumerate((y, cb, cr)):
                 x = pad_image(channel, patch_size, mode="reflect")
                 padded_size = x.shape[-2:]
 
                 x = patchify(x, patch_size)
                 # x = x * 10
 
-                metadata["patch size"] = patch_size
-                if i == 0:
-                    metadata["original size"] = [channel.shape[-2:]]
-                    metadata["padded size"] = [padded_size]
-                else:
-                    metadata["original size"].append(channel.shape[-2:])
-                    metadata["padded size"].append(padded_size)
+                if rank[i] is None:
+                    assert (
+                        quality[i] >= 0 and quality[i] <= 100
+                    ), "'quality' must be between 0 and 1."
+                    R = max(round(min(x.shape[-2:]) * quality[i] / 100), 1)
 
-            if rank[i] is None:
-                assert (
-                    quality[i] >= 0 and quality[i] <= 100
-                ), "'quality' must be between 0 and 1."
-                R = max(round(min(x.shape[-2:]) * quality[i] / 100), 1)
+                metadata["original size"].append(channel.shape[-2:])
+                metadata["padded size"].append(padded_size)
+                metadata["rank"].append(R)
 
-            metadata["rank"].append(R)
+                imf = IMF(rank=R, bounds=bounds, **kwargs)
+                u, v = imf.decompose(x.unsqueeze(0))
+                u, v = u.squeeze(0), v.squeeze(0)
 
-            imf = IMF(rank=R, **kwargs)
-            u, v = imf.decompose(x.unsqueeze(0))
-            u, v = u.squeeze(0).to(dtype), v.squeeze(0).to(dtype)
+                u, v = u - bounds[0], v - bounds[0]
+                u, v = to_dtype(u, torch.uint8), to_dtype(v, torch.uint8)
 
-            factors.extend([u, v])
+                u, v = depatchify_uv(u, v, padded_size, patch_size)
 
-    encoded_metadata = dict_to_bytes(metadata)
+                factors.extend([u, v])
 
-    encoded_factors = combine_bytes([encode_tensor(factor) for factor in factors])
+            encoded_metadata = dict_to_bytes(metadata)
+            encoded_factors = combine_bytes(
+                [batched_pil_encode(factor, **pil_kwargs) for factor in factors]
+            )
+
+        else:
+            metadata["original size"] = []
+            metadata["rank"] = []
+            factors = []
+            for i, channel in enumerate((y, cb, cr)):
+                if rank[i] is None:
+                    assert (
+                        quality[i] >= 0 and quality[i] <= 100
+                    ), "'quality' must be between 0 and 1."
+                    R = max(round(min(channel.shape[-2:]) * quality[i] / 100), 1)
+
+                metadata["original size"].append(channel.shape[-2:])
+                metadata["rank"].append(R)
+
+                imf = IMF(rank=R, bounds=bounds, **kwargs)
+                u, v = imf.decompose(channel.unsqueeze(0))
+                u, v = u.squeeze(0), v.squeeze(0)
+
+                u, v = u.to(dtype), v.to(dtype)
+
+                factors.extend([u, v])
+
+            encoded_metadata = dict_to_bytes(metadata)
+            encoded_factors = combine_bytes([encode_tensor(factor) for factor in factors])
 
     encoded_image = combine_bytes([encoded_metadata, encoded_factors])
 
@@ -179,36 +259,80 @@ def imf_decode(encoded_image: bytes) -> Tensor:
     metadata = bytes_to_dict(encoded_metadata)
 
     if metadata["color space"] == "RGB":
-        encoded_u, encoded_v = separate_bytes(encoded_factors)
-        u, v = decode_tensor(encoded_u), decode_tensor(encoded_v)
-
-        u, v = u.float(), v.float()
-        x = u @ v.mT
-        # x = x / 10
+        encoded_u, encoded_v = separate_bytes(encoded_factors, 2)
 
         if metadata["patch"]:
-            image = depatchify(x, metadata["padded size"], metadata["patch size"])
-            image = unpad_image(image, metadata["original size"])
-        else:
-            image = x
-    else:  # color_space == "YCbCr"
-        encoded_factors = separate_bytes(encoded_factors, 6)
+            u, v = batched_pil_decode(
+                encoded_u, num_images=metadata["rank"]
+            ), batched_pil_decode(encoded_v, num_images=metadata["rank"])
 
-        u_y, v_y = decode_tensor(encoded_factors[0]), decode_tensor(encoded_factors[1])
-        u_cb, v_cb = decode_tensor(encoded_factors[2]), decode_tensor(encoded_factors[3])
-        u_cr, v_cr = decode_tensor(encoded_factors[4]), decode_tensor(encoded_factors[5])
+            u, v = patchify_uv(u[:, 0:1, ...], v)
 
-        ycbcr = []
-        for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
-            u, v = u.float(), v.float()
+            bounds = metadata["bounds"]
+            u, v = u.float() + bounds[0], v.float() + bounds[0]
+
             x = u @ v.mT
             # x = x / 10
 
-            if metadata["patch"]:
+            image = depatchify(x, metadata["padded size"], metadata["patch size"])
+            image = unpad_image(image, metadata["original size"])
+
+        else:
+            u, v = decode_tensor(encoded_u), decode_tensor(encoded_v)
+
+            u, v = u.float(), v.float()
+
+            x = u @ v.mT
+            # x = x / 10
+
+            image = x
+
+    else:  # color_space == "YCbCr"
+        encoded_factors = separate_bytes(encoded_factors, 6)
+
+        if metadata["patch"]:
+            R1, R2, R3 = metadata["rank"]
+            u_y, v_y = batched_pil_decode(encoded_factors[0], R1), batched_pil_decode(
+                encoded_factors[1], R1
+            )
+            u_cb, v_cb = batched_pil_decode(encoded_factors[2], R2), batched_pil_decode(
+                encoded_factors[3], R2
+            )
+            u_cr, v_cr = batched_pil_decode(encoded_factors[4], R3), batched_pil_decode(
+                encoded_factors[5], R3
+            )
+
+            ycbcr = []
+            for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
+                u, v = patchify_uv(u[:, 0:1, ...], v[:, 0:1, ...])
+
+                bounds = metadata["bounds"]
+                u, v = u.float() + bounds[0], v.float() + bounds[0]
+
+                x = u @ v.mT
+                # x = x / 10
+
                 channel = depatchify(
                     x, metadata["padded size"][i], metadata["patch size"]
                 )
                 ycbcr.append(unpad_image(channel, metadata["original size"][i]))
+        else:
+            u_y, v_y = decode_tensor(encoded_factors[0]), decode_tensor(
+                encoded_factors[1]
+            )
+            u_cb, v_cb = decode_tensor(encoded_factors[2]), decode_tensor(
+                encoded_factors[3]
+            )
+            u_cr, v_cr = decode_tensor(encoded_factors[4]), decode_tensor(
+                encoded_factors[5]
+            )
+
+            ycbcr = []
+            for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
+                u, v = u.float(), v.float()
+                x = u @ v.mT
+                # x = x / 10
+                ycbcr.append(x)
 
         image = chroma_upsampling(ycbcr, size=metadata["original size"][0], mode="area")
         image = ycbcr_to_rgb(image)

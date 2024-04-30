@@ -1,0 +1,3 @@
+profiler:
+    _target_: src.utils.profiler
+    _partial_: true

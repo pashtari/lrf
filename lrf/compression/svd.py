@@ -15,8 +15,8 @@ from lrf.compression.utils import (
     bytes_to_dict,
     combine_bytes,
     separate_bytes,
-    encode_matrix,
-    decode_matrix,
+    encode_tensor,
+    decode_tensor,
 )
 
 
@@ -40,17 +40,15 @@ def svd_compression_ratio(size: tuple[int, int], rank: int) -> float:
     return compression_ratio
 
 
-def patchify(x: Tensor, patch_size: tuple[int, int] = (8, 8)) -> Tensor:
-    """Splits an input image into patches."""
+def patchify(x: Tensor, patch_size: tuple[int, int]) -> Tensor:
+    """Splits an input image into flattened patches."""
 
     p, q = patch_size
     patches = rearrange(x, "c (h p) (w q) -> (h w) (c p q)", p=p, q=q)
     return patches
 
 
-def depatchify(
-    x: Tensor, size: tuple[int, int], patch_size: tuple[int, int] = (8, 8)
-) -> Tensor:
+def depatchify(x: Tensor, size: tuple[int, int], patch_size: tuple[int, int]) -> Tensor:
     """Reconstruct the original image from its patches."""
 
     p, q = patch_size
@@ -59,13 +57,13 @@ def depatchify(
 
 
 def depatchify_uv(
-    u: Tensor, v: Tensor, size: tuple[int, int], patch_size: tuple[int, int] = (8, 8)
+    u: Tensor, v: Tensor, size: tuple[int, int], patch_size: tuple[int, int]
 ) -> tuple[Tensor, Tensor]:
     """Reshape the u and v matrices into their original spatial dimensions."""
 
     p, q = patch_size
-    u_new = rearrange(u, "(h w) r -> 1 r h w", h=size[0] // p)
-    v_new = rearrange(v, "(c p q) r -> c r p q", p=p, q=q)
+    u_new = rearrange(u, "(h w) r -> r 1 h w", h=size[0] // p)
+    v_new = rearrange(v, "(c p q) r -> r c p q", p=p, q=q)
     return u_new, v_new
 
 
@@ -119,9 +117,10 @@ def svd_encode(
         qtz_u, qtz_v = (None, None)
 
     metadata["quantization"] = {"u": qtz_u, "v": qtz_v}
+
     encoded_metadata = dict_to_bytes(metadata)
 
-    encoded_factors = combine_bytes([encode_matrix(u), encode_matrix(v)])
+    encoded_factors = combine_bytes([encode_tensor(u), encode_tensor(v)])
 
     encoded_image = combine_bytes([encoded_metadata, encoded_factors])
 
@@ -131,12 +130,12 @@ def svd_encode(
 def svd_decode(encoded_image: bytes) -> Tensor:
     """Decompress an SVD-enocded image."""
 
-    encoded_metadata, encoded_factors = separate_bytes(encoded_image)
+    encoded_metadata, encoded_factors = separate_bytes(encoded_image, 2)
 
     metadata = bytes_to_dict(encoded_metadata)
 
-    encoded_u, encoded_v = separate_bytes(encoded_factors)
-    u, v = decode_matrix(encoded_u), decode_matrix(encoded_v)
+    encoded_u, encoded_v = separate_bytes(encoded_factors, 2)
+    u, v = decode_tensor(encoded_u), decode_tensor(encoded_v)
 
     qtz = metadata["quantization"]
     qtz_u, qtz_v = qtz["u"], qtz["v"]

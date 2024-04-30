@@ -289,7 +289,7 @@ def _combine_bytes(payload1: bytes, payload2: bytes) -> bytes:
     return len_payload1 + payload1 + payload2
 
 
-def _separate_bytes(combined: bytes) -> (bytes, bytes):
+def _separate_bytes(combined: bytes) -> tuple[bytes, bytes]:
     """
     Decodes the combined bytes object back into two original bytes objects.
 
@@ -407,7 +407,7 @@ def decode_matrix(encodeld_matrix: bytes, mode: str = "col") -> Tensor:
     return torch.from_numpy(matrix)
 
 
-def encode_tensor(tensor, *args, **kwargs):
+def encode_tensor(tensor: Tensor, *args, **kwargs) -> bytes:
     """
     Encode a PyTorch tensor and encode its shape and dtype using Zstandard algorithm,
     returning a single bytes object containing both the encoded tensor data and its metadata.
@@ -436,7 +436,7 @@ def encode_tensor(tensor, *args, **kwargs):
     return encoded_tensor
 
 
-def decode_tensor(encoded_tensor, *args, **kwargs):
+def decode_tensor(encoded_tensor: bytes, *args, **kwargs) -> Tensor:
     """
     Decode a combined bytes object back into a PyTorch tensor using the encoded shape and dtype.
 
