@@ -108,8 +108,7 @@ factors = []
 for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
     bounds = metadata["bounds"]
 
-    u, v = u[:, 0:1, ...].float() + bounds[0], v[:, 0:1, ...].float() + bounds[0]
-    u, v = u.to(torch.uint8), v.to(torch.uint8)
+    u, v = u[:, 0:1, ...].to(torch.uint8), v[:, 0:1, ...].to(torch.uint8)
 
     factors.append((u, v))
 
@@ -130,8 +129,6 @@ for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
 
     x = torch.einsum("r c h w, r c p q -> r c h p w q", u, v)
     x = rearrange(x, "r c h p w q -> r c (h p) (w q)")
-
-    x = x.to(torch.uint8)
 
     terms.append(x)
 

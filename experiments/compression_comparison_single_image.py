@@ -7,7 +7,7 @@ from skimage.io import imread
 import lrf
 
 # Load the image
-image = imread("./data/kodak/kodim23.png")
+image = imread("./data/kodak/kodim24.png")
 
 # Transform the input image
 transforms = v2.Compose([v2.ToImage()])
