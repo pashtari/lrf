@@ -2,21 +2,15 @@ import numpy as np
 import torch
 from torchvision.transforms import v2
 import matplotlib.pyplot as plt
-from skimage import data
 from skimage.io import imread
 
 import lrf
 
-# Load the astronaut image
-# image = data.astronaut()
+# Load the image
 image = imread("./data/kodak/kodim23.png")
 
-
-# transforms = v2.Compose([v2.ToImage(), v2.Resize(size=(224, 224), interpolation=2)])
-transforms = v2.Compose([v2.ToImage()])
-
-
 # Transform the input image
+transforms = v2.Compose([v2.ToImage()])
 image = torch.tensor(transforms(image))
 
 # Visualize image
