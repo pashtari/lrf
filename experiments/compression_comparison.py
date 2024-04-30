@@ -70,7 +70,7 @@ ssim_values = {
 
 
 # JPEG
-for quality in range(0, 30, 1):
+for quality in range(0, 100, 1):
     enocoded = lrf.pil_encode(image, format="JPEG", quality=quality)
     reconstructed = lrf.pil_decode(enocoded)
 
@@ -99,7 +99,7 @@ for quality in range(0, 30, 1):
 #     ssim_values["WEBP"].append(lrf.ssim(image, reconstructed))
 
 # SVD
-for quality in np.linspace(0.0, 5, 20):
+for quality in np.linspace(0.0, 100, 200):
     enocoded = lrf.svd_encode(
         image, quality=quality, patch=True, patch_size=(8, 8), dtype=torch.int8
     )
@@ -116,7 +116,7 @@ for quality in np.linspace(0.0, 5, 20):
 
 
 # IMF - RGB
-for quality in np.linspace(0.0, 10, 50):
+for quality in np.linspace(0.0, 100, 100):
     enocoded = lrf.imf_encode(
         image,
         color_space="RGB",
@@ -141,7 +141,7 @@ for quality in np.linspace(0.0, 10, 50):
 
 
 # IMF - YCbCr
-for quality in np.linspace(0, 25, 50):
+for quality in np.linspace(0, 100, 100):
     enocoded = lrf.imf_encode(
         image,
         color_space="YCbCr",
@@ -187,7 +187,7 @@ plt.xlabel("bpp")
 plt.ylabel("PSNR (dB)")
 plt.title("Comprison of Different Compression Methods")
 # plt.xticks(np.arange(1, 13, 1))
-plt.xlim(0.05, 0.5)
+plt.xlim(0.05, 2)
 # plt.ylim(20, 30)
 plt.legend()
 plt.grid()

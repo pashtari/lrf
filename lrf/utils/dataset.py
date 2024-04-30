@@ -8,8 +8,9 @@ class CustomDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
+        print(f"root dir: {root_dir} - is dir: {os.path.isdir(root_dir)} - is file: {os.path.isfile(root_dir)}")
         if os.path.isdir(root_dir):
-            self.image_paths = os.listdir(root_dir)
+            self.image_paths = [file for file in os.listdir(root_dir) if not file.startswith(".")]
         elif os.path.isfile(root_dir):
             self.image_paths = [root_dir]
             self.root_dir = ""
@@ -24,5 +25,4 @@ class CustomDataset(Dataset):
         if self.transform:
             image = self.transform(image)
 
-        # Since dataset doesn't have class labels, None is returned for the label
         return image.squeeze()
