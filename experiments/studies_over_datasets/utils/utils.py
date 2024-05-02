@@ -1,15 +1,15 @@
-import numpy as np
-import torch
-import matplotlib.pyplot as plt
-from copy import deepcopy
-from scipy.interpolate import interp1d
-import tikzplotlib
-import lrf
 import os
 import datetime
 import pickle
+import matplotlib.pyplot as plt
+from copy import deepcopy
+import tikzplotlib
+import numpy as np
+from scipy.interpolate import interp1d
+import torch
 from torch.nn.modules.utils import _pair
 
+import lrf
 
 def tikzplotlib_fix_ncols(obj):
     """
@@ -70,7 +70,7 @@ def calc_compression_metrics(dataloader, compression_ratios, bpps, psnr_values, 
     bounds = args.bounds if isinstance(args.bounds,tuple) else (-args.bounds, args.bounds-1)
 
     image_num = len(dataloader)
-    for image_id, image in enumerate(dataloader):
+    for image_id, (image, _) in enumerate(dataloader):
         print(f"processing image {image_id + 1}/{image_num}", flush=True)
         image = image.squeeze()
 
@@ -91,7 +91,7 @@ def calc_compression_metrics(dataloader, compression_ratios, bpps, psnr_values, 
         if "SVD" in args.selected_methods:
             for quality in np.linspace(0.0, 7, 30):
                 enocoded = lrf.svd_encode(
-                    image, quality=quality, patch=args.pachify, patch_size=args.patch_size, dtype=torch.int8
+                    image, quality=quality, patch=args.patchify, patch_size=_pair(args.patch_size), dtype=torch.int8
                 )
                 reconstructed = lrf.svd_decode(enocoded)
 
@@ -105,39 +105,15 @@ def calc_compression_metrics(dataloader, compression_ratios, bpps, psnr_values, 
                 ssim_values["SVD"].append(lrf.ssim(image, reconstructed))
 
 
-        if "IMF-RGB" in args.selected_methods:
-            for quality in np.linspace(0.0, 30, 50):
-                enocoded = lrf.imf_encode(
-                    image,
-                    color_space="RGB",
-                    quality=quality,
-                    patch=args.pachify,
-                    patch_size=_pair(args.patch_size),
-                    bounds=bounds,
-                    dtype=torch.int8,
-                    num_iters=10,
-                    verbose=False,
-                )
-                reconstructed = lrf.imf_decode(enocoded)
 
-                real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-                real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
-
-                compression_ratios["IMF-RGB"].append(real_compression_ratio)
-                bpps["IMF-RGB"].append(real_bpp)
-                # reconstructed_images["IMF-RGB"].append(reconstructed)
-                psnr_values["IMF-RGB"].append(lrf.psnr(image, reconstructed))
-                ssim_values["IMF-RGB"].append(lrf.ssim(image, reconstructed))
-
-
-        if "IMF-YCbCr" in args.selected_methods:
+        if "IMF" in args.selected_methods:
             for quality in np.linspace(0, 50, 50):
                 enocoded = lrf.imf_encode(
                     image,
-                    color_space="YCbCr",
+                    color_space=args.color_space,
                     scale_factor=(0.5, 0.5),
                     quality=(quality, quality / 2, quality / 2),
-                    patch=args.pachify,
+                    patch=args.patchify,
                     patch_size=_pair(args.patch_size),
                     bounds=bounds,
                     dtype=torch.int8,
@@ -149,11 +125,11 @@ def calc_compression_metrics(dataloader, compression_ratios, bpps, psnr_values, 
                 real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
                 real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
 
-                compression_ratios["IMF-YCbCr"].append(real_compression_ratio)
-                bpps["IMF-YCbCr"].append(real_bpp)
-                # reconstructed_images["IMF-YCbCr"].append(reconstructed)
-                psnr_values["IMF-YCbCr"].append(lrf.psnr(image, reconstructed))
-                ssim_values["IMF-YCbCr"].append(lrf.ssim(image, reconstructed))
+                compression_ratios["IMF"].append(real_compression_ratio)
+                bpps["IMF"].append(real_bpp)
+                # reconstructed_images["IMF"].append(reconstructed)
+                psnr_values["IMF"].append(lrf.psnr(image, reconstructed))
+                ssim_values["IMF"].append(lrf.ssim(image, reconstructed))
 
     return compression_ratios, bpps, psnr_values, ssim_values
 
