@@ -7,7 +7,7 @@
 
 
 % ready for submission
-\usepackage{neurips_2024}
+\usepackage[preprint]{neurips_2024}
 
 
 % to compile a preprint version, e.g., for submission to arXiv, add add the
@@ -34,7 +34,10 @@
 \usepackage{xcolor}         % colors
 
 
-\title{Formatting Instructions For NeurIPS 2024}
+\newcommand*\samethanks[1][\value{footnote}]{\footnotemark[#1]}
+
+
+\title{Quantization-free Lossy Image Compression Using Integer Matrix Factorization}
 
 
 % The \author macro works with any number of authors. There are two commands
@@ -47,13 +50,27 @@
 
 
 \author{%
-  David S.~Hippocampus\thanks{Use footnote for providing further information
-    about author (webpage, alternative address)---\emph{not} for acknowledging
-    funding agencies.} \\
-  Department of Computer Science\\
-  Cranberry-Lemon University\\
-  Pittsburgh, PA 15213 \\
-  \texttt{hippo@cs.cranberry-lemon.edu} \\
+Pooya Ashtari$^{1}$\thanks{Corresponding author. Emails:\texttt{pooya.ashtari@esat.kuleuven.be}, \texttt{pooya.ash@gmail.com}}\thanks{Equal contribution} \\
+\texttt{pooya.ashtari@esat.kuleuven.be} \\
+\And
+Pourya Behmandpoor$^{1}$\footnotemark[2] \\
+\texttt{pooya.ashtari@esat.kuleuven.be} \\
+\And
+Fateme Nateghi Haredasht$^{2}$ \\
+\texttt{fnateghi@stanford.edu} \\
+\And
+Jonathan H. Chen$^{2}$ \\
+\texttt{jonc101@stanford.edu} \\
+\And
+Lieven De Lathauwer$^{1}$ \\
+\texttt{lieven.delathauwer@kuleuven.be} \\
+\And
+Sabine Van Huffel$^{1}$ \\
+\texttt{sabine.vanhuffel@esat.kuleuven.be} \\
+\And
+\vspace{-15pt} \\
+$^{1}$Department of Electrical Engineering (ESAT), STADIUS Center, KU Leuven, Belgium \\
+$^{2}$Department of Medicine, Stanford University, Stanford, CA, USA \\
   % examples of more authors
   % \And
   % Coauthor \\

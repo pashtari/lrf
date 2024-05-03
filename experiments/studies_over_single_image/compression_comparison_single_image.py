@@ -7,7 +7,7 @@ from skimage.io import imread
 import lrf
 
 # Load the image
-image = imread("./data/kodak/kodim24.png")
+image = imread("./data/kodak/kodim23.png")
 
 # Transform the input image
 transforms = v2.Compose([v2.ToImage()])
@@ -95,7 +95,12 @@ for quality in range(0, 80, 1):
 # SVD
 for quality in np.linspace(0.0, 7, 30):
     enocoded = lrf.svd_encode(
-        image, quality=quality, patch=True, patch_size=(8, 8), dtype=torch.int8
+        image,
+        color_space="RGB",
+        quality=quality,
+        patch=True,
+        patch_size=(8, 8),
+        dtype=torch.int8,
     )
     reconstructed = lrf.svd_decode(enocoded)
 
@@ -119,7 +124,7 @@ for quality in np.linspace(0.0, 30, 50):
         patch_size=(8, 8),
         bounds=(-16, 15),
         dtype=torch.int8,
-        num_iters=1,
+        num_iters=10,
         verbose=False,
     )
     reconstructed = lrf.imf_decode(enocoded)
