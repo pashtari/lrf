@@ -5,12 +5,13 @@ from torchvision.transforms import v2
 
 from lrf import CustomDataset 
 from torch.utils.data import DataLoader
-from utils.utils import plot_result, calc_compression_metrics, make_result_dir, parse_args
+from utils.utils import plot_result, calc_compression_metrics, make_result_dir
+from utils.configs import parse_args
 
 args = parse_args()      
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(script_dir)
+parent_dir = os.path.dirname(os.path.dirname(script_dir))
 experiment_dir = os.path.join(script_dir, args.experiment_name)
 if not os.path.exists(experiment_dir):
     os.makedirs(experiment_dir)

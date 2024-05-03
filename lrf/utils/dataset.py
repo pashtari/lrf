@@ -8,7 +8,6 @@ class CustomDataset(Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
         self.transform = transform
-        print(f"root dir: {root_dir} - is dir: {os.path.isdir(root_dir)} - is file: {os.path.isfile(root_dir)}")
         if os.path.isdir(root_dir):
             self.image_paths = [file for file in os.listdir(root_dir) if not file.startswith(".")]
         elif os.path.isfile(root_dir):
