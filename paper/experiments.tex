@@ -1,0 +1,78 @@
+\section{Experiments} \label{sec: experiments}
+
+
+\subsection{Rate-Distortion Performance} \label{sec: rate-distortion Performance}
+
+
+
+\begin{figure}[t]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering
+%		\includegraphics[width=.95\textwidth]{figures/psnr_vs_bpp_kodak.pdf}
+		\caption{}
+		\label{fig: psnr-vs-bpp kodak}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+%		\includegraphics[width=.95\textwidth]{figures/ssim_vs_bpp_kodak.pdf}
+		\caption{}
+		\label{fig: ssim-vs-bpp kodak}
+	\end{subfigure}
+	\caption{Rate-distortion performance on the Kodak dataset. In panels (a) and (b), the average PSNR and SSIM are plotted against bits per pixel (bpp), respectively.}
+	\label{fig: compression performance on kodak}
+\end{figure}
+
+\begin{figure}[t]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering
+%		\includegraphics[width=.95\textwidth]{figures/psnr_vs_bpp_clic.pdf}
+		\caption{}
+		\label{fig: psnr-vs-bpp clic}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+%		\includegraphics[width=.95\textwidth]{figures/psnr_vs_bpp_clic.pdf}
+		\caption{}
+		\label{fig: ssim-vs-bpp clic}
+	\end{subfigure}
+	\caption{Rate-distortion performance on the CLIC dataset. In panels (a) and (b), the average PSNR and SSIM are plotted against bits per pixel (bpp), respectively.}
+	\label{fig: compression performance on clic}
+\end{figure}
+
+\subsection{ImageNet Classification Performance} \label{sec: imagenet Classification Performance}
+
+
+\begin{figure}[t]
+	\centering
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		%		\includegraphics[width=.95\textwidth]{figures/top1_vs_bpp_imagenet.pdf}
+		\caption{}
+		\label{fig: top1-vs-bpp imagenet}
+	\end{subfigure}%
+	\begin{subfigure}{.5\textwidth}
+		\centering
+		%		\includegraphics[width=.95\textwidth]{figures/top5_vs_bpp_imagenet.pdf}
+		\caption{}
+		\label{fig: top5-vs-bpp imagenet}
+	\end{subfigure}
+	\caption{Impact of different compression methods on ImageNet classification accuracy. Panels (a) and (b) show the validation top-1 and top-5 accuracy plotted against bits per pixel (bpp), respectively. A ResNet-50 model pretrained on the original ImageNet images was evaluated using validation images compressed by different methods.}
+	
+	\label{fig: compression impact on imagenet classification}
+\end{figure}
+
+
+\subsection{Ablation Studies} \label{sec: ablation studies}
+
+
+\paragraph{Patchification.} 
+
+without patchification, patch size 4, 8, 16, 32
+
+\paragraph{Factor bounds.} 
+
+\paragraph{BCD iteration.}
+
+

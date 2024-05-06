@@ -1,0 +1,36 @@
+\section{Method} \label{sec: method}
+
+
+
+\subsection{Overall Framework} \label{sec: overall framework}
+
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=\linewidth]{figures/imf_encoder.pdf}
+	\vspace{10pt}
+	\caption{An illustration of our image compression method based on integer matrix factorization.}
+	\label{fig: imf encoder}
+\end{figure}
+
+\paragraph{Encoder.}
+
+
+\paragraph{Decoder.} 
+
+\subsection{Integer Matrix Factorization (IMF)} \label{sec: imf}
+
+\subsection{Block Coordinate Descent Scheme for IMF} \label{sec: bcd}
+
+
+
+\begin{theorem}  \label{the: bcd monotonicity}
+The IMF cost function, $\| \bm{X} - \bm{U} \bm{V}^\mathsf{T} \|_\text{F}^2$, is monotonically nonincreasing under each of the multiplicative update rules.
+\end{theorem}
+
+\begin{proof}
+See Appendix \ref{app: proof} for the proof.
+\end{proof}
+
+
+\subsection{Implementation Details} \label{sec: implementation details}
