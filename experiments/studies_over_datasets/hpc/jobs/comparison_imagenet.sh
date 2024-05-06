@@ -8,5 +8,5 @@ cd ${ROOT_DIR}/experiments/studies_over_datasets
 
 TASK_NAME=comparison_imagenet
 
-python compression_comparison_over_imagenet.py --experiment_name=${TASK_NAME} --data_dir "/scratch/leuven/362/vsc36284" --selected_methods "JPEG" "SVD" "IMF"
+python compression_comparison_over_imagenet.py --data_dir=${VSC_SCRATCH}/imagenet --experiment_name=${TASK_NAME} --selected_methods "JPEG" "SVD" "IMF"
 echo "comparison over Imagenet done."

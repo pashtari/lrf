@@ -11,6 +11,6 @@ TASK_NAME=ablation_bounds
 bounds=(16 32 64 128)
 # Train
 for size in ${bounds[@]}; do
-    python compression_comparison_over_dataset.py --experiment_name=${TASK_NAME} --bounds=${size}
+    python compression_comparison_over_dataset.py --data_dir=${VSC_SCRATCH}/kodak --experiment_name=${TASK_NAME} --bounds=${size}
     echo "bounds=$size done."
 done

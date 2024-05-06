@@ -11,6 +11,6 @@ TASK_NAME=ablation_patchsize
 patch_sizes=(4 8 16)
 # Train
 for size in ${patch_sizes[@]}; do
-    python compression_comparison_over_dataset.py --experiment_name=${TASK_NAME} --patch_size=${size}
+    python compression_comparison_over_dataset.py --data_dir=${VSC_SCRATCH}/kodak --experiment_name=${TASK_NAME} --patch_size=${size}
     echo "patch_size=$size done."
 done

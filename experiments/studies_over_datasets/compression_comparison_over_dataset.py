@@ -11,7 +11,6 @@ from utils.configs import parse_args
 args = parse_args()      
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(os.path.dirname(script_dir))
 experiment_dir = os.path.join(script_dir, args.experiment_name)
 if not os.path.exists(experiment_dir):
     os.makedirs(experiment_dir)
@@ -19,13 +18,10 @@ if not os.path.exists(experiment_dir):
 
 experiment_dir = make_result_dir(experiment_dir, args)
 
-# Load an image or an image dataset. data_dir can be a path or a directory
-data_dir = os.path.join(parent_dir, args.data_dir)
-
 # transforms = v2.Compose([v2.ToImage(), v2.Resize(size=(224, 224), interpolation=2)])
 transforms = v2.Compose([v2.ToImage()])
 
-dataset = CustomDataset(root_dir=data_dir, transform=transforms)
+dataset = CustomDataset(root_dir=args.data_dir, transform=transforms)
 dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
 
 # initiating metrics
@@ -56,8 +52,9 @@ save_dict = {
     "bpps": bpps,
     "psnr_values" : psnr_values,
     "ssim_values" : ssim_values,
-    "x_axis_fixed_values": x_axis_fixed_values
+    "x_axis_fixed_values": x_axis_fixed_values,
+    "image_num": image_num
 }
-with open(os.path.join(experiment_dir, 'resutls.pkl'), 'wb') as f:
+with open(os.path.join(experiment_dir, 'results.pkl'), 'wb') as f:
     pickle.dump(save_dict, f)
 

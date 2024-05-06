@@ -8,5 +8,5 @@ cd ${ROOT_DIR}/experiments/studies_over_datasets
 
 TASK_NAME=comparison_kodak
 
-python compression_comparison_over_dataset.py --experiment_name=${TASK_NAME} --data_dir "data/kodak" --selected_methods "JPEG" "SVD" "IMF"
+python compression_comparison_over_dataset.py --data_dir=${VSC_SCRATCH}/kodak --experiment_name=${TASK_NAME} --selected_methods "JPEG" "SVD" "IMF"
 echo "comparison over Kodak done."

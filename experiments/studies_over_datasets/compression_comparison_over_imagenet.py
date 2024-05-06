@@ -12,7 +12,6 @@ from utils.configs import parse_args
 args = parse_args()      
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(os.path.dirname(script_dir))
 experiment_dir = os.path.join(script_dir, args.experiment_name)
 if not os.path.exists(experiment_dir):
     os.makedirs(experiment_dir)
@@ -23,8 +22,7 @@ transforms = v2.Compose([v2.ToImage()])
 
 # dataset = ImageNet(root=args.data_dir, split="val", transform=transforms)
 dataset = ImageFolder(root=args.data_dir, transform=transforms)
-nb_samples = len(dataset)
-indices = torch.randperm(nb_samples)[:1000]
+indices = np.arange(5000)
 subset = Subset(dataset, indices=indices)
 dataloader = DataLoader(subset, batch_size=1, shuffle=False)
 
@@ -58,6 +56,6 @@ save_dict = {
     "ssim_values" : ssim_values,
     "x_axis_fixed_values": x_axis_fixed_values
 }
-with open(os.path.join(experiment_dir, 'resutls.pkl'), 'wb') as f:
+with open(os.path.join(experiment_dir, 'results.pkl'), 'wb') as f:
     pickle.dump(save_dict, f)
 
