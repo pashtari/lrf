@@ -70,9 +70,15 @@ train_set:
     root: ${path.data_dir}
     transform: ${data.train_transform}
 
+# val_set:
+#     _target_: torchvision.datasets.ImageFolder
+#     root: ${path.data_dir}
+#     transform: ${data.val_transform}
+
 val_set:
-    _target_: torchvision.datasets.ImageFolder
+    _target_: torchvision.datasets.ImageNet
     root: ${path.data_dir}
+    split: val
     transform: ${data.val_transform}
 
 # train_sampler:
@@ -80,6 +86,15 @@ val_set:
 #     dataset: ${data.train_set}
 #     shuffle: true
 #     repetitions: ${data.ra_reps}
+
+val_subset:
+    _target_: torch.utils.data.Subset
+    dataset: ${data.val_set}
+    indices:
+        _target_: numpy.arange
+        start: 0
+        stop: 5000
+        step: 1
 
 train_loader:
     _target_: ignite.distributed.auto_dataloader
@@ -96,7 +111,7 @@ train_loader:
 
 val_loader:
     _target_: ignite.distributed.auto_dataloader
-    dataset: ${data.val_set}
+    dataset: ${data.val_subset}
     batch_size: ${data.val_batch_size}
     num_workers: 0
     pin_memory: true
