@@ -56,7 +56,7 @@ def visualize_batch(images: torch.Tensor, multi_channels=True, title=None, **kwa
     plt.title(title, fontsize=24)
     plt.show()
 
-    return ax
+    return fig, axs
 
 
 # Load the image
@@ -78,7 +78,7 @@ enocoded_image = lrf.imf_encode(
     image,
     color_space="YCbCr",
     scale_factor=(0.5, 0.5),
-    quality=(10, 5, 5),
+    quality=(6, 3, 3),
     patch=True,
     patch_size=(8, 8),
     bounds=(-16, 15),
