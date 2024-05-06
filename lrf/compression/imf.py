@@ -74,7 +74,7 @@ def imf_encode(
     image: Tensor,
     rank: Optional[int | tuple[int, int, int]] = None,
     quality: Optional[float | tuple[float, float, float]] = None,
-    color_space="YCbCr",
+    color_space: str = "YCbCr",
     scale_factor: tuple[float, float] = (0.5, 0.5),
     patch: bool = True,
     patch_size: tuple[int, int] = (8, 8),
@@ -109,12 +109,12 @@ def imf_encode(
         assert (rank, quality) != (
             None,
             None,
-        ), "Either 'rank' or 'quality' for each channel must be specified."
+        ), "Either 'rank' or 'quality' must be specified."
 
         if patch:
-            x = image.float()
+            image = image.float()
 
-            x = pad_image(x, patch_size, mode="reflect")
+            x = pad_image(image, patch_size, mode="reflect")
             padded_size = x.shape[-2:]
             x = patchify(x, patch_size)
             # x =  x * 10
@@ -150,6 +150,7 @@ def imf_encode(
 
         else:
             x = image.float()
+
             if rank is None:
                 assert (
                     quality >= 0 and quality <= 100
@@ -178,7 +179,7 @@ def imf_encode(
                 None,
             ), "Either 'rank' or 'quality' for each channel must be specified."
 
-        x = image.float()
+        image = image.float()
 
         ycbcr = rgb_to_ycbcr(image)
         y, cb, cr = chroma_downsampling(ycbcr, scale_factor=scale_factor, mode="area")
@@ -194,7 +195,6 @@ def imf_encode(
                 padded_size = x.shape[-2:]
 
                 x = patchify(x, patch_size)
-                # x = x * 10
 
                 if rank[i] is None:
                     assert (
@@ -272,7 +272,6 @@ def imf_decode(encoded_image: bytes) -> Tensor:
             u, v = u.float() + bounds[0], v.float() + bounds[0]
 
             x = u @ v.mT
-            # x = x / 10
 
             image = depatchify(x, metadata["padded size"], metadata["patch size"])
             image = unpad_image(image, metadata["original size"])
@@ -283,7 +282,6 @@ def imf_decode(encoded_image: bytes) -> Tensor:
             u, v = u.float(), v.float()
 
             x = u @ v.mT
-            # x = x / 10
 
             image = x
 
@@ -310,7 +308,6 @@ def imf_decode(encoded_image: bytes) -> Tensor:
                 u, v = u.float() + bounds[0], v.float() + bounds[0]
 
                 x = u @ v.mT
-                # x = x / 10
 
                 channel = depatchify(
                     x, metadata["padded size"][i], metadata["patch size"]
@@ -331,7 +328,6 @@ def imf_decode(encoded_image: bytes) -> Tensor:
             for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
                 u, v = u.float(), v.float()
                 x = u @ v.mT
-                # x = x / 10
                 ycbcr.append(x)
 
         image = chroma_upsampling(ycbcr, size=metadata["original size"][0], mode="area")

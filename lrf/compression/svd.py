@@ -3,12 +3,17 @@ import math
 
 import torch
 from torch import Tensor
-import torchvision.transforms.v2.functional as FT
+from torch.nn.modules.utils import _triple
 from einops import rearrange
 
 from lrf.compression.utils import (
+    rgb_to_ycbcr,
+    ycbcr_to_rgb,
+    chroma_downsampling,
+    chroma_upsampling,
     pad_image,
     unpad_image,
+    to_dtype,
     quantize,
     dequantize,
     dict_to_bytes,
@@ -71,56 +76,153 @@ def svd_encode(
     image: Tensor,
     rank: Optional[int] = None,
     quality: Optional[float] = None,
+    color_space: str = "RGB",
+    scale_factor: tuple[float, float] = (0.5, 0.5),
     patch: bool = True,
     patch_size: tuple[int, int] = (8, 8),
     dtype: torch.dtype = None,
 ) -> Dict:
     """Compress an input image using SVD."""
 
-    assert (rank, quality) != (
-        None,
-        None,
-    ), "Either 'rank' or 'quality' must be specified."
-
     dtype = image.dtype if dtype is None else dtype
 
-    metadata = {"dtype": str(image.dtype).split(".")[-1], "patch": patch}
+    metadata = {
+        "dtype": str(image.dtype).split(".")[-1],
+        "color space": color_space,
+        "patch": patch,
+    }
 
-    x = FT.to_dtype(image, dtype=torch.float32, scale=True)
+    if color_space == "RGB":
+        assert (rank, quality) != (
+            None,
+            None,
+        ), "Either 'rank' or 'quality' must be specified."
 
-    if patch:
-        x = pad_image(x, patch_size, mode="reflect")
-        padded_size = x.shape[-2:]
-        x = patchify(x, patch_size)
-        metadata.update(
-            {
-                "patch size": patch_size,
-                "original size": image.shape[-2:],
-                "padded size": padded_size,
-            }
-        )
+        image = image.float()
 
-    if rank is None:
-        assert quality >= 0 and quality <= 100, "'quality' must be between 0 and 100."
-        rank = max(round(min(x.shape[-2:]) * quality / 100), 1)
+        if patch:
+            x = pad_image(image, patch_size, mode="reflect")
+            padded_size = x.shape[-2:]
+            x = patchify(x, patch_size)
+            metadata.update(
+                {
+                    "patch size": patch_size,
+                    "original size": image.shape[-2:],
+                    "padded size": padded_size,
+                }
+            )
+        else:
+            x = image
 
-    u, s, v = torch.linalg.svd(x, full_matrices=False)
-    u, s, v = u[..., :, :rank], s[..., :rank], v[..., :rank, :]
+        if rank is None:
+            assert quality >= 0 and quality <= 100, "'quality' must be between 0 and 100."
+            rank = max(round(min(x.shape[-2:]) * quality / 100), 1)
 
-    u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
-    v = torch.einsum("...r, ...rj -> ...rj", torch.sqrt(s), v)
+        u, s, v = torch.linalg.svd(x, full_matrices=False)
+        u, s, v = u[..., :, :rank], s[..., :rank], v[..., :rank, :]
 
-    if not dtype.is_floating_point:
-        u, *qtz_u = quantize(u, target_dtype=dtype)
-        v, *qtz_v = quantize(v, target_dtype=dtype)
+        u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
+        v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), v)
+
+        if not dtype.is_floating_point:
+            u, *qtz_u = quantize(u, target_dtype=dtype)
+            v, *qtz_v = quantize(v, target_dtype=dtype)
+        else:
+            qtz_u, qtz_v = (None, None)
+
+        metadata["quantization"] = {"u": qtz_u, "v": qtz_v}
+
+        factors = [u, v]
+
     else:
-        qtz_u, qtz_v = (None, None)
+        quality = _triple(quality)
+        rank = _triple(rank)
 
-    metadata["quantization"] = {"u": qtz_u, "v": qtz_v}
+        for R, Q in zip(rank, quality):
+            assert (R, Q) != (
+                None,
+                None,
+            ), "Either 'rank' or 'quality' for each channel must be specified."
+
+        image = image.float()
+
+        ycbcr = rgb_to_ycbcr(image)
+        y, cb, cr = chroma_downsampling(ycbcr, scale_factor=scale_factor, mode="area")
+
+        if patch:
+            metadata["patch size"] = patch_size
+            metadata["original size"] = []
+            metadata["padded size"] = []
+            metadata["rank"] = []
+            metadata["quantization"] = {"u": [], "v": []}
+            factors = []
+            for i, channel in enumerate((y, cb, cr)):
+                x = pad_image(channel, patch_size, mode="reflect")
+                padded_size = x.shape[-2:]
+
+                x = patchify(x, patch_size)
+
+                metadata["padded size"].append(padded_size)
+
+                if rank[i] is None:
+                    assert (
+                        quality[i] >= 0 and quality[i] <= 100
+                    ), "'quality' must be between 0 and 1."
+                    R = max(round(min(x.shape[-2:]) * quality[i] / 100), 1)
+
+                metadata["original size"].append(channel.shape[-2:])
+                metadata["padded size"].append(padded_size)
+                metadata["rank"].append(R)
+
+                u, s, v = torch.linalg.svd(x, full_matrices=False)
+                u, s, v = u[..., :, :R], s[..., :R], v[..., :R, :]
+
+                u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
+                v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), v)
+
+                if not dtype.is_floating_point:
+                    u, *qtz_u = quantize(u, target_dtype=dtype)
+                    v, *qtz_v = quantize(v, target_dtype=dtype)
+                else:
+                    qtz_u, qtz_v = (None, None)
+
+                metadata["quantization"]["u"].append(qtz_u)
+                metadata["quantization"]["v"].append(qtz_v)
+
+                factors.extend([u, v])
+        else:
+            metadata["original size"] = []
+            metadata["rank"] = []
+            factors = []
+            for i, channel in enumerate((y, cb, cr)):
+                if rank[i] is None:
+                    assert (
+                        quality[i] >= 0 and quality[i] <= 100
+                    ), "'quality' must be between 0 and 1."
+                    R = max(round(min(channel.shape[-2:]) * quality[i] / 100), 1)
+
+                metadata["original size"].append(channel.shape[-2:])
+                metadata["rank"].append(R)
+
+                u, s, v = torch.linalg.svd(channel.squeeze(0), full_matrices=False)
+                u, s, v = u[..., :, :R], s[..., :R], v[..., :R, :]
+
+                u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
+                v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), v)
+
+                if not dtype.is_floating_point:
+                    u, *qtz_u = quantize(u, target_dtype=dtype)
+                    v, *qtz_v = quantize(v, target_dtype=dtype)
+                else:
+                    qtz_u, qtz_v = (None, None)
+
+                metadata["quantization"]["u"].append(qtz_u)
+                metadata["quantization"]["v"].append(qtz_v)
+
+                factors.extend([u, v])
 
     encoded_metadata = dict_to_bytes(metadata)
-
-    encoded_factors = combine_bytes([encode_tensor(u), encode_tensor(v)])
+    encoded_factors = combine_bytes([encode_tensor(factor) for factor in factors])
 
     encoded_image = combine_bytes([encoded_metadata, encoded_factors])
 
@@ -131,27 +233,57 @@ def svd_decode(encoded_image: bytes) -> Tensor:
     """Decompress an SVD-enocded image."""
 
     encoded_metadata, encoded_factors = separate_bytes(encoded_image, 2)
-
     metadata = bytes_to_dict(encoded_metadata)
 
-    encoded_u, encoded_v = separate_bytes(encoded_factors, 2)
-    u, v = decode_tensor(encoded_u), decode_tensor(encoded_v)
+    if metadata["color space"] == "RGB":
+        encoded_u, encoded_v = separate_bytes(encoded_factors, 2)
+        u, v = decode_tensor(encoded_u), decode_tensor(encoded_v)
 
-    qtz = metadata["quantization"]
-    qtz_u, qtz_v = qtz["u"], qtz["v"]
+        qtz = metadata["quantization"]
+        qtz_u, qtz_v = qtz["u"], qtz["v"]
 
-    u = u if qtz_u is None else dequantize(u, *qtz_u)
-    v = v if qtz_v is None else dequantize(v, *qtz_v)
+        u = u if qtz_u is None else dequantize(u, *qtz_u)
+        v = v if qtz_v is None else dequantize(v, *qtz_v)
 
-    x = u @ v
+        x = u @ v.mT
 
-    if metadata["patch"]:
-        image = depatchify(x, metadata["padded size"], metadata["patch size"])
-        image = unpad_image(image, metadata["original size"])
+        if metadata["patch"]:
+            image = depatchify(x, metadata["padded size"], metadata["patch size"])
+            image = unpad_image(image, metadata["original size"])
+        else:
+            image = x
+
     else:
-        image = x
+        encoded_factors = separate_bytes(encoded_factors, 6)
 
-    image = FT.to_dtype(
-        image.clamp(0, 1), dtype=getattr(torch, metadata["dtype"]), scale=True
-    )
+        u_y, v_y = decode_tensor(encoded_factors[0]), decode_tensor(encoded_factors[1])
+        u_cb, v_cb = decode_tensor(encoded_factors[2]), decode_tensor(encoded_factors[3])
+        u_cr, v_cr = decode_tensor(encoded_factors[4]), decode_tensor(encoded_factors[5])
+
+        ycbcr = []
+        for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
+
+            qtz = metadata["quantization"]
+            qtz_u, qtz_v = qtz["u"][i], qtz["v"][i]
+
+            u = u if qtz_u is None else dequantize(u, *qtz_u)
+            v = v if qtz_v is None else dequantize(v, *qtz_v)
+
+            x = u @ v.mT
+
+            if metadata["patch"]:
+                channel = depatchify(
+                    x, metadata["padded size"][i], metadata["patch size"]
+                )
+                channel = unpad_image(channel, metadata["original size"][i])
+            else:
+                channel = x
+
+            ycbcr.append(channel)
+
+        image = chroma_upsampling(ycbcr, size=metadata["original size"][0], mode="area")
+        image = ycbcr_to_rgb(image)
+
+    image = to_dtype(image, getattr(torch, metadata["dtype"]))
+
     return image
