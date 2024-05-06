@@ -24,6 +24,9 @@ val_transform:
     _target_: torchvision.transforms.v2.Compose
     transforms:
         - _target_: torchvision.transforms.v2.ToImage
+        - _target_: torchvision.transforms.v2.Identity
+        # - _target_: src.data.svd_transformer
+        #   quality: 5
         - _target_: torchvision.transforms.v2.ToDtype
           dtype:
               _target_: src.get_dtype
@@ -46,18 +49,18 @@ val_set:
     root: ${path.data_dir}
     train: false
     transform: ${data.val_transform}
-    download: false
+    download: true
 
 # train_subset:
 #     _target_: torch.utils.data.Subset
 #     dataset: ${data.train_set}
 #     indices: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 
-# val_subset:
-#     _target_: torch.utils.data.Subset
-#     dataset: ${data.val_set}
-#     indices:
-#         [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+val_subset:
+    _target_: torch.utils.data.Subset
+    dataset: ${data.val_set}
+    indices:
+        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
 
 train_loader:
     _target_: ignite.distributed.auto_dataloader
@@ -70,7 +73,7 @@ train_loader:
 
 val_loader:
     _target_: ignite.distributed.auto_dataloader
-    dataset: ${data.val_set}
+    dataset: ${data.val_subset}
     batch_size: ${data.val_batch_size}
     num_workers: 0
     pin_memory: true

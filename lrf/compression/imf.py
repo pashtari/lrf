@@ -78,7 +78,7 @@ def imf_encode(
     scale_factor: tuple[float, float] = (0.5, 0.5),
     patch: bool = True,
     patch_size: tuple[int, int] = (8, 8),
-    bounds: tuple[float, float] = (-128, 127),
+    bounds: tuple[float, float] = (-16, 15),
     pil_kwargs: Dict = None,
     dtype: torch.dtype = None,
     **kwargs,
