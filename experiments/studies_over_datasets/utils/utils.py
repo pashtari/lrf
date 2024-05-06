@@ -1,6 +1,7 @@
 import os
 import datetime
 import pickle
+import matplotlib
 import matplotlib.pyplot as plt
 import tikzplotlib
 import numpy as np
@@ -9,6 +10,13 @@ import torch
 from torch.nn.modules.utils import _pair
 
 import lrf
+
+# matplotlib.use("pgf")
+# matplotlib.rcParams.update({
+#     "pgf.texsystem": "pdflatex",
+#     'font.family': 'serif',
+#     'pgf.rcfonts': False,
+# })
 
 def tikzplotlib_fix_ncols(obj):
     """
@@ -48,16 +56,17 @@ def plot_result(x_values, y_values, x_axis_fixed_values, plot_num, figure_data=N
         plt.plot(x_axis_fixed_values[x_axis_fixed_values <= dict["x_axis_min"]+fixed_value_step], mean_y_values[method][x_axis_fixed_values <= dict["x_axis_min"]+fixed_value_step], "o--", color=colors[i], markersize=4)
         shade_minus = mean_y_values[method] - std_y_values[method] 
         shade_plus = mean_y_values[method] + std_y_values[method]
-        plt.fill_between(x_axis_fixed_values, shade_minus, shade_plus, alpha=0.2, color=colors[i])
+        plt.fill_between(x_axis_fixed_values[x_axis_fixed_values >= dict["x_axis_min"]], shade_minus[x_axis_fixed_values >= dict["x_axis_min"]], shade_plus[x_axis_fixed_values >= dict["x_axis_min"]], alpha=0.2, color=colors[i])
 
     
     plt.xlabel(figure_data["xlabel"])
     plt.ylabel(figure_data["ylabel"])
     plt.title(figure_data["title"])
     plt.xlim(figure_data["xlim"][0], figure_data["xlim"][1])
-    plt.ylim(figure_data["ylim"][0], figure_data["ylim"][1])
+    if "ylim" in figure_data.keys():
+        plt.ylim(figure_data["ylim"][0], figure_data["ylim"][1])
 
-    plt.legend()
+    plt.legend(loc='lower right')
     plt.grid()
 
     tikzplotlib_fix_ncols(fig)
