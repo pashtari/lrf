@@ -2,7 +2,6 @@ import os
 import datetime
 import pickle
 import matplotlib.pyplot as plt
-from copy import deepcopy
 import tikzplotlib
 import numpy as np
 from scipy.interpolate import interp1d
@@ -26,39 +25,44 @@ def plot_result(x_values, y_values, x_axis_fixed_values, plot_num, figure_data=N
     for method, values in y_values.items():
         x_axis = np.array(x_values[method]).reshape((plot_num,-1))
         y_axis = np.array(values).reshape((plot_num,-1))
-        x_axis_fixed_vals = deepcopy(x_axis_fixed_values)
-        x_axis_fixed_vals[x_axis_fixed_vals < x_axis.min()] = None
-        x_axis_fixed_vals[x_axis_fixed_vals > x_axis.max()] = None
-        val_matrix = np.zeros((plot_num, len(x_axis_fixed_vals)))
+        x_axis_min = x_axis.min()
+
+        val_matrix = np.zeros((plot_num, len(x_axis_fixed_values)))
         for i in range(plot_num):
             x_ax, unique_idx = np.unique(x_axis[i], return_index=True)
             y_ax = y_axis[i,unique_idx]
-            interp_func = interp1d(x_ax, y_ax, kind='linear', fill_value="extrapolate")
-            val_matrix[i] = interp_func(x_axis_fixed_vals)
+            interp_func = interp1d(x_ax, y_ax, kind='quadratic', fill_value='extrapolate')
+            val_matrix[i] = interp_func(x_axis_fixed_values)
         
-        y_values_interpolated[method] = {"val_mat": val_matrix, "x_axis": x_axis_fixed_vals}
+        y_values_interpolated[method] = {"val_mat": val_matrix, "x_axis_min": x_axis_min}
 
     
     mean_y_values = {method: np.mean(val_dict["val_mat"], axis=0) for method, val_dict in y_values_interpolated.items()}
     std_y_values = {method: np.std(val_dict["val_mat"], axis=0) for method, val_dict in y_values_interpolated.items()}
     
     fig = plt.figure()
-    for method, val_dict in y_values_interpolated.items():
-        plt.plot(val_dict["x_axis"], mean_y_values[method], marker="o", markersize=4, label=method)
-        plt.fill_between(val_dict["x_axis"], mean_y_values[method] - std_y_values[method], mean_y_values[method] + std_y_values[method], alpha=0.2)
+    fixed_value_step = x_axis_fixed_values[1] - x_axis_fixed_values[0]
+    colors = ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8']
+    for i, (method, dict) in enumerate(y_values_interpolated.items()):
+        plt.plot(x_axis_fixed_values[x_axis_fixed_values >= dict["x_axis_min"]], mean_y_values[method][x_axis_fixed_values >= dict["x_axis_min"]], "o-", color=colors[i], markersize=4, label=method)
+        plt.plot(x_axis_fixed_values[x_axis_fixed_values <= dict["x_axis_min"]+fixed_value_step], mean_y_values[method][x_axis_fixed_values <= dict["x_axis_min"]+fixed_value_step], "o--", color=colors[i], markersize=4)
+        shade_minus = mean_y_values[method] - std_y_values[method] 
+        shade_plus = mean_y_values[method] + std_y_values[method]
+        plt.fill_between(x_axis_fixed_values, shade_minus, shade_plus, alpha=0.2, color=colors[i])
 
     
     plt.xlabel(figure_data["xlabel"])
     plt.ylabel(figure_data["ylabel"])
     plt.title(figure_data["title"])
     plt.xlim(figure_data["xlim"][0], figure_data["xlim"][1])
+    plt.ylim(figure_data["ylim"][0], figure_data["ylim"][1])
 
     plt.legend()
     plt.grid()
 
     tikzplotlib_fix_ncols(fig)
-    tikzplotlib.save(f"{save_dir}/{file_name}.tex")
     plt.savefig(f"{save_dir}/{file_name}.pdf", format="pdf", dpi=600)
+    # tikzplotlib.save(f"{save_dir}/{file_name}.tex")
     plt.show()
     plt.close()
 

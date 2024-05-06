@@ -1,10 +1,11 @@
 import os
 import pickle
 import numpy as np
+import torch
 from torchvision.transforms import v2
-from torch.utils.data import DataLoader
+from torchvision.datasets import ImageNet, ImageFolder
+from torch.utils.data import DataLoader, Subset
 
-from lrf import CustomDataset 
 from utils.utils import plot_result, calc_compression_metrics, make_result_dir
 from utils.configs import parse_args
 
@@ -16,17 +17,16 @@ experiment_dir = os.path.join(script_dir, args.experiment_name)
 if not os.path.exists(experiment_dir):
     os.makedirs(experiment_dir)
 
-
 experiment_dir = make_result_dir(experiment_dir, args)
 
-# Load an image or an image dataset. data_dir can be a path or a directory
-data_dir = os.path.join(parent_dir, args.data_dir)
-
-# transforms = v2.Compose([v2.ToImage(), v2.Resize(size=(224, 224), interpolation=2)])
 transforms = v2.Compose([v2.ToImage()])
 
-dataset = CustomDataset(root_dir=data_dir, transform=transforms)
-dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
+# dataset = ImageNet(root=args.data_dir, split="val", transform=transforms)
+dataset = ImageFolder(root=args.data_dir, transform=transforms)
+nb_samples = len(dataset)
+indices = torch.randperm(nb_samples)[:1000]
+subset = Subset(dataset, indices=indices)
+dataloader = DataLoader(subset, batch_size=1, shuffle=False)
 
 # initiating metrics
 compression_ratios = {method: [] for method in args.selected_methods}
