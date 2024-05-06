@@ -185,7 +185,7 @@ for r in range(rank):
 # Cb
 x = lrf.patchify(cb, patch_size=patch_size)
 
-rank = 4
+rank = 2
 imf = lrf.IMF(rank=rank, bounds=(-16, 15), num_iters=10)
 u, v = imf.decompose(x.unsqueeze(0))
 u, v = u.squeeze(0), v.squeeze(0)
@@ -206,7 +206,7 @@ for r in range(rank):
 # Cr
 x = lrf.patchify(cr, patch_size=patch_size)
 
-rank = 4
+rank = 2
 imf = lrf.IMF(rank=rank, bounds=(-16, 15), num_iters=10)
 u, v = imf.decompose(x.unsqueeze(0))
 u, v = u.squeeze(0), v.squeeze(0)
