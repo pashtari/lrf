@@ -3,6 +3,7 @@ __pycache__
 ._*
 *.pkl
 *.egg-info/
+*.out
 
 sshfs.sh
 
@@ -10,4 +11,4 @@ sshfs.sh
 /condor
 /logs
 /.temp
-/hpc/jobs/*.out
+2024-*/
