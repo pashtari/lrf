@@ -5,9 +5,9 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Fu et~al.(2020)Fu, Kumar, Nachum, Tucker, and Levine]{fu2020d4rl}
-Justin Fu, Aviral Kumar, Ofir Nachum, George Tucker, and Sergey Levine.
-\newblock {D4RL}: Datasets for deep data-driven reinforcement learning.
-\newblock \emph{arXiv preprint arXiv:2004.07219}, Apr 2020.
+\bibitem[Eckart and Young(1936)]{eckart1936approximation}
+Carl Eckart and Gale Young.
+\newblock The approximation of one matrix by another of lower rank.
+\newblock \emph{Psychometrika}, 1\penalty0 (3):\penalty0 211--218, 1936.
 
 \end{thebibliography}
