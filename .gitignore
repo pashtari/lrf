@@ -3,6 +3,7 @@ __pycache__
 ._*
 *.pkl
 *.egg-info/
+*.out
 
 sshfs.sh
 
@@ -10,4 +11,18 @@ sshfs.sh
 /condor
 /logs
 /.temp
-/hpc/jobs/*.out
+2024-*/
+
+# or git. 
+# use 'git rm --cached -r *.aux *.log *.dvi and so on' to remove the trached extensions (those already commited) by git
+*.aux
+*.log
+*.dvi
+*.tex~
+*.blg
+*.bbl
+*.auxlock
+*.fdb_latexmk
+*.synctex.gz
+*.fls
+paper/main.pdf

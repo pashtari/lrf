@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.7.28)  8 MAY 2024 19:13
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.7.28)  8 MAY 2024 19:14
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -632,7 +632,7 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             See the microtype manual for details.
  (./abstract.tex)
 (./introduction.tex) (./related_work.tex) (./method.tex
-<figures/imf_encoder.pdf, id=56, 2882.77pt x 1351.0475pt>
+<figures/imf_encoder.pdf, id=60, 2882.77pt x 1351.0475pt>
 File: figures/imf_encoder.pdf Graphic file (type pdf)
 <use figures/imf_encoder.pdf>
 Package pdftex.def Info: figures/imf_encoder.pdf  used on input line 9.
@@ -649,44 +649,123 @@ Package microtype Info: Loading generic protrusion settings for font family
 Underfull \vbox (badness 1270) has occurred while \output is active []
 
  [2 <./figures/imf_encoder.pdf>]) (./experiments.tex
-<figures/kodim23_y_componets.pdf, id=504, 1922.18124pt x 298.11375pt>
+<figures/kodim23_y_componets.pdf, id=510, 1922.18124pt x 298.11375pt>
 File: figures/kodim23_y_componets.pdf Graphic file (type pdf)
 <use figures/kodim23_y_componets.pdf>
-Package pdftex.def Info: figures/kodim23_y_componets.pdf  used on input line 49
+Package pdftex.def Info: figures/kodim23_y_componets.pdf  used on input line 14
 .
 (pdftex.def)             Requested size: 377.60951pt x 58.56181pt.
-<figures/kodim23_cb_componets.pdf, id=505, 939.51pt x 298.11375pt>
+<figures/kodim23_cb_componets.pdf, id=511, 939.51pt x 298.11375pt>
 File: figures/kodim23_cb_componets.pdf Graphic file (type pdf)
 <use figures/kodim23_cb_componets.pdf>
-Package pdftex.def Info: figures/kodim23_cb_componets.pdf  used on input line 5
-7.
+Package pdftex.def Info: figures/kodim23_cb_componets.pdf  used on input line 2
+1.
 (pdftex.def)             Requested size: 171.813pt x 54.51788pt.
-<figures/kodim23_cr_componets.pdf, id=506, 939.51pt x 298.11375pt>
+<figures/kodim23_cr_componets.pdf, id=512, 939.51pt x 298.11375pt>
 File: figures/kodim23_cr_componets.pdf Graphic file (type pdf)
 <use figures/kodim23_cr_componets.pdf>
-Package pdftex.def Info: figures/kodim23_cr_componets.pdf  used on input line 6
-4.
+Package pdftex.def Info: figures/kodim23_cr_componets.pdf  used on input line 2
+8.
 (pdftex.def)             Requested size: 169.92311pt x 53.91743pt.
-) (./conclusion.tex)
-(./acknowledgments.tex) (./main.bbl) [3] [4 <./figures/kodim23_y_componets.pdf>
- <./figures/kodim23_cb_componets.pdf> <./figures/kodim23_cr_componets.pdf>]
+
+
+LaTeX Warning: Reference `' on page 3 undefined on input line 36.
+
+[3 <./figures/kodim23_y_componets.pdf> <./figures/kodim23_cb_componets.pdf> <./
+figures/kodim23_cr_componets.pdf>]
+<figures/comparison_kodak_psnr.pdf, id=552, 462.52798pt x 346.89601pt>
+File: figures/comparison_kodak_psnr.pdf Graphic file (type pdf)
+<use figures/comparison_kodak_psnr.pdf>
+Package pdftex.def Info: figures/comparison_kodak_psnr.pdf  used on input line 
+57.
+(pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
+<figures/comparison_kodak_ssim.pdf, id=553, 462.52798pt x 346.89601pt>
+File: figures/comparison_kodak_ssim.pdf Graphic file (type pdf)
+<use figures/comparison_kodak_ssim.pdf>
+Package pdftex.def Info: figures/comparison_kodak_ssim.pdf  used on input line 
+63.
+(pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
+<figures/comparison_clic_psnr.pdf, id=554, 462.52798pt x 346.89601pt>
+File: figures/comparison_clic_psnr.pdf Graphic file (type pdf)
+<use figures/comparison_clic_psnr.pdf>
+Package pdftex.def Info: figures/comparison_clic_psnr.pdf  used on input line 7
+5.
+(pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
+<figures/comparison_clic_ssim.pdf, id=555, 462.52798pt x 346.89601pt>
+File: figures/comparison_clic_ssim.pdf Graphic file (type pdf)
+<use figures/comparison_clic_ssim.pdf>
+Package pdftex.def Info: figures/comparison_clic_ssim.pdf  used on input line 8
+1.
+(pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
+<figures/classification_subset_performance_top1.pdf, id=557, 462.52798pt x 346.
+89601pt>
+File: figures/classification_subset_performance_top1.pdf Graphic file (type pdf
+)
+<use figures/classification_subset_performance_top1.pdf>
+Package pdftex.def Info: figures/classification_subset_performance_top1.pdf  us
+ed on input line 101.
+(pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
+<figures/classification_subset_performance_top5.pdf, id=558, 462.52798pt x 346.
+89601pt>
+File: figures/classification_subset_performance_top5.pdf Graphic file (type pdf
+)
+<use figures/classification_subset_performance_top5.pdf>
+Package pdftex.def Info: figures/classification_subset_performance_top5.pdf  us
+ed on input line 107.
+(pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
+ [4 <./figures/comparison_kodak_psnr.pdf> <./figures/comparison_kodak_ssim.pdf>
+ <./figures/comparison_clic_psnr.pdf> <./figures/comparison_clic_ssim.pdf>]
+<figures/ablation_patchsize_psnr.pdf, id=613, 462.52798pt x 346.89601pt>
+File: figures/ablation_patchsize_psnr.pdf Graphic file (type pdf)
+<use figures/ablation_patchsize_psnr.pdf>
+Package pdftex.def Info: figures/ablation_patchsize_psnr.pdf  used on input lin
+e 141.
+(pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
+<figures/ablation_bounds_psnr.pdf, id=614, 462.52798pt x 346.89601pt>
+File: figures/ablation_bounds_psnr.pdf Graphic file (type pdf)
+<use figures/ablation_bounds_psnr.pdf>
+Package pdftex.def Info: figures/ablation_bounds_psnr.pdf  used on input line 1
+47.
+(pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
+<figures/ablation_iternum_psnr.pdf, id=615, 462.52798pt x 346.89601pt>
+File: figures/ablation_iternum_psnr.pdf Graphic file (type pdf)
+<use figures/ablation_iternum_psnr.pdf>
+Package pdftex.def Info: figures/ablation_iternum_psnr.pdf  used on input line 
+154.
+(pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
+<figures/ablation_colorspace_psnr.pdf, id=616, 462.52798pt x 346.89601pt>
+File: figures/ablation_colorspace_psnr.pdf Graphic file (type pdf)
+<use figures/ablation_colorspace_psnr.pdf>
+Package pdftex.def Info: figures/ablation_colorspace_psnr.pdf  used on input li
+ne 160.
+(pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
+) (./conclusion.tex) (./acknowledgments.tex)
+(./main.bbl
+Underfull \vbox (badness 7397) has occurred while \output is active []
+
+ [5 <./figures/classification_subset_performance_top1.pdf> <./figures/classific
+ation_subset_performance_top5.pdf>]) [6 <./figures/ablation_patchsize_psnr.pdf>
+ <./figures/ablation_bounds_psnr.pdf> <./figures/ablation_iternum_psnr.pdf> <./
+figures/ablation_colorspace_psnr.pdf>]
 \openout2 = `proof.aux'.
 
-
-(./proof.tex) [5
+ (./proof.tex) [7
 
 ] (./main.aux (./proof.aux))
+
+LaTeX Warning: There were undefined references.
+
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: E23A8570C63A56A25035CF2D2D9BA1C3;2106.
+(rerunfilecheck)             Checksum: 2B5197211B74119F0C680E1B46B8AFC3;2282.
  ) 
 Here is how much of TeX's memory you used:
- 15337 strings out of 478268
- 246595 string characters out of 5846347
- 580021 words of memory out of 5000000
- 33048 multiletter control sequences out of 15000+600000
- 521241 words of font info for 200 fonts, out of 8000000 for 9000
+ 15443 strings out of 478268
+ 249896 string characters out of 5846347
+ 579972 words of memory out of 5000000
+ 33110 multiletter control sequences out of 15000+600000
+ 522601 words of font info for 221 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 70i,10n,76p,1154b,572s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 70i,10n,76p,1154b,574s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/tex
 live/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbsy10.pfb></usr/local/tex
@@ -697,23 +776,25 @@ e/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texlive/
 2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texlive/20
 22/texmf-dist/fonts/type1/public/amsfonts/cm/cmmib10.pfb></usr/local/texlive/20
 22/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2022
-/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2022/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2022/texmf
--dist/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texlive/2022/texmf-d
-ist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2022/texmf-di
-st/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2022/texmf-dist
-/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2022/texmf-dist/f
-onts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2022/texmf-di
-st/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2022/texm
-f-dist/fonts/type1/public/cm-super/sftt0900.pfb></usr/local/texlive/2022/texmf-
-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2022/texmf-di
-st/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/t
-ype1/urw/times/utmr8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/t
-imes/utmri8a.pfb>
-Output written on main.pdf (5 pages, 2513130 bytes).
+/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2022/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2022/tex
+mf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/2022/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2022/texmf-dis
+t/fonts/type1/public/amsfonts/cm/cmss8.pfb></usr/local/texlive/2022/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2022/texmf-dist/f
+onts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2022/texmf-dist/fon
+ts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2022/texmf-dist/fonts
+/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2022/texmf-dist/f
+onts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2022/texmf-di
+st/fonts/type1/public/cm-super/sftt0900.pfb></usr/local/texlive/2022/texmf-dist
+/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2022/texmf-dist/f
+onts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1
+/urw/times/utmr8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/times
+/utmri8a.pfb>
+Output written on main.pdf (7 pages, 2619155 bytes).
 PDF statistics:
- 664 PDF objects out of 1000 (max. 8388607)
- 393 compressed objects within 4 object streams
- 42 named destinations out of 1000 (max. 500000)
- 54909 words of extra memory for PDF output out of 61914 (max. 10000000)
+ 797 PDF objects out of 1000 (max. 8388607)
+ 491 compressed objects within 5 object streams
+ 45 named destinations out of 1000 (max. 500000)
+ 54967 words of extra memory for PDF output out of 61914 (max. 10000000)
 

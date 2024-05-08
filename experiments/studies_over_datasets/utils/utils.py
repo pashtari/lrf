@@ -1,6 +1,7 @@
 import os
 import datetime
 import pickle
+import matplotlib
 import matplotlib.pyplot as plt
 import tikzplotlib
 import numpy as np
@@ -9,6 +10,13 @@ import torch
 from torch.nn.modules.utils import _pair
 
 import lrf
+
+matplotlib.use("pgf")
+matplotlib.rcParams.update({
+    "pgf.texsystem": "pdflatex",
+    'font.family': 'serif',
+    'pgf.rcfonts': False,
+})
 
 def tikzplotlib_fix_ncols(obj):
     """
@@ -26,13 +34,14 @@ def plot_result(x_values, y_values, x_axis_fixed_values, plot_num, figure_data=N
         x_axis = np.array(x_values[method]).reshape((plot_num,-1))
         y_axis = np.array(values).reshape((plot_num,-1))
         x_axis_min = x_axis.min()
+        x_axis_fixed_values_ = x_axis_fixed_values[x_axis_fixed_values>=x_axis_min]
 
-        val_matrix = np.zeros((plot_num, len(x_axis_fixed_values)))
+        val_matrix = np.zeros((plot_num, len(x_axis_fixed_values_)))
         for i in range(plot_num):
             x_ax, unique_idx = np.unique(x_axis[i], return_index=True)
             y_ax = y_axis[i,unique_idx]
-            interp_func = interp1d(x_ax, y_ax, kind='quadratic', fill_value='extrapolate')
-            val_matrix[i] = interp_func(x_axis_fixed_values)
+            interp_func = interp1d(x_ax, y_ax, kind='linear', fill_value='extrapolate')
+            val_matrix[i] = interp_func(x_axis_fixed_values_)
         
         y_values_interpolated[method] = {"val_mat": val_matrix, "x_axis_min": x_axis_min}
 
@@ -44,20 +53,28 @@ def plot_result(x_values, y_values, x_axis_fixed_values, plot_num, figure_data=N
     fixed_value_step = x_axis_fixed_values[1] - x_axis_fixed_values[0]
     colors = ['C0', 'C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8']
     for i, (method, dict) in enumerate(y_values_interpolated.items()):
-        plt.plot(x_axis_fixed_values[x_axis_fixed_values >= dict["x_axis_min"]], mean_y_values[method][x_axis_fixed_values >= dict["x_axis_min"]], "o-", color=colors[i], markersize=4, label=method)
-        plt.plot(x_axis_fixed_values[x_axis_fixed_values <= dict["x_axis_min"]+fixed_value_step], mean_y_values[method][x_axis_fixed_values <= dict["x_axis_min"]+fixed_value_step], "o--", color=colors[i], markersize=4)
+        plt.plot(x_axis_fixed_values[x_axis_fixed_values >= dict["x_axis_min"]], mean_y_values[method], "o-", color=colors[i], markersize=4, label=method)
         shade_minus = mean_y_values[method] - std_y_values[method] 
         shade_plus = mean_y_values[method] + std_y_values[method]
-        plt.fill_between(x_axis_fixed_values, shade_minus, shade_plus, alpha=0.2, color=colors[i])
-
+        plt.fill_between(x_axis_fixed_values[x_axis_fixed_values >= dict["x_axis_min"]], shade_minus, shade_plus, alpha=0.2, color=colors[i])
+        
+        interp_func_for_mean = interp1d(x_axis_fixed_values[x_axis_fixed_values >= dict["x_axis_min"]], mean_y_values[method], kind='quadratic', fill_value='extrapolate')
+        exptapolated_mean = interp_func_for_mean(x_axis_fixed_values[x_axis_fixed_values <= dict["x_axis_min"]+fixed_value_step])
+        plt.plot(x_axis_fixed_values[x_axis_fixed_values <= dict["x_axis_min"]+fixed_value_step], exptapolated_mean, "o--", color=colors[i], markersize=4)
     
-    plt.xlabel(figure_data["xlabel"])
-    plt.ylabel(figure_data["ylabel"])
-    plt.title(figure_data["title"])
-    plt.xlim(figure_data["xlim"][0], figure_data["xlim"][1])
-    plt.ylim(figure_data["ylim"][0], figure_data["ylim"][1])
+    fontsize = figure_data["fontsize"] if "fontsize" in figure_data else 10
 
-    plt.legend()
+    plt.yticks(fontsize=fontsize)
+    plt.xticks(fontsize=fontsize)
+
+    plt.xlabel(figure_data["xlabel"], fontsize=fontsize)
+    plt.ylabel(figure_data["ylabel"], fontsize=fontsize)
+    plt.title(figure_data["title"], fontsize=fontsize)
+    plt.xlim(figure_data["xlim"][0], figure_data["xlim"][1])
+    if "ylim" in figure_data.keys():
+        plt.ylim(figure_data["ylim"][0], figure_data["ylim"][1])
+
+    plt.legend(loc='lower right', fontsize=fontsize)
     plt.grid()
 
     tikzplotlib_fix_ncols(fig)
@@ -112,11 +129,12 @@ def calc_compression_metrics(dataloader, compression_ratios, bpps, psnr_values, 
 
         if "IMF" in args.selected_methods:
             for quality in np.linspace(0, 50, 50):
+                in_quality = (quality, quality / 2, quality / 2) if args.color_space == "YCbCr" else quality
                 enocoded = lrf.imf_encode(
                     image,
                     color_space=args.color_space,
                     scale_factor=(0.5, 0.5),
-                    quality=(quality, quality / 2, quality / 2),
+                    quality=in_quality,
                     patch=args.patchify,
                     patch_size=_pair(args.patch_size),
                     bounds=bounds,
