@@ -9,34 +9,58 @@ Qualitative performance is shown on an image selected from the Kodak [] dataset.
 Fig.\ref{fig:imf_components} depicts the first IMF components $U_{Y}, U_{Cb}$, and $U_{Cr}$ which are extracted following the procedure elaborated in Section \ref{sec: implementation details}. It is evident in the figure that the IMF components with higher energy maintain the overall texture of the image in each channel, while components with lower energy focus more on subtle changes. 
 \begin{figure}[t]
 	\centering
-	\begin{subfigure}{\textwidth}
-		\centering
-		\includegraphics[width=.95\textwidth]{figures/kodim23_y_componets.pdf}
-		\caption{}
-		\label{fig: y componets}
-	\end{subfigure}
-	\begin{subfigure}{.455\textwidth}
-		\centering
-		\vspace{10pt}
-		\includegraphics[width=.95\textwidth]{figures/kodim23_cb_componets.pdf}
-		\caption{}
-		\label{fig: cb componets}
-	\end{subfigure}%
-	\begin{subfigure}{.45\textwidth}
-		\centering
-		\vspace{10pt}
-		\includegraphics[width=.95\textwidth]{figures/kodim23_cr_componets.pdf}
-		\caption{}
-		\label{fig: cr componets}
-	\end{subfigure}
-	\caption{IMF components of the \texttt{kodim23} image from the Kodak dataset. Panels (a), (b), and (c) show the IMF components corresponding to luma (Y), blue-difference (Cb), and red-difference (Cr) chroma, respectively.}
+    \includegraphics[width=.95\textwidth]{figures/kodim23_components.pdf}
+	\caption{IMF components of the \texttt{kodim23} image from the Kodak dataset, corresponding to luma (Y), blue-difference (Cb), and red-difference (Cr) chroma.}
 	\label{fig:imf_components}
 \end{figure}
 
-The quantitative comparison is made in Fig.\ref{} on an image selected from the Kodak [] dataset. 
+The qualitative comparison is made in Fig.\ref{} on an image selected from the Kodak [] dataset. 
 The images compressed by the considered compression methods are shown in different bits per pixel (bpp) values, a standard compression measure in the literature []. 
 As can be seen, the IMF-based compression method is capable of maintaining quality compressed images in bpp values as low as $?$, outperforming JPEG and SVD-based methods which suffer from maintaining balanced colors as soon as bpp drops below $?$ and $?$, respectively. 
 The artifacts in color are visible, e.g. by JPEG in bpp values starting $?$.
+\begin{figure}[t]
+	\centering
+	\begin{subfigure}{.23\textwidth}
+		\centering
+        \hspace{-7pt}
+		\includegraphics[trim=1.7cm 1cm 1.7cm 1cm, clip, width=1\textwidth]{figures/kodim21_original.pdf}
+	\end{subfigure}%
+	\begin{subfigure}{.23\textwidth}
+		\centering
+		\includegraphics[trim=1.7cm 1cm 1.7cm 1cm, clip, width=1\textwidth]{figures/kodim21_JPEG_bpp_0.293.pdf}
+	\end{subfigure}
+    \begin{subfigure}{.23\textwidth}
+		\centering
+		\includegraphics[trim=1.7cm 1cm 1.7cm 1cm, clip, width=1\textwidth]{figures/kodim21_SVD_bpp_0.315.pdf}
+	\end{subfigure}
+    \begin{subfigure}{.23\textwidth}
+		\centering
+		\includegraphics[trim=1.7cm 1cm 1.7cm 1cm, clip, width=1\textwidth]{figures/kodim21_IMF_bpp_0.305.pdf}
+	\end{subfigure}
+
+    \vspace{-8pt}
+	\begin{subfigure}{.23\textwidth}
+		\centering
+        \hspace{-7pt}
+		\includegraphics[trim=1.7cm 1cm 1.7cm 1.7cm, clip, width=1\textwidth]{figures/clic_flower_original.pdf}
+	\end{subfigure}%
+	\begin{subfigure}{.23\textwidth}
+		\centering
+		\includegraphics[trim=1.7cm 1cm 1.7cm 1.7cm, clip, width=1\textwidth]{figures/clic_flower_JPEG_bpp_0.137.pdf}
+	\end{subfigure}
+    \begin{subfigure}{.23\textwidth}
+		\centering
+		\includegraphics[trim=1.7cm 1cm 1.7cm 1.7cm, clip, width=1\textwidth]{figures/clic_flower_SVD_bpp_0.123.pdf}
+	\end{subfigure}
+    \begin{subfigure}{.23\textwidth}
+		\centering
+		\includegraphics[trim=1.7cm 1cm 1.7cm 1.7cm, clip, width=1\textwidth]{figures/clic_flower_IMF - YCbCr_bpp_0.108.pdf}
+	\end{subfigure}
+
+    \caption{Qualitative performance comparison between various compression methods. The top row shows performance on kodim21 from the Kodak dataset in the bpp value of 0.3, and the bottom row shows one example of the Clic dataset in the bpp values of 0.14, 0.12, and 0.1 for JPEG, SVD, and IMF, respectively. }
+	\label{fig:qualitative_comparison}
+\end{figure}
+
 
 
 \subsection{Rate-Distortion Performance} \label{sec:rate_distortion_performance}
@@ -98,13 +122,13 @@ The classification performance comparison is made in Fig.\ref{fig:imagenet_class
 	\centering
 	\begin{subfigure}{.5\textwidth}
 		\centering
-				\includegraphics[width=.95\textwidth]{figures/classification_subset_performance_top1.pdf}
+				\includegraphics[width=.95\textwidth]{figures/classification_performance_top1.pdf}
 		\caption{}
 		\label{fig: top1-vs-bpp imagenet}
 	\end{subfigure}%
 	\begin{subfigure}{.5\textwidth}
 		\centering
-				\includegraphics[width=.95\textwidth]{figures/classification_subset_performance_top5.pdf}
+				\includegraphics[width=.95\textwidth]{figures/classification_performance_top5.pdf}
 		\caption{}
 		\label{fig: top5-vs-bpp imagenet}
 	\end{subfigure}
