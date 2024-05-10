@@ -1,13 +1,42 @@
-\begin{thebibliography}{1}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
+\bibitem[Dong et~al.(2018)Dong, Lin, and Park]{dong2018integer}
+Bo~Dong, Matthew~M Lin, and Haesun Park.
+\newblock Integer matrix approximation and data mining.
+\newblock \emph{Journal of scientific computing}, 75:\penalty0 198--224, 2018.
+
 \bibitem[Eckart and Young(1936)]{eckart1936approximation}
 Carl Eckart and Gale Young.
 \newblock The approximation of one matrix by another of lower rank.
 \newblock \emph{Psychometrika}, 1\penalty0 (3):\penalty0 211--218, 1936.
+
+\bibitem[{Gillis}(2020)]{gillis2020nonnegative}
+{Nicholas} {Gillis}.
+\newblock \emph{{Nonnegative Matrix Factorization}}.
+\newblock SIAM, 2020.
+
+\bibitem[Lee and Seung(2000)]{lee2000algorithms}
+Daniel Lee and H.~Sebastian Seung.
+\newblock {Algorithms for Non-negative Matrix Factorization}.
+\newblock In T.~Leen, T.~Dietterich, and V.~Tresp, editors, \emph{Advances in
+  Neural Information Processing Systems}, volume~13. MIT Press, 2000.
+\newblock URL
+  \url{https://proceedings.neurips.cc/paper_files/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf}.
+
+\bibitem[Lin et~al.()Lin, Dong, and Chu]{lin2005integer}
+Matthew~M Lin, Bo~Dong, and Moody~T Chu.
+\newblock Integer matrix factorization and its application.
+
+\bibitem[van Emde~Boas(1981)]{van1981another}
+Peter van Emde~Boas.
+\newblock Another np-complete problem and the complexity of computing short
+  vectors in a lattice.
+\newblock \emph{Tecnical Report, Department of Mathmatics, University of
+  Amsterdam}, 1981.
 
 \end{thebibliography}
