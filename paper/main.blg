@@ -4,12 +4,13 @@ The top-level auxiliary file: main.aux
 The style file: plainnat.bst
 A level-1 auxiliary file: proof.aux
 Database file #1: ref.bib
+Warning--I didn't find a database entry for "grippo2000convergence"
 Warning--empty journal in lin2005integer
 Warning--empty year in lin2005integer
 Warning--empty year in lin2005integer
 You've used 6 entries,
             2773 wiz_defined-function locations,
-            631 strings with 5861 characters,
+            632 strings with 5882 characters,
 and the built_in function-call counts, 2478 in all, are:
 = -- 211
 > -- 133
@@ -48,4 +49,4 @@ warning$ -- 3
 while$ -- 23
 width$ -- 0
 write$ -- 82
-(There were 3 warnings)
+(There were 4 warnings)

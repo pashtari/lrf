@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.7.28)  11 MAY 2024 00:07
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.7.28)  13 MAY 2024 03:45
 entering extended mode
  \write18 enabled.
  %&-line parsing enabled.
@@ -498,24 +498,24 @@ File: l3backend-pdftex.def 2022-02-07 L3 backend support: PDF output (pdfTeX)
 ) (./main.aux (./proof.aux))
 \openout1 = `main.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 104.
-LaTeX Font Info:    ... okay on input line 104.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 104.
-LaTeX Font Info:    ... okay on input line 104.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 104.
-LaTeX Font Info:    ... okay on input line 104.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 104.
-LaTeX Font Info:    ... okay on input line 104.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 104.
-LaTeX Font Info:    ... okay on input line 104.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 104.
-LaTeX Font Info:    ... okay on input line 104.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 104.
-LaTeX Font Info:    ... okay on input line 104.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 104.
-LaTeX Font Info:    ... okay on input line 104.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 104.
-LaTeX Font Info:    ... okay on input line 104.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 106.
+LaTeX Font Info:    ... okay on input line 106.
 
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
@@ -605,18 +605,18 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-LaTeX Info: Redefining \microtypecontext on input line 104.
-Package microtype Info: Applying patch `item' on input line 104.
-Package microtype Info: Applying patch `toc' on input line 104.
-Package microtype Info: Applying patch `eqnum' on input line 104.
-Package microtype Info: Applying patch `footnote' on input line 104.
+LaTeX Info: Redefining \microtypecontext on input line 106.
+Package microtype Info: Applying patch `item' on input line 106.
+Package microtype Info: Applying patch `toc' on input line 106.
+Package microtype Info: Applying patch `eqnum' on input line 106.
+Package microtype Info: Applying patch `footnote' on input line 106.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 104.
+LaTeX Info: Redefining \showhyphens on input line 106.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -627,7 +627,7 @@ File: mt-ptm.cfg 2006/04/20 v1.7 microtype config. file: Times (RS)
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: hyperref package is loaded.
 Package caption Info: End \AtBeginDocument code.
-Package hyperref Info: Link coloring ON on input line 104.
+Package hyperref Info: Link coloring ON on input line 106.
 
 (/usr/local/texlive/2022/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2021-04-02 v2.47 Cross-referencing by name of section
@@ -641,9 +641,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count309
 )
-LaTeX Info: Redefining \ref on input line 104.
-LaTeX Info: Redefining \pageref on input line 104.
-LaTeX Info: Redefining \nameref on input line 104.
+LaTeX Info: Redefining \ref on input line 106.
+LaTeX Info: Redefining \pageref on input line 106.
+LaTeX Info: Redefining \nameref on input line 106.
  (./main.out) (./main.out)
 \@outlinefile=\write3
 \openout3 = `main.out'.
@@ -653,7 +653,7 @@ LaTeX Info: Redefining \nameref on input line 104.
 File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
 (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 108
+LaTeX Font Info:    Trying to load font information for U+msa on input line 110
 .
 
 (/usr/local/texlive/2022/texmf-dist/tex/latex/amsfonts/umsa.fd
@@ -662,7 +662,7 @@ File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 (/usr/local/texlive/2022/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 108
+LaTeX Font Info:    Trying to load font information for U+msb on input line 110
 .
 
 (/usr/local/texlive/2022/texmf-dist/tex/latex/amsfonts/umsb.fd
@@ -672,7 +672,7 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 1
-08.
+10.
 
 (/usr/local/texlive/2022/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2019/12/16 v2.5j Standard LaTeX font definitions
@@ -696,126 +696,169 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `cmss' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
- [2 <./figures/imf_encoder.pdf>] [3]) (./experiments.tex
-<figures/kodim23_y_componets.pdf, id=536, 1922.18124pt x 298.11375pt>
-File: figures/kodim23_y_componets.pdf Graphic file (type pdf)
-<use figures/kodim23_y_componets.pdf>
-Package pdftex.def Info: figures/kodim23_y_componets.pdf  used on input line 14
-.
-(pdftex.def)             Requested size: 377.60951pt x 58.56181pt.
-<figures/kodim23_cb_componets.pdf, id=537, 939.51pt x 298.11375pt>
-File: figures/kodim23_cb_componets.pdf Graphic file (type pdf)
-<use figures/kodim23_cb_componets.pdf>
-Package pdftex.def Info: figures/kodim23_cb_componets.pdf  used on input line 2
-1.
-(pdftex.def)             Requested size: 171.813pt x 54.51788pt.
-<figures/kodim23_cr_componets.pdf, id=538, 939.51pt x 298.11375pt>
-File: figures/kodim23_cr_componets.pdf Graphic file (type pdf)
-<use figures/kodim23_cr_componets.pdf>
-Package pdftex.def Info: figures/kodim23_cr_componets.pdf  used on input line 2
-8.
-(pdftex.def)             Requested size: 169.92311pt x 53.91743pt.
+ [2 <./figures/imf_encoder.pdf>] [3]) (./experiments.tex [4]
+<figures/kodim23_components.pdf, id=561, 2276.505pt x 796.9775pt>
+File: figures/kodim23_components.pdf Graphic file (type pdf)
+<use figures/kodim23_components.pdf>
+Package pdftex.def Info: figures/kodim23_components.pdf  used on input line 12.
+
+(pdftex.def)             Requested size: 377.60951pt x 132.18878pt.
 
 
-LaTeX Warning: Reference `' on page 4 undefined on input line 36.
+LaTeX Warning: Reference `' on page 5 undefined on input line 17.
 
-[4]
-<figures/comparison_kodak_psnr.pdf, id=560, 462.52798pt x 346.89601pt>
+<figures/kodim21_original.pdf, id=562, 462.52798pt x 346.89601pt>
+File: figures/kodim21_original.pdf Graphic file (type pdf)
+<use figures/kodim21_original.pdf>
+Package pdftex.def Info: figures/kodim21_original.pdf  used on input line 26.
+(pdftex.def)             Requested size: 91.41985pt x 72.47533pt.
+<figures/kodim21_JPEG_bpp_0.293.pdf, id=564, 462.52798pt x 346.89601pt>
+File: figures/kodim21_JPEG_bpp_0.293.pdf Graphic file (type pdf)
+<use figures/kodim21_JPEG_bpp_0.293.pdf>
+Package pdftex.def Info: figures/kodim21_JPEG_bpp_0.293.pdf  used on input line
+ 30.
+(pdftex.def)             Requested size: 91.41985pt x 72.47533pt.
+<figures/kodim21_SVD_bpp_0.315.pdf, id=566, 462.52798pt x 346.89601pt>
+File: figures/kodim21_SVD_bpp_0.315.pdf Graphic file (type pdf)
+<use figures/kodim21_SVD_bpp_0.315.pdf>
+Package pdftex.def Info: figures/kodim21_SVD_bpp_0.315.pdf  used on input line 
+34.
+(pdftex.def)             Requested size: 91.41985pt x 72.47533pt.
+<figures/kodim21_IMF_bpp_0.305.pdf, id=568, 462.52798pt x 346.89601pt>
+File: figures/kodim21_IMF_bpp_0.305.pdf Graphic file (type pdf)
+<use figures/kodim21_IMF_bpp_0.305.pdf>
+Package pdftex.def Info: figures/kodim21_IMF_bpp_0.305.pdf  used on input line 
+38.
+(pdftex.def)             Requested size: 91.41985pt x 72.47533pt.
+<figures/clic_flower_original.pdf, id=570, 462.52798pt x 346.89601pt>
+File: figures/clic_flower_original.pdf Graphic file (type pdf)
+<use figures/clic_flower_original.pdf>
+Package pdftex.def Info: figures/clic_flower_original.pdf  used on input line 4
+5.
+(pdftex.def)             Requested size: 91.41985pt x 67.49765pt.
+<figures/clic_flower_JPEG_bpp_0.137.pdf, id=572, 462.52798pt x 346.89601pt>
+File: figures/clic_flower_JPEG_bpp_0.137.pdf Graphic file (type pdf)
+<use figures/clic_flower_JPEG_bpp_0.137.pdf>
+Package pdftex.def Info: figures/clic_flower_JPEG_bpp_0.137.pdf  used on input 
+line 49.
+(pdftex.def)             Requested size: 91.41985pt x 67.49765pt.
+<figures/clic_flower_SVD_bpp_0.123.pdf, id=574, 462.52798pt x 346.89601pt>
+File: figures/clic_flower_SVD_bpp_0.123.pdf Graphic file (type pdf)
+<use figures/clic_flower_SVD_bpp_0.123.pdf>
+Package pdftex.def Info: figures/clic_flower_SVD_bpp_0.123.pdf  used on input l
+ine 53.
+(pdftex.def)             Requested size: 91.41985pt x 67.49765pt.
+<figures/clic_flower_IMF - YCbCr_bpp_0.108.pdf, id=576, 462.52798pt x 346.89601
+pt>
+File: figures/clic_flower_IMF - YCbCr_bpp_0.108.pdf Graphic file (type pdf)
+<use figures/clic_flower_IMF - YCbCr_bpp_0.108.pdf>
+Package pdftex.def Info: figures/clic_flower_IMF - YCbCr_bpp_0.108.pdf  used on
+ input line 57.
+(pdftex.def)             Requested size: 91.41985pt x 67.49765pt.
+[5 <./figures/kodim23_components.pdf>]
+<figures/comparison_kodak_psnr.pdf, id=631, 462.52798pt x 346.89601pt>
 File: figures/comparison_kodak_psnr.pdf Graphic file (type pdf)
 <use figures/comparison_kodak_psnr.pdf>
 Package pdftex.def Info: figures/comparison_kodak_psnr.pdf  used on input line 
-57.
+81.
 (pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
-<figures/comparison_kodak_ssim.pdf, id=561, 462.52798pt x 346.89601pt>
+<figures/comparison_kodak_ssim.pdf, id=632, 462.52798pt x 346.89601pt>
 File: figures/comparison_kodak_ssim.pdf Graphic file (type pdf)
 <use figures/comparison_kodak_ssim.pdf>
 Package pdftex.def Info: figures/comparison_kodak_ssim.pdf  used on input line 
-63.
+87.
 (pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
-<figures/comparison_clic_psnr.pdf, id=562, 462.52798pt x 346.89601pt>
+<figures/comparison_clic_psnr.pdf, id=633, 462.52798pt x 346.89601pt>
 File: figures/comparison_clic_psnr.pdf Graphic file (type pdf)
 <use figures/comparison_clic_psnr.pdf>
-Package pdftex.def Info: figures/comparison_clic_psnr.pdf  used on input line 7
-5.
+Package pdftex.def Info: figures/comparison_clic_psnr.pdf  used on input line 9
+9.
 (pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
-<figures/comparison_clic_ssim.pdf, id=563, 462.52798pt x 346.89601pt>
+<figures/comparison_clic_ssim.pdf, id=634, 462.52798pt x 346.89601pt>
 File: figures/comparison_clic_ssim.pdf Graphic file (type pdf)
 <use figures/comparison_clic_ssim.pdf>
-Package pdftex.def Info: figures/comparison_clic_ssim.pdf  used on input line 8
-1.
+Package pdftex.def Info: figures/comparison_clic_ssim.pdf  used on input line 1
+05.
 (pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
-<figures/classification_subset_performance_top1.pdf, id=565, 462.52798pt x 346.
-89601pt>
-File: figures/classification_subset_performance_top1.pdf Graphic file (type pdf
-)
-<use figures/classification_subset_performance_top1.pdf>
-Package pdftex.def Info: figures/classification_subset_performance_top1.pdf  us
-ed on input line 101.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [6 <./figures/kodim21_original.pdf> <./figures/kodim21_JPEG_bpp_0.293.pdf> <./
+figures/kodim21_SVD_bpp_0.315.pdf> <./figures/kodim21_IMF_bpp_0.305.pdf> <./fig
+ures/clic_flower_original.pdf> <./figures/clic_flower_JPEG_bpp_0.137.pdf> <./fi
+gures/clic_flower_SVD_bpp_0.123.pdf> <./figures/clic_flower_IMF - YCbCr_bpp_0.1
+08.pdf> <./figures/comparison_kodak_psnr.pdf> <./figures/comparison_kodak_ssim.
+pdf>]
+<figures/classification_performance_top1.pdf, id=739, 462.52798pt x 346.89601pt
+>
+File: figures/classification_performance_top1.pdf Graphic file (type pdf)
+<use figures/classification_performance_top1.pdf>
+Package pdftex.def Info: figures/classification_performance_top1.pdf  used on i
+nput line 125.
 (pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
-<figures/classification_subset_performance_top5.pdf, id=566, 462.52798pt x 346.
-89601pt>
-File: figures/classification_subset_performance_top5.pdf Graphic file (type pdf
-)
-<use figures/classification_subset_performance_top5.pdf>
-Package pdftex.def Info: figures/classification_subset_performance_top5.pdf  us
-ed on input line 107.
+<figures/classification_performance_top5.pdf, id=740, 462.52798pt x 346.89601pt
+>
+File: figures/classification_performance_top5.pdf Graphic file (type pdf)
+<use figures/classification_performance_top5.pdf>
+Package pdftex.def Info: figures/classification_performance_top5.pdf  used on i
+nput line 131.
 (pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
- [5 <./figures/kodim23_y_componets.pdf> <./figures/kodim23_cb_componets.pdf> <.
-/figures/kodim23_cr_componets.pdf> <./figures/comparison_kodak_psnr.pdf> <./fig
-ures/comparison_kodak_ssim.pdf>] [6 <./figures/comparison_clic_psnr.pdf> <./fig
-ures/comparison_clic_ssim.pdf> <./figures/classification_subset_performance_top
-1.pdf> <./figures/classification_subset_performance_top5.pdf>]
-<figures/ablation_patchsize_psnr.pdf, id=677, 462.52798pt x 346.89601pt>
+
+[7 <./figures/comparison_clic_psnr.pdf> <./figures/comparison_clic_ssim.pdf> <.
+/figures/classification_performance_top1.pdf> <./figures/classification_perform
+ance_top5.pdf>]
+<figures/ablation_patchsize_psnr.pdf, id=791, 462.52798pt x 346.89601pt>
 File: figures/ablation_patchsize_psnr.pdf Graphic file (type pdf)
 <use figures/ablation_patchsize_psnr.pdf>
 Package pdftex.def Info: figures/ablation_patchsize_psnr.pdf  used on input lin
-e 141.
+e 165.
 (pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
-<figures/ablation_bounds_psnr.pdf, id=678, 462.52798pt x 346.89601pt>
+<figures/ablation_bounds_psnr.pdf, id=792, 462.52798pt x 346.89601pt>
 File: figures/ablation_bounds_psnr.pdf Graphic file (type pdf)
 <use figures/ablation_bounds_psnr.pdf>
 Package pdftex.def Info: figures/ablation_bounds_psnr.pdf  used on input line 1
-47.
+71.
 (pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
-<figures/ablation_iternum_psnr.pdf, id=679, 462.52798pt x 346.89601pt>
+<figures/ablation_iternum_psnr.pdf, id=793, 462.52798pt x 346.89601pt>
 File: figures/ablation_iternum_psnr.pdf Graphic file (type pdf)
 <use figures/ablation_iternum_psnr.pdf>
 Package pdftex.def Info: figures/ablation_iternum_psnr.pdf  used on input line 
-154.
+178.
 (pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
-<figures/ablation_colorspace_psnr.pdf, id=680, 462.52798pt x 346.89601pt>
+<figures/ablation_colorspace_psnr.pdf, id=794, 462.52798pt x 346.89601pt>
 File: figures/ablation_colorspace_psnr.pdf Graphic file (type pdf)
 <use figures/ablation_colorspace_psnr.pdf>
 Package pdftex.def Info: figures/ablation_colorspace_psnr.pdf  used on input li
-ne 160.
+ne 184.
 (pdftex.def)             Requested size: 188.80475pt x 141.60368pt.
-)
-(./conclusion.tex) (./acknowledgments.tex) (./main.bbl
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
- [7 <./figures/ablation_patchsize_psnr.pdf> <./figures/ablation_bounds_psnr.pdf
-> <./figures/ablation_iternum_psnr.pdf> <./figures/ablation_colorspace_psnr.pdf
->])
-[8]
+) (./conclusion.tex) (./acknowledgments.tex) (./main.bbl
+[8 <./figures/ablation_patchsize_psnr.pdf> <./figures/ablation_bounds_psnr.pdf>
+ <./figures/ablation_iternum_psnr.pdf> <./figures/ablation_colorspace_psnr.pdf>
+]) [9]
 \openout2 = `proof.aux'.
 
- (./proof.tex) [9
+ (./proof.tex
+
+LaTeX Warning: Reference `the: bcd monotonicity' on page 10 undefined on input 
+line 1.
+
+) [10
 
 ] (./main.aux (./proof.aux))
 
 LaTeX Warning: There were undefined references.
 
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 2B5197211B74119F0C680E1B46B8AFC3;2282.
+(rerunfilecheck)             Checksum: C0974BA2327F0104763ADC9743EC2B7B;2287.
  ) 
 Here is how much of TeX's memory you used:
- 16539 strings out of 478268
- 268501 string characters out of 5846347
- 606235 words of memory out of 5000000
- 34123 multiletter control sequences out of 15000+600000
+ 16601 strings out of 478268
+ 270480 string characters out of 5846347
+ 609822 words of memory out of 5000000
+ 34168 multiletter control sequences out of 15000+600000
  529723 words of font info for 255 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 70i,16n,76p,1235b,588s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 70i,18n,76p,1244b,588s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc}
 {/usr/local/texlive/2022/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/tex
 live/2022/texmf-dist/fonts/type1/public/amsfonts/cm/cmbsy10.pfb></usr/local/tex
@@ -837,15 +880,16 @@ st/fonts/type1/public/amsfonts/cm/cmsy6.pfb></usr/local/texlive/2022/texmf-dist
 /fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2022/texmf-dist/f
 onts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2022/texmf-di
 st/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2022/texm
-f-dist/fonts/type1/public/cm-super/sftt0900.pfb></usr/local/texlive/2022/texmf-
-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2022/texmf-di
-st/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/t
-ype1/urw/times/utmr8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/urw/t
-imes/utmri8a.pfb>
-Output written on main.pdf (9 pages, 2651149 bytes).
+f-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/local/texlive/2022/t
+exmf-dist/fonts/type1/public/cm-super/sftt0900.pfb></usr/local/texlive/2022/tex
+mf-dist/fonts/type1/public/cm-super/sftt1000.pfb></usr/local/texlive/2022/texmf
+-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2022/texmf-dist/font
+s/type1/urw/times/utmr8a.pfb></usr/local/texlive/2022/texmf-dist/fonts/type1/ur
+w/times/utmri8a.pfb>
+Output written on main.pdf (10 pages, 16220874 bytes).
 PDF statistics:
- 851 PDF objects out of 1000 (max. 8388607)
- 540 compressed objects within 6 object streams
- 68 named destinations out of 1000 (max. 500000)
- 62135 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 971 PDF objects out of 1000 (max. 8388607)
+ 618 compressed objects within 7 object streams
+ 79 named destinations out of 1000 (max. 500000)
+ 62213 words of extra memory for PDF output out of 74296 (max. 10000000)
 
