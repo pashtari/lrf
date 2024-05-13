@@ -70,7 +70,7 @@ Since \emph{factor maps} are already integer tensors, we do not need a quantizat
 
 The main building block of our method is integer matrix factorization (IMF), which is responsible for lossy compression of matrices obtained through patchification. IMF can be framed as an optimization problem, aiming to minimize the reconstruction error between the original matrix $\bm{X} \in \mathbb{R}^{M \times N}$ and the product $\bm{U} \bm{V}^\mathsf{T}$, while ensuring that the elements of the factor matrices $\bm{U}$ and $\bm{V}$ are integers within a specified interval $[\alpha,\beta]$. Formally, the IMF problem can be expressed as:
 \begin{align} \label{eq: imf problem}
-	\min_{\bm{U}, \bm{V}} & \ \  \| \bm{X} - \bm{U} \bm{V}^\mathsf{T} \|_\text{F}^2 \nonumber \\
+	\minimize_{\bm{U}, \bm{V}} & \ \  \| \bm{X} - \bm{U} \bm{V}^\mathsf{T} \|_\text{F}^2 \nonumber \\
 	\text{s.t.}           & \ \ \bm{U} \in \mathbb{Z}_{[\alpha,\beta]}^{M \times R}, \bm{V} \in \mathbb{Z}_{[\alpha,\beta]}^{N \times R},
 \end{align}
 where $\|\cdot\|_\text{F}$ denotes the Frobenius norm; $R \leq \min(M,N)$ represents the \emph{rank}; and $\mathbb{Z}_{[\alpha,\beta]} \triangleq [\alpha,\beta] \cap \mathbb{Z}$ denotes the set of integers within $[\alpha,\beta]$. Without constraints on the factors, the problem would have an analytic solution through the singular value decomposition (SVD), as addressed by the Eckart–Young–Mirsky theorem \cite{eckart1936approximation}. If only a nonnegativity constraint were applied (without integrality), variations of nonnegative matrix factorization (NMF) would emerge \cite{lee2000algorithms, gillis2020nonnegative}. The IMF problem \eqref{eq: imf problem} poses a challenging integer program, with finding its global minima known to be NP-hard \cite{dong2018integer, van1981another}. Only a few iterative algorithms \cite{dong2018integer, lin2005integer} have been proposed to find a ``good solution" for some IMF variants in contexts other than image compression. In Section \ref{sec: bcd}, we propose an efficient iterative algorithm for the IMF problem \eqref{eq: imf problem}.
@@ -85,29 +85,34 @@ We propose an efficient algorithm for IMF using the block coordinate descent (BC
 	\bm{u}_r \gets \underset{\bm{u}_r \in \mathbb{Z}_{[\alpha,\beta]}^M}{\argmin} \ \lVert \bm{E}_r - \bm{u}_r \bm{v}_r^\mathsf{T} \rVert_\text{F}^2, \label{eq: bcd subproblem: u} \\
 	\bm{v}_r \gets \underset{\bm{v}_r \in \mathbb{Z}_{[\alpha,\beta]}^N}{\argmin} \ \lVert \bm{E}_r - \bm{u}_r \bm{v}_r^\mathsf{T} \rVert_\text{F}^2, \label{eq: bcd subproblem: v}
 \end{align}
-where $\bm{u}_r = U_{:r}$ and $\bm{v}_r = V_{:r}$ represent the $r$-th columns of $\bm{U}$ and $\bm{V}$, respectively. $\bm{E}_r = \bm{X} - \sum_{s \neq r}^{R} \bm{u}_s \bm{v}_s^\mathsf{T}$ is the residual matrix. We define one iteration of BCD as a complete cycle of updates across all the columns of both factors. In fact, the proposed algorithm is a $2R$-block coordinate descent procedure, where at each iteration, first the columns of $\bm{U}$ and then the columns of $\bm{V}$ are updated (see Algorithm \ref{alg: bcd for imf}). Note that subproblem \eqref{eq: bcd subproblem: v} can be transformed into the same form as \eqref{eq: bcd subproblem: u} by simply transposing its error term inside the Frobenius norm. Therefore, we only need to find the best rank-1 approximation with integer elements constrained within a specific interval. Fortunately, this problem has a closed-form solution, as addressed by Theorem \ref{the: bcd subproblem} below.
-
-\begin{theorem}[Integer rank-1 approximation] \label{the: bcd subproblem}
-	Let $\bm{E} \in \mathbb{R}^{M \times N}$, $\bm{u} \in \mathbb{Z}_{[\alpha,\beta]}^{M}$, and $\bm{v} \in \mathbb{R}^{N \times 1}$. A global solution to the problem
-	\begin{equation} \label{eq: bcd subproblem}
-		\bm{u}^* \in \underset{\bm{u} \in \mathbb{Z}_{[\alpha,\beta]}^M}{\argmin} \ \lVert \bm{E} - \bm{u} \bm{v}^\mathsf{T} \rVert_\text{F}^2
-	\end{equation}
-	is given by
-	\begin{equation} \label{eq: bcd subproblem solution}
-		\bm{u}^* = \clamp_{[\alpha,\beta]}\Big(\round\Big(\frac{\bm{E} \bm{v}}{\lVert \bm{v} \rVert^2}\Big)\Big),
-	\end{equation} 
-	where $\round(\bm{Z})$ denotes the operator that rounds each element of $\bm{Z}$ to the nearest integer, and $\clamp_{[\alpha,\beta]}(\bm{Z}) \triangleq \max(\alpha, \min(\bm{Z}, \beta))$ denotes the operator that clamps each element of $\bm{Z}$ to the interval $[\alpha,\beta]$.
-\end{theorem}
-\begin{proof}
-	See Appendix \ref{app: proof} for the proof.
-\end{proof}
-
-Using Theorem \ref{the: bcd subproblem}, we obtain the following update formulas for our BCD algorithm:
+where $\bm{u}_r = U_{:r}$ and $\bm{v}_r = V_{:r}$ represent the $r$-th columns of $\bm{U}$ and $\bm{V}$, respectively. $\bm{E}_r = \bm{X} - \sum_{s \neq r}^{R} \bm{u}_s \bm{v}_s^\mathsf{T}$ is the residual matrix. We define one iteration of BCD as a complete cycle of updates across all the columns of both factors. In fact, the proposed algorithm is a $2R$-block coordinate descent procedure, where at each iteration, first the columns of $\bm{U}$ and then the columns of $\bm{V}$ are updated (see Algorithm \ref{alg: bcd for imf}). Note that subproblem \eqref{eq: bcd subproblem: v} can be transformed into the same form as \eqref{eq: bcd subproblem: u} by simply transposing its error term inside the Frobenius norm. Therefore, we only need to find the best rank-1 approximation with integer elements constrained within a specific interval. 
+\pourya{
+To do so, we replace subproblems \eqref{eq: bcd subproblem: u} and \eqref{eq: bcd subproblem: v} by the following closed-form solutions:
 \begin{align} 
-	\bm{u}_r \gets \clamp_{[\alpha,\beta]}\big(\round\big(\frac{\bm{E}_r \bm{v}_r}{\lVert \bm{v}_r \rVert^2}\big)\big), \label{eq: bcd subproblem solution: u} \\
-	\bm{v}_r \gets \clamp_{[\alpha,\beta]}\big(\round\big(\frac{\bm{E}_r^\mathsf{T} \bm{u}_r}{\lVert \bm{u}_r \rVert^2}\big)\big). \label{eq: bcd subproblem solution: v}
+	\bm{u}_r \gets \round\big(\clamp_{[\alpha,\beta]}\big(\frac{\bm{E}_r \bm{v}_r}{\lVert \bm{v}_r \rVert^2}\big)\big), \label{eq: bcd subproblem solution: u} \\
+	\bm{v}_r \gets \round\big(\clamp_{[\alpha,\beta]}\big(\frac{\bm{E}_r^\mathsf{T} \bm{u}_r}{\lVert \bm{u}_r \rVert^2}\big)\big). \label{eq: bcd subproblem solution: v}
 \end{align}
-It is noteworthy that the combination of $\round(\cdot)$ and $\clamp_{[\alpha,\beta]}(\cdot)$ can be interpreted as the element-wise projector to $\mathbb{Z}_{[\alpha,\beta]}$. Thanks to Theorem \ref{the: bcd subproblem}, the proposed algorithm offers an encouraging property that guarantees the cost function is monotonically non-increasing with each update. 
+It is noteworthy that the combination of $\round(\cdot)$ and $\clamp_{[\alpha,\beta]}(\cdot)$ can be interpreted as the element-wise projector to $\mathbb{Z}_{[\alpha,\beta]}$. In Theorem \ref{thm:convergence}, the convergence of the proposed algorithm employing these closed-form solutions will be established.
+}
+
+% Fortunately, this problem has a closed-form solution, as addressed by Theorem \ref{the: bcd subproblem} below.
+% \begin{theorem}[Integer rank-1 approximation] \label{the: bcd subproblem}
+% 	Let $\bm{E} \in \mathbb{R}^{M \times N}$, $\bm{u} \in \mathbb{Z}_{[\alpha,\beta]}^{M}$, and $\bm{v} \in \mathbb{R}^{N \times 1}$. A global solution to the problem
+% 	\begin{equation} \label{eq: bcd subproblem}
+% 		\bm{u}^* \in \underset{\bm{u} \in \mathbb{Z}_{[\alpha,\beta]}^M}{\argmin} \ \lVert \bm{E} - \bm{u} \bm{v}^\mathsf{T} \rVert_\text{F}^2
+% 	\end{equation}
+% 	is given by
+% 	\begin{equation} \label{eq: bcd subproblem solution}
+% 		\bm{u}^* = \clamp_{[\alpha,\beta]}\Big(\round\Big(\frac{\bm{E} \bm{v}}{\lVert \bm{v} \rVert^2}\Big)\Big),
+% 	\end{equation} 
+% 	where $\round(\bm{Z})$ denotes the operator that rounds each element of $\bm{Z}$ to the nearest integer, and $\clamp_{[\alpha,\beta]}(\bm{Z}) \triangleq \max(\alpha, \min(\bm{Z}, \beta))$ denotes the operator that clamps each element of $\bm{Z}$ to the interval $[\alpha,\beta]$.
+% \end{theorem}
+% \begin{proof}
+% 	See Appendix \ref{app: proof} for the proof.
+% \end{proof}
+
+% Using Theorem \ref{the: bcd subproblem}, we obtain the following update formulas for our BCD algorithm:
+% Thanks to Theorem \ref{the: bcd subproblem}, the proposed algorithm offers an encouraging property that guarantees the cost function is monotonically non-increasing with each update. 
 
 \begin{algorithm}[!t]
 	\caption{The proposed block coordinate descent (BCD) algorithm for IMF. \label{alg: bcd for imf}}
@@ -119,11 +124,11 @@ It is noteworthy that the combination of $\round(\cdot)$ and $\clamp_{[\alpha,\b
 	\While{stopping criterion not satisfied}{
 		$\bm{A} \gets \bm{X} \bm{V}$,\ $\bm{B} \gets \bm{V}^\mathsf{T} \bm{V}$\;
 		\For{$r = 1, \ldots, R$}{
-			$\displaystyle U_{:r} \gets \clamp_{[\alpha,\beta]}\Big(\round\Big(\frac{A_{:r} - \sum_{s \neq r} B_{sr} U_{:s}}{\| V_{:r} \|^2}\Big)\Big)$\;
+			$\displaystyle U_{:r} \gets \round \Big(\clamp_{[\alpha,\beta]}\Big(\frac{A_{:r} - \sum_{s \neq r} B_{sr} U_{:s}}{\| V_{:r} \|^2}\Big)\Big)$\;
 		}
 		$\bm{A} \gets \bm{X}^\mathsf{T} \bm{U}$; $\bm{B} \gets \bm{U}^\mathsf{T} \bm{U}$\;
 		\For{$r = 1, \ldots, R$}{
-			$\displaystyle V_{:r} \gets \clamp_{[\alpha,\beta]}\Big(\round\Big(\frac{A_{:r} - \sum_{s \neq r} B_{sr} V_{:s}}{\| U_{:r} \|^2}\Big)\Big)$\;
+			$\displaystyle V_{:r} \gets \round \Big(\clamp_{[\alpha,\beta]}\Big(\frac{A_{:r} - \sum_{s \neq r} B_{sr} V_{:s}}{\| U_{:r} \|^2}\Big)\Big)$\;
 		}
 	}
 	\Return $(\bm{U}, \bm{V})$
@@ -132,14 +137,19 @@ It is noteworthy that the combination of $\round(\cdot)$ and $\clamp_{[\alpha,\b
 \paragraph{Initialization.}
 The initial values of factors can significantly impact the convergence performance of the BCD algorithm. We found that the convergence with naive random initialization can be too slow. To address this issue, we propose an initialization method using SVD. The procedure is straightforward. First, the truncated SVD of the input matrix $\bm{X} \in \mathbb{R}^{M \times N}$ is computed as $\tilde{\bm{U}} \bm{\Sigma} \tilde{\bm{V}}^\mathsf{T}$, where $\bm{\Sigma} \in \mathbb{R}^{R \times R}$ is a diagonal matrix corresponding to the $R$ largest singular values. $\tilde{\bm{U}} \in \mathbb{R}^{M \times R}$ contains the corresponding left-singular vectors in its columns, and $\tilde{\bm{V}} \in \mathbb{R}^{N \times R}$ contains the corresponding right-singular vectors in its columns. The initial factors are then calculated as follows:
 \begin{align} 
-	\bm{U}^0 = \clamp_{[\alpha,\beta]}(\round(\tilde{\bm{U}} \bm{\Sigma}^\frac{1}{2})), \label{eq: initialization: u} \\
-	\bm{V}^0 = \clamp_{[\alpha,\beta]}(\round(\bm{\Sigma}^\frac{1}{2} \tilde{\bm{V}})). \label{eq: initialization: v}
+	\bm{U}^0 = \round(\clamp_{[\alpha,\beta]}(\tilde{\bm{U}} \bm{\Sigma}^\frac{1}{2})), \label{eq: initialization: u} \\
+	\bm{V}^0 = \round(\clamp_{[\alpha,\beta]}(\bm{\Sigma}^\frac{1}{2} \tilde{\bm{V}})). \label{eq: initialization: v}
 \end{align}
 Essentially, this means we first low-rank approximate $\bm{X}$ and then project the elements of the resulting factor matrices into $\mathbb{Z}_{[\alpha,\beta]}$. Algorithm \ref{alg: bcd for imf} provides the pseudocode for the proposed BCD algorithm for IMF. 
 
-
-
-
-
+\pourya{
+The following theorem establishes the convergence of the proposed Algorithm \ref{alg: bcd for imf}.
+\begin{theorem}[Global convergence]\label{thm:convergence}
+    Let $\seq{\bm U^k}[k\in\N]$ and $\seq{\bm V^k}[k\in\N]$ be sequences generated by the proposed Algorithm \ref{alg: bcd for imf}. Then both sequences are convergent to a locally optimal point of the optimization problem \eqref{eq: imf problem}.
+\end{theorem}
+\begin{proof}
+	See Appendix \ref{app: proof} for the proof.
+\end{proof}
+}
 
 \subsection{Implementation Details} \label{sec: implementation details}
