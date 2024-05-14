@@ -1,2 +1,42 @@
 \section{Introduction} \label{sec: introduction}
 
+
+- Importance of image compression
+- Common current compression methods, such as JPEG and JPEG 2000, rely on
+	- kind of transforms, such as discrete cosine transform (DCT) and wavelet transform
+	- carefully designed quantization techniques  
+- Image compression based on low-rank approximation, particularly SVD and NMF
+- Drawback of SVD or NMF-based
+	- can only process matrices with floating point elements, so requires the conversion of the input image to floating point
+	- therefore, requires quantization, but it is sensitive to quantization
+	- therefore, does not not perform well especially at low bite rates compared to JPEG
+- Therefore, we introduce an algorithm based on integer matrix factorization (IMF), which:
+	- low-rank approximates a matrix as a product of two factor matrices with integer elements within a specified interval
+	- is quantization-free, bypassing the need for quantization layer and extra complications 
+	- in fact integrates the quantization and factorization into a single step
+	- has a very low-complexity decoder and low decoding time
+	 
+- mention the experiments and results on Kodak, clic, ImageNet 
+
+
+Your outline provides a structured overview of your paper on "Quantization-free Lossy Image Compression Using Integer Matrix Factorization." Here are some suggestions to improve clarity and flow:
+
+1. **Introduction**
+- Emphasize the importance of image compression in digital communication and data storage.
+- Mention commonly used compression methods, such as JPEG and JPEG 2000, which utilize:
+- Specific types of transforms, including the discrete cosine transform (DCT) and wavelet transform.
+- Carefully designed quantization techniques.
+
+2. **Current Approaches and Their Limitations**
+- Discuss image compression strategies based on low-rank approximation methods like Singular Value Decomposition (SVD) and Non-negative Matrix Factorization (NMF).
+- Highlight drawbacks of using SVD or NMF in image compression:
+- Requirement to process matrices with floating point elements, necessitating the conversion of input images to a floating-point format.
+- Sensitivity to quantization, which leads to suboptimal performance, particularly at low bit rates compared to established methods like JPEG.
+
+3. **Proposed Solution: Integer Matrix Factorization (IMF)**
+- Introduce an innovative algorithm based on integer matrix factorization (IMF), characterized by:
+- Low-rank approximation of a matrix as a product of two factor matrices containing integer elements within a specified range.
+- Elimination of the quantization layer, simplifying the compression process by integrating quantization and factorization into a single step.
+- Advantages such as a very low-complexity decoder and reduced decoding time, improving efficiency.
+
+This restructured introduction should help convey your key points more clearly and logically, setting a strong foundation for the detailed discussion in your paper.

@@ -1,8 +1,7 @@
 \section{Method} \label{sec: method}
 
 
-
-\subsection{Overall Framework} \label{sec: overall framework}
+\subsection{Overall Encoding Framework} \label{sec: overall encoding framework}
 
 \begin{figure}[t]
 	\centering
@@ -17,35 +16,11 @@ Figure \ref{fig:imf_encoder} illustrates an overview of the encoding pipeline fo
 \paragraph{Color Space Transformation.}
 Analogous to the JPEG standard, the image is initially transformed into the YC\textsubscript{B}C\textsubscript{R} color space. Let $\bm{Y} \in [0, 255]^{H \times W}$ represent the \emph{luma} component, and $\bm{C}_B, \bm{C}_R \in [0, 255]^{\frac{H}{2} \times \frac{W}{2}}$ represent the blue-difference and red-difference \emph{chroma} components, respectively. Note that as a result of this transformation, the elements of the \emph{luma} ($\bm{Y}$) and \emph{chroma} ($\bm{C}_B$, $\bm{C}_R$) matrices are not limited to integers and can take any value within the interval $[0, 255]$.
 
-%\begin{equation} \label{eq: ycbcr transform}
-%	\begin{bmatrix}
-	%		Y \\
-	%		C_B \\
-	%		C_R
-	%	\end{bmatrix} \triangleq
-%	\begin{bmatrix}
-	%		0.299 & 0.587 & 0.114 \\
-	%		-0.168736 & -0.331264 & 0.5 \\
-	%		0.5 & -0.418688 & -0.081312
-	%	\end{bmatrix}
-%	\begin{bmatrix}
-	%		R \\
-	%		G \\
-	%		B
-	%	\end{bmatrix}
-%	+
-%	\begin{bmatrix}
-	%		0 \\
-	%		128 \\
-	%		128
-	%	\end{bmatrix},
-%\end{equation}
-
 \paragraph{Chroma Downsampling.} 
 After conversion to the YC\textsubscript{B}C\textsubscript{R} color space, the \emph{chroma} components $\bm{C}_B$ and $\bm{C}_R$ are downsampled using average-pooling with a kernel size of $(2, 2)$ and a stride of $(2, 2)$, similar to the process used in JPEG. This downsampling exploits the fact that the human visual system perceives far more detail in brightness information (\emph{luma}) than in color saturation ({chroma}).
 
 \paragraph{Patchification.}
-Following \emph{chroma} downsampling, we have three components:  the \emph{luma} component $\bm{Y} \in [0, 255]^{H \times W}$ and the \emph{chroma} components $\bm{C}_B, \bm{C}_R \in [0, 255]^{\frac{H}{2} \times \frac{W}{2}}$. Each of the matrices is split into non-overlapping $8 \times 8$ patches. If a dimension of a matrix is not divisible by 8, the matrix is first padded to the nearest size divisible by 8 using reflection of the boundary values. These patches are then flattened into row vectors and stacked vertically to form matrices $\bm{X}_{Y} \in [0, 255]^{\frac{HW}{64} \times 64}$, $\bm{X}_{C_B} \in [0, 255]^{\frac{HW}{256} \times 64}$, and $\bm{X}_{C_R} \in [0, 255]^{\frac{HW}{256} \times 64}$. Later, these matrices will be low-rank approximated using integer matrix factorization (IMF). Note that this patchification technique differs from the block splitting in JPEG, where each block is subject to discrete cosine transform (DCT) and processed independently. This patchification technique not only captures the locality and spatial dependencies of neighboring pixels but also performs better with the matrix decomposition approach to image compression.
+After \emph{chroma} downsampling, we have three components:  the \emph{luma} component $\bm{Y} \in [0, 255]^{H \times W}$ and the \emph{chroma} components $\bm{C}_B, \bm{C}_R \in [0, 255]^{\frac{H}{2} \times \frac{W}{2}}$. Each of the matrices is split into non-overlapping $8 \times 8$ patches. If a dimension of a matrix is not divisible by 8, the matrix is first padded to the nearest size divisible by 8 using reflection of the boundary values. These patches are then flattened into row vectors and stacked vertically to form matrices $\bm{X}_{Y} \in [0, 255]^{\frac{HW}{64} \times 64}$, $\bm{X}_{C_B} \in [0, 255]^{\frac{HW}{256} \times 64}$, and $\bm{X}_{C_R} \in [0, 255]^{\frac{HW}{256} \times 64}$. Later, these matrices will be low-rank approximated using integer matrix factorization (IMF). Note that this patchification technique differs from the block splitting in JPEG, where each block is subject to discrete cosine transform (DCT) and processed independently. This patchification technique not only captures the locality and spatial dependencies of neighboring pixels but also performs better with the matrix decomposition approach to image compression.
 
 \paragraph{Low-rank approximation.} 
 We now apply a low-rank approximation to the matrices $\bm{X}_{Y}$, $\bm{X}_{C_B}$, and $\bm{X}_{C_R}$, which is the core of our compression method that provides a lossy compressed representation of these matrices.  The low-rank approximation \citep{eckart1936approximation} aims to approximate a given matrix $ \bm{X} \in \mathbb{R}^{M \times N} $ by 
@@ -64,6 +39,11 @@ IMF yields integers factor matrices $\bm{U}_{Y} \in \{0, \ldots, 255\}^{\frac{HW
 
 \paragraph{Lossless image compression.}
 Since \emph{factor maps} are already integer tensors, we do not need a quantization step, which is commonly present in other lossy image compression methods and adds extra complications. This is the main advantage of our approach. Moreover, each channel of a \emph{factor map} can be treated as a 8-bit grayscale image and therefore can be directly encoded by any standard lossless image compression method, such as PNG or WebP. For images with a resolution of $H, W \gg 64$, which are most common nowadays, the basis maps ($\bm{\mathcal{U}}$) are significantly larger than the coefficient maps ($\bm{\mathcal{V}}$), accounting for the majority of the storage space. Interestingly, in practice, the IMF basis maps turn out to be meaningful images, each capturing some visual semantic of the image (see Figure \ref{fig:imf_components} for an example). Therefore, our IMF approach can effectively leverage the power of existing lossless image compression algorithms, offering a significant advantage over current methods.
+
+
+\subsection{Decoding} \label{sec: decoding}
+
+The decoder receives an encoded image and reconstructs the RGB image by applying the inverse of the operations used by the encoder, starting from the last layer and moving to the first. Initially, the factor maps are produced by losslessly decompressing the encoded image. These maps are then transformed into factor matrices by flattening their spatial dimensions. The matrices $\bm{X}_{Y}$, $\bm{X}_{C_B}$, and $\bm{X}_{C_R}$ are calculated through the product of the corresponding factor matrices. The \emph{luma} and downsampled \emph{chroma} components are then obtained by reshaping $\bm{X}_{Y}$, $\bm{X}_{C_B}$, and $\bm{X}_{C_R}$ back into their spatial forms. Subsequently, the downsampled \emph{chroma} components are upsampled to their original size using bilinear interpolation. Finally, the YC\textsubscript{B}C\textsubscript{R} image is converted back into an RGB image.
 
 
 \subsection{Integer Matrix Factorization (IMF)} \label{sec: imf}
@@ -88,9 +68,9 @@ We propose an efficient algorithm for IMF using the block coordinate descent (BC
 where $\bm{u}_r = U_{:r}$ and $\bm{v}_r = V_{:r}$ represent the $r$-th columns of $\bm{U}$ and $\bm{V}$, respectively. $\bm{E}_r = \bm{X} - \sum_{s \neq r}^{R} \bm{u}_s \bm{v}_s^\mathsf{T}$ is the residual matrix. We define one iteration of BCD as a complete cycle of updates across all the columns of both factors. In fact, the proposed algorithm is a $2R$-block coordinate descent procedure, where at each iteration, first the columns of $\bm{U}$ and then the columns of $\bm{V}$ are updated (see Algorithm \ref{alg: bcd for imf}). Note that subproblem \eqref{eq: bcd subproblem: v} can be transformed into the same form as \eqref{eq: bcd subproblem: u} by simply transposing its error term inside the Frobenius norm. Therefore, we only need to find the best rank-1 approximation with integer elements constrained within a specific interval. Fortunately, this problem has a closed-form solution, as addressed by Theorem \ref{the: bcd subproblem} below.
 
 \begin{theorem}[Integer rank-1 approximation] \label{the: bcd subproblem}
-	Let $\bm{E} \in \mathbb{R}^{M \times N}$, $\bm{u} \in \mathbb{Z}_{[\alpha,\beta]}^{M}$, and $\bm{v} \in \mathbb{R}^{N \times 1}$. A global solution to the problem
+	Let $\bm{E} \in \mathbb{R}^{M \times N}$, $\bm{u} \in \mathbb{Z}_{[\alpha,\beta]}^{M \times 1}$, and $\bm{v} \in \mathbb{R}^{N \times 1}$. A global solution to the problem
 	\begin{equation} \label{eq: bcd subproblem}
-		\bm{u}^* \in \underset{\bm{u} \in \mathbb{Z}_{[\alpha,\beta]}^M}{\argmin} \ \lVert \bm{E} - \bm{u} \bm{v}^\mathsf{T} \rVert_\text{F}^2
+		\bm{u}^* \in \underset{\bm{u} \in \mathbb{Z}_{[\alpha,\beta]}^{M \times 1}}{\argmin} \ \lVert \bm{E} - \bm{u} \bm{v}^\mathsf{T} \rVert_\text{F}^2
 	\end{equation}
 	is given by
 	\begin{equation} \label{eq: bcd subproblem solution}
@@ -138,8 +118,10 @@ The initial values of factors can significantly impact the convergence performan
 Essentially, this means we first low-rank approximate $\bm{X}$ and then project the elements of the resulting factor matrices into $\mathbb{Z}_{[\alpha,\beta]}$. Algorithm \ref{alg: bcd for imf} provides the pseudocode for the proposed BCD algorithm for IMF. 
 
 
-
-
-
-
 \subsection{Implementation Details} \label{sec: implementation details}
+
+\paragraph{Parameter Setup.} We used a patch size of $8 \times 8$ for patchification. The number of BCD iterations for IMF is by default set to 10 (although our ablation studies in Section \ref{sec: ablation studies} suggests that even 2 iterations may be sufficient in practice). For lossless compression of factor maps, we employed the WebP codec implemented in the Pillow library \cite{clark2015pillow}.
+
+\paragraph{Evaluation.} For comparison, we experimented with the widely-used Kodak dataset \cite{kodak1993}, with 24 lossless images of 768 × 512 resolution. To assess the robustness of our proposed method, we also tested it using the CLIC 2024 validation dataset \cite{clic2024}, consisting of 30 high-resolution, high-quality images. To evaluate the rate-distortion performance, we measured the bit rate in bits per pixel (bpp) and assessed the quality of reconstructed images using the PSNR and SSIM metrics. We plotted rate-distortion (RD) curves, such as the PSNR-bpp curve, for each method to demonstrate the compression performance.
+
+\paragraph{Baseline Codecs.} For JPEG compression, we employed the Pillow library \cite{clark2015pillow}. Our SVD-based compression baseline follows the same framework as the proposed IMF compression algorithm. However, it employs truncated SVD instead of IMF, followed by uniform quantization of the factors and lossless compression using the zlib library \cite{deutsch1996zlib}. This differs from the IMF algorithm where factors are first reshaped into factor maps and then compressed losslessly as images using WebP.
