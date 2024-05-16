@@ -1,42 +1,37 @@
 \section{Introduction} \label{sec: introduction}
 
+Lossy image compression involves reducing the storage size of digital images by permanently discarding some image data details that are redundant or less perceptible to the human eye. This is crucial for efficiently storing and transmitting images, particularly in applications where bandwidth or storage resources are limited, such as web browsing, streaming, and mobile platforms. Lossy image compression methods enable adjusting the degree of compression, providing a selectable tradeoff between storage size and image quality.
 
-- Importance of image compression
-- Common current compression methods, such as JPEG and JPEG 2000, rely on
-	- kind of transforms, such as discrete cosine transform (DCT) and wavelet transform
-	- carefully designed quantization techniques  
-- Image compression based on low-rank approximation, particularly SVD and NMF
-- Drawback of SVD or NMF-based
-	- can only process matrices with floating point elements, so requires the conversion of the input image to floating point
-	- therefore, requires quantization, but it is sensitive to quantization
-	- therefore, does not not perform well especially at low bite rates compared to JPEG
-- Therefore, we introduce an algorithm based on integer matrix factorization (IMF), which:
-	- low-rank approximates a matrix as a product of two factor matrices with integer elements within a specified interval
-	- is quantization-free, bypassing the need for quantization layer and extra complications 
-	- in fact integrates the quantization and factorization into a single step
-	- has a very low-complexity decoder and low decoding time
-	 
-- mention the experiments and results on Kodak, clic, ImageNet 
+Widely used methods such as JPEG \cite{wallace1991jpeg} and JPEG 2000 \cite{skodras2001jpeg} follow the transform coding approach \cite{goyal2001theoretical}. They use orthogonal linear transformations, such as the discrete cosine transform (DCT) \cite{ahmed1974discrete} and the discrete wavelet transform (DWT) \cite{antonini1992image}, to decorrelate small image blocks. Since these transforms map image data into a continuous domain, quantization is necessary before coding into bytes. However, as quantization errors can significantly degrade compression performance, the quantizers must be carefully crafted to minimize this impact, which further complicates the codec design.
 
+Another promising paradigm riles on low-rank approximation methods [?] such as singular value decomposition (SVD). Current low-rank methods can represent the image data only with components containing floating point elements, which again necessitates a quantization layer prior to any byte-level processing. However, their compression is unfortunately suboptimal due to the higher sensitivity to quantization error compared to transform-based methods like JPEG, particularly at low bit rates. 
 
-Your outline provides a structured overview of your paper on "Quantization-free Lossy Image Compression Using Integer Matrix Factorization." Here are some suggestions to improve clarity and flow:
+%
+%Integer Matrix Factorization (IMF)
+%- Introduce an innovative algorithm based on integer matrix factorization (IMF), characterized by:
+%	- Low-rank approximation of a matrix as a product of two factor matrices containing integer elements within a specified range.
+%	- Elimination of the quantization layer, simplifying the compression process by integrating quantization and factorization into a single step.
+%	- Advantages such as a very low-complexity decoder and reduced decoding time, improving efficiency.
+%
+%This restructured introduction should help convey your key points more clearly and logically, setting a strong foundation for the detailed discussion in your paper.
+%
+%
+%
+%- Importance of image compression
+%- Common current compression methods, such as JPEG and JPEG 2000, rely on
+%- kind of transforms, such as discrete cosine transform (DCT) and wavelet transform
+%- carefully designed quantization techniques  
+%- Image compression based on low-rank approximation, particularly SVD and NMF
+%- Drawback of SVD or NMF-based
+%- can only process matrices with floating point elements, so requires the conversion of the input image to floating point
+%- therefore, requires quantization, but it is sensitive to quantization
+%- therefore, does not not perform well especially at low bite rates compared to JPEG
+%- Therefore, we introduce an algorithm based on integer matrix factorization (IMF), which:
+%- low-rank approximates a matrix as a product of two factor matrices with integer elements within a specified interval
+%- is quantization-free, bypassing the need for quantization layer and extra complications 
+%- in fact integrates the quantization and factorization into a single step
+%- has a very low-complexity decoder and low decoding time
+%
+%- mention the experiments and results on Kodak, clic, ImageNet 
+%
 
-1. **Introduction**
-- Emphasize the importance of image compression in digital communication and data storage.
-- Mention commonly used compression methods, such as JPEG and JPEG 2000, which utilize:
-- Specific types of transforms, including the discrete cosine transform (DCT) and wavelet transform.
-- Carefully designed quantization techniques.
-
-2. **Current Approaches and Their Limitations**
-- Discuss image compression strategies based on low-rank approximation methods like Singular Value Decomposition (SVD) and Non-negative Matrix Factorization (NMF).
-- Highlight drawbacks of using SVD or NMF in image compression:
-- Requirement to process matrices with floating point elements, necessitating the conversion of input images to a floating-point format.
-- Sensitivity to quantization, which leads to suboptimal performance, particularly at low bit rates compared to established methods like JPEG.
-
-3. **Proposed Solution: Integer Matrix Factorization (IMF)**
-- Introduce an innovative algorithm based on integer matrix factorization (IMF), characterized by:
-- Low-rank approximation of a matrix as a product of two factor matrices containing integer elements within a specified range.
-- Elimination of the quantization layer, simplifying the compression process by integrating quantization and factorization into a single step.
-- Advantages such as a very low-complexity decoder and reduced decoding time, improving efficiency.
-
-This restructured introduction should help convey your key points more clearly and logically, setting a strong foundation for the detailed discussion in your paper.
