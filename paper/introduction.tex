@@ -1,37 +1,9 @@
 \section{Introduction} \label{sec: introduction}
 
-Lossy image compression involves reducing the storage size of digital images by permanently discarding some image data details that are redundant or less perceptible to the human eye. This is crucial for efficiently storing and transmitting images, particularly in applications where bandwidth or storage resources are limited, such as web browsing, streaming, and mobile platforms. Lossy image compression methods enable adjusting the degree of compression, providing a selectable tradeoff between storage size and image quality.
+Lossy image compression involves reducing the storage size of digital images by permanently discarding some image data details that are redundant or less perceptible to the human eye. This is crucial for efficiently storing and transmitting images, particularly in applications where bandwidth or storage resources are limited, such as web browsing, streaming, and mobile platforms. Lossy image compression methods enable adjusting the degree of compression, providing a selectable tradeoff between storage size and image quality. Widely used methods such as JPEG \cite{wallace1991jpeg} and JPEG 2000 \cite{skodras2001jpeg} follow the \emph{transform coding} paradigm \cite{goyal2001theoretical}. They use orthogonal linear transformations, such as the discrete cosine transform (DCT) \cite{ahmed1974discrete} and the discrete wavelet transform (DWT) \cite{antonini1992image}, to decorrelate small image blocks. Since these transforms map image data into a continuous domain, quantization is necessary before coding into bytes. However, as quantization errors can significantly degrade compression performance, the quantizers must be carefully crafted to minimize this impact, which further complicates the codec design.
 
-Widely used methods such as JPEG \cite{wallace1991jpeg} and JPEG 2000 \cite{skodras2001jpeg} follow the transform coding approach \cite{goyal2001theoretical}. They use orthogonal linear transformations, such as the discrete cosine transform (DCT) \cite{ahmed1974discrete} and the discrete wavelet transform (DWT) \cite{antonini1992image}, to decorrelate small image blocks. Since these transforms map image data into a continuous domain, quantization is necessary before coding into bytes. However, as quantization errors can significantly degrade compression performance, the quantizers must be carefully crafted to minimize this impact, which further complicates the codec design.
+Another promising paradigm relies on low-rank approximation methods. Particularly singular value decomposition (SVD) is a representative method known to be the deterministically optimal transform for energy compaction \cite{andrews1976singular}. In practice, current SVD-based methods \cite{andrews1976singular, prasantha2007image, hou2015sparse} can represent image data only with components containing floating-point elements, which again necessitates a quantization layer prior to any byte-level processing. However, their compression performance is suboptimal due to their higher sensitivity to quantization errors compared to transform-based methods like JPEG, especially at low bit rates.
 
-Another promising paradigm riles on low-rank approximation methods [?] such as singular value decomposition (SVD). Current low-rank methods can represent the image data only with components containing floating point elements, which again necessitates a quantization layer prior to any byte-level processing. However, their compression is unfortunately suboptimal due to the higher sensitivity to quantization error compared to transform-based methods like JPEG, particularly at low bit rates. 
-
-%
-%Integer Matrix Factorization (IMF)
-%- Introduce an innovative algorithm based on integer matrix factorization (IMF), characterized by:
-%	- Low-rank approximation of a matrix as a product of two factor matrices containing integer elements within a specified range.
-%	- Elimination of the quantization layer, simplifying the compression process by integrating quantization and factorization into a single step.
-%	- Advantages such as a very low-complexity decoder and reduced decoding time, improving efficiency.
-%
-%This restructured introduction should help convey your key points more clearly and logically, setting a strong foundation for the detailed discussion in your paper.
-%
-%
-%
-%- Importance of image compression
-%- Common current compression methods, such as JPEG and JPEG 2000, rely on
-%- kind of transforms, such as discrete cosine transform (DCT) and wavelet transform
-%- carefully designed quantization techniques  
-%- Image compression based on low-rank approximation, particularly SVD and NMF
-%- Drawback of SVD or NMF-based
-%- can only process matrices with floating point elements, so requires the conversion of the input image to floating point
-%- therefore, requires quantization, but it is sensitive to quantization
-%- therefore, does not not perform well especially at low bite rates compared to JPEG
-%- Therefore, we introduce an algorithm based on integer matrix factorization (IMF), which:
-%- low-rank approximates a matrix as a product of two factor matrices with integer elements within a specified interval
-%- is quantization-free, bypassing the need for quantization layer and extra complications 
-%- in fact integrates the quantization and factorization into a single step
-%- has a very low-complexity decoder and low decoding time
-%
-%- mention the experiments and results on Kodak, clic, ImageNet 
-%
-
+Motivated by this, we introduce a new variant of integer matrix factorization (IMF), and based on that, develop an effective \emph{quantization-free} lossy image compression method. Our IMF formulation provides a low-rank representation of the image data as a product of two smaller factor matrices with \emph{bounded integer elements}. Since we can directly store and losslessly process these integer factor matrices at byte-level, quantization is no longer needed, making IMF arguably better-suited than SVD for image compression. Another advantage of IMF is that the reshaped factor matrices can be treated as 8-bit grayscale images, allowing any lossless image compression standard to be seamlessly integrated into the proposed IMF framework. We propose an efficient iterative algorithm for IMF using a block coordinate descent (BCD) scheme, where each column of a factor matrix is taken as a block and updated one at a time using a closed-form solution. 
+ 
+Our contributions are summarized as follows. We propose a new IMF formulation that enables quantization-fee image compression. We propose an efficient algorithm for the IMF problem and prove its convergence. We present a powerful and efficient lossy image coder that outperforms JPEG and SVD at low bit rates. Our method narrows the gap between factorization and quantization, integrating them into a single layer and optimizing the compression systems.
