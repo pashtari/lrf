@@ -6,12 +6,12 @@ import torch
 from torchvision.transforms import v2
 
 import lrf
-from lrf import CustomDataset 
+from lrf import CustomDataset
 from torch.utils.data import DataLoader
 
 
-experiment_name = 'clic'
-data_dir = 'data/clic/clic2024_test_image'
+experiment_name = "clic"
+data_dir = "data/clic/clic2024_test_image"
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(script_dir)
@@ -20,7 +20,7 @@ if not os.path.exists(experiment_dir):
     os.makedirs(experiment_dir)
 
 # Load an image or an image dataset. data_dir can be a path or a directory
-data_dir = os.path.join(parent_dir,data_dir)
+data_dir = os.path.join(parent_dir, data_dir)
 
 # transforms = v2.Compose([v2.ToImage(), v2.Resize(size=(224, 224), interpolation=2)])
 transforms = v2.Compose([v2.ToImage()])
@@ -30,15 +30,15 @@ dataloader = DataLoader(dataset, batch_size=1, shuffle=False)
 
 
 def calc_compression_metrics(image):
-    """ Calculates reconstructed images and metric values for each image and each method in the method_list """
+    """Calculates reconstructed images and metric values for each image and each method in the method_list"""
 
     # JPEG
     for quality in range(0, 100, 5):
-        enocoded = lrf.pil_encode(image, format="JPEG", quality=quality)
-        reconstructed = lrf.pil_decode(enocoded)
+        encoded = lrf.pil_encode(image, format="JPEG", quality=quality)
+        reconstructed = lrf.pil_decode(encoded)
 
-        real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-        real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+        real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+        real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
         compression_ratios["JPEG"].append(real_compression_ratio)
         bpps["JPEG"].append(real_bpp)
@@ -48,13 +48,13 @@ def calc_compression_metrics(image):
 
     # SVD
     for quality in np.linspace(0.0, 100, 100):
-        enocoded = lrf.svd_encode(
+        encoded = lrf.svd_encode(
             image, quality=quality, patch=True, patch_size=(8, 8), dtype=torch.int8
         )
-        reconstructed = lrf.svd_decode(enocoded)
+        reconstructed = lrf.svd_decode(encoded)
 
-        real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-        real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+        real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+        real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
         compression_ratios["SVD"].append(real_compression_ratio)
         bpps["SVD"].append(real_bpp)
@@ -62,10 +62,9 @@ def calc_compression_metrics(image):
         psnr_values["SVD"].append(lrf.psnr(image, reconstructed))
         ssim_values["SVD"].append(lrf.ssim(image, reconstructed))
 
-
     # IMF - RGB
     for quality in np.linspace(0.0, 100, 100):
-        enocoded = lrf.imf_encode(
+        encoded = lrf.imf_encode(
             image,
             color_space="RGB",
             quality=quality,
@@ -76,10 +75,10 @@ def calc_compression_metrics(image):
             num_iters=1,
             verbose=False,
         )
-        reconstructed = lrf.imf_decode(enocoded)
+        reconstructed = lrf.imf_decode(encoded)
 
-        real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-        real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+        real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+        real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
         compression_ratios["IMF - RGB"].append(real_compression_ratio)
         bpps["IMF - RGB"].append(real_bpp)
@@ -87,10 +86,9 @@ def calc_compression_metrics(image):
         psnr_values["IMF - RGB"].append(lrf.psnr(image, reconstructed))
         ssim_values["IMF - RGB"].append(lrf.ssim(image, reconstructed))
 
-
     # IMF - YCbCr
     for quality in np.linspace(0, 100, 100):
-        enocoded = lrf.imf_encode(
+        encoded = lrf.imf_encode(
             image,
             color_space="YCbCr",
             scale_factor=(0.5, 0.5),
@@ -102,10 +100,10 @@ def calc_compression_metrics(image):
             num_iters=10,
             verbose=False,
         )
-        reconstructed = lrf.imf_decode(enocoded)
+        reconstructed = lrf.imf_decode(encoded)
 
-        real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-        real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+        real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+        real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
         compression_ratios["IMF - YCbCr"].append(real_compression_ratio)
         bpps["IMF - YCbCr"].append(real_bpp)
@@ -138,8 +136,8 @@ image_num = len(dataloader)
 # Plotting the results: PSNR vs bpp
 plt.figure()
 for method, values in psnr_values.items():
-    y_values = np.mean(np.array(values).reshape((image_num,-1)), axis=0)
-    x_values = np.mean(np.array(bpps[method]).reshape((image_num,-1)), axis=0)
+    y_values = np.mean(np.array(values).reshape((image_num, -1)), axis=0)
+    x_values = np.mean(np.array(bpps[method]).reshape((image_num, -1)), axis=0)
     plt.plot(x_values, y_values, marker="o", markersize=4, label=method)
 
 plt.xlabel("bpp")
@@ -160,8 +158,8 @@ plt.show()
 # Plotting the results: SSIM vs bpp
 plt.figure()
 for method, values in ssim_values.items():
-    y_values = np.mean(np.array(values).reshape((image_num,-1)), axis=0)
-    x_values = np.mean(np.array(bpps[method]).reshape((image_num,-1)), axis=0)
+    y_values = np.mean(np.array(values).reshape((image_num, -1)), axis=0)
+    x_values = np.mean(np.array(bpps[method]).reshape((image_num, -1)), axis=0)
     plt.plot(x_values, y_values, marker="o", markersize=4, label=method)
 
 plt.xlabel("bpp")
@@ -182,9 +180,8 @@ plt.show()
 save_dict = {
     "compression_ratios": compression_ratios,
     "bpps": bpps,
-    "psnr_values" : psnr_values,
-    "ssim_values" : ssim_values
+    "psnr_values": psnr_values,
+    "ssim_values": ssim_values,
 }
-with open(os.path.join(experiment_dir, 'resutls.pkl'), 'wb') as f:
+with open(os.path.join(experiment_dir, "resutls.pkl"), "wb") as f:
     pickle.dump(save_dict, f)
-

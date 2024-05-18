@@ -38,7 +38,7 @@ IMF yields integers factor matrices $\bm{U}_{Y} \in \{0, \ldots, 255\}^{\frac{HW
 \end{align}
 
 \paragraph{Lossless image compression.}
-Since \emph{factor maps} are already integer tensors, we do not need a quantization step, which is commonly present in other lossy image compression methods and adds extra complications. This is the main advantage of our approach. Moreover, each channel of a \emph{factor map} can be treated as an 8-bit grayscale image and therefore can be directly encoded by any standard lossless image compression method, such as PNG or WebP. For images with a resolution of $H, W \gg 64$, which are most common nowadays, the basis maps ($\bm{\mathcal{U}}$) are significantly larger than the coefficient maps ($\bm{\mathcal{V}}$), accounting for the majority of the storage space. Interestingly, in practice, the IMF basis maps turn out to be meaningful images, each capturing some visual semantic of the image (see Figure \ref{fig: imf_components} for an example). Therefore, our IMF approach can effectively leverage the power of existing lossless image compression algorithms, offering a significant advantage over current methods.
+Since \emph{factor maps} are already integer tensors, we do not need a quantization step, which is commonly present in other lossy image compression methods and adds extra complications. This is the main advantage of our approach. Moreover, each channel of a \emph{factor map} can be treated as an 8-bit grayscale image and therefore can be directly encoded by any standard lossless image compression method, such as PNG or WebP. For images with a resolution of $H, W \gg 64$, which are most common nowadays, the \emph{basis maps} ($\bm{\mathcal{U}}$) are significantly larger than the \emph{coefficient maps} ($\bm{\mathcal{V}}$), accounting for the majority of the storage space. Interestingly, in practice, the IMF basis maps turn out to be meaningful images, each capturing some visual semantic of the image (see Figure \ref{fig: imf_components} for an example). Therefore, our IMF approach can effectively leverage the power of existing lossless image compression algorithms, offering a significant advantage over current methods.
 
 \begin{figure}[t]
     \centering
@@ -70,7 +70,7 @@ Since \emph{factor maps} are already integer tensors, we do not need a quantizat
             \end{subfigure}%
         \end{minipage}
     \end{minipage}
-    \caption{The first channels of IMF factor maps for the \texttt{kodim23} image from Kodak, corresponding to luma ($Y$), blue-difference ($C_B$), and red-difference ($C_R$) chroma.}
+    \caption{The channels of IMF basis maps for the \texttt{kodim23} image from Kodak. corresponding to luma (a), blue-difference (b), and red-difference (c) chroma.}
 	\label{fig: imf_components}
 \end{figure}
 
