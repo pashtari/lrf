@@ -147,11 +147,11 @@ def calc_compression_metrics(
 
         if "JPEG" in args.selected_methods:
             for quality in range(0, 60, 1):
-                enocoded = lrf.pil_encode(image, format="JPEG", quality=quality)
-                reconstructed = lrf.pil_decode(enocoded)
+                encoded = lrf.pil_encode(image, format="JPEG", quality=quality)
+                reconstructed = lrf.pil_decode(encoded)
 
-                real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-                real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+                real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+                real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
                 compression_ratios["JPEG"].append(real_compression_ratio)
                 bpps["JPEG"].append(real_bpp)
@@ -161,17 +161,17 @@ def calc_compression_metrics(
 
         if "SVD" in args.selected_methods:
             for quality in np.linspace(0.0, 7, 30):
-                enocoded = lrf.svd_encode(
+                encoded = lrf.svd_encode(
                     image,
                     quality=quality,
                     patch=args.patchify,
                     patch_size=_pair(args.patch_size),
                     dtype=torch.int8,
                 )
-                reconstructed = lrf.svd_decode(enocoded)
+                reconstructed = lrf.svd_decode(encoded)
 
-                real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-                real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+                real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+                real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
                 compression_ratios["SVD"].append(real_compression_ratio)
                 bpps["SVD"].append(real_bpp)
@@ -186,7 +186,7 @@ def calc_compression_metrics(
                     if args.color_space == "YCbCr"
                     else quality
                 )
-                enocoded = lrf.imf_encode(
+                encoded = lrf.imf_encode(
                     image,
                     color_space=args.color_space,
                     scale_factor=(0.5, 0.5),
@@ -198,10 +198,10 @@ def calc_compression_metrics(
                     num_iters=args.num_iters,
                     verbose=False,
                 )
-                reconstructed = lrf.imf_decode(enocoded)
+                reconstructed = lrf.imf_decode(encoded)
 
-                real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-                real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+                real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+                real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
                 compression_ratios["IMF"].append(real_compression_ratio)
                 bpps["IMF"].append(real_bpp)

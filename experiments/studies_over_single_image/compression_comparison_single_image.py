@@ -8,12 +8,15 @@ import matplotlib.pyplot as plt
 from skimage.io import imread
 
 import lrf
+
 matplotlib.use("pgf")
-matplotlib.rcParams.update({
-    "pgf.texsystem": "pdflatex",
-    'font.family': 'serif',
-    'pgf.rcfonts': False,
-})
+matplotlib.rcParams.update(
+    {
+        "pgf.texsystem": "pdflatex",
+        "font.family": "serif",
+        "pgf.rcfonts": False,
+    }
+)
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
@@ -88,11 +91,11 @@ ssim_values = {
 
 # JPEG
 for quality in range(0, 40, 1):
-    enocoded = lrf.pil_encode(image, format="JPEG", quality=quality)
-    reconstructed = lrf.pil_decode(enocoded)
+    encoded = lrf.pil_encode(image, format="JPEG", quality=quality)
+    reconstructed = lrf.pil_decode(encoded)
 
-    real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-    real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+    real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+    real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
     compression_ratios["JPEG"].append(real_compression_ratio)
     bpps["JPEG"].append(real_bpp)
@@ -103,11 +106,11 @@ for quality in range(0, 40, 1):
 
 # # WebP
 # for quality in range(0, 50, 1):
-#     enocoded = lrf.pil_encode(image, format="WEBP", quality=quality, alpha_quality=0)
-#     reconstructed = lrf.pil_decode(enocoded)
+#     encoded = lrf.pil_encode(image, format="WEBP", quality=quality, alpha_quality=0)
+#     reconstructed = lrf.pil_decode(encoded)
 
-#     real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-#     real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+#     real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+#     real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
 #     compression_ratios["WEBP"].append(real_compression_ratio)
 #     bpps["WEBP"].append(real_bpp)
@@ -117,7 +120,7 @@ for quality in range(0, 40, 1):
 
 # SVD
 for quality in np.linspace(0.0, 5, 20):
-    enocoded = lrf.svd_encode(
+    encoded = lrf.svd_encode(
         image,
         color_space="RGB",
         quality=quality,
@@ -125,10 +128,10 @@ for quality in np.linspace(0.0, 5, 20):
         patch_size=(8, 8),
         dtype=torch.int8,
     )
-    reconstructed = lrf.svd_decode(enocoded)
+    reconstructed = lrf.svd_decode(encoded)
 
-    real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-    real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+    real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+    real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
     compression_ratios["SVD"].append(real_compression_ratio)
     bpps["SVD"].append(real_bpp)
@@ -139,7 +142,7 @@ for quality in np.linspace(0.0, 5, 20):
 
 # IMF - RGB
 for quality in np.linspace(0.0, 25, 20):
-    enocoded = lrf.imf_encode(
+    encoded = lrf.imf_encode(
         image,
         color_space="RGB",
         quality=quality,
@@ -150,10 +153,10 @@ for quality in np.linspace(0.0, 25, 20):
         num_iters=10,
         verbose=False,
     )
-    reconstructed = lrf.imf_decode(enocoded)
+    reconstructed = lrf.imf_decode(encoded)
 
-    real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-    real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+    real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+    real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
     compression_ratios["IMF - RGB"].append(real_compression_ratio)
     bpps["IMF - RGB"].append(real_bpp)
@@ -164,7 +167,7 @@ for quality in np.linspace(0.0, 25, 20):
 
 # IMF - YCbCr
 for quality in np.linspace(0, 25, 20):
-    enocoded = lrf.imf_encode(
+    encoded = lrf.imf_encode(
         image,
         color_space="YCbCr",
         scale_factor=(0.5, 0.5),
@@ -176,10 +179,10 @@ for quality in np.linspace(0, 25, 20):
         num_iters=10,
         verbose=False,
     )
-    reconstructed = lrf.imf_decode(enocoded)
+    reconstructed = lrf.imf_decode(encoded)
 
-    real_compression_ratio = lrf.get_compression_ratio(image, enocoded)
-    real_bpp = lrf.get_bbp(image.shape[-2:], enocoded)
+    real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+    real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
     compression_ratios["IMF"].append(real_compression_ratio)
     bpps["IMF"].append(real_bpp)
@@ -224,7 +227,6 @@ def plot_metrics_collage():
     )
     plt.show()
 
-
     # Plotting the results: SSIM vs bpp
     plt.figure()
     for method, values in ssim_values.items():
@@ -244,7 +246,6 @@ def plot_metrics_collage():
         dpi=600,
     )
     plt.show()
-
 
     # Plotting the compressed images for each method and bpp
     fig, axs = plt.subplots(
@@ -281,6 +282,7 @@ def plot_metrics_collage():
     )
     plt.show()
 
+
 def plot_individual_figs(title=False):
     plt.figure()
     for i, bbp in enumerate(selected_bpps):
@@ -298,10 +300,11 @@ def plot_individual_figs(title=False):
                 dpi=600,
             )
 
-def save_metadata():
-    metadata = {"psnr_values": psnr_values, "ssim_values":ssim_values, "bpps": bpps}
 
-    with open(f"{task_dir}/{task_name}_metadata.json", 'w') as json_file:
+def save_metadata():
+    metadata = {"psnr_values": psnr_values, "ssim_values": ssim_values, "bpps": bpps}
+
+    with open(f"{task_dir}/{task_name}_metadata.json", "w") as json_file:
         json.dump(metadata, json_file, indent=4)
 
 

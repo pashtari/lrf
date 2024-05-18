@@ -74,7 +74,7 @@ plt.show()
 
 
 # Convert to channel-first pytorch tensor
-enocoded_image = lrf.imf_encode(
+encoded_image = lrf.imf_encode(
     image,
     color_space="YCbCr",
     scale_factor=(0.5, 0.5),
@@ -86,10 +86,10 @@ enocoded_image = lrf.imf_encode(
     num_iters=10,
     verbose=False,
 )
-real_bpp = lrf.get_bbp(image.shape[-2:], enocoded_image)
+real_bpp = lrf.get_bbp(image.shape[-2:], encoded_image)
 print(f"bpp: {real_bpp}")
 
-encoded_metadata, encoded_factors = lrf.separate_bytes(enocoded_image, 2)
+encoded_metadata, encoded_factors = lrf.separate_bytes(encoded_image, 2)
 metadata = lrf.bytes_to_dict(encoded_metadata)
 encoded_factors = lrf.separate_bytes(encoded_factors, 6)
 
