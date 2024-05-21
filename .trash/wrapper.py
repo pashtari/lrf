@@ -1,4 +1,9 @@
+
+
 import torch
+
+from deepspeed.profiling.flops_profiler import get_model_profile
+
 from torch import nn
 from torchvision.transforms import v2
 from skimage.io import imread
@@ -22,7 +27,7 @@ image = imread("./data/kodak/kodim19.png")
 transforms = v2.Compose([v2.ToImage()])
 image = torch.tensor(transforms(image))
 
-encoded_image = lrf.imf_encode(
+encoded_image_imf = lrf.imf_encode(
     image,
     color_space="YCbCr",
     scale_factor=(0.5, 0.5),
@@ -34,9 +39,17 @@ encoded_image = lrf.imf_encode(
     num_iters=10,
     verbose=False,
 )
-reconstructed = lrf.imf_decode(encoded_image)
+
+encoded_image_jpeg = lrf.pil_encode(image, format="JPEG", quality=20)
 
 
-model = Wrapper(lrf.imf_decode, encoded_image)
+model = Wrapper(lrf.imf_decode, encoded_image_imf)
 flops = FlopCountAnalysis(model, ())
-flops.total()
+print(f"imf {flops.total()}")
+
+flops, macs, params = get_model_profile(model, args=(), as_string=False)
+
+
+model = Wrapper(lrf.pil_decode, encoded_image_jpeg)
+flops = FlopCountAnalysis(model, ())
+print(f"jpeg {flops.total()}")
