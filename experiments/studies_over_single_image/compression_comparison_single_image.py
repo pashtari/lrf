@@ -9,20 +9,20 @@ from skimage.io import imread
 
 import lrf
 
-matplotlib.use("pgf")
-matplotlib.rcParams.update(
-    {
-        "pgf.texsystem": "pdflatex",
-        "font.family": "serif",
-        "pgf.rcfonts": False,
-    }
-)
+# matplotlib.use("pgf")
+# matplotlib.rcParams.update(
+#     {
+#         "pgf.texsystem": "pdflatex",
+#         "font.family": "serif",
+#         "pgf.rcfonts": False,
+#     }
+# )
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Load the image
-task_name = "kodim19"
-image = imread("./data/kodak/kodim19.png")
+task_name = "kodim08"
+image = imread("./data/kodak/kodim08.png")
 # image = imread("./data/clic/clic2024_validation_image/724b1dfdbde05257c46bb5e9863995b7c37bfcf101ed5a233ef2aa26193f09c4.png")
 
 task_dir = os.path.join(script_dir, task_name)
@@ -118,26 +118,26 @@ for quality in range(0, 40, 1):
 #     psnr_values["WEBP"].append(lrf.psnr(image, reconstructed).item())
 #     ssim_values["WEBP"].append(lrf.ssim(image, reconstructed).item())
 
-# SVD
-for quality in np.linspace(0.0, 5, 20):
-    encoded = lrf.svd_encode(
-        image,
-        color_space="RGB",
-        quality=quality,
-        patch=True,
-        patch_size=(8, 8),
-        dtype=torch.int8,
-    )
-    reconstructed = lrf.svd_decode(encoded)
+# # SVD
+# for quality in np.linspace(0.0, 5, 20):
+#     encoded = lrf.svd_encode(
+#         image,
+#         color_space="RGB",
+#         quality=quality,
+#         patch=True,
+#         patch_size=(8, 8),
+#         dtype=torch.int8,
+#     )
+#     reconstructed = lrf.svd_decode(encoded)
 
-    real_compression_ratio = lrf.get_compression_ratio(image, encoded)
-    real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
+#     real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+#     real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
-    compression_ratios["SVD"].append(real_compression_ratio)
-    bpps["SVD"].append(real_bpp)
-    reconstructed_images["SVD"].append(reconstructed)
-    psnr_values["SVD"].append(lrf.psnr(image, reconstructed).item())
-    ssim_values["SVD"].append(lrf.ssim(image, reconstructed).item())
+#     compression_ratios["SVD"].append(real_compression_ratio)
+#     bpps["SVD"].append(real_bpp)
+#     reconstructed_images["SVD"].append(reconstructed)
+#     psnr_values["SVD"].append(lrf.psnr(image, reconstructed).item())
+#     ssim_values["SVD"].append(lrf.ssim(image, reconstructed).item())
 
 
 # IMF - RGB
@@ -171,13 +171,14 @@ for quality in np.linspace(0, 25, 20):
         image,
         color_space="YCbCr",
         scale_factor=(0.5, 0.5),
-        quality=(quality, quality / 2, quality / 2),
+        quality=(quality, quality // 2, quality // 2),
         patch=True,
         patch_size=(8, 8),
         bounds=(-16, 15),
         dtype=torch.int8,
         num_iters=10,
         verbose=False,
+        pil_kwargs={"lossless": True, "format": "WEBP", "quality": 100},
     )
     reconstructed = lrf.imf_decode(encoded)
 
@@ -194,7 +195,7 @@ for quality in np.linspace(0, 25, 20):
 selected_methods = [
     "JPEG",
     # "WEBP",
-    "SVD",
+    # "SVD",
     "IMF - RGB",
     "IMF",
 ]
@@ -308,5 +309,5 @@ def save_metadata():
         json.dump(metadata, json_file, indent=4)
 
 
-plot_individual_figs()
+plot_metrics_collage()
 save_metadata()

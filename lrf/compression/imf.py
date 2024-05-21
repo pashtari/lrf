@@ -7,7 +7,6 @@ from torch.nn.modules.utils import _triple
 from einops import rearrange
 
 from lrf.factorization import IMF
-from lrf.compression import batched_pil_encode, batched_pil_decode
 from lrf.compression.utils import (
     rgb_to_ycbcr,
     ycbcr_to_rgb,
@@ -117,7 +116,6 @@ def imf_encode(
             x = pad_image(image, patch_size, mode="reflect")
             padded_size = x.shape[-2:]
             x = patchify(x, patch_size)
-            # x =  x * 10
 
             if rank is None:
                 assert (
@@ -138,15 +136,7 @@ def imf_encode(
             u, v = imf.decompose(x.unsqueeze(0))
             u, v = u.squeeze(0), v.squeeze(0)
 
-            u, v = u - bounds[0], v - bounds[0]
-            u, v = to_dtype(u, torch.uint8), to_dtype(v, torch.uint8)
-
-            u, v = depatchify_uv(u, v, padded_size, patch_size)
-
-            encoded_metadata = dict_to_bytes(metadata)
-            encoded_factors = combine_bytes(
-                [batched_pil_encode(u, **pil_kwargs), batched_pil_encode(v, **pil_kwargs)]
-            )
+            factors = u.to(dtype), v.to(dtype)
 
         else:
             x = image.float()
@@ -163,10 +153,7 @@ def imf_encode(
             u, v = imf.decompose(x.unsqueeze(0))
             u, v = u.squeeze(0), v.squeeze(0)
 
-            u, v = u.to(dtype), v.to(dtype)
-
-            encoded_metadata = dict_to_bytes(metadata)
-            encoded_factors = combine_bytes([encode_tensor(u), encode_tensor(v)])
+            factors = u.to(dtype), v.to(dtype)
 
     else:  # color_space == "YCbCr"
 
@@ -210,17 +197,9 @@ def imf_encode(
                 u, v = imf.decompose(x.unsqueeze(0))
                 u, v = u.squeeze(0), v.squeeze(0)
 
-                u, v = u - bounds[0], v - bounds[0]
-                u, v = to_dtype(u, torch.uint8), to_dtype(v, torch.uint8)
-
-                u, v = depatchify_uv(u, v, padded_size, patch_size)
+                u, v = u.to(dtype), v.to(dtype)
 
                 factors.extend([u, v])
-
-            encoded_metadata = dict_to_bytes(metadata)
-            encoded_factors = combine_bytes(
-                [batched_pil_encode(factor, **pil_kwargs) for factor in factors]
-            )
 
         else:
             metadata["original size"] = []
@@ -244,9 +223,8 @@ def imf_encode(
 
                 factors.extend([u, v])
 
-            encoded_metadata = dict_to_bytes(metadata)
-            encoded_factors = combine_bytes([encode_tensor(factor) for factor in factors])
-
+    encoded_metadata = dict_to_bytes(metadata)
+    encoded_factors = combine_bytes([encode_tensor(factor) for factor in factors])
     encoded_image = combine_bytes([encoded_metadata, encoded_factors])
 
     return encoded_image
@@ -260,77 +238,44 @@ def imf_decode(encoded_image: bytes) -> Tensor:
 
     if metadata["color space"] == "RGB":
         encoded_u, encoded_v = separate_bytes(encoded_factors, 2)
+        u, v = decode_tensor(encoded_u), decode_tensor(encoded_v)
+
+        u, v = u.float(), v.float()
+        x = u @ v.mT
 
         if metadata["patch"]:
-            u, v = batched_pil_decode(
-                encoded_u, num_images=metadata["rank"]
-            ), batched_pil_decode(encoded_v, num_images=metadata["rank"])
-
-            u, v = patchify_uv(u[:, 0:1, ...], v)
-
-            bounds = metadata["bounds"]
-            u, v = u.float() + bounds[0], v.float() + bounds[0]
-
-            x = u @ v.mT
-
             image = depatchify(x, metadata["padded size"], metadata["patch size"])
             image = unpad_image(image, metadata["original size"])
 
         else:
-            u, v = decode_tensor(encoded_u), decode_tensor(encoded_v)
-
-            u, v = u.float(), v.float()
-
-            x = u @ v.mT
-
             image = x
 
     else:  # color_space == "YCbCr"
         encoded_factors = separate_bytes(encoded_factors, 6)
+        u_y, v_y = decode_tensor(encoded_factors[0]), decode_tensor(encoded_factors[1])
+        u_cb, v_cb = decode_tensor(encoded_factors[2]), decode_tensor(encoded_factors[3])
+        u_cr, v_cr = decode_tensor(encoded_factors[4]), decode_tensor(encoded_factors[5])
 
         if metadata["patch"]:
-            R1, R2, R3 = metadata["rank"]
-            u_y, v_y = batched_pil_decode(encoded_factors[0], R1), batched_pil_decode(
-                encoded_factors[1], R1
-            )
-            u_cb, v_cb = batched_pil_decode(encoded_factors[2], R2), batched_pil_decode(
-                encoded_factors[3], R2
-            )
-            u_cr, v_cr = batched_pil_decode(encoded_factors[4], R3), batched_pil_decode(
-                encoded_factors[5], R3
-            )
-
             ycbcr = []
             for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
-                u, v = patchify_uv(u[:, 0:1, ...], v[:, 0:1, ...])
-
-                bounds = metadata["bounds"]
-                u, v = u.float() + bounds[0], v.float() + bounds[0]
-
+                u, v = u.float(), v.float()
                 x = u @ v.mT
-
                 channel = depatchify(
                     x, metadata["padded size"][i], metadata["patch size"]
                 )
-                ycbcr.append(unpad_image(channel, metadata["original size"][i]))
+                channel = unpad_image(channel, metadata["original size"][i])
+                ycbcr.append(channel)
         else:
-            u_y, v_y = decode_tensor(encoded_factors[0]), decode_tensor(
-                encoded_factors[1]
-            )
-            u_cb, v_cb = decode_tensor(encoded_factors[2]), decode_tensor(
-                encoded_factors[3]
-            )
-            u_cr, v_cr = decode_tensor(encoded_factors[4]), decode_tensor(
-                encoded_factors[5]
-            )
-
             ycbcr = []
             for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
                 u, v = u.float(), v.float()
                 x = u @ v.mT
                 ycbcr.append(x)
 
-        image = chroma_upsampling(ycbcr, size=metadata["original size"][0], mode="area")
+        image = chroma_upsampling(
+            ycbcr, size=metadata["original size"][0], mode="nearest"
+        )
         image = ycbcr_to_rgb(image)
 
     image = to_dtype(image, getattr(torch, metadata["dtype"]))

@@ -1,4 +1,7 @@
 import torch
+
+from deepspeed.profiling.flops_profiler import get_model_profile
+
 from torch import nn
 from torchvision.transforms import v2
 from skimage.io import imread
@@ -13,7 +16,7 @@ class Wrapper(nn.Module):
         self.fun = fun
         self.args = args
 
-    def forward(self):
+    def forward(self, x):
         return self.fun(*self.args)
 
 
@@ -22,7 +25,7 @@ image = imread("./data/kodak/kodim19.png")
 transforms = v2.Compose([v2.ToImage()])
 image = torch.tensor(transforms(image))
 
-encoded_image = lrf.imf_encode(
+encoded_image_imf = lrf.imf_encode(
     image,
     color_space="YCbCr",
     scale_factor=(0.5, 0.5),
@@ -34,9 +37,14 @@ encoded_image = lrf.imf_encode(
     num_iters=10,
     verbose=False,
 )
-reconstructed = lrf.imf_decode(encoded_image)
+
+encoded_image_jpeg = lrf.pil_encode(image, format="JPEG", quality=20)
 
 
-model = Wrapper(lrf.imf_decode, encoded_image)
-flops = FlopCountAnalysis(model, ())
-flops.total()
+model = Wrapper(lrf.imf_decode, encoded_image_imf)
+flops, macs, params = get_model_profile(model, input_shape=(10,), as_string=False)
+print(f"imf decoder: {flops}")
+
+model = Wrapper(lrf.pil_decode, encoded_image_jpeg)
+flops, macs, params = get_model_profile(model, input_shape=(10,), as_string=False)
+print(f"jpeg decoder: {flops}")
