@@ -1,20 +1,27 @@
 
 \section{Omitted Proofs}
 \subsection{Proof of Theorem \ref{the: bcd subproblem}} \label{app: monotonicity proof}
-We start by proving the closed-form solution \eqref{eq: bcd_closed_form_subproblem_u}, noting that the proof for \eqref{eq: bcd_closed_form_subproblem_v} follows the same reasoning. 
+We start by proving the closed-form solution \eqref{eq: bcd_closed_form_subproblem_u}, noting that the proof for \eqref{eq: bcd_closed_form_subproblem_v} follows the same reasoning.
 The objective function in the subproblem \eqref{eq: bcd subproblem: u} can be reformulated as follows:
 \begin{align}
     \argmin_{\bm{u}_r \in \Z_{[\alpha,\beta]}^M} \|\bm{E}_r - \bm{u}_r \bm{v}_r^\mathsf{T}\|_{\rm F} 
     = \argmin_{\bm{u}_r \in \Z_{[\alpha,\beta]}^M}\sum_{i=1}^M \sum_{j=1}^N (e_{ij}^r - u_i^r v_j^r)^2,
     \label{eq: bcd subproblem: u: reform}
 \end{align}
-where $e_{ij}^r$ denotes the element of matrix $\bm{E}_r$ in the $i$th row and $j$th column, and $u_i^r$ and $v_j^r$ are the $i$th and $j$th elements of vectors $\bm{u}_r$ and $\bm{v}_r$, respectively.
-Since the elements of $\bm{E}_r$ and $\bm v_r$ are fixed in problem \eqref{eq: bcd subproblem: u}, the optimization \eqref{eq: bcd subproblem: u: reform} can be decoupled into $M$ optimizations as follows:
+where $e_{ij}^r$ denotes the element of matrix $\bm{E}_r$ in the $i$th row and $j$th column, and $u_i^r$ and $v_j^r$ are the $i$th and $j$th elements of vectors $\bm{u}_r$ and $\bm{v}_r$, respectively. Since the elements of $\bm{E}_r$ and $\bm{v}_r$ are fixed in problem \eqref{eq: bcd subproblem: u}, the optimization \eqref{eq: bcd subproblem: u: reform} can be decoupled into $M$ optimizations as follows:
 \begin{align}
-    \argmin_{u^r_i \in \Z_{[\alpha,\beta]}} \sum_{j=1}^N (e_{ij}^r - u_i^r v_j^r)^2, \quad \forall i\in\{1,\dots,M\}.
+    \argmin_{u^r_i \in \Z_{[\alpha,\beta]}} & ~q_i(u_i^r), \quad \forall i\in\{1,\dots,M\}, \nonumber\\
+    \textstyle \text{where} ~~ &q_i(u_i^r) \coloneqq \sum_{j=1}^N (e_{ij}^r - u_i^r v_j^r)^2.
     \label{eq: bcd subproblem: u: decoupled}
 \end{align}
-The objective functions in \eqref{eq: bcd subproblem: u: decoupled} are single-variable quadratic problems. Hence, the global optimum in each decoupled optimization problem can be achieved by finding the minimum of each quadratic problem and then projecting it onto the set $\Z_{[\alpha,\beta]}$. Specifically, following simple calculus, for $u^r_i$ the solution is $u^{r^\star}_i = \clamp_{[\alpha,\beta]}(\round(\nicefrac{\sum_{j=1}^N e_{ij}^r v_j^r}{\sum_{j=1}^N v_j^{r^2}}))$, which is presented in a compact form in \eqref{eq: bcd_closed_form_subproblem_u}.
+The objective functions $q_i(u_i^r)$ in \eqref{eq: bcd subproblem: u: decoupled} are single-variable quadratic problems. Hence, the global optimum in each decoupled optimization problem can be achieved by finding the minimum of each quadratic problem and then projecting it onto the set $\Z_{[\alpha,\beta]}$. The minimum of each quadratic function in \eqref{eq: bcd subproblem: u: decoupled}, denoted by $\bar{u}_i^r$, can be simply found by
+\begin{align}
+    \textstyle \nabla_{u_i^r} q_i(u_i^r) = 0 \implies \bar{u}_i^r = \nicefrac{\sum_{j=1}^N e_{ij}^r v_j^r}{\sum_{j=1}^N v_j^{r^2}},
+    \label{eq: bcd subproblem: u: minimum}
+\end{align}
+where $\nabla_x$ is the partial derivative with respect to $x$.
+Since $q_i$ has a constant curvature (second derivative) and $q_i(\bar{u}_i^r + d)$ is nondecreasing with increasing $|d|$, the value in the set $\Z_{[\alpha,\beta]}$ which is closest to $\bar{u}_i^r$ is the global minimizer of \eqref{eq: bcd subproblem: u: decoupled}. This value can be reached by projecting $\bar{u}_i^r$ onto the set $\Z_{[\alpha,\beta]}$, namely $u^{r^\star}_i = \clamp_{[\alpha,\beta]}(\round(\nicefrac{\sum_{j=1}^N e_{ij}^r v_j^r}{\sum_{j=1}^N v_j^{r^2}}))$, which is presented for all $i\in\{1,...,M\}$ in a compact form in \eqref{eq: bcd_closed_form_subproblem_u}.
+
 
 
 \subsection{Proof of Theorem \ref{thm:convergence}} \label{app: convergence proof}
@@ -22,18 +29,18 @@ The objective functions in \eqref{eq: bcd subproblem: u: decoupled} are single-v
 To study the convergence of the proposed Algorithm \ref{alg: bcd for imf}, we recast the optimization problem \eqref{eq: imf problem} to the following equivalent problem:
 \begin{align}
     \begin{split}
-        \minimize_{\bm U \in \R^{M\times R}, \bm V \in \R^{N\times R}} \Psi(\bm U, \bm V) &\coloneqq H(\bm U, \bm V) + f(\bm U) + g(\bm V),\\
-        \text{where} \quad~~~ H(\bm U, \bm V) &\coloneqq \|\bm X - \bm U \bm V^{\rm T} \|_{\rm F}^2,\\
-        f(\bm U) &\coloneqq \delta_{[a,b]}(\bm U) + \delta_\Z(\bm U),\\
-        g(\bm V) &\coloneqq \delta_{[a,b]}(\bm V) + \delta_\Z(\bm V),
+        \minimize_{U_{:r} \in \R^{M}, V_{:r} \in \R^{N}, \forall r\in\{1,...,R\}} \Psi(\bm U, \bm V) &\coloneqq f_0(\bm U, \bm V) + \sum_{r=1}^R f_r(U_{:r}) + \sum_{r=1}^R g_r(V_{:r}),\\
+        \text{where} \quad~~~ f_0(\bm U, \bm V) &\coloneqq \|\bm X - \bm U \bm V^{\rm T} \|_{\rm F}^2,\\
+        f_r(U_{:r}) &\coloneqq \delta_{[a,b]}(U_{:r}) + \delta_\Z(U_{:r}),\\
+        g_r(V_{:r}) &\coloneqq \delta_{[a,b]}(V_{:r}) + \delta_\Z(V_{:r}),
     \end{split}
     \label{eq: IMF_surrogate}
 \end{align}
 with $\delta_\mathcal{B}(\cdot)$ as the indicator function of the nonempty set $\mathcal{B}$ where $\delta_\mathcal{B}(\bm x) = 0$ if $\bm x \in \mathcal{B}$ and $\delta_\mathcal{B}(\bm x) = +\infty$, otherwise. By the definition of functions above, it is easy to confirm that the problems \eqref{eq: imf problem} and \eqref{eq: IMF_surrogate} are equivalent.
 
-The unconstrained optimization problem \eqref{eq: IMF_surrogate} consists of the sum of a differentiable (smooth), convex function $H$ with nonsmooth, nonconvex functions $f$ and $g$. This problem has been extensively studied in the literature under the class of nonconvex nonsmooth minimization problems.
+The unconstrained optimization problem \eqref{eq: IMF_surrogate} consists of the sum of a differentiable (smooth), convex function $f_0$ with nonsmooth, nonconvex functions $f_r$ and $g_r$. This problem has been extensively studied in the literature under the class of nonconvex nonsmooth minimization problems.
 One of the common algorithms applied to such a problem class is the well-known forward-backward-splitting (FBS) algorithm \cite{combettes2011proximal,bauschke2017correction}.
-In Algorithm \ref{alg: bcd for imf}, the variables $\bm U$ and $\bm V$ are updated sequentially following block coordinate (BC) descent minimization algorithms, also often called Gauss-Seidel updates or alternating minimization \cite{nesterov2012efficiency,attouch2013convergence}.
+In Algorithm \ref{alg: bcd for imf}, the blocks $U_{:r}$ and $V_{:r}$ are updated sequentially following block coordinate (BC) descent minimization algorithms, also often called Gauss-Seidel updates or alternating minimization \cite{nesterov2012efficiency,attouch2013convergence}.
 Hence, in this convergence study, we are interested in algorithms that allow BC-type updates for the nonconvex nonsmooth problem of \eqref{eq: IMF_surrogate} \cite{beck2013convergence,bolte2014proximal}. Specifically, we focus on the proximal alternating linearized minimization (PALM) algorithm \cite{bolte2014proximal}, to relate its convergence behavior to that of Algorithm \ref{alg: bcd for imf}.
 To that end, we show that the updates of Algorithm \ref{alg: bcd for imf} are equivalent to the updates of PALM on the recast problem of \eqref{eq: IMF_surrogate}, and all the assumptions necessary for the convergence of PALM are satisfied by our problem setting.
 
@@ -49,7 +56,7 @@ The PALM algorithm can be summarized as follows:
         \label{eq: palm_updates}
     \end{align}
 \end{enumerate}
-where the proximal map for an extended proper lower semicontinuous (nonsmooth) function $\func{\varphi}{\R^n}{(-\infty,+\infty]}$ and $\gamma > 0$ is defined as $\prox^\varphi_\gamma(\bm x) \coloneqq \argmin_{\bm w\in\R^n}\left\{\varphi(\bm w) + \frac{\gamma}{2} \|\bm w - \bm x\|^2_2\right\}$, $\nabla_x$ is the partial derivative with respect to $x$, and $L_1 > 0$, $L_2 > 0$ are local Lipschitz moduli, defined in the following proposition.
+where the proximal map for an extended proper lower semicontinuous (nonsmooth) function $\func{\varphi}{\R^n}{(-\infty,+\infty]}$ and $\gamma > 0$ is defined as $\prox^\varphi_\gamma(\bm x) \coloneqq \argmin_{\bm w\in\R^n}\left\{\varphi(\bm w) + \frac{\gamma}{2} \|\bm w - \bm x\|^2_2\right\}$, and $L_1 > 0$, $L_2 > 0$ are local Lipschitz moduli, defined in the following proposition.
 It is also remarked that the iterates in \eqref{eq: palm_updates} can be extended to more than two blocks, which is our case in Algorithm \ref{alg: bcd for imf} with a block representing a column of $\bm U$ or $\bm V$, without violation of the convergence. However, for the sake of presentation, we study these BC-type iterates with two blocks of the form \eqref{eq: palm_updates}. 
 
 The following proposition investigates the necessary assumptions (cf. \cite[Asm. 1 and Asm. 2]{bolte2014proximal}) for convergence iterates in \eqref{eq: palm_updates}.
@@ -71,7 +78,7 @@ The following proposition investigates the necessary assumptions (cf. \cite[Asm.
                 &\leq M \|(\bm U_1 - \bm U_2, \bm V_1 - \bm V_2)\|,
             \end{split}
         \end{align}
-        where $(\cdot,\cdot)$ denotes the concatination of the two arguments.
+        where $(\cdot,\cdot)$ denotes the concatenation of the two arguments.
         \item The sets $[a,b]$ and integer numbers are semi-algebraic; so are their indicator functions. The function $H$ is also polynomial, hence it is semi-algebraic. The sum of these functions results in a semi-algebraic function $\Psi$ in \eqref{eq: IMF_surrogate}, hence $\Psi$ is a Kurdyka-Łojasiewicz (KL) function.
     \end{enumerate}
 \end{prop}
@@ -95,16 +102,16 @@ Furthermore, the proximal operators $\prox^f_{c_k}$ and $\prox^g_{d_k}$ can effi
 \begin{proof}
     Define the following norms for a given matrix $\bm W \in \R^{M\times R}$:
     \begin{align*}
-        \|\bm W\|_{[a,b]} \coloneqq \sum_{i,j \mid a \leq \bm W_{ij} \leq b} \bm W_{ij}^2, \quad 
-        \|\bm W\|_a \coloneqq \sum_{i,j \mid \bm W_{ij} < a} \bm W_{ij}^2, \quad 
-        \|\bm W\|_b \coloneqq \sum_{i,j \mid \bm W_{ij} > b} \bm W_{ij}^2.
+        \|\bm W\|_{[a,b]}^2 \coloneqq \sum_{i,j \mid a \leq \bm W_{ij} \leq b} \bm W_{ij}^2, \quad 
+        \|\bm W\|_a^2 \coloneqq \sum_{i,j \mid \bm W_{ij} < a} \bm W_{ij}^2, \quad 
+        \|\bm W\|_b^2 \coloneqq \sum_{i,j \mid \bm W_{ij} > b} \bm W_{ij}^2.
     \end{align*}
     Moreover, note that the $\round$ operator  can be equivalently driven by the following proximal operator:
     \begin{equation}
         \round(\bm W) = \argmin_{\bm U \in \Z^{M\times R}}\{\|\bm U - \bm W\|^2_F\}.
         \label{eq: equivalence_prox_Tz}
     \end{equation}
-    The proximal operator can $\prox^f_{c_k}(\bm W)$ can be rewritten as
+    The proximal operator $\prox^f_{c_k}(\bm W)$ can be rewritten as
     \begin{align*}
         \prox^f_{c_k}(\bm W) &= \argmin_{\bm U \in \R^{M\times R}}\{\delta_{[a,b]}(\bm U) + \delta_{\Z}(\bm U) + \frac{c_k}{2} \|\bm U - \bm W\|^2_F\}\\
         &= \argmin_{\bm U \in \Z_{[a,b]}^{M\times R}}\{\|\bm U - \bm W\|^2_F\}\\
@@ -117,7 +124,7 @@ Furthermore, the proximal operators $\prox^f_{c_k}$ and $\prox^g_{d_k}$ can effi
     In the third equality the matrices $\bm A\in\R^{M\times R}$ and $\bm B\in\R^{M\times R}$ have elements all equal to $a$ and $b$, respectively.
     The third equality is due to the fact that replacing $\|\bm U - \bm W\|^2_a + \|\bm U - \bm W\|^2_b$ with $\|\bm U - \bm A\|^2_a + \|\bm U - \bm B\|^2_b$ has no effect on the solution of the minimization. The fourth equality is also trivial due to the involved norms in the third equality. The fifth equality can be easily confirmed by the definition of $\clamp_{[\alpha,\beta]}$. Finally, in the last equality \eqref{eq: equivalence_prox_Tz} is invoked. A similar proof can be trivially followed for $\prox^f_{d_k}(\bm Z) = \round(\clamp_{[\alpha,\beta]}(\bm Z))$ as well.
 \end{proof}
-Now that the equivalence of iterates \eqref{eq: palm_updates} with the simple and closed-form steps in Algorithm \ref{alg: bcd for imf} is fully established, and the assumptions required for the convergence are verified in proposition \ref{prop: assumptions} to be met by problems \eqref{eq: IMF_surrogate} and \eqref{eq: imf problem}, proposition \ref{prop: convergence} can be travially invoked to establish the convergence of Algorithm \ref{alg: bcd for imf} to a locally optimal point of problem \eqref{eq: imf problem}.
+Now that the equivalence of iterates \eqref{eq: palm_updates} with the simple and closed-form steps in Algorithm \ref{alg: bcd for imf} is fully established, and the assumptions required for the convergence are verified in proposition \ref{prop: assumptions} to be met by problems \eqref{eq: IMF_surrogate} and \eqref{eq: imf problem}, proposition \ref{prop: convergence} can be trivially invoked to establish the convergence of Algorithm \ref{alg: bcd for imf} to a locally optimal point of problem \eqref{eq: imf problem}.
 
 
 \section{Implementation Details} \label{sec: implementation details}
@@ -128,7 +135,7 @@ Now that the equivalence of iterates \eqref{eq: palm_updates} with the simple an
 
 \paragraph{Baseline Codecs.} For JPEG compression, we employed the Pillow library \cite{clark2015pillow}. Our SVD-based compression baseline follows the same framework as the proposed IMF compression algorithm. However, it employs truncated SVD instead of IMF, followed by uniform quantization of the factors and lossless compression using the zlib library \cite{deutsch1996zlib}. This differs from the IMF algorithm where factors are first reshaped into factor maps and then compressed losslessly as images using WebP.
 
-\section{More Ablations Studies}
+\section{More Ablation Studies}
 
 \paragraph{Patchification.} 
 In Figure \ref{fig: patch ablation psnr-vs-bpp}, patchification effect with different patch sizes is investigated.
