@@ -118,16 +118,16 @@ We propose an efficient algorithm for IMF using the block coordinate descent (BC
 The pseudocode is provided in Algorithm \ref{alg: bcd for imf}.
 Starting with some initial parameter values, this approach involves sequentially minimizing the cost function with respect to a single column of a factor at a time, while keeping the other columns of that factor and the entire other factor fixed. This process is repeated until a stopping criterion is met, such as when the change in the cost function value falls below a predefined threshold or the maximum number of iterations is reached. Formally, this involves solving one of the following subproblems at a time:
 \begin{align}  
-	\bm{u}_r \gets \underset{\bm{u}_r \in \mathbb{Z}_{[\alpha,\beta]}^M}{\argmin} \ \lVert \bm{E}_r - \bm{u}_r \bm{v}_r^\mathsf{T} \rVert_\text{F}^2, \label{eq: bcd subproblem: u} \\
-	\bm{v}_r \gets \underset{\bm{v}_r \in \mathbb{Z}_{[\alpha,\beta]}^N}{\argmin} \ \lVert \bm{E}_r - \bm{u}_r \bm{v}_r^\mathsf{T} \rVert_\text{F}^2, \label{eq: bcd subproblem: v}
+	\bm{u}_r \gets \underset{\bm{u}_r \in \mathbb{Z}_{[\alpha,\beta]}^{M \times 1}}{\argmin} \ \lVert \bm{E}_r - \bm{u}_r \bm{v}_r^\mathsf{T} \rVert_\text{F}^2, \label{eq: bcd subproblem: u} \\
+	\bm{v}_r \gets \underset{\bm{v}_r \in \mathbb{Z}_{[\alpha,\beta]}^{N \times 1}}{\argmin} \ \lVert \bm{E}_r - \bm{u}_r \bm{v}_r^\mathsf{T} \rVert_\text{F}^2, \label{eq: bcd subproblem: v}
 \end{align}
 where $\bm{u}_r \coloneqq U_{:r}$ and $\bm{v}_r \coloneqq V_{:r}$ represent the $r$-th columns of $\bm{U}$ and $\bm{V}$, respectively. $\bm{E}_r \coloneqq \bm{X} - \sum_{s \neq r}^{R} \bm{u}_s \bm{v}_s^\mathsf{T}$ is the residual matrix. We define one iteration of BCD as a complete cycle of updates across all the columns of both factors. In fact, the proposed algorithm is a $2R$-block coordinate descent procedure, where at each iteration, first the columns of $\bm{U}$ and then the columns of $\bm{V}$ are updated (see Algorithm \ref{alg: bcd for imf}). Note that subproblem \eqref{eq: bcd subproblem: v} can be transformed into the same form as \eqref{eq: bcd subproblem: u} by simply transposing its error term inside the Frobenius norm. Therefore, we only need to find the best rank-1 approximation with integer elements constrained within a specific interval. Fortunately, this problem has a closed-form solution, as addressed by Theorem \ref{the: bcd subproblem} below.
 
 \begin{theorem}[Closed-form solutions] \label{the: bcd subproblem}
     The global optima of subproblems \eqref{eq: bcd subproblem: u} and \eqref{eq: bcd subproblem: v} can be represented by closed-form solutions. Specifically, these subproblems can be replaced by the following:
     \begin{align} 
-            \textstyle \bm{u}_r \gets \clamp_{[\alpha,\beta]}\big(\round\big(\frac{\bm{E}_r \bm{v}_r}{\lVert \bm{v}_r \rVert^2}\big)\big), \label{eq: bcd_closed_form_subproblem_u}\\
-            \textstyle \bm{v}_r \gets \clamp_{[\alpha,\beta]}\big(\round\big(\frac{\bm{E}_r^\mathsf{T} \bm{u}_r}{\lVert \bm{u}_r \rVert^2}\big)\big),             
+            \textstyle \bm{u}_r \gets \clamp_{[\alpha,\beta]}\Big(\round\Big(\frac{\bm{E}_r \bm{v}_r}{\lVert \bm{v}_r \rVert^2}\Big)\Big), \label{eq: bcd_closed_form_subproblem_u}\\
+            \textstyle \bm{v}_r \gets \clamp_{[\alpha,\beta]}\Big(\round\Big(\frac{\bm{E}_r^\mathsf{T} \bm{u}_r}{\lVert \bm{u}_r \rVert^2}\Big)\Big),             
         \label{eq: bcd_closed_form_subproblem_v}
     \end{align}
     where $\round(\bm{Z})$ denotes an element-wise operator that rounds each element of $\bm{Z}$ to the nearest integer, and $\clamp_{[\alpha,\beta]}(\bm{Z}) \triangleq \max(\alpha, \min(\bm{Z}, \beta))$ denotes an element-wise operator that clamps each element of $\bm{Z}$ to the interval $[\alpha,\beta]$.
