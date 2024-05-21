@@ -1,4 +1,5 @@
 import os
+import time
 import json
 import numpy as np
 import torch
@@ -86,13 +87,32 @@ ssim_values = {
     "IMF": [],
 }
 
+encode_time = {
+    "JPEG": [],
+    "WEBP": [],
+    "SVD": [],
+    "IMF - RGB": [],
+    "IMF": [],
+}
+
+decode_time = {
+    "JPEG": [],
+    "WEBP": [],
+    "SVD": [],
+    "IMF - RGB": [],
+    "IMF": [],
+}
+
 # Calculate reconstructed images and metric values for each method
 
 
 # JPEG
 for quality in range(0, 40, 1):
+    t0 = time.time()
     encoded = lrf.pil_encode(image, format="JPEG", quality=quality)
+    t1 = time.time()
     reconstructed = lrf.pil_decode(encoded)
+    t2 = time.time()
 
     real_compression_ratio = lrf.get_compression_ratio(image, encoded)
     real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
@@ -102,6 +122,8 @@ for quality in range(0, 40, 1):
     reconstructed_images["JPEG"].append(reconstructed)
     psnr_values["JPEG"].append(lrf.psnr(image, reconstructed).item())
     ssim_values["JPEG"].append(lrf.ssim(image, reconstructed).item())
+    encode_time["JPEG"].append(1000 * (t1 - t0))
+    decode_time["JPEG"].append(1000 * (t2 - t1))
 
 
 # # WebP
@@ -118,30 +140,36 @@ for quality in range(0, 40, 1):
 #     psnr_values["WEBP"].append(lrf.psnr(image, reconstructed).item())
 #     ssim_values["WEBP"].append(lrf.ssim(image, reconstructed).item())
 
-# # SVD
-# for quality in np.linspace(0.0, 5, 20):
-#     encoded = lrf.svd_encode(
-#         image,
-#         color_space="RGB",
-#         quality=quality,
-#         patch=True,
-#         patch_size=(8, 8),
-#         dtype=torch.int8,
-#     )
-#     reconstructed = lrf.svd_decode(encoded)
+# SVD
+for quality in np.linspace(0.0, 5, 20):
+    t0 = time.time()
+    encoded = lrf.svd_encode(
+        image,
+        color_space="RGB",
+        quality=quality,
+        patch=True,
+        patch_size=(8, 8),
+        dtype=torch.int8,
+    )
+    t1 = time.time()
+    reconstructed = lrf.svd_decode(encoded)
+    t2 = time.time()
 
-#     real_compression_ratio = lrf.get_compression_ratio(image, encoded)
-#     real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
+    real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+    real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
-#     compression_ratios["SVD"].append(real_compression_ratio)
-#     bpps["SVD"].append(real_bpp)
-#     reconstructed_images["SVD"].append(reconstructed)
-#     psnr_values["SVD"].append(lrf.psnr(image, reconstructed).item())
-#     ssim_values["SVD"].append(lrf.ssim(image, reconstructed).item())
+    compression_ratios["SVD"].append(real_compression_ratio)
+    bpps["SVD"].append(real_bpp)
+    reconstructed_images["SVD"].append(reconstructed)
+    psnr_values["SVD"].append(lrf.psnr(image, reconstructed).item())
+    ssim_values["SVD"].append(lrf.ssim(image, reconstructed).item())
+    encode_time["SVD"].append(1000 * (t1 - t0))
+    decode_time["SVD"].append(1000 * (t2 - t1))
 
 
 # IMF - RGB
 for quality in np.linspace(0.0, 25, 20):
+    t0 = time.time()
     encoded = lrf.imf_encode(
         image,
         color_space="RGB",
@@ -150,10 +178,12 @@ for quality in np.linspace(0.0, 25, 20):
         patch_size=(8, 8),
         bounds=(-16, 15),
         dtype=torch.int8,
-        num_iters=10,
+        num_iters=5,
         verbose=False,
     )
+    t1 = time.time()
     reconstructed = lrf.imf_decode(encoded)
+    t2 = time.time()
 
     real_compression_ratio = lrf.get_compression_ratio(image, encoded)
     real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
@@ -163,24 +193,28 @@ for quality in np.linspace(0.0, 25, 20):
     reconstructed_images["IMF - RGB"].append(reconstructed)
     psnr_values["IMF - RGB"].append(lrf.psnr(image, reconstructed).item())
     ssim_values["IMF - RGB"].append(lrf.ssim(image, reconstructed).item())
+    encode_time["IMF - RGB"].append(1000 * (t1 - t0))
+    decode_time["IMF - RGB"].append(1000 * (t2 - t1))
 
 
 # IMF - YCbCr
 for quality in np.linspace(0, 25, 20):
+    t0 = time.time()
     encoded = lrf.imf_encode(
         image,
         color_space="YCbCr",
         scale_factor=(0.5, 0.5),
-        quality=(quality, quality // 2, quality // 2),
+        quality=(quality, quality / 2, quality / 2),
         patch=True,
         patch_size=(8, 8),
         bounds=(-16, 15),
         dtype=torch.int8,
         num_iters=10,
         verbose=False,
-        pil_kwargs={"lossless": True, "format": "WEBP", "quality": 100},
     )
+    t1 = time.time()
     reconstructed = lrf.imf_decode(encoded)
+    t2 = time.time()
 
     real_compression_ratio = lrf.get_compression_ratio(image, encoded)
     real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
@@ -190,6 +224,8 @@ for quality in np.linspace(0, 25, 20):
     reconstructed_images["IMF"].append(reconstructed)
     psnr_values["IMF"].append(lrf.psnr(image, reconstructed).item())
     ssim_values["IMF"].append(lrf.ssim(image, reconstructed).item())
+    encode_time["IMF"].append(1000 * (t1 - t0))
+    decode_time["IMF"].append(1000 * (t2 - t1))
 
 
 selected_methods = [
@@ -203,6 +239,8 @@ bpps = {k: bpps[k] for k in selected_methods}
 reconstructed_images = {k: reconstructed_images[k] for k in selected_methods}
 psnr_values = {k: psnr_values[k] for k in selected_methods}
 ssim_values = {k: ssim_values[k] for k in selected_methods}
+encode_time = {k: encode_time[k] for k in selected_methods}
+decode_time = {k: decode_time[k] for k in selected_methods}
 
 selected_bpps = [0.4, 0.3, 0.2, 0.15, 0.1]
 
@@ -303,11 +341,18 @@ def plot_individual_figs(title=False):
 
 
 def save_metadata():
-    metadata = {"psnr_values": psnr_values, "ssim_values": ssim_values, "bpps": bpps}
+    metadata = {
+        "psnr_values": psnr_values,
+        "ssim_values": ssim_values,
+        "bpps": bpps,
+        "encode_time": encode_time,
+        "decode_time": decode_time,
+    }
 
     with open(f"{task_dir}/{task_name}_metadata.json", "w") as json_file:
         json.dump(metadata, json_file, indent=4)
 
 
 plot_metrics_collage()
+# plot_individual_figs()
 save_metadata()
