@@ -1,0 +1,54 @@
+
+\DeclareMathOperator\prox{prox}%											proximal mapping
+\DeclareMathOperator*\minimize{minimize}%									minimize
+
+
+\newcommand{\N}{\mathbb N}%												    naturals
+\newcommand{\Z}{\mathbb Z}%												    naturals
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\func}[3]{#1:#2\rightarrow#3}%									f: A --> B function \func{f}{A}{B}
+
+
+\newcommandx\seq[3][{2=k\in\N},{3={}}]{(#1)_{#2}^{#3}}%						sequence \seq{x^k}[k=1][n]
+
+
+\newtheorem{ass}{Assumption}
+\newtheorem{prop}{Proposition}
+\newtheorem{remark}{Remark}
+\newtheorem{lem}{Lemma}
+
+
+\newcounter{mysubequations}
+\renewcommand{\themysubequations}{(\alph{mysubequations})}
+\newcommand{\mysubnumber}{\refstepcounter{mysubequations}\themysubequations}
+
+\newcommand{\pourya}[1]{{\color{blue}{#1}}}
+\newcommand{\doublecheck}[1]{{\color{brown}{#1}}}
+
+\newcommand{\drawrectanglewithfigure}[5]{%
+    \begin{tikzpicture}
+        \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=.95\textwidth]{#1}};
+        \begin{scope}[x={(image.south east)},y={(image.north west)}]
+            % Draw a rectangle
+            \draw[red, thick] (#2,#3) rectangle (#4,#5);
+        \end{scope}
+    \end{tikzpicture}
+}
+\newcommand{\drawyellowrectanglewithfigure}[5]{%
+    \begin{tikzpicture}
+        \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=.95\textwidth]{#1}};
+        \begin{scope}[x={(image.south east)},y={(image.north west)}]
+            % Draw a rectangle
+            \draw[yellow, thick] (#2,#3) rectangle (#4,#5);
+        \end{scope}
+    \end{tikzpicture}
+}
+\newcommand{\drawbluerectanglewithfigure}[5]{%
+    \begin{tikzpicture}
+        \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=.95\textwidth]{#1}};
+        \begin{scope}[x={(image.south east)},y={(image.north west)}]
+            % Draw a rectangle
+            \draw[cyan, thick] (#2,#3) rectangle (#4,#5);
+        \end{scope}
+    \end{tikzpicture}
+}

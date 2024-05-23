@@ -78,8 +78,7 @@ def imf_encode(
     patch: bool = True,
     patch_size: tuple[int, int] = (8, 8),
     bounds: tuple[float, float] = (-16, 15),
-    pil_kwargs: Dict = None,
-    dtype: torch.dtype = None,
+    dtype: torch.dtype = torch.int8,
     **kwargs,
 ) -> bytes:
     """Compress an input image using Patch IMF (RGB)."""
@@ -88,14 +87,6 @@ def imf_encode(
         "RGB",
         "YCbCr",
     ), "`color_space` must be one of 'RGB' or 'YCbCr'."
-
-    pil_kwargs = (
-        {"lossless": True, "format": "WEBP", "quality": 100}
-        if pil_kwargs is None
-        else pil_kwargs
-    )
-
-    dtype = image.dtype if dtype is None else dtype
 
     metadata = {
         "dtype": str(image.dtype).split(".")[-1],
@@ -156,7 +147,6 @@ def imf_encode(
             factors = u.to(dtype), v.to(dtype)
 
     else:  # color_space == "YCbCr"
-
         quality = _triple(quality)
         rank = _triple(rank)
 

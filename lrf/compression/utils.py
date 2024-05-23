@@ -365,7 +365,7 @@ def encode_matrix(matrix: Tensor, mode: str = "col") -> bytes:
     encoded_fibers = []
     for fiber in fibers:
         encoded_fiber = fiber.numpy().tobytes()
-        encoded_fiber = zlib.compress(encoded_fiber)
+        encoded_fiber = zlib.compress(encoded_fiber, level=9)
         encoded_fibers.append(encoded_fiber)
 
     metadata = {
@@ -425,7 +425,7 @@ def encode_tensor(tensor: Tensor, *args, **kwargs) -> bytes:
     encoded_array = tensor.numpy().tobytes()
 
     # Encode the bytes using a lossless compression
-    encoded_array = zlib.compress(encoded_array)
+    encoded_array = zlib.compress(encoded_array, level=9)
 
     # Prepare metadata
     metadata = {"shape": tensor.shape, "dtype": str(tensor.dtype).split(".")[-1]}
