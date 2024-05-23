@@ -4,7 +4,7 @@ image_mean: [0.485, 0.456, 0.406]
 image_std: [0.229, 0.224, 0.225]
 
 batch_size: 512
-val_batch_size: 1024
+val_batch_size: 256
 
 train_crop_size: 224
 
@@ -77,7 +77,8 @@ train_set:
 
 val_set:
     _target_: torchvision.datasets.ImageNet
-    root: ${path.data_dir}
+    # root: ${path.data_dir}
+    root: /Users/pourya/Desktop/Remote/vsc/vsc_scratch/imagenet
     split: val
     transform: ${data.val_transform}
 
@@ -91,10 +92,10 @@ val_subset:
     _target_: torch.utils.data.Subset
     dataset: ${data.val_set}
     indices:
-        _target_: numpy.arange
-        start: 0
-        stop: 5000
-        step: 1
+        _target_: numpy.random.randint
+        low: 0
+        high: 50000
+        size: 512
 
 train_loader:
     _target_: ignite.distributed.auto_dataloader

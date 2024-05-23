@@ -1,8 +1,9 @@
 import os
 import sys
 import glob
-import pickle
+import json
 import numpy as np
+from torch.nn.modules.utils import _pair
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 parent_dir = os.path.dirname(script_dir)
@@ -15,18 +16,19 @@ from utils.utils import plot_result
 
 task_name = "comparison_clic"
 
-pattern = os.path.join(script_dir, "**", f"*results.pkl")
+pattern = os.path.join(script_dir, "**", f"*results.json")
 result_path = glob.glob(pattern, recursive=True)[0]
 
-with open(result_path, 'rb') as f:
-    results_dict = pickle.load(f)
+with open(result_path, 'r') as f:
+    results_dict = json.load(f)
 
-x_axis_fixed_values = np.linspace(0.05, 0.5, 25)
+
+x_axis_fixed_values = np.linspace(0.05, 0.5, 20)
 # plotting the results: PSNR vs bpp
-fig_data_dict = {"xlabel": "bpp", "ylabel": "PSNR (dB)", "title": " ", "xlim": (0.05,0.5), "ylim": (15, 40), "fontsize": 15}
-plot_result(x_values=results_dict["bpps"], y_values=results_dict["psnr_values"], x_axis_fixed_values=x_axis_fixed_values, plot_num=32, figure_data=fig_data_dict, save_dir=script_dir, file_name=f"{task_name}_psnr")
+fig_data_dict = {"xlabel": "rate (bpp)", "ylabel": "PSNR (dB)", "title": " ", "xlim": (0.05,0.5), "ylim": (15, 40), "fontsize": 16}
+plot_result(x_values=results_dict["bpps"], y_values=results_dict["psnr_values"], x_axis_fixed_values=x_axis_fixed_values, plot_num=32, figure_data=fig_data_dict, save_dir="../../paper/figures", file_name=f"{task_name}_psnr")
 
 # plotting the results: SSIM vs bpp
 fig_data_dict["ylabel"] = "SSIM"
 fig_data_dict["ylim"] = (0.4,1)
-plot_result(x_values=results_dict["bpps"], y_values=results_dict["ssim_values"], x_axis_fixed_values=x_axis_fixed_values, plot_num=32, figure_data=fig_data_dict, save_dir=script_dir, file_name=f"{task_name}_ssim")
+plot_result(x_values=results_dict["bpps"], y_values=results_dict["ssim_values"], x_axis_fixed_values=x_axis_fixed_values, plot_num=32, figure_data=fig_data_dict, save_dir="../../paper/figures", file_name=f"{task_name}_ssim")

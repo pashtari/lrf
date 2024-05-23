@@ -1,5 +1,6 @@
 import os
 import glob
+import warnings
 from pathlib import Path
 from typing import Union, Sequence, Callable
 from functools import partial
@@ -50,15 +51,15 @@ def get_pretrained_resnet_weights(name):
 
 def get_eval_results(
     root_dir,
-    filename=None,
+    filename="",
+    subdir="",
     extension=".log",
     x_par_name="model.new_size",
     y_par_name="val_accuracy",
-    config_rel_path=".hydra/overrides.config",
+    config_rel_path=".hydra/overrides.yaml",
 ):
-    filename = Path(root_dir).stem if filename == None else filename
 
-    pattern = os.path.join(root_dir, "**", f"{filename}*{extension}")
+    pattern = os.path.join(root_dir, "**", subdir, "**", f"{filename}*{extension}")
     files = glob.glob(pattern, recursive=True)
 
     x = [None for f in files]
@@ -71,7 +72,7 @@ def get_eval_results(
         with open(config_path, "r") as config_file:
             config_string = config_file.read()
             match = re.search(
-                rf"{x_par_name}\s*=\s*[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?",
+                rf"{x_par_name}\s*:\s*[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?",
                 config_string,
             )
             if match:
@@ -84,6 +85,13 @@ def get_eval_results(
             )
             if match:
                 y[i] = float(match.group(1))
+
+    x = np.array(x, dtype=float)
+    y = np.array(y, dtype=float)
+    mask = np.isnan(x) + np.isnan(y)
+    if mask.any():
+        warnings.warn("nan elements omitted")
+        x, y = x[~mask], y[~mask]
 
     return np.array(x, dtype=float), np.array(y, dtype=float)
 

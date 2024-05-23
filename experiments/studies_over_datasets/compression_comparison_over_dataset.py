@@ -1,5 +1,5 @@
 import os
-import pickle
+import json
 import numpy as np
 from torchvision.transforms import v2
 from torch.utils.data import DataLoader
@@ -30,9 +30,11 @@ bpps = {method: [] for method in args.selected_methods}
 # reconstructed_images = {method: [] for method in args.selected_methods}
 psnr_values = {method: [] for method in args.selected_methods}
 ssim_values = {method: [] for method in args.selected_methods}
+elapsed_times_encode = {method: [] for method in args.selected_methods}
+elapsed_times_decode = {method: [] for method in args.selected_methods}
 
 image_num = len(dataloader)
-compression_ratios, bpps, psnr_values, ssim_values = calc_compression_metrics(dataloader, compression_ratios, bpps, psnr_values, ssim_values, args)
+compression_ratios, bpps, psnr_values, ssim_values, elapsed_times_encode, elapsed_times_decode = calc_compression_metrics(dataloader, compression_ratios, bpps, psnr_values, ssim_values, elapsed_times_encode, elapsed_times_decode, args)
 
 # fixing values of bpp for x-axis in the plots
 x_axis_fixed_values = np.linspace(0, 1, 50)
@@ -45,6 +47,10 @@ plot_result(x_values=bpps, y_values=psnr_values, x_axis_fixed_values=x_axis_fixe
 fig_data_dict["ylabel"] = "SSIM"
 plot_result(x_values=bpps, y_values=ssim_values, x_axis_fixed_values=x_axis_fixed_values, plot_num=image_num, figure_data=fig_data_dict, save_dir=experiment_dir, file_name="compression_methods_comparison_ssim")
 
+# plotting the results: elapsed time vs bpp
+fig_data_dict["ylabel"] = "time (sec)"
+plot_result(x_values=bpps, y_values=elapsed_times_encode, x_axis_fixed_values=x_axis_fixed_values, plot_num=image_num, figure_data=fig_data_dict, save_dir=experiment_dir, file_name="compression_methods_comparison_encode_time")
+plot_result(x_values=bpps, y_values=elapsed_times_decode, x_axis_fixed_values=x_axis_fixed_values, plot_num=image_num, figure_data=fig_data_dict, save_dir=experiment_dir, file_name="compression_methods_comparison_decode_time")
 
 # saving the results
 save_dict = {
@@ -52,9 +58,13 @@ save_dict = {
     "bpps": bpps,
     "psnr_values" : psnr_values,
     "ssim_values" : ssim_values,
-    "x_axis_fixed_values": x_axis_fixed_values,
-    "image_num": image_num
+    "elapsed_times_encode" : elapsed_times_encode,
+    "elapsed_times_decode" : elapsed_times_decode,
+    "x_axis_fixed_values": [*x_axis_fixed_values],
+    "dataset_image_num": image_num
 }
-with open(os.path.join(experiment_dir, 'results.pkl'), 'wb') as f:
-    pickle.dump(save_dict, f)
+
+with open(os.path.join(experiment_dir, 'results.json'), "w") as json_file:
+        json.dump(save_dict, json_file, indent=4)
+
 
