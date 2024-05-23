@@ -10,20 +10,18 @@ from skimage.io import imread
 
 import lrf
 
-# matplotlib.use("pgf")
-# matplotlib.rcParams.update(
-#     {
-#         "pgf.texsystem": "pdflatex",
-#         "font.family": "serif",
-#         "pgf.rcfonts": False,
-#     }
-# )
+matplotlib.use("pgf")
+plt.rcParams.update({
+    "font.family": "serif",  # use serif/main font for text elements
+    "text.usetex": True,     # use inline math for ticks
+    "pgf.rcfonts": False     # don't setup fonts from rc parameters
+    })
 
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 # Load the image
-task_name = "kodim08"
-image = imread("./data/kodak/kodim08.png")
+task_name = "kodim19"
+image = imread("./data/kodak/kodim19.png")
 # image = imread("./data/clic/clic2024_validation_image/724b1dfdbde05257c46bb5e9863995b7c37bfcf101ed5a233ef2aa26193f09c4.png")
 
 task_dir = os.path.join(script_dir, task_name)
@@ -41,7 +39,7 @@ plt.axis("off")
 plt.savefig(
     f"{task_dir}/{task_name}_original.pdf",
     format="pdf",
-    dpi=600,
+    bbox_inches="tight", pad_inches=0
 )
 plt.show()
 plt.close()
@@ -54,6 +52,7 @@ compression_ratios = {
     "SVD": [],
     "IMF - RGB": [],
     "IMF": [],
+    "IMF 5": []
 }
 
 bpps = {
@@ -62,6 +61,7 @@ bpps = {
     "SVD": [],
     "IMF - RGB": [],
     "IMF": [],
+    "IMF 5": []
 }
 
 reconstructed_images = {
@@ -70,6 +70,7 @@ reconstructed_images = {
     "SVD": [],
     "IMF - RGB": [],
     "IMF": [],
+    "IMF 5": []
 }
 
 psnr_values = {
@@ -78,6 +79,7 @@ psnr_values = {
     "SVD": [],
     "IMF - RGB": [],
     "IMF": [],
+    "IMF 5": []
 }
 ssim_values = {
     "JPEG": [],
@@ -85,6 +87,7 @@ ssim_values = {
     "SVD": [],
     "IMF - RGB": [],
     "IMF": [],
+    "IMF 5": []
 }
 
 encode_time = {
@@ -93,6 +96,7 @@ encode_time = {
     "SVD": [],
     "IMF - RGB": [],
     "IMF": [],
+    "IMF 5": []
 }
 
 decode_time = {
@@ -101,13 +105,14 @@ decode_time = {
     "SVD": [],
     "IMF - RGB": [],
     "IMF": [],
+    "IMF 5": []
 }
 
 # Calculate reconstructed images and metric values for each method
 
 
 # JPEG
-for quality in range(0, 40, 1):
+for quality in range(0, 20, 1):
     t0 = time.time()
     encoded = lrf.pil_encode(image, format="JPEG", quality=quality)
     t1 = time.time()
@@ -141,34 +146,34 @@ for quality in range(0, 40, 1):
 #     ssim_values["WEBP"].append(lrf.ssim(image, reconstructed).item())
 
 # SVD
-for quality in np.linspace(0.0, 5, 20):
-    t0 = time.time()
-    encoded = lrf.svd_encode(
-        image,
-        color_space="RGB",
-        quality=quality,
-        patch=True,
-        patch_size=(8, 8),
-        dtype=torch.int8,
-    )
-    t1 = time.time()
-    reconstructed = lrf.svd_decode(encoded)
-    t2 = time.time()
+# for quality in np.linspace(0.0, 2, 25):
+#     t0 = time.time()
+#     encoded = lrf.svd_encode(
+#         image,
+#         color_space="RGB",
+#         quality=quality,
+#         patch=True,
+#         patch_size=(16, 16),
+#         dtype=torch.int8,
+#     )
+#     t1 = time.time()
+#     reconstructed = lrf.svd_decode(encoded)
+#     t2 = time.time()
 
-    real_compression_ratio = lrf.get_compression_ratio(image, encoded)
-    real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
+#     real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+#     real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
-    compression_ratios["SVD"].append(real_compression_ratio)
-    bpps["SVD"].append(real_bpp)
-    reconstructed_images["SVD"].append(reconstructed)
-    psnr_values["SVD"].append(lrf.psnr(image, reconstructed).item())
-    ssim_values["SVD"].append(lrf.ssim(image, reconstructed).item())
-    encode_time["SVD"].append(1000 * (t1 - t0))
-    decode_time["SVD"].append(1000 * (t2 - t1))
+#     compression_ratios["SVD"].append(real_compression_ratio)
+#     bpps["SVD"].append(real_bpp)
+#     reconstructed_images["SVD"].append(reconstructed)
+#     psnr_values["SVD"].append(lrf.psnr(image, reconstructed).item())
+#     ssim_values["SVD"].append(lrf.ssim(image, reconstructed).item())
+#     encode_time["SVD"].append(1000 * (t1 - t0))
+#     decode_time["SVD"].append(1000 * (t2 - t1))
 
 
 # IMF - RGB
-for quality in np.linspace(0.0, 25, 20):
+for quality in np.linspace(0.0, 30, 50):
     t0 = time.time()
     encoded = lrf.imf_encode(
         image,
@@ -178,7 +183,7 @@ for quality in np.linspace(0.0, 25, 20):
         patch_size=(8, 8),
         bounds=(-16, 15),
         dtype=torch.int8,
-        num_iters=5,
+        num_iters=10,
         verbose=False,
     )
     t1 = time.time()
@@ -198,42 +203,72 @@ for quality in np.linspace(0.0, 25, 20):
 
 
 # IMF - YCbCr
-for quality in np.linspace(0, 25, 20):
-    t0 = time.time()
-    encoded = lrf.imf_encode(
-        image,
-        color_space="YCbCr",
-        scale_factor=(0.5, 0.5),
-        quality=(quality, quality / 2, quality / 2),
-        patch=True,
-        patch_size=(8, 8),
-        bounds=(-16, 15),
-        dtype=torch.int8,
-        num_iters=10,
-        verbose=False,
-    )
-    t1 = time.time()
-    reconstructed = lrf.imf_decode(encoded)
-    t2 = time.time()
+# for quality in np.linspace(0, 10, 25):
+#     t0 = time.time()
+#     encoded = lrf.imf_encode(
+#         image,
+#         color_space="YCbCr",
+#         scale_factor=(0.5, 0.5),
+#         quality=(quality, quality // 2, quality // 2),
+#         patch=True,
+#         patch_size=(8, 8),
+#         bounds=(-16, 15),
+#         dtype=torch.int8,
+#         num_iters=10,
+#         verbose=False,
+#     )
+#     t1 = time.time()
+#     reconstructed = lrf.imf_decode(encoded)
+#     t2 = time.time()
 
-    real_compression_ratio = lrf.get_compression_ratio(image, encoded)
-    real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
+#     real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+#     real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
 
-    compression_ratios["IMF"].append(real_compression_ratio)
-    bpps["IMF"].append(real_bpp)
-    reconstructed_images["IMF"].append(reconstructed)
-    psnr_values["IMF"].append(lrf.psnr(image, reconstructed).item())
-    ssim_values["IMF"].append(lrf.ssim(image, reconstructed).item())
-    encode_time["IMF"].append(1000 * (t1 - t0))
-    decode_time["IMF"].append(1000 * (t2 - t1))
+#     compression_ratios["IMF"].append(real_compression_ratio)
+#     bpps["IMF"].append(real_bpp)
+#     reconstructed_images["IMF"].append(reconstructed)
+#     psnr_values["IMF"].append(lrf.psnr(image, reconstructed).item())
+#     ssim_values["IMF"].append(lrf.ssim(image, reconstructed).item())
+#     encode_time["IMF"].append(1000 * (t1 - t0))
+#     decode_time["IMF"].append(1000 * (t2 - t1))
+
+
+# # IMF - YCbCr
+# for quality in np.linspace(0, 25, 20):
+#     t0 = time.time()
+#     encoded = lrf.imf_encode(
+#         image,
+#         color_space="YCbCr",
+#         scale_factor=(0.5, 0.5),
+#         quality=(quality, quality / 2, quality / 2),
+#         patch=True,
+#         patch_size=(8, 8),
+#         bounds=(-16, 15),
+#         dtype=torch.int8,
+#         num_iters=5,
+#         verbose=False,
+#     )
+#     t1 = time.time()
+#     reconstructed = lrf.imf_decode(encoded)
+#     t2 = time.time()
+
+#     real_compression_ratio = lrf.get_compression_ratio(image, encoded)
+#     real_bpp = lrf.get_bbp(image.shape[-2:], encoded)
+
+#     compression_ratios["IMF 5"].append(real_compression_ratio)
+#     bpps["IMF 5"].append(real_bpp)
+#     reconstructed_images["IMF 5"].append(reconstructed)
+#     psnr_values["IMF 5"].append(lrf.psnr(image, reconstructed).item())
+#     ssim_values["IMF 5"].append(lrf.ssim(image, reconstructed).item())
+#     encode_time["IMF 5"].append(1000 * (t1 - t0))
+#     decode_time["IMF 5"].append(1000 * (t2 - t1))
 
 
 selected_methods = [
-    "JPEG",
+    # "JPEG",
     # "WEBP",
     # "SVD",
     "IMF - RGB",
-    "IMF",
 ]
 bpps = {k: bpps[k] for k in selected_methods}
 reconstructed_images = {k: reconstructed_images[k] for k in selected_methods}
@@ -242,7 +277,7 @@ ssim_values = {k: ssim_values[k] for k in selected_methods}
 encode_time = {k: encode_time[k] for k in selected_methods}
 decode_time = {k: decode_time[k] for k in selected_methods}
 
-selected_bpps = [0.4, 0.3, 0.2, 0.15, 0.1]
+selected_bpps = [0.3, 0.25, 0.2, 0.18, 0.16, 0.14, 0.12, 0.1]
 
 
 def plot_metrics_collage():
@@ -262,7 +297,7 @@ def plot_metrics_collage():
     plt.savefig(
         f"{task_dir}/compression_methods_comparison_psnr-bpp.pdf",
         format="pdf",
-        dpi=600,
+        bbox_inches="tight", pad_inches=0
     )
     plt.show()
 
@@ -282,7 +317,47 @@ def plot_metrics_collage():
     plt.savefig(
         f"{task_dir}/compression_methods_comparison_ssim-bpp.pdf",
         format="pdf",
-        dpi=600,
+        bbox_inches="tight", pad_inches=0
+    )
+    plt.show()
+
+    # Plotting the results
+    plt.figure()
+    for method, values in encode_time.items():
+        plt.plot(bpps[method], values, marker="o", markersize=4, label=method)
+
+    plt.xlabel("bpp")
+    plt.ylabel("encode time")
+    plt.title("Comprison of Different Compression Methods")
+    # plt.xticks(np.arange(1, 13, 1))
+    plt.xlim(0.05, 0.5)
+    # plt.ylim(0.5, 0.8)
+    plt.legend()
+    plt.grid()
+    plt.savefig(
+        f"{task_dir}/compression_methods_comparison_encode_time.pdf",
+        format="pdf",
+        bbox_inches="tight", pad_inches=0
+    )
+    plt.show()
+
+    # Plotting the results: SSIM vs bpp
+    plt.figure()
+    for method, values in decode_time.items():
+        plt.plot(bpps[method], values, marker="o", markersize=4, label=method)
+
+    plt.xlabel("bpp")
+    plt.ylabel("decode time")
+    plt.title("Comprison of Different Compression Methods")
+    # plt.xticks(np.arange(1, 13, 1))
+    plt.xlim(0.05, 0.5)
+    # plt.ylim(0.5, 0.8)
+    plt.legend()
+    plt.grid()
+    plt.savefig(
+        f"{task_dir}/compression_methods_comparison_decode_time.pdf",
+        format="pdf",
+        bbox_inches="tight", pad_inches=0
     )
     plt.show()
 
@@ -317,7 +392,7 @@ def plot_metrics_collage():
     plt.savefig(
         f"{task_dir}/compression_methods_qualitative_comparison.pdf",
         format="pdf",
-        dpi=600,
+        bbox_inches="tight", pad_inches=0
     )
     plt.show()
 
@@ -329,15 +404,12 @@ def plot_individual_figs(title=False):
             ii = np.argmin(np.abs(np.array(bpps[method]) - bbp))
             reconstructed_image = reconstructed_images[method][ii]
             real_bpp = bpps[method][ii]
+            psnr = psnr_values[method][ii]
             plt.imshow(reconstructed_image.permute(1, 2, 0))
             if title:
                 plt.title(method, fontsize=24)
             plt.axis("off")
-            plt.savefig(
-                f"{task_dir}/{task_name}_{method}_bpp_{real_bpp:.3f}.pdf",
-                format="pdf",
-                dpi=600,
-            )
+            plt.savefig(f"{task_dir}/{task_name}_{method}_bpp_{real_bpp:.3f}_psnr_{psnr:.3f}.pdf", format="pdf", bbox_inches="tight", pad_inches=0)
 
 
 def save_metadata():
@@ -353,6 +425,6 @@ def save_metadata():
         json.dump(metadata, json_file, indent=4)
 
 
-plot_metrics_collage()
-# plot_individual_figs()
-save_metadata()
+# plot_metrics_collage()
+plot_individual_figs()
+# save_metadata()

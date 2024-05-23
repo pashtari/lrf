@@ -1,7 +1,7 @@
 import os
 import sys
 import glob
-import pickle
+import json
 import numpy as np
 from torch.nn.modules.utils import _pair
 
@@ -15,14 +15,16 @@ os.environ["PROJECT_ROOT"] = parent_dir
 from utils.utils import plot_result
 
 task_name = "ablation_patchsize"
-study_variable = "patch_size"
+study_variable_1 = "patch_size"
+study_variable_2 = "patchify"
 def parse_legend(x):
     """modify this function accordingly"""
-    return f"patchsize {_pair(x)}"
+    return f"patch size = {_pair(x)}"
 
 
-pattern = os.path.join(script_dir, "**", f"*args.pkl")
+pattern = os.path.join(script_dir, "**", f"*args.json")
 files = glob.glob(pattern, recursive=True)
+files.sort(key=os.path.getmtime)
 
 run_num = len(files)
 bpps = {}
@@ -30,31 +32,25 @@ psnr_values = {}
 ssim_values = {}
 legend = []
 for file in files:
-    with open(file, 'rb') as f:
-        args_dict = pickle.load(f)
+    with open(file, 'r') as f:
+        args_dict = json.load(f)
 
-    result_path = os.path.join(os.path.dirname(file), "results.pkl")
-    with open(result_path, 'rb') as f:
-        results_dict = pickle.load(f)
+    result_path = os.path.join(os.path.dirname(file), "results.json")
+    with open(result_path, 'r') as f:
+        results_dict = json.load(f)
 
-    bpps[f"{args_dict.selected_methods[0]} - {parse_legend(args_dict.__dict__[study_variable])}"] = results_dict["bpps"][args_dict.selected_methods[0]]
-    psnr_values[f"{args_dict.selected_methods[0]} - {parse_legend(args_dict.__dict__[study_variable])}"] = results_dict["psnr_values"][args_dict.selected_methods[0]]
-    ssim_values[f"{args_dict.selected_methods[0]} - {parse_legend(args_dict.__dict__[study_variable])}"] = results_dict["ssim_values"][args_dict.selected_methods[0]]
+    bpps[f"{parse_legend(args_dict[study_variable_1])} - {parse_legend(args_dict[study_variable_2])}"] = results_dict["bpps"][args_dict["selected_methods"][0]]
+    psnr_values[f"{parse_legend(args_dict[study_variable_1])} - {parse_legend(args_dict[study_variable_2])}"] = results_dict["psnr_values"][args_dict["selected_methods"][0]]
+    ssim_values[f"{parse_legend(args_dict[study_variable_1])} - {parse_legend(args_dict[study_variable_2])}"] = results_dict["ssim_values"][args_dict["selected_methods"][0]]
+
 
 x_axis_fixed_values = np.linspace(0.05, 0.5, 25)
+legend_list = ["patch size = $4\\times 4$","patch size = $8\\times 8$","patch size = $16\\times 16$","patch size = $32\\times 32$","no patchification",]
 # plotting the results: PSNR vs bpp
-fig_data_dict = {"xlabel": "bpp", "ylabel": "PSNR (dB)", "title": " ", "xlim": (0.05,0.5), "ylim": (20,30), "fontsize": 15}
-plot_result(x_values=bpps, y_values=psnr_values, x_axis_fixed_values=x_axis_fixed_values, plot_num=24, figure_data=fig_data_dict, save_dir=script_dir, file_name=f"{task_name}_psnr")
+fig_data_dict = {"xlabel": "rate (bpp)", "ylabel": "PSNR (dB)", "title": " ", "xlim": (0.05,0.5), "ylim": (20,28), "fontsize": 16}
+plot_result(x_values=bpps, y_values=psnr_values, x_axis_fixed_values=x_axis_fixed_values, plot_num=24, figure_data=fig_data_dict, save_dir="../../paper/figures", file_name=f"{task_name}_psnr", legend_list=legend_list)
 
 # plotting the results: PSNR vs bpp
 fig_data_dict["ylabel"] = "SSIM"
-fig_data_dict["ylim"] = (0.45,0.85)
-plot_result(x_values=bpps, y_values=ssim_values, x_axis_fixed_values=x_axis_fixed_values, plot_num=24, figure_data=fig_data_dict, save_dir=script_dir, file_name=f"{task_name}_ssim")
-
-
-    
-
-
-    
-
-
+fig_data_dict["ylim"] = (0.45,0.8)
+plot_result(x_values=bpps, y_values=ssim_values, x_axis_fixed_values=x_axis_fixed_values, plot_num=24, figure_data=fig_data_dict, save_dir="../../paper/figures", file_name=f"{task_name}_ssim", legend_list=legend_list)
