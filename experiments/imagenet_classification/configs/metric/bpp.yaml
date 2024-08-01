@@ -1,0 +1,2 @@
+bpp:
+    _target_: src.metrics.BPP

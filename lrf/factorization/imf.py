@@ -1,14 +1,11 @@
 import math
 from typing import Optional, Callable
 
-import numpy as np
 import torch
 from torch import Tensor
 from torch import nn
 from torch.nn.modules.utils import _pair
 from einops import rearrange
-import cvxpy as cp
-from joblib import Parallel, delayed
 
 from lrf.factorization.utils import relative_error, soft_thresholding
 
@@ -162,79 +159,6 @@ class CoordinateDescent(nn.Module):
             u = self.update_u(x, u, v, l1_u, l2_u, self.project[0])
         if 1 in self.factor:
             v = self.update_v(x, u, v, l1_v, l2_v, self.project[1])
-        return u, v
-
-
-def _least_absolute_errors(A, B, construct_bound=(None, None), *args, **kwargs):
-    M, N = B.shape
-    _, P = A.shape
-
-    lower_bound, upper_bound = construct_bound
-
-    # Create variable X
-    X = cp.Variable((P, N), name="X", integer=True)
-
-    # Create variables for C^+ and C^-
-    C_plus = cp.Variable((M, N), name="C^+")
-    C_minus = cp.Variable((M, N), name="C^-")
-
-    # Objective function
-    objective = cp.Minimize(cp.sum(C_plus + C_minus))
-
-    # Constraints
-    constraints = [A @ X - B == C_plus - C_minus, C_plus >= 0, C_minus >= 0]
-
-    if lower_bound:
-        constraints.append(A @ X >= lower_bound)
-
-    if upper_bound:
-        constraints.append(A @ X <= upper_bound)
-
-    # Define the problem
-    prob = cp.Problem(objective, constraints)
-
-    # Solve
-    prob.solve(*args, **kwargs)
-
-    return X.value
-
-
-def least_absolute_errors(A, B, *args, parallel=True, **kwargs):
-    if parallel:
-
-        def lae(b):
-            return _least_absolute_errors(A, b.reshape(-1, 1), *args, **kwargs)
-
-        results = Parallel(n_jobs=-1)(delayed(lae)(b) for b in B.T)
-        return np.hstack(results).astype(A.dtype)
-    else:
-        return _least_absolute_errors(A, B, *args, **kwargs).astype(A.dtype)
-
-
-class LeastAbsoluteErrors(nn.Module):
-    "Mixed-integer linear programming solver for least absolute error."
-
-    def __init__(self, *args, **kwargs):
-        super().__init__()
-        self.args = args
-        self.kwargs = kwargs
-
-    def update_u(self, x: Tensor, u: Tensor, v: Tensor) -> Tensor:
-        # x ≈ u @ t(v) --> u = ?
-        return self.update_v(x.mT, v, u)
-
-    def update_v(self, x: Tensor, u: Tensor, v: Tensor) -> Tensor:
-        # x ≈ u @ t(v) --> v = ?
-        vt = least_absolute_errors(
-            u.squeeze(0).numpy(), x.squeeze(0).numpy(), *self.args, **self.kwargs
-        )
-        vt = torch.from_numpy(vt).unsqueeze(0)
-        return vt.mT
-
-    def forward(self, x: Tensor, factors: tuple[Tensor, Tensor]) -> tuple[Tensor, Tensor]:
-        u, v = factors
-        u = self.update_u(x, u, v)
-        v = self.update_v(x, u, v)
         return u, v
 
 

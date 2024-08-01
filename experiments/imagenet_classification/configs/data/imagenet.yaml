@@ -1,0 +1,105 @@
+num_classes: 1000
+image_size: 224
+image_mean: [0.485, 0.456, 0.406]
+image_std: [0.229, 0.224, 0.225]
+
+batch_size: 512
+val_batch_size: 256
+
+train_crop_size: 224
+
+ra_reps: 4
+
+train_transform:
+    _target_: torchvision.transforms.v2.Compose
+    transforms:
+        - _target_: torchvision.transforms.v2.ToImage
+        - _target_: torchvision.transforms.v2.RandomResizedCrop
+          size: ${data.train_crop_size}
+          interpolation: 2 #bilinear
+          antialias: true
+        - _target_: torchvision.transforms.v2.RandomHorizontalFlip
+          p: 0.5
+        - _target_: torchvision.transforms.v2.TrivialAugmentWide
+          interpolation: 2 #bilinear
+        - _target_: torchvision.transforms.v2.ToDtype
+          dtype:
+              _target_: src.get_dtype
+              name: float32
+          scale: true
+        - _target_: torchvision.transforms.v2.Normalize
+          mean: ${data.image_mean}
+          std: ${data.image_std}
+        - _target_: torchvision.transforms.v2.RandomErasing
+          p: 0.1
+        - _target_: torchvision.transforms.v2.ToPureTensor
+
+train_batched_transform:
+    _target_: torchvision.transforms.v2.RandomChoice
+    transforms:
+        - _target_: torchvision.transforms.v2.MixUp
+          alpha: 0.2
+          num_classes: ${data.num_classes}
+        - _target_: torchvision.transforms.v2.CutMix
+          alpha: 1.0
+          num_classes: ${data.num_classes}
+
+val_transform:
+    _target_: torchvision.transforms.v2.Compose
+    transforms:
+        - _target_: torchvision.transforms.v2.ToImage
+        - _target_: torchvision.transforms.v2.Identity
+        - _target_: torchvision.transforms.v2.Resize
+          size: 256
+          interpolation: 2
+          antialias: true
+        - _target_: torchvision.transforms.v2.CenterCrop
+          size: 224
+        - _target_: torchvision.transforms.v2.ToDtype
+          dtype:
+              _target_: src.get_dtype
+              name: float32
+          scale: true
+        - _target_: torchvision.transforms.v2.Normalize
+          mean: ${data.image_mean}
+          std: ${data.image_std}
+        - _target_: torchvision.transforms.v2.ToPureTensor
+
+train_set:
+    _target_: torchvision.datasets.ImageNet
+    root: ${path.data_dir}
+    split: train
+    transform: ${data.train_transform}
+
+val_set:
+    _target_: torchvision.datasets.ImageNet
+    root: ${path.data_dir}
+    split: val
+    transform: ${data.val_transform}
+
+train_sampler:
+    _target_: src.data.RASampler
+    dataset: ${data.train_set}
+    shuffle: true
+    repetitions: ${data.ra_reps}
+
+train_loader:
+    _target_: ignite.distributed.auto_dataloader
+    dataset: ${data.train_set}
+    batch_size: ${data.batch_size}
+    num_workers: 0
+    pin_memory: true
+    collate_fn:
+        _target_: src.data.collate_fn_wrapper
+        batched_transform: ${data.train_batched_transform}
+    shuffle: true
+    sampler: ${data.train_sampler}
+    drop_last: true
+
+val_loader:
+    _target_: ignite.distributed.auto_dataloader
+    dataset: ${data.val_set}
+    batch_size: ${data.val_batch_size}
+    num_workers: 0
+    pin_memory: true
+    shuffle: false

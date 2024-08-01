@@ -75,7 +75,7 @@ def depatchify_uv(
 def svd_encode(
     image: Tensor,
     rank: Optional[int] = None,
-    quality: Optional[float] = None,
+    quality: Optional[float | tuple[float, float, float]] = None,
     color_space: str = "RGB",
     scale_factor: tuple[float, float] = (0.5, 0.5),
     patch: bool = True,

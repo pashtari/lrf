@@ -1,0 +1,2 @@
+_target_: src.models.ResNet
+num_classes: 1000

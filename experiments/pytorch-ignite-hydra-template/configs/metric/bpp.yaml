@@ -1,2 +1,0 @@
-real_bpp:
-    _target_: src.data.Real_bpp

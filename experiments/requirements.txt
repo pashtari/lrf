@@ -1,8 +1,16 @@
-# --------- image compression --------- #
-git+https://github.com/pashtari/lrf.git
+# --------- compression --------- #
+lrf @ git+https://github.com/pashtari/lrf.git
+
+# --------- basics --------- #
+numpy==2.0.0
+scipy==1.14.0
+pandas==2.2.2
+torch==2.3.1
+torchvision==0.18.1
 
 # --------- visualization --------- #
 matplotlib==3.8.4
+seaborn==0.13.2
 
-# --------- others --------- #
-deepspeed==0.13.2
+# --------- misc --------- #
+pyinstrument==4.6.2
