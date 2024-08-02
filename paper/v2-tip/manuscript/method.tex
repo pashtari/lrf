@@ -172,7 +172,7 @@ It is noteworthy that the combination of $\round(\cdot)$ and $\clamp_{[\alpha,\b
 % Using Theorem \ref{the:bcd_subproblem}, we obtain the following update formulas for our BCD algorithm:
 % Thanks to Theorem \ref{the:bcd_subproblem}, the proposed algorithm offers an encouraging property that guarantees the cost function is monotonically non-increasing with each update. 
 
-\paragraph*{Initialization.}
+\paragraph*{Initialization}
 The initial values of factors can significantly impact the convergence performance of the BCD algorithm. We found that the convergence with naive random initialization can be too slow. To address this issue, we propose an initialization method using SVD. The procedure is straightforward. First, the truncated SVD of the input matrix $\bm{X} \in \mathbb{R}^{M \times N}$ is computed as $\tilde{\bm{U}} \bm{\Sigma} \tilde{\bm{V}}^\mathsf{T}$, where $\bm{\Sigma} \in \mathbb{R}^{R \times R}$ is a diagonal matrix corresponding to the $R$ largest singular values. $\tilde{\bm{U}} \in \mathbb{R}^{M \times R}$ and $\tilde{\bm{V}} \in \mathbb{R}^{N \times R}$ contain the corresponding left-singular vectors and right-singular vectors in their columns, respectively. The initial factors are then calculated as follows:
 \begin{align}
     \bm{U}^{\rm init} = \clamp_{[\alpha,\beta]}(\round(\tilde{\bm{U}} \bm{\Sigma}^\frac{1}{2})), \label{eq:initialization_u} \\
