@@ -395,6 +395,8 @@ def vis_collage(
         figsize=(6 * len(methods), 5 * len(bpps)),
     )
 
+    axs = axs[None,:] if axs.ndim == 1 else axs
+
     # Set titles for columns
     for ax, method in zip(axs[0], methods):
         ax.set_title(method, fontsize=24)
