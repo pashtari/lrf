@@ -1,44 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LRF Logo</title>
-<style>
-  .logo {
-    display: flex;
-    align-items: center;
-    font-family: 'Arial', sans-serif;
-  }
-  .logo-icon {
-    width: 50px;
-    height: 50px;
-    background-color: #4CAF50;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    margin-right: 10px;
-  }
-  .logo-text {
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
-  }
-</style>
-</head>
-<body>
-<div class="logo">
-  <div class="logo-icon">LRF</div>
-  <div class="logo-text">Low-Rank Factorization</div>
-</div>
-</body>
-</html>
-
-<br>
+![LRF Logo](figures/logo.svg)
 
 This repository provides a PyTorch implementation of **low-rank factorization (LRF) methods for data compression**. Particularly, it includes the official implementation of "Quantization-free Lossy Image Compression Using Integer Matrix Factorization."
 

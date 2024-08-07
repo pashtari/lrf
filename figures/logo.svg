@@ -1,0 +1,13 @@
+<svg width="500" height="80" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background rectangle for debugging purposes -->
+  <rect width="300" height="80" fill="none" />
+  
+  <!-- Circle icon -->
+  <circle cx="40" cy="40" r="25" fill="#4CAF50" />
+  
+  <!-- Icon text -->
+  <text x="40" y="48" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white" text-anchor="middle">LRF</text>
+  
+  <!-- Logo text -->
+  <text x="90" y="48" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#333">Low-Rank Factorization</text>
+</svg>

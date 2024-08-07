@@ -5,11 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LRF Logo</title>
 <style>
+  /* Container for the logo */
   .logo {
     display: flex;
     align-items: center;
     font-family: 'Arial', sans-serif;
+    padding: 10px;
   }
+  /* Icon part of the logo */
   .logo-icon {
     width: 50px;
     height: 50px;
@@ -22,7 +25,9 @@
     font-size: 24px;
     font-weight: bold;
     margin-right: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   }
+  /* Text part of the logo */
   .logo-text {
     font-size: 24px;
     font-weight: bold;
@@ -31,8 +36,11 @@
 </style>
 </head>
 <body>
+<!-- Logo container -->
 <div class="logo">
+  <!-- Logo icon -->
   <div class="logo-icon">LRF</div>
+  <!-- Logo text -->
   <div class="logo-text">Low-Rank Factorization</div>
 </div>
 </body>
