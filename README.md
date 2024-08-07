@@ -1,6 +1,77 @@
-# Low-Rank Factorization (LRF) for Data Compression
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LRF Logo</title>
+<style>
+  .logo {
+    display: flex;
+    align-items: center;
+    font-family: 'Arial', sans-serif;
+  }
+  .logo-icon {
+    width: 50px;
+    height: 50px;
+    background-color: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  .logo-text {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+  }
+</style>
+</head>
+<body>
+<div class="logo">
+  <div class="logo-icon">LRF</div>
+  <div class="logo-text">Low-Rank Factorization</div>
+</div>
+</body>
+</html>
 
-This repository provides a PyTorch implementation of low-rank factorization (LRF) methods for data compression. Particularly, it includes the official implementation of "Quantization-free Lossy Image Compression Using Integer Matrix Factorization."
+<br>
+
+This repository provides a PyTorch implementation of **low-rank factorization (LRF) methods for data compression**. Particularly, it includes the official implementation of "Quantization-free Lossy Image Compression Using Integer Matrix Factorization."
+
+<table style="border-collapse: collapse; table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="text-align: center; border: none; width: 45%;">
+      <figure style="margin: 0; padding: 0;">
+        <img src="figures/clic_flower.png" alt="Original" width="100%">
+        <figcaption>Original<br>&nbsp</figcaption>
+      </figure>
+    </td>
+    <td style="text-align: center; border: none; width: 45%;">
+      <figure style="margin: 0; padding: 0;">
+        <img src="figures/clic_flower_jpeg_bpp_0.14_psnr_22.66.png" alt="JPEG" width="100%">
+        <figcaption>JPEG<br>(bitrate: 0.14 bpp, PSNR: 22.66 dB)</figcaption>
+      </figure>
+    </td>
+  </tr>
+  <tr>
+    <td style="text-align: center; border: none; width: 45%;">
+      <figure style="margin: 0; padding: 0;">
+        <img src="figures/clic_flower_svd_bpp_0.12_psnr_26.90.png" alt="SVD" width="100%">
+        <figcaption>SVD<br>(bitrate: 0.12 bpp, PSNR: 26.90 dB)</figcaption>
+      </figure>
+    </td>
+    <td style="text-align: center; border: none; width: 45%;">
+      <figure style="margin: 0; padding: 0;">
+        <img src="figures/clic_flower_imf_bpp_0.12_psnr_31.63.png" alt="IMF" width="100%">
+        <figcaption>IMF<br>(bitrate: 0.12 bpp, PSNR: 31.63 dB)</figcaption>
+      </figure>
+    </td>
+  </tr>
+</table>
 
 
 ## Installation
@@ -76,7 +147,37 @@ lrf.vis_image(
 )
 ```
 
-![Original Image](kodim01.png) ![IMF Compressed Image](kodim01_imf.png)
+<table style="border-collapse: collapse; table-layout: fixed; width: 100%;">
+  <tr>
+    <td style="text-align: center; border: none; width: 45%;">
+      <figure style="margin: 0; padding: 0;">
+        <img src="figures/kodim01.png" alt="Original" width="100%">
+        <figcaption>Original<br>&nbsp</figcaption>
+      </figure>
+    </td>
+    <td style="text-align: center; border: none; width: 45%;">
+      <figure style="margin: 0; padding: 0;">
+        <img src="figures/kodim01_jpeg_bpp_0.21_psnr_20.22.png" alt="JPEG" width="100%">
+        <figcaption>JPEG<br>(bitrate: 0.21 bpp, PSNR: 20.22 dB)</figcaption>
+      </figure>
+    </td>
+  </tr>
+  <tr>
+    <td style="text-align: center; border: none; width: 45%;">
+      <figure style="margin: 0; padding: 0;">
+        <img src="figures/kodim01_svd_bpp_0.22_psnr_20.24.png" alt="SVD" width="100%">
+        <figcaption>SVD<br>(bitrate: 0.22 bpp, PSNR: 20.24 dB)</figcaption>
+      </figure>
+    </td>
+    <td style="text-align: center; border: none; width: 45%;">
+      <figure style="margin: 0; padding: 0;">
+        <img src="figures/kodim01_imf_bpp_0.21_psnr_21.93.png" alt="IMF" width="100%">
+        <figcaption>IMF<br>(bitrate: 0.21 bpp, PSNR: 21.93 dB)</figcaption>
+      </figure>
+    </td>
+  </tr>
+</table>
+
 
 ## Contact
 This repo is currently maintained by Pooya Ashtari ([@pashtari](https://github.com/pashtari)) and Pourya Behmandpoor ([@pourya-b](https://github.com/pourya-b)). Feel free to reach out for any queries or contributions.
