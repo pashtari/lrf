@@ -41,7 +41,7 @@ def tt_rank_upper_bounds(size: Sequence[int]):
     return upper_bounds
 
 
-def tt_rank_feasible_ranges(size, compression_ratio):
+def tt_rank_feasible_ranges(size, com_ratio):
     """
     Calculate feasible ranges of ranks for a tensor of arbitrary dimensions
     given a desired compression ratio.
@@ -52,7 +52,7 @@ def tt_rank_feasible_ranges(size, compression_ratio):
 
     Args:
         size (list of int): Size of the tensor.
-        compression_ratio (float): Desired compression ratio.
+        com_ratio (float): Desired compression ratio.
 
     Returns:
         list of tuples: Each tuple contains the lower and upper bounds
@@ -69,7 +69,7 @@ def tt_rank_feasible_ranges(size, compression_ratio):
     total_elements = prod(size)
 
     # Target storage size based on the compression ratio
-    target_storage = total_elements / compression_ratio
+    target_storage = total_elements / com_ratio
 
     feasible_ranges = []
     for i in range(1, len(upper_bounds) - 1):

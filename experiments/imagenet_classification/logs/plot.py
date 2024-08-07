@@ -4,7 +4,7 @@ import re
 import numpy as np
 import pandas as pd
 
-from lrf.utils import utils
+import lrf
 
 
 def read_results(path, metrics=("bpp", "top1", "top5")):
@@ -55,12 +55,12 @@ results.rename(columns={"bpp": "bit rate (bpp)"}, inplace=True)
 results.rename(columns={"top1_accuracy": "top-1 accuracy (%)"}, inplace=True)
 results.rename(columns={"top5_accuracy": "top-5 accuracy (%)"}, inplace=True)
 
-# Remove rows with missing values and high bbps
+# Remove rows with missing values and high bpps
 results.dropna(inplace=True)
 results = results.query("`bit rate (bpp)` < 0.8")
 
-#### Plot top-1 vs bbp ####
-plot = utils.Plot(results)
+#### Plot top-1 vs bpp ####
+plot = lrf.Plot(results)
 
 # Interpolation for better visualization
 plot.interpolate(
@@ -87,8 +87,8 @@ plot.save(save_dir=results_dir, prefix=data, format="pdf")
 plot.save(save_dir=figures_dir, prefix=data, format="pgf")
 
 
-#### Plot top-5 vs bbp ####
-plot = utils.Plot(results)
+#### Plot top-5 vs bpp ####
+plot = lrf.Plot(results)
 
 # Interpolate for better visualization
 plot.interpolate(

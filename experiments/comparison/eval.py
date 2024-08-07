@@ -6,7 +6,6 @@ import numpy as np
 import torch
 
 import lrf
-from lrf.utils import utils
 
 
 def get_args():
@@ -45,7 +44,7 @@ def get_args():
 
 def eval_image(image):
     image_id = os.path.basename(image)
-    image = utils.read_image(image)
+    image = lrf.read_image(image)
 
     results = []
 
@@ -53,7 +52,7 @@ def eval_image(image):
     for quality in range(0, 75, 1):
         params = {"quality": quality}
         config = {"data": image_id, "method": "JPEG", **params}
-        log = utils.eval_compression(
+        log = lrf.eval_compression(
             image,
             lrf.pil_encode,
             lrf.pil_decode,
@@ -74,7 +73,7 @@ def eval_image(image):
             "patch_size": (8, 8),
         }
         config = {"data": image_id, "method": "SVD", **params}
-        log = utils.eval_compression(image, lrf.svd_encode, lrf.svd_decode, **params)
+        log = lrf.eval_compression(image, lrf.svd_encode, lrf.svd_decode, **params)
         results.append({**config, **log})
         print(
             f"method {config['method']}, quality {quality}, image {config['data']} done."
@@ -94,7 +93,7 @@ def eval_image(image):
             "verbose": False,
         }
         config = {"data": image_id, "method": "IMF", **params}
-        log = utils.eval_compression(image, lrf.imf_encode, lrf.imf_decode, **params)
+        log = lrf.eval_compression(image, lrf.imf_encode, lrf.imf_decode, **params)
         results.append({**config, **log})
         print(
             f"method {config['method']}, quality {quality}, image {config['data']} done."
@@ -114,4 +113,4 @@ def eval_dataset(data_dir):
 if __name__ == "__main__":
     args = get_args()
     results = eval_dataset(args.data_dir)
-    utils.save_config(results, save_dir=args.save_dir, prefix=args.prefix)
+    lrf.save_config(results, save_dir=args.save_dir, prefix=args.prefix)

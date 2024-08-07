@@ -38,8 +38,6 @@ setup(
         "einops",
         "opt_einsum",
         "torchvision",
-        "scikit-image",
         "pillow",
-        "joblib",
     ],
 )

@@ -16,13 +16,13 @@ from lrf.compression.utils import prod, pad_image, unpad_image, quantize, dequan
 #### HOSVD compression ####
 
 
-def hosvd_rank(size: tuple[int, int, int], compression_ratio: float) -> int:
+def hosvd_rank(size: tuple[int, int, int], com_ratio: float) -> int:
     c, h, w = size
     r = Symbol("r", real=True)
     df_input = c * h * w  # Degrees of freedom of the input tensor (image)
     df_core = c * r * r  # Degrees of freedom of the core
     df_factors = c * c + r * h + r * w  # Degrees of freedom of the factors
-    rs = solve(df_input - compression_ratio * (df_core + df_factors), r)
+    rs = solve(df_input - com_ratio * (df_core + df_factors), r)
     rs = [a.evalf() for a in rs if isinstance(a.evalf(), Real) and a.evalf() > 0]
     r = min(rs)
     r = min(int(math.floor(r)), h, w)
@@ -37,24 +37,24 @@ def hosvd_compression_ratio(
     df_factors = sum(
         s * r for s, r in zip(size, rank)
     )  # Degrees of freedom of the factors
-    compression_ratio = df_input / (df_core + df_factors)
-    return compression_ratio
+    com_ratio = df_input / (df_core + df_factors)
+    return com_ratio
 
 
 def hosvd_encode(
     x: Tensor,
     rank: Sequence[int] = None,
-    compression_ratio: Optional[float] = None,
+    com_ratio: Optional[float] = None,
     dtype: torch.dtype = None,
 ) -> Dict:
     """Ecnoder of the Higher-Order Singular Value Decomposition (HOSVD)-based compression."""
 
     assert (rank is not None) or (
-        compression_ratio is not None
-    ), "Either 'rank' or 'compression_ratio' must be specified."
+        com_ratio is not None
+    ), "Either 'rank' or 'com_ratio' must be specified."
 
     if rank is None:
-        rank = hosvd_rank(x.shape, compression_ratio)
+        rank = hosvd_rank(x.shape, com_ratio)
 
     dtype = x.dtype if dtype is None else dtype
 
@@ -100,15 +100,13 @@ def patch_hosvd_detensorize(
 
 
 def patch_hosvd_optimal_rank(
-    x: Tensor, compression_ratio: float, patch_size: tuple[int, int] = (8, 8)
+    x: Tensor, com_ratio: float, patch_size: tuple[int, int] = (8, 8)
 ):
     x = F.to_dtype(x, dtype=torch.float32, scale=True)
     _, h, w = x.shape
     tensor = patch_hosvd_tensorize(x, patch_size)
     n, p, q, c = size = tensor.shape
-    rank_ranges = hosvd_rank_feasible_ranges(
-        size, compression_ratio, (None, None, None, c)
-    )
+    rank_ranges = hosvd_rank_feasible_ranges(size, com_ratio, (None, None, None, c))
     (r1_min, r1_max), (_, r2_max), *_ = rank_ranges
     df_input = prod(size)  # Degrees of freedom of the input tensor
     core, factors = hosvd(tensor, rank=(r1_max, r2_max, r2_max, c))
@@ -117,7 +115,7 @@ def patch_hosvd_optimal_rank(
         r2 = Symbol("r2", real=True)
         df_core = r1 * r2 * r2 * c  # Degrees of freedom of the core
         df_factors = r1 * n + r2 * p + r2 * q + c * c  # Degrees of freedom of the factors
-        r2s = solve(df_input - compression_ratio * (df_core + df_factors), r2)
+        r2s = solve(df_input - com_ratio * (df_core + df_factors), r2)
         r2s = [a.evalf() for a in r2s if isinstance(a.evalf(), Real) and a.evalf() > 0]
         if len(r2s) == 0:
             continue
@@ -146,18 +144,18 @@ def patch_hosvd_optimal_rank(
 def patch_hosvd_encode(
     x: Tensor,
     rank: Optional[tuple[int, int, int, int]] = None,
-    compression_ratio: Optional[float] = None,
+    com_ratio: Optional[float] = None,
     bpp: Optional[float] = None,
     patch_size: tuple[int, int] = (8, 8),
     dtype: torch.dtype = None,
 ) -> tuple[Tensor, Tensor]:
     """Ecnoder of the Patch Higher-Order Singular Value Decomposition (HOSVD) compression."""
 
-    assert (rank, compression_ratio, bpp) != (
+    assert (rank, com_ratio, bpp) != (
         None,
         None,
         None,
-    ), "Either 'rank', 'compression_ratio', or 'bpp' must be specified."
+    ), "Either 'rank', 'com_ratio', or 'bpp' must be specified."
 
     dtype = x.dtype if dtype is None else dtype
 
@@ -166,10 +164,10 @@ def patch_hosvd_encode(
     padded_size = x.shape[-2:]
 
     if rank is None:
-        if compression_ratio is None:
-            compression_ratio = 8 * x.element_size() * x.shape[0] / bpp
+        if com_ratio is None:
+            com_ratio = 8 * x.element_size() * x.shape[0] / bpp
 
-        rank = patch_hosvd_optimal_rank(x, compression_ratio, patch_size)
+        rank = patch_hosvd_optimal_rank(x, com_ratio, patch_size)
 
     x = F.to_dtype(x, dtype=torch.float32, scale=True)
 

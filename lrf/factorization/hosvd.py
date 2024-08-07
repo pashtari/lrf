@@ -36,7 +36,7 @@ def hosvd_rank_upper_bounds(size: Sequence[int]):
 
 def hosvd_rank_feasible_ranges(
     size: Sequence[int],
-    compression_ratio: float,
+    com_ratio: float,
     rank: Optional[Sequence[Optional[int]]] = None,
 ):
     """
@@ -49,7 +49,7 @@ def hosvd_rank_feasible_ranges(
 
     Args:
         size: Size of the tensor.
-        compression_ratio: Desired compression ratio.
+        com_ratio: Desired compression ratio.
         rank:
 
     Returns:
@@ -72,7 +72,7 @@ def hosvd_rank_feasible_ranges(
     total_elements = prod(size)
 
     # Target storage size based on the compression ratio
-    target_storage = total_elements / compression_ratio
+    target_storage = total_elements / com_ratio
 
     feasible_ranges = []
     for i, _ in enumerate(size):

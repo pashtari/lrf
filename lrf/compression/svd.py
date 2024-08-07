@@ -1,9 +1,7 @@
-from typing import Optional, Dict
+from typing import Optional, Dict, Iterable
 import math
 
 import torch
-from torch import Tensor
-from torch.nn.modules.utils import _triple
 from einops import rearrange
 
 from lrf.compression.utils import (
@@ -25,36 +23,71 @@ from lrf.compression.utils import (
 )
 
 
-def svd_rank(size: tuple[int, int], compression_ratio: float) -> int:
-    """Calculate the rank for SVD based on the compression ratio."""
+def svd_rank(size: tuple[int, int], com_ratio: float) -> int:
+    """Calculate the rank for SVD based on the compression ratio.
+
+    Args:
+        size (tuple[int, int]): The size of the matrix (rows, columns).
+        com_ratio (float): The desired compression ratio.
+
+    Returns:
+        int: The calculated rank for SVD.
+    """
 
     num_rows, num_cols = size
     df_input = num_rows * num_cols  # Degrees of freedom of the input matrix
     df_lowrank = num_rows + num_cols  # Degrees of freedom of the low-rank matrix
-    rank = max(math.floor(df_input / (compression_ratio * df_lowrank)), 1)
+    rank = max(math.floor(df_input / (com_ratio * df_lowrank)), 1)
     return rank
 
 
 def svd_compression_ratio(size: tuple[int, int], rank: int) -> float:
-    """Calculate the compression ratio for SVD based on the rank."""
+    """Calculate the compression ratio for SVD based on the rank.
+
+    Args:
+        size (tuple[int, int]): The size of the matrix (rows, columns).
+        rank (int): The rank used for SVD.
+
+    Returns:
+        float: The calculated compression ratio.
+    """
 
     num_rows, num_cols = size
     df_input = num_rows * num_cols  # Degrees of freedom of the input matrix
     df_lowrank = rank * (num_rows + num_cols)  # Degrees of freedom of the low-rank matrix
-    compression_ratio = df_input / df_lowrank
-    return compression_ratio
+    com_ratio = df_input / df_lowrank
+    return com_ratio
 
 
-def patchify(x: Tensor, patch_size: tuple[int, int]) -> Tensor:
-    """Splits an input image into flattened patches."""
+def patchify(x: torch.Tensor, patch_size: tuple[int, int]) -> torch.Tensor:
+    """Splits an input image into flattened patches.
+
+    Args:
+        x (torch.Tensor): The input image tensor.
+        patch_size (tuple[int, int]): The size of the patches (height, width).
+
+    Returns:
+        torch.Tensor: The tensor containing image patches.
+    """
 
     p, q = patch_size
     patches = rearrange(x, "c (h p) (w q) -> (h w) (c p q)", p=p, q=q)
     return patches
 
 
-def depatchify(x: Tensor, size: tuple[int, int], patch_size: tuple[int, int]) -> Tensor:
-    """Reconstruct the original image from its patches."""
+def depatchify(
+    x: torch.Tensor, size: tuple[int, int], patch_size: tuple[int, int]
+) -> torch.Tensor:
+    """Reconstruct the original image from its patches.
+
+    Args:
+        x (torch.Tensor): The patched image tensor.
+        size (tuple[int, int]): The size of the original image (height, width).
+        patch_size (tuple[int, int]): The patch size.
+
+    Returns:
+        torch.Tensor: The reconstructed image tensor.
+    """
 
     p, q = patch_size
     patches = rearrange(x, "(h w) (c p q) -> c (h p) (w q)", p=p, q=q, h=size[0] // p)
@@ -62,9 +95,18 @@ def depatchify(x: Tensor, size: tuple[int, int], patch_size: tuple[int, int]) ->
 
 
 def depatchify_uv(
-    u: Tensor, v: Tensor, size: tuple[int, int], patch_size: tuple[int, int]
-) -> tuple[Tensor, Tensor]:
-    """Reshape the u and v matrices into their original spatial dimensions."""
+    u: torch.Tensor, v: torch.Tensor, size: tuple[int, int], patch_size: tuple[int, int]
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Reconstruct the original image from its patches.
+
+    Args:
+        x (torch.Tensor): The patched image tensor.
+        size (tuple[int, int]): The original size of the image (height, width).
+        patch_size (tuple[int, int]): The patch size.
+
+    Returns:
+        torch.Tensor: The reconstructed image tensor.
+    """
 
     p, q = patch_size
     u_new = rearrange(u, "(h w) r -> r 1 h w", h=size[0] // p)
@@ -73,7 +115,7 @@ def depatchify_uv(
 
 
 def svd_encode(
-    image: Tensor,
+    image: torch.Tensor,
     rank: Optional[int] = None,
     quality: Optional[float | tuple[float, float, float]] = None,
     color_space: str = "RGB",
@@ -82,7 +124,26 @@ def svd_encode(
     patch_size: tuple[int, int] = (8, 8),
     dtype: torch.dtype = None,
 ) -> Dict:
-    """Compress an input image using SVD."""
+    """Compress an input image using SVD.
+
+    Args:
+        image (torch.Tensor): The input image tensor.
+        rank (Optional[int]): The rank for SVD compression (default: None).
+        quality (Optional[Union[float, tuple[float, float, float]]]): The quality for SVD compression (default: None).
+        color_space (str, optional): The color space of the image ('RGB' or 'YCbCr', default: 'RGB').
+        scale_factor (tuple[float, float], optional): The scale factor for chroma downsampling (default: (0.5, 0.5)).
+        patch (bool, optional): Whether to use patch-based encoding (default: True).
+        patch_size (tuple[int, int], optional): The patch size (default: (8, 8)).
+        dtype (Optional[torch.dtype], optional): The data type of the compressed image (default: None).
+
+    Returns:
+        bytes: The compressed image.
+    """
+
+    assert (rank, quality) != (
+        None,
+        None,
+    ), "Either 'rank' or 'quality' must be specified."
 
     dtype = image.dtype if dtype is None else dtype
 
@@ -93,11 +154,6 @@ def svd_encode(
     }
 
     if color_space == "RGB":
-        assert (rank, quality) != (
-            None,
-            None,
-        ), "Either 'rank' or 'quality' must be specified."
-
         image = image.float()
 
         if patch:
@@ -116,10 +172,12 @@ def svd_encode(
 
         if rank is None:
             assert quality >= 0 and quality <= 100, "'quality' must be between 0 and 100."
-            rank = max(round(min(x.shape[-2:]) * quality / 100), 1)
+            R = max(round(min(x.shape[-2:]) * quality / 100), 1)
+        else:
+            R = rank
 
         u, s, v = torch.linalg.svd(x, full_matrices=False)
-        u, s, v = u[..., :, :rank], s[..., :rank], v[..., :rank, :]
+        u, s, v = u[..., :, :R], s[..., :R], v[..., :R, :]
 
         u = torch.einsum("...ir, ...r -> ...ir", u, torch.sqrt(s))
         v = torch.einsum("...r, ...rj -> ...jr", torch.sqrt(s), v)
@@ -135,14 +193,17 @@ def svd_encode(
         factors = [u, v]
 
     else:
-        quality = _triple(quality)
-        rank = _triple(rank)
+        if not isinstance(rank, Iterable):
+            if rank is None:
+                rank = (None, None, None)
+            else:
+                rank = (rank, max(rank // 2, 1), max(rank // 2, 1))
 
-        for R, Q in zip(rank, quality):
-            assert (R, Q) != (
-                None,
-                None,
-            ), "Either 'rank' or 'quality' for each channel must be specified."
+        if not isinstance(quality, Iterable):
+            if quality is None:
+                quality = (None, None, None)
+            else:
+                quality = (quality, quality / 2, quality / 2)
 
         image = image.float()
 
@@ -167,8 +228,10 @@ def svd_encode(
                 if rank[i] is None:
                     assert (
                         quality[i] >= 0 and quality[i] <= 100
-                    ), "'quality' must be between 0 and 1."
+                    ), "'quality' must be between 0 and 100."
                     R = max(round(min(x.shape[-2:]) * quality[i] / 100), 1)
+                else:
+                    R = rank
 
                 metadata["original size"].append(channel.shape[-2:])
                 metadata["padded size"].append(padded_size)
@@ -198,8 +261,10 @@ def svd_encode(
                 if rank[i] is None:
                     assert (
                         quality[i] >= 0 and quality[i] <= 100
-                    ), "'quality' must be between 0 and 1."
+                    ), "'quality' must be between 0 and 100."
                     R = max(round(min(channel.shape[-2:]) * quality[i] / 100), 1)
+                else:
+                    R = rank
 
                 metadata["original size"].append(channel.shape[-2:])
                 metadata["rank"].append(R)
@@ -229,8 +294,15 @@ def svd_encode(
     return encoded_image
 
 
-def svd_decode(encoded_image: bytes) -> Tensor:
-    """Decompress an SVD-enocded image."""
+def svd_decode(encoded_image: bytes) -> torch.Tensor:
+    """Decompress an SVD-encoded image.
+
+    Args:
+        encoded_image (bytes): The encoded image data.
+
+    Returns:
+        torch.Tensor: The decompressed image tensor.
+    """
 
     encoded_metadata, encoded_factors = separate_bytes(encoded_image, 2)
     metadata = bytes_to_dict(encoded_metadata)

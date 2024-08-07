@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from lrf.utils import utils
+import lrf
 
 
 # Set directories
@@ -12,7 +12,7 @@ figures_dir = "paper/v2-tip/manuscript/figures"
 
 
 # Load results
-results = utils.read_config(f"{results_dir}/{task}_results.json")
+results = lrf.read_config(f"{results_dir}/{task}_results.json")
 results = pd.DataFrame(results)
 results = results.query("`bit rate (bpp)` < 0.8")
 results.rename(columns={"num_iters": r"\# iterations"}, inplace=True)
@@ -21,7 +21,7 @@ results[r"\# iterations"] = [str(x) for x in results[r"\# iterations"]]
 
 
 # Plot PSNR vs bpp
-plot = utils.Plot(
+plot = lrf.Plot(
     results, columns=("data", "method", "bit rate (bpp)", r"\# iterations", "PSNR (dB)")
 )
 

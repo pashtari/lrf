@@ -1,9 +1,7 @@
-from typing import Optional, Dict
+from typing import Optional, Iterable
 import math
 
 import torch
-from torch import Tensor
-from torch.nn.modules.utils import _triple
 from einops import rearrange
 
 from lrf.factorization import IMF
@@ -24,36 +22,90 @@ from lrf.compression.utils import (
 )
 
 
-def imf_rank(size: tuple[int, int], compression_ratio: float) -> int:
-    """Calculate the rank for IMF based on the compression ratio."""
+def imf_rank(size: tuple[int, int], com_ratio: float) -> int:
+    """Calculate the rank for IMF based on the compression ratio.
+
+    Args:
+        size (tuple[int, int]): The size the input image (height, width).
+        com_ratio (float): The desired compression ratio.
+
+    Returns:
+        int: The calculated rank.
+    """
 
     num_rows, num_cols = size
     df_input = num_rows * num_cols  # Degrees of freedom of the input matrix
     df_lowrank = num_rows + num_cols  # Degrees of freedom of the low-rank matrix
-    rank = max(math.floor(df_input / (compression_ratio * df_lowrank)), 1)
+    rank = max(math.floor(df_input / (com_ratio * df_lowrank)), 1)
     return rank
 
 
-def patchify(x: Tensor, patch_size: tuple[int, int]) -> Tensor:
-    """Splits an input image into flattened patches."""
+def patchify(x: torch.Tensor, patch_size: tuple[int, int]) -> torch.Tensor:
+    """Splits an input image into flattened patches.
+
+    Args:
+        x (torch.Tensor): The input image tensor of shape (channel, height, width).
+        patch_size (tuple[int, int]): The patch size.
+
+    Returns:
+        torch.Tensor: The patched image tensor.
+    """
 
     p, q = patch_size
     patches = rearrange(x, "c (h p) (w q) -> (h w) (c p q)", p=p, q=q)
     return patches
 
 
-def depatchify(x: Tensor, size: tuple[int, int], patch_size: tuple[int, int]) -> Tensor:
-    """Reconstruct the original image from its patches."""
+def depatchify(
+    x: torch.Tensor, size: tuple[int, int], patch_size: tuple[int, int]
+) -> torch.Tensor:
+    """Reconstruct the original image from its patches.
+
+    Args:
+        x (torch.Tensor): The patched image tensor.
+        size (tuple[int, int]): The original size of the image (height, width).
+        patch_size (tuple[int, int]): The patch size.
+
+    Returns:
+        torch.Tensor: The reconstructed image tensor.
+    """
 
     p, q = patch_size
     patches = rearrange(x, "(h w) (c p q) -> c (h p) (w q)", p=p, q=q, h=size[0] // p)
     return patches
 
 
+def patchify_uv(u: torch.Tensor, v: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    """
+    Flatten spatial dimensions of the u and v factor maps.
+
+    Args:
+        u (torch.Tensor): The u factor map (components map).
+        v (torch.Tensor): The v factor map (coefficients map).
+
+    Returns:
+        tuple[torch.Tensor, torch.Tensor]: The factor matrices, i.e., the flattened u and v factor maps.
+    """
+
+    u_new = rearrange(u, "r 1 h w -> (h w) r")
+    v_new = rearrange(v, "r c p q -> (c p q) r")
+    return u_new, v_new
+
+
 def depatchify_uv(
-    u: Tensor, v: Tensor, size: tuple[int, int], patch_size: tuple[int, int]
-) -> tuple[Tensor, Tensor]:
-    """Reshape the u and v matrices into their original spatial dimensions."""
+    u: torch.Tensor, v: torch.Tensor, size: tuple[int, int], patch_size: tuple[int, int]
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Reshape the u and v matrices into their original spatial dimensions.
+
+    Args:
+        u (torch.Tensor): The u factor matrix (patch, rank).
+        v (torch.Tensor): The v factor matrix (patch_element, rank).
+        size (tuple[int, int]): The original size of the image (height, width).
+        patch_size (tuple[int, int]): The patch size.
+
+    Returns:
+        tuple[torch.Tensor, torch.Tensor]: The factor maps, i.e., the reshaped u and v factors.
+    """
 
     p, q = patch_size
     u_new = rearrange(u, "(h w) r -> r 1 h w", h=size[0] // p)
@@ -61,16 +113,8 @@ def depatchify_uv(
     return u_new, v_new
 
 
-def patchify_uv(u: Tensor, v: Tensor) -> tuple[Tensor, Tensor]:
-    """Flatten spatial dimensions of the u and v matrices."""
-
-    u_new = rearrange(u, "r 1 h w -> (h w) r")
-    v_new = rearrange(v, "r c p q -> (c p q) r")
-    return u_new, v_new
-
-
 def imf_encode(
-    image: Tensor,
+    image: torch.Tensor,
     rank: Optional[int | tuple[int, int, int]] = None,
     quality: Optional[float | tuple[float, float, float]] = None,
     color_space: str = "YCbCr",
@@ -81,7 +125,29 @@ def imf_encode(
     dtype: torch.dtype = torch.int8,
     **kwargs,
 ) -> bytes:
-    """Compress an input image using Patch IMF (RGB)."""
+    """
+    IMF compression of an image.
+
+    Args:
+        image (torch.Tensor): The input image tensor.
+        rank (int or tuple[int, int, int], optional): The rank for IMF (default: None).
+        quality (float or tuple[float, float, float], optional): The quality for IMF (default: None).
+        color_space (str, optional): The color space of the image ('RGB' or 'YCbCr', default: 'YCbCr').
+        scale_factor (tuple[float, float], optional): The scale factor for chroma downsampling (default: (0.5, 0.5)).
+        patch (bool, optional): Whether to use patch-based encoding (default: True).
+        patch_size (tuple[int, int], optional): The patch size (default: (8, 8)).
+        bounds (tuple[float, float], optional): The bounds for IMF (default: (-16, 15)).
+        dtype (torch.dtype, optional): The data type for encoding (default: torch.int8).
+        **kwargs: Additional arguments for IMF decomposition.
+
+    Returns:
+        bytes: The encoded image in bytes.
+    """
+
+    assert (rank, quality) != (
+        None,
+        None,
+    ), "Either 'rank' or 'quality' must be specified."
 
     assert color_space in (
         "RGB",
@@ -96,11 +162,6 @@ def imf_encode(
     }
 
     if color_space == "RGB":
-        assert (rank, quality) != (
-            None,
-            None,
-        ), "Either 'rank' or 'quality' must be specified."
-
         if patch:
             image = image.float()
 
@@ -112,18 +173,20 @@ def imf_encode(
                 assert (
                     quality >= 0 and quality <= 100
                 ), "'quality' must be between 0 and 100."
-                rank = max(round(min(x.shape[-2:]) * quality / 100), 1)
+                R = max(round(min(x.shape[-2:]) * quality / 100), 1)
+            else:
+                R = rank
 
             metadata.update(
                 {
                     "patch size": patch_size,
                     "original size": image.shape[-2:],
                     "padded size": padded_size,
-                    "rank": rank,
+                    "rank": R,
                 }
             )
 
-            imf = IMF(rank=rank, bounds=bounds, **kwargs)
+            imf = IMF(rank=R, bounds=bounds, **kwargs)
             u, v = imf.decompose(x.unsqueeze(0))
             u, v = u.squeeze(0), v.squeeze(0)
 
@@ -136,25 +199,30 @@ def imf_encode(
                 assert (
                     quality >= 0 and quality <= 100
                 ), "'quality' must be between 0 and 100."
-                rank = max(round(min(x.shape[-2:]) * quality / 100), 1)
+                R = max(round(min(x.shape[-2:]) * quality / 100), 1)
+            else:
+                R = rank
 
-            metadata["rank"] = rank
+            metadata["rank"] = R
 
-            imf = IMF(rank=rank, bounds=bounds, **kwargs)
+            imf = IMF(rank=R, bounds=bounds, **kwargs)
             u, v = imf.decompose(x.unsqueeze(0))
             u, v = u.squeeze(0), v.squeeze(0)
 
             factors = u.to(dtype), v.to(dtype)
 
     else:  # color_space == "YCbCr"
-        quality = _triple(quality)
-        rank = _triple(rank)
+        if not isinstance(rank, Iterable):
+            if rank is None:
+                rank = (None, None, None)
+            else:
+                rank = (rank, max(rank // 2, 1), max(rank // 2, 1))
 
-        for R, Q in zip(rank, quality):
-            assert (R, Q) != (
-                None,
-                None,
-            ), "Either 'rank' or 'quality' for each channel must be specified."
+        if not isinstance(quality, Iterable):
+            if quality is None:
+                quality = (None, None, None)
+            else:
+                quality = (quality, quality / 2, quality / 2)
 
         image = image.float()
 
@@ -176,8 +244,10 @@ def imf_encode(
                 if rank[i] is None:
                     assert (
                         quality[i] >= 0 and quality[i] <= 100
-                    ), "'quality' must be between 0 and 1."
+                    ), "'quality' must be between 0 and 100."
                     R = max(round(min(x.shape[-2:]) * quality[i] / 100), 1)
+                else:
+                    R = rank[i]
 
                 metadata["original size"].append(channel.shape[-2:])
                 metadata["padded size"].append(padded_size)
@@ -199,8 +269,10 @@ def imf_encode(
                 if rank[i] is None:
                     assert (
                         quality[i] >= 0 and quality[i] <= 100
-                    ), "'quality' must be between 0 and 1."
+                    ), "'quality' must be between 0 and 100."
                     R = max(round(min(channel.shape[-2:]) * quality[i] / 100), 1)
+                else:
+                    R = rank[i]
 
                 metadata["original size"].append(channel.shape[-2:])
                 metadata["rank"].append(R)
@@ -220,8 +292,16 @@ def imf_encode(
     return encoded_image
 
 
-def imf_decode(encoded_image: bytes) -> Tensor:
-    """Decompress an IMF-enocded image."""
+def imf_decode(encoded_image: bytes) -> torch.Tensor:
+    """
+    Decode an IMF-compressed image.
+
+    Args:
+        encoded_image (bytes): The encoded image in bytes.
+
+    Returns:
+        torch.Tensor: The decoded image tensor.
+    """
 
     encoded_metadata, encoded_factors = separate_bytes(encoded_image, 2)
     metadata = bytes_to_dict(encoded_metadata)

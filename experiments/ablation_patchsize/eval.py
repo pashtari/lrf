@@ -6,7 +6,6 @@ import numpy as np
 import torch
 
 import lrf
-from lrf.utils import utils
 
 
 def get_args():
@@ -43,7 +42,7 @@ def get_args():
 
 def eval_image(image):
     image_id = os.path.basename(image)
-    image = utils.read_image(image)
+    image = lrf.read_image(image)
 
     results = []
 
@@ -67,7 +66,7 @@ def eval_image(image):
                 "verbose": False,
             }
             config = {"data": image_id, "method": "IMF", **params}
-            log = utils.eval_compression(image, lrf.imf_encode, lrf.imf_decode, **params)
+            log = lrf.eval_compression(image, lrf.imf_encode, lrf.imf_decode, **params)
             results.append({**config, **log})
 
         print(
@@ -88,4 +87,4 @@ def eval_dataset(data_dir):
 if __name__ == "__main__":
     args = get_args()
     results = eval_dataset(args.data_dir)
-    utils.save_config(results, save_dir=args.save_dir, prefix=args.prefix)
+    lrf.save_config(results, save_dir=args.save_dir, prefix=args.prefix)

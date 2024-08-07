@@ -1,36 +1,35 @@
-from typing import Sequence
+from typing import Sequence, Any
 import functools
 from operator import mul
 import json
 import zlib
-import io
 
 import torch
-from torch import Tensor
 import torch.nn.functional as F
 import numpy as np
-import joblib
 
 
-def prod(x):
+def prod(x: Sequence[float]) -> float:
+    """Compute the product of elements in a sequence.
+
+    Args:
+        x (Sequence[float]): A sequence of integers.
+
+    Returns:
+        int: The product of the elements in the sequence.
+    """
     return functools.reduce(mul, x, 1)
 
 
-def zscore_normalize(tensor, dim=(-2, -1), eps=1e-8):
-    mean = torch.mean(tensor, dim=dim, keepdim=True)
-    std = torch.std(tensor, dim=dim, keepdim=True)
-    normalized_tensor = (tensor - mean) / (std + eps)
-    return normalized_tensor
+def rgb_to_ycbcr(rgb_img: torch.Tensor) -> torch.Tensor:
+    """Convert an RGB image to YCbCr color space.
 
+    Args:
+        rgb_img (torch.Tensor): Input RGB image of shape (3, H, W).
 
-def minmax_normalize(tensor, dim=(-2, -1), eps=1e-8):
-    min_val = torch.amin(tensor, dim=dim, keepdim=True)
-    max_val = torch.amax(tensor, dim=dim, keepdim=True)
-    normalized_tensor = (tensor - min_val) / (max_val - min_val + eps)
-    return normalized_tensor
-
-
-def rgb_to_ycbcr(rgb_img):
+    Returns:
+        torch.Tensor: YCbCr image of shape (3, H, W).
+    """
     # Transformation matrix from RGB to YCbCr
     transform_matrix = torch.tensor(
         [[0.299, 0.587, 0.114], [-0.168736, -0.331264, 0.5], [0.5, -0.418688, -0.081312]],
@@ -48,7 +47,15 @@ def rgb_to_ycbcr(rgb_img):
     return ycbcr_img
 
 
-def ycbcr_to_rgb(ycbcr_img):
+def ycbcr_to_rgb(ycbcr_img: torch.Tensor) -> torch.Tensor:
+    """Convert a YCbCr image to RGB color space.
+
+    Args:
+        ycbcr_img (torch.Tensor): Input YCbCr image of shape (3, H, W).
+
+    Returns:
+        torch.Tensor: RGB image of shape (3, H, W).
+    """
     # Transformation matrix from YCbCr to RGB
     transform_matrix = torch.tensor(
         [[1.0, 0.0, 1.40200], [1.0, -0.344136, -0.714136], [1.0, 1.77200, 0.0]],
@@ -66,7 +73,19 @@ def ycbcr_to_rgb(ycbcr_img):
     return rgb_img
 
 
-def chroma_downsampling(img_ycbcr, **kwargs):
+def chroma_downsampling(
+    img_ycbcr: torch.Tensor, **kwargs
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Downsample the chroma channels (Cb and Cr) of a YCbCr image.
+
+    Args:
+        img_ycbcr (torch.Tensor): Input YCbCr image of shape (C, H, W).
+        **kwargs: Additional arguments for `torch.nn.functional.interpolate`.
+
+    Returns:
+        tuple[torch.Tensor, torch.Tensor, torch.Tensor]: Downsampled Y, Cb, and Cr channels.
+    """
+
     # Luminance channel (Y) remains unchanged
     Y = img_ycbcr[0:1, :, :]
     # Downsample Cb channel
@@ -86,19 +105,19 @@ def chroma_upsampling(ycbcr, **kwargs):
     return img_ycbcr
 
 
-def pad_image(img, patch_size, *args, **kwargs):
-    """
-    Pads an image tensor to ensure it can be evenly divided into patches of size (P, Q).
+def pad_image(
+    img: torch.Tensor, patch_size: tuple[int, int], *args, **kwargs
+) -> torch.Tensor:
+    """Pad an image tensor to ensure it can be evenly divided into patches of size (P, Q).
 
     Args:
-    - img (torch.Tensor): The input image tensor of shape (C, H, W).
-    - P (int): The height of each patch.
-    - Q (int): The width of each patch.
-    - padding_mode (str): The type of padding ('constant', 'reflect', etc.).
-    - padding_value (int or float): The value used for constant padding.
+        img (torch.Tensor): The input image tensor of shape (C, H, W).
+        patch_size (tuple[int, int]): The height (P) and width (Q) of each patch.
+        *args: Additional arguments for `torch.nn.functional.pad`.
+        **kwargs: Additional keyword arguments for `torch.nn.functional.pad`.
 
     Returns:
-    - torch.Tensor: The padded image tensor.
+        Tensor: The padded image tensor.
     """
 
     _, H, W = img.shape
@@ -113,16 +132,15 @@ def pad_image(img, patch_size, *args, **kwargs):
     return padded_img
 
 
-def unpad_image(padded_img, orig_size):
-    """
-    Recover the original image from a padded image by removing the added padding.
+def unpad_image(padded_img: torch.Tensor, orig_size: tuple[int, int]) -> torch.Tensor:
+    """Recover the original image from a padded image by removing the added padding.
 
     Args:
-    - orig_size (torch.Tensor): The padded image tensor of shape (C, H', W').
-    - orig_size (tuple[int, int]): The original size of the image before padding.
+        padded_img (torch.Tensor): The padded image tensor of shape (C, H', W').
+        orig_size (tuple[int, int]): The original size of the image before padding (H_orig, W_orig).
 
     Returns:
-    - torch.Tensor: The original image tensor of shape (C, H_orig, W_orig).
+        torch.Tensor: The original image tensor of shape (C, H_orig, W_orig).
     """
 
     _, H_padded, W_padded = padded_img.shape
@@ -135,18 +153,18 @@ def unpad_image(padded_img, orig_size):
     return original_img
 
 
-def to_dtype(tensor, dtype):
-    """
-    Converts a tensor to the specified dtype, clamping its values to be within
+def to_dtype(tensor: torch.Tensor, dtype: torch.dtype) -> torch.Tensor:
+    """Convert a tensor to the specified dtype, clamping its values to be within
     the representable range of the target dtype.
 
-    Parameters:
-    - tensor: A PyTorch tensor.
-    - dtype: The target dtype to convert the tensor to.
+    Args:
+        tensor (torch.Tensor): A PyTorch tensor.
+        dtype (torch.dtype): The target dtype to convert the tensor to.
 
     Returns:
-    - A tensor of the target dtype with its values clamped within the representable range.
+        Tensor: A tensor of the target dtype with its values clamped within the representable range.
     """
+
     # Determine the range of the target dtype
     dtype_min, dtype_max = None, None
     if dtype in (torch.int8, torch.uint8, torch.int16, torch.int32, torch.int64):
@@ -164,19 +182,19 @@ def to_dtype(tensor, dtype):
     return clamped_tensor
 
 
-def quantize(tensor, target_dtype):
-    """
-    Quantize a float tensor to a specified integer data type.
+def quantize(
+    tensor: torch.Tensor, target_dtype: torch.dtype
+) -> tuple[torch.Tensor, float, float]:
+    """Quantize a float tensor to a specified integer data type.
 
     Args:
-    - tensor (torch.Tensor): Input tensor of type torch.float32.
-    - target_dtype (torch.dtype): Target integer data type (e.g., torch.uint8, torch.int16).
+        tensor (torch.Tensor): Input tensor of type torch.float32.
+        target_dtype (torch.dtype): Target integer data type (e.g., torch.uint8, torch.int16).
 
     Returns:
-    - torch.Tensor: Quantized tensor.
-    - float: Scale factor used for quantization.
-    - float: Minimum value of the input tensor.
+        tuple[torch.Tensor, float, float]: Quantized tensor, scale factor, and minimum value of the input tensor.
     """
+
     # Ensure the tensor is in float32
     assert torch.is_floating_point(tensor), "Tensor must be of type float"
 
@@ -202,18 +220,18 @@ def quantize(tensor, target_dtype):
     return quantized, scale.item(), min_val.item()
 
 
-def dequantize(quantized_tensor, scale, min_val):
-    """
-    Dequantize a tensor to float32 values.
+def dequantize(
+    quantized_tensor: torch.Tensor, scale: float, min_val: float
+) -> torch.Tensor:
+    """Dequantize a tensor to float32 values.
 
     Args:
-    - quantized_tensor (torch.Tensor): Input quantized tensor.
-    - scale (float): Scale factor used for quantization.
-    - min_val (float): Minimum value of the original tensor before quantization.
-    - target_dtype (torch.dtype): Target data type for the dequantized tensor.
+        quantized_tensor (torch.Tensor): Input quantized tensor.
+        scale (float): Scale factor used for quantization.
+        min_val (float): Minimum value of the original tensor before quantization.
 
     Returns:
-    - torch.Tensor: Dequantized tensor.
+        Tensor: Dequantized tensor.
     """
 
     # Convert to float32 for calculation
@@ -225,57 +243,15 @@ def dequantize(quantized_tensor, scale, min_val):
     return dequantized
 
 
-def get_memory_usage(obj):
-    """
-    Calculates the memory usage of an object containing NumPy arrays or PyTorch tensors in bytes.
-
-    Args:
-    - obj: The data structure.
-
-    Returns:
-    - int: The memory usage of the data structure in bytes.
-    """
-
-    if isinstance(obj, (list, tuple, set)):
-        return sum(get_memory_usage(item) for item in obj)
-    elif isinstance(obj, dict):
-        return sum(get_memory_usage(item) for item in obj.values())
-    elif isinstance(obj, bytes):
-        return len(obj)
-    elif isinstance(obj, np.ndarray):
-        # For NumPy array, use the nbytes attribute and convert to bits
-        return obj.nbytes
-    elif isinstance(obj, torch.Tensor):
-        # For PyTorch tensor, calculate as before
-        return obj.numel() * obj.element_size()
-    else:
-        raise ValueError(
-            "Unsupported data type. Please provide an object containing NumPy arrays or PyTorch tensors."
-        )
-
-
-def get_compression_ratio(input, compressed):
-    input_memory = get_memory_usage(input)
-    compressed_memory = get_memory_usage(compressed)
-    return input_memory / compressed_memory
-
-
-def get_bbp(size, compressed):
-    num_pixels = prod(size)
-    compressed_memory = get_memory_usage(compressed)
-    return compressed_memory * 8 / num_pixels
-
-
 def _combine_bytes(payload1: bytes, payload2: bytes) -> bytes:
-    """
-    Encodes two bytes objects into a single bytes object.
+    """Encode two bytes objects into a single bytes object.
 
     Args:
-    - payload1: First bytes object to encode.
-    - payload2: Second bytes object to encode.
+        payload1 (bytes): First bytes object to encode.
+        payload2 (bytes): Second bytes object to encode.
 
     Returns:
-    - A single combined bytes object containing both payloads.
+        bytes: A single combined bytes object containing both payloads.
     """
 
     if not isinstance(payload1, bytes) or not isinstance(payload2, bytes):
@@ -290,14 +266,13 @@ def _combine_bytes(payload1: bytes, payload2: bytes) -> bytes:
 
 
 def _separate_bytes(combined: bytes) -> tuple[bytes, bytes]:
-    """
-    Decodes the combined bytes object back into two original bytes objects.
+    """Decode the combined bytes object back into two original bytes objects.
 
     Args:
-    - combined: The combined bytes object containing both payloads.
+        combined (bytes): The combined bytes object containing both payloads.
 
-    Return:
-    - A tuple containing the two original bytes objects (payload1, payload2).
+    Returns:
+        tuple[bytes, bytes]: The two original bytes objects (payload1, payload2).
     """
 
     if not isinstance(combined, bytes):
@@ -313,19 +288,27 @@ def _separate_bytes(combined: bytes) -> tuple[bytes, bytes]:
 
 
 def combine_bytes(payloads: Sequence[bytes]) -> bytes:
+    """Combine multiple bytes objects into a single bytes object.
+
+    Args:
+        payloads (Sequence[bytes]): A sequence of bytes objects.
+
+    Returns:
+        bytes: A single combined bytes object containing all payloads.
+    """
+
     return functools.reduce(_combine_bytes, payloads)
 
 
 def separate_bytes(combined: bytes, num_payloads: int = 2) -> tuple[bytes, ...]:
-    """
-    Splits the combined bytes object into its parts (payloads).
+    """Split the combined bytes object into its parts (payloads).
 
     Args:
-    - combined: The combined bytes object containing multiple payloads.
-    - num_payloads: The number of payloads.
+        combined (bytes): The combined bytes object containing multiple payloads.
+        num_payloads (int, optional): The number of payloads. Defaults to 2.
 
-    Return:
-    - A tuple containing the original bytes objects (payloads).
+    Returns:
+        tuple[bytes, ...]: A tuple containing the original bytes objects (payloads).
     """
 
     payloads = []
@@ -339,20 +322,46 @@ def separate_bytes(combined: bytes, num_payloads: int = 2) -> tuple[bytes, ...]:
 
 
 def dict_to_bytes(dictionary: dict) -> bytes:
-    """Encode a dictionary into bytes."""
+    """Encode a dictionary into bytes.
+
+    Args:
+        dictionary (dict): The dictionary to encode.
+
+    Returns:
+        bytes: The encoded dictionary as bytes.
+    """
+
     json_string = json.dumps(dictionary)
     encoded_bytes = json_string.encode("utf-8")
     return encoded_bytes
 
 
 def bytes_to_dict(encoded_bytes: bytes) -> dict:
-    """Decode bytes back into a dictionary."""
+    """Decode bytes back into a dictionary.
+
+    Args:
+        encoded_bytes (bytes): The encoded dictionary as bytes.
+
+    Returns:
+        dict: The decoded dictionary.
+    """
+
     json_string = encoded_bytes.decode("utf-8")
     dictionary = json.loads(json_string)
     return dictionary
 
 
-def encode_matrix(matrix: Tensor, mode: str = "col") -> bytes:
+def encode_matrix(matrix: torch.Tensor, mode: str = "col") -> bytes:
+    """Encode a 2D tensor (matrix) into a compressed bytes object.
+
+    Args:
+        matrix (torch.Tensor): A 2D tensor to encode.
+        mode (str, optional): Mode of encoding ('col' for column-wise, 'row' for row-wise). Defaults to 'col'.
+
+    Returns:
+        bytes: The encoded matrix as a bytes object.
+    """
+
     assert len(matrix.shape) == 2, "'matrix' must be a 2D tensor."
     assert mode in {"col", "row"}, "'mode' must be either 'col' or 'row'."
 
@@ -376,15 +385,25 @@ def encode_matrix(matrix: Tensor, mode: str = "col") -> bytes:
     encoded_metadata = dict_to_bytes(metadata)
 
     encoded_fibers = combine_bytes(encoded_fibers)
-    encodeld_matrix = combine_bytes([encoded_metadata, encoded_fibers])
+    encoded_matrix = combine_bytes([encoded_metadata, encoded_fibers])
 
-    return encodeld_matrix
+    return encoded_matrix
 
 
-def decode_matrix(encodeld_matrix: bytes, mode: str = "col") -> Tensor:
+def decode_matrix(encoded_matrix: bytes, mode: str = "col") -> torch.Tensor:
+    """Decode a compressed bytes object back into a 2D tensor (matrix).
+
+    Args:
+        encoded_matrix (bytes): The encoded matrix as a bytes object.
+        mode (str, optional): Mode of decoding ('col' for column-wise, 'row' for row-wise). Defaults to 'col'.
+
+    Returns:
+        torch.Tensor: The decoded 2D tensor.
+    """
+
     assert mode in {"col", "row"}, "'mode' must be either 'col' or 'row'."
 
-    encoded_metadata, encoded_fibers = separate_bytes(encodeld_matrix)
+    encoded_metadata, encoded_fibers = separate_bytes(encoded_matrix)
 
     metadata = bytes_to_dict(encoded_metadata)
     num_fibers = metadata["num_fibers"]
@@ -407,16 +426,16 @@ def decode_matrix(encodeld_matrix: bytes, mode: str = "col") -> Tensor:
     return torch.from_numpy(matrix)
 
 
-def encode_tensor(tensor: Tensor, *args, **kwargs) -> bytes:
-    """
-    Encode a PyTorch tensor and encode its shape and dtype using Zstandard algorithm,
-    returning a single bytes object containing both the encoded tensor data and its metadata.
+def encode_tensor(tensor: torch.Tensor, *args, **kwargs) -> bytes:
+    """Encode a PyTorch tensor and its metadata using zlib compression.
 
-    Parameters:
-    tensor (torch.Tensor): The tensor to encode.
+    Args:
+        tensor (torch.Tensor): The tensor to encode.
+        *args: Additional positional arguments for `encode_matrix`.
+        **kwargs: Additional keyword arguments for `encode_matrix`.
 
     Returns:
-    bytes: A single bytes object containing both encoded data and metadata.
+        bytes: A single bytes object containing both encoded data and metadata.
     """
     if tensor.ndim == 2:
         return encode_matrix(tensor, *args, **kwargs)
@@ -436,15 +455,16 @@ def encode_tensor(tensor: Tensor, *args, **kwargs) -> bytes:
     return encoded_tensor
 
 
-def decode_tensor(encoded_tensor: bytes, *args, **kwargs) -> Tensor:
-    """
-    Decode a combined bytes object back into a PyTorch tensor using the encoded shape and dtype.
+def decode_tensor(encoded_tensor: bytes, *args, **kwargs) -> torch.Tensor:
+    """Decode a combined bytes object back into a PyTorch tensor using the encoded shape and dtype.
 
-    Parameters:
-    encoded_tensor (bytes): The combined bytes object containing both encoded data and metadata.
+    Args:
+        encoded_tensor (bytes): The combined bytes object containing both encoded data and metadata.
+        *args: Additional positional arguments for `decode_matrix`.
+        **kwargs: Additional keyword arguments for `decode_matrix`.
 
     Returns:
-    torch.Tensor: The decoded tensor.
+        torch.Tensor: The decoded tensor.
     """
 
     # Extract metadata and array data
@@ -468,15 +488,3 @@ def decode_tensor(encoded_tensor: bytes, *args, **kwargs) -> Tensor:
     )
 
     return decoded_tensor
-
-
-def encode_model(model, compress="zlib", **kwargs):
-    buffer = io.BytesIO()
-    joblib.dump(model, buffer, compress=compress, **kwargs)
-    return buffer.getvalue()
-
-
-def decode_model(encodel_model, *args, **kwargs):
-    buffer = io.BytesIO(encodel_model)
-    model = joblib.load(buffer)
-    return model

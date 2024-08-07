@@ -14,7 +14,7 @@ class JPEGTransform(Transform):
     def _transform(self, inpt: Any, params: Dict[str, Any]) -> Any:
         enocoded = lrf.pil_encode(inpt, format="JPEG", **self.kwargs)
         reconstructed = lrf.pil_decode(enocoded)
-        bpp = lrf.get_bbp(inpt.shape[-2:], enocoded)
+        bpp = lrf.bits_per_pixel(inpt.shape[-2:], enocoded)
         return reconstructed, torch.tensor(bpp)
 
 
@@ -26,7 +26,7 @@ class SVDTransform(Transform):
     def _transform(self, inpt: Any, params: Dict[str, Any]) -> Any:
         enocoded = lrf.svd_encode(inpt, **self.kwargs)
         reconstructed = lrf.svd_decode(enocoded)
-        bpp = lrf.get_bbp(inpt.shape[-2:], enocoded)
+        bpp = lrf.bits_per_pixel(inpt.shape[-2:], enocoded)
         return reconstructed, torch.tensor(bpp)
 
 
@@ -38,5 +38,5 @@ class IMFTransform(Transform):
     def _transform(self, inpt: Any, params: Dict[str, Any]) -> Any:
         enocoded = lrf.imf_encode(inpt, **self.kwargs)
         reconstructed = lrf.imf_decode(enocoded)
-        bpp = lrf.get_bbp(inpt.shape[-2:], enocoded)
+        bpp = lrf.bits_per_pixel(inpt.shape[-2:], enocoded)
         return reconstructed, torch.tensor(bpp)

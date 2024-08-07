@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from lrf.utils import utils
+import lrf
 
 
 # Set directories
@@ -11,12 +11,12 @@ figures_dir = "paper/v2-tip/manuscript/figures"
 
 
 # Load results
-results = utils.read_config(f"{results_dir}/{data}_results.json")
+results = lrf.read_config(f"{results_dir}/{data}_results.json")
 results = pd.DataFrame(results)
 results = results.query("`bit rate (bpp)` < 0.8")
 
 # Plot PSNR vs bpp
-plot = utils.Plot(results, columns=("data", "method", "bit rate (bpp)", "PSNR (dB)"))
+plot = lrf.Plot(results, columns=("data", "method", "bit rate (bpp)", "PSNR (dB)"))
 
 plot.interpolate(
     x="bit rate (bpp)",
@@ -42,7 +42,7 @@ plot.save(save_dir=figures_dir, prefix=data, format="pgf")
 
 
 # Plot SSIM vs bpp
-plot = utils.Plot(results, columns=("data", "method", "bit rate (bpp)", "SSIM"))
+plot = lrf.Plot(results, columns=("data", "method", "bit rate (bpp)", "SSIM"))
 
 plot.interpolate(
     x="bit rate (bpp)",
@@ -68,7 +68,7 @@ plot.save(save_dir=figures_dir, prefix=data, format="pgf")
 
 
 # Plot encoding time vs bpp
-plot = utils.Plot(
+plot = lrf.Plot(
     results, columns=("data", "method", "bit rate (bpp)", "encoding time (ms)")
 )
 
@@ -92,7 +92,7 @@ plot.save(save_dir=results_dir, prefix=data, format="pdf")
 
 
 # Plot decoding time vs bpp
-plot = utils.Plot(
+plot = lrf.Plot(
     results, columns=("data", "method", "bit rate (bpp)", "decoding time (ms)")
 )
 
