@@ -50,6 +50,13 @@ $ pip install git+https://github.com/pashtari/lrf.git
 
 This guide will help you get started with the integer matrix factorization (IMF) compression method using the `kodim01` image from the Kodak dataset. For a more detailed example comparing IMF against JPEG and SVD, check out [this notebook](experiments/examples/comparison.ipynb). To better understand each step of the IMF compression using visualizations, refer to [this notebook](experiments/examples/imf_pipeline.ipynb).
 
+**Import Packages**
+```python
+import torch
+
+import lrf
+```
+
 **Load and Visualize the Image**
 ```python
 image = lrf.read_image("./kodim01.png")
@@ -93,10 +100,10 @@ print(metrics)
 
 ```plaintext
 {
-    "compression ratio": 10.5,
-    "bit rate (bpp)": 0.75,
-    "PSNR (dB)": 32.45,
-    "SSIM": 0.95
+    "compression ratio": 117.040,
+    "bit rate (bpp)": 0.205,
+    "PSNR (dB)": 21.928,
+    "SSIM": 0.511
 }
 ```
 
