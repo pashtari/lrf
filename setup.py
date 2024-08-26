@@ -39,5 +39,6 @@ setup(
         "opt_einsum",
         "torchvision",
         "pillow",
+        "pyinstrument",
     ],
 )
