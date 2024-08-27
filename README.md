@@ -1,6 +1,6 @@
 ![LRF Logo](figures/logo.svg)
 
-This repository provides a PyTorch implementation of **low-rank factorization (LRF) methods for data compression**. Particularly, it includes the official implementation of *"Quantization-free Lossy Image Compression Using Integer Matrix Factorization."*
+This repository provides a PyTorch implementation of **low-rank factorization (LRF) methods for data compression**. Particularly, it includes the official implementation of [*"Quantization-free Lossy Image Compression Using Integer Matrix Factorization."*](https://arxiv.org/abs/2408.12691)
 
 
 <table style="border-collapse: collapse; table-layout: fixed; width: 100%;">
