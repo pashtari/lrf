@@ -7,8 +7,8 @@
         "bit rate (bpp)": 0.19089762369791666,
         "PSNR (dB)": 19.94636344909668,
         "SSIM": 0.42262635039805607,
-        "encoding time (ms)": 12.299060821533203,
-        "decoding time (ms)": 20.74909210205078
+        "encoding time (ms)": 8.27789306640625,
+        "decoding time (ms)": 16.553878784179688
     },
     {
         "data": "kodim01",
@@ -18,8 +18,8 @@
         "bit rate (bpp)": 0.19089762369791666,
         "PSNR (dB)": 19.94636344909668,
         "SSIM": 0.42262635039805607,
-        "encoding time (ms)": 13.746261596679688,
-        "decoding time (ms)": 28.863191604614258
+        "encoding time (ms)": 9.408950805664062,
+        "decoding time (ms)": 19.557952880859375
     },
     {
         "data": "kodim01",
@@ -29,8 +29,8 @@
         "bit rate (bpp)": 0.1910400390625,
         "PSNR (dB)": 19.94939613342285,
         "SSIM": 0.4231318633000353,
-        "encoding time (ms)": 10.687112808227539,
-        "decoding time (ms)": 23.905277252197266
+        "encoding time (ms)": 6.905078887939453,
+        "decoding time (ms)": 14.41812515258789
     },
     {
         "data": "kodim01",
@@ -40,8 +40,8 @@
         "bit rate (bpp)": 0.20668538411458334,
         "PSNR (dB)": 20.221691131591797,
         "SSIM": 0.4594738243026167,
-        "encoding time (ms)": 8.080005645751953,
-        "decoding time (ms)": 17.57979393005371
+        "encoding time (ms)": 7.000923156738281,
+        "decoding time (ms)": 14.23192024230957
     },
     {
         "data": "kodim01",
@@ -51,8 +51,8 @@
         "bit rate (bpp)": 0.2388916015625,
         "PSNR (dB)": 21.017484664916992,
         "SSIM": 0.5195702840269447,
-        "encoding time (ms)": 11.0931396484375,
-        "decoding time (ms)": 23.530244827270508
+        "encoding time (ms)": 6.829977035522461,
+        "decoding time (ms)": 14.155864715576172
     },
     {
         "data": "kodim01",
@@ -62,8 +62,8 @@
         "bit rate (bpp)": 0.2717692057291667,
         "PSNR (dB)": 22.05303382873535,
         "SSIM": 0.5709601503329043,
-        "encoding time (ms)": 10.720968246459961,
-        "decoding time (ms)": 108.12592506408691
+        "encoding time (ms)": 7.22503662109375,
+        "decoding time (ms)": 14.935970306396484
     },
     {
         "data": "kodim01",
@@ -73,8 +73,8 @@
         "bit rate (bpp)": 0.3046875,
         "PSNR (dB)": 22.886356353759766,
         "SSIM": 0.6128714952433891,
-        "encoding time (ms)": 13.580799102783203,
-        "decoding time (ms)": 29.618501663208008
+        "encoding time (ms)": 9.437322616577148,
+        "decoding time (ms)": 19.397258758544922
     },
     {
         "data": "kodim01",
@@ -84,8 +84,8 @@
         "bit rate (bpp)": 0.3388671875,
         "PSNR (dB)": 23.608266830444336,
         "SSIM": 0.6459013690941147,
-        "encoding time (ms)": 11.069774627685547,
-        "decoding time (ms)": 23.85687828063965
+        "encoding time (ms)": 10.921955108642578,
+        "decoding time (ms)": 21.64602279663086
     },
     {
         "data": "kodim01",
@@ -95,8 +95,8 @@
         "bit rate (bpp)": 0.3733723958333333,
         "PSNR (dB)": 24.065471649169922,
         "SSIM": 0.6662296479452031,
-        "encoding time (ms)": 21.21281623840332,
-        "decoding time (ms)": 51.53369903564453
+        "encoding time (ms)": 9.806156158447266,
+        "decoding time (ms)": 23.1020450592041
     },
     {
         "data": "kodim01",
@@ -106,8 +106,8 @@
         "bit rate (bpp)": 0.4073689778645833,
         "PSNR (dB)": 24.441856384277344,
         "SSIM": 0.6853048489115464,
-        "encoding time (ms)": 10.11204719543457,
-        "decoding time (ms)": 21.9881534576416
+        "encoding time (ms)": 9.165048599243164,
+        "decoding time (ms)": 19.162654876708984
     },
     {
         "data": "kodim01",
@@ -117,8 +117,8 @@
         "bit rate (bpp)": 0.4398396809895833,
         "PSNR (dB)": 24.774127960205078,
         "SSIM": 0.7066334088115788,
-        "encoding time (ms)": 9.348869323730469,
-        "decoding time (ms)": 20.273923873901367
+        "encoding time (ms)": 9.369850158691406,
+        "decoding time (ms)": 19.33765411376953
     },
     {
         "data": "kodim01",
@@ -128,8 +128,8 @@
         "bit rate (bpp)": 0.4720052083333333,
         "PSNR (dB)": 25.07839012145996,
         "SSIM": 0.7227469434910924,
-        "encoding time (ms)": 9.35816764831543,
-        "decoding time (ms)": 19.065141677856445
+        "encoding time (ms)": 9.30476188659668,
+        "decoding time (ms)": 18.482685089111328
     },
     {
         "data": "kodim01",
@@ -139,8 +139,8 @@
         "bit rate (bpp)": 0.5003255208333334,
         "PSNR (dB)": 25.30571746826172,
         "SSIM": 0.7352932459503266,
-        "encoding time (ms)": 9.861946105957031,
-        "decoding time (ms)": 19.81496810913086
+        "encoding time (ms)": 9.725809097290039,
+        "decoding time (ms)": 19.805908203125
     },
     {
         "data": "kodim01",
@@ -150,8 +150,8 @@
         "bit rate (bpp)": 0.5304768880208334,
         "PSNR (dB)": 25.572988510131836,
         "SSIM": 0.7479752880927895,
-        "encoding time (ms)": 7.509946823120117,
-        "decoding time (ms)": 15.418767929077148
+        "encoding time (ms)": 9.373188018798828,
+        "decoding time (ms)": 18.494129180908203
     },
     {
         "data": "kodim01",
@@ -161,8 +161,8 @@
         "bit rate (bpp)": 0.55706787109375,
         "PSNR (dB)": 25.80256462097168,
         "SSIM": 0.758241880022498,
-        "encoding time (ms)": 7.805347442626953,
-        "decoding time (ms)": 15.617132186889648
+        "encoding time (ms)": 9.486913681030273,
+        "decoding time (ms)": 18.840789794921875
     },
     {
         "data": "kodim01",
@@ -172,8 +172,8 @@
         "bit rate (bpp)": 0.5850423177083334,
         "PSNR (dB)": 26.056211471557617,
         "SSIM": 0.7688115099445024,
-        "encoding time (ms)": 7.556915283203125,
-        "decoding time (ms)": 15.253782272338867
+        "encoding time (ms)": 9.498834609985352,
+        "decoding time (ms)": 18.847942352294922
     },
     {
         "data": "kodim01",
@@ -183,8 +183,8 @@
         "bit rate (bpp)": 0.61163330078125,
         "PSNR (dB)": 26.293733596801758,
         "SSIM": 0.7784890618145749,
-        "encoding time (ms)": 7.132053375244141,
-        "decoding time (ms)": 15.075206756591797
+        "encoding time (ms)": 9.940147399902344,
+        "decoding time (ms)": 19.8061466217041
     },
     {
         "data": "kodim01",
@@ -194,8 +194,8 @@
         "bit rate (bpp)": 0.63714599609375,
         "PSNR (dB)": 26.483552932739258,
         "SSIM": 0.7860441869862803,
-        "encoding time (ms)": 7.236003875732422,
-        "decoding time (ms)": 15.1519775390625
+        "encoding time (ms)": 9.664058685302734,
+        "decoding time (ms)": 18.853187561035156
     },
     {
         "data": "kodim01",
@@ -205,8 +205,8 @@
         "bit rate (bpp)": 0.6634724934895834,
         "PSNR (dB)": 26.67172622680664,
         "SSIM": 0.7940406519342722,
-        "encoding time (ms)": 7.40504264831543,
-        "decoding time (ms)": 15.26021957397461
+        "encoding time (ms)": 9.77182388305664,
+        "decoding time (ms)": 19.46282386779785
     },
     {
         "data": "kodim01",
@@ -216,8 +216,8 @@
         "bit rate (bpp)": 0.6865030924479166,
         "PSNR (dB)": 26.79609489440918,
         "SSIM": 0.7998227195793088,
-        "encoding time (ms)": 9.788036346435547,
-        "decoding time (ms)": 19.546031951904297
+        "encoding time (ms)": 9.898185729980469,
+        "decoding time (ms)": 19.753217697143555
     },
     {
         "data": "kodim01",
@@ -227,8 +227,8 @@
         "bit rate (bpp)": 0.70953369140625,
         "PSNR (dB)": 26.94208526611328,
         "SSIM": 0.805548830154932,
-        "encoding time (ms)": 9.198904037475586,
-        "decoding time (ms)": 18.800973892211914
+        "encoding time (ms)": 9.222984313964844,
+        "decoding time (ms)": 19.282817840576172
     },
     {
         "data": "kodim01",
@@ -238,8 +238,8 @@
         "bit rate (bpp)": 0.7361043294270834,
         "PSNR (dB)": 27.106441497802734,
         "SSIM": 0.8117724123410874,
-        "encoding time (ms)": 9.474992752075195,
-        "decoding time (ms)": 19.528865814208984
+        "encoding time (ms)": 9.284019470214844,
+        "decoding time (ms)": 19.06585693359375
     },
     {
         "data": "kodim01",
@@ -249,8 +249,8 @@
         "bit rate (bpp)": 0.7597859700520834,
         "PSNR (dB)": 27.223011016845703,
         "SSIM": 0.8162322764410804,
-        "encoding time (ms)": 7.248163223266602,
-        "decoding time (ms)": 14.843225479125977
+        "encoding time (ms)": 10.16092300415039,
+        "decoding time (ms)": 20.68805694580078
     },
     {
         "data": "kodim01",
@@ -260,8 +260,8 @@
         "bit rate (bpp)": 0.7817789713541666,
         "PSNR (dB)": 27.382938385009766,
         "SSIM": 0.8209362896256008,
-        "encoding time (ms)": 7.0781707763671875,
-        "decoding time (ms)": 15.146970748901367
+        "encoding time (ms)": 9.803056716918945,
+        "decoding time (ms)": 20.874977111816406
     },
     {
         "data": "kodim01",
@@ -271,8 +271,8 @@
         "bit rate (bpp)": 0.80316162109375,
         "PSNR (dB)": 27.54450225830078,
         "SSIM": 0.8252567938133861,
-        "encoding time (ms)": 7.055044174194336,
-        "decoding time (ms)": 15.213251113891602
+        "encoding time (ms)": 9.477853775024414,
+        "decoding time (ms)": 20.892620086669922
     },
     {
         "data": "kodim01",
@@ -288,8 +288,8 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
-        "encoding time (ms)": 48.27380180358887,
-        "decoding time (ms)": 52.135467529296875
+        "encoding time (ms)": 49.10707473754883,
+        "decoding time (ms)": 52.999258041381836
     },
     {
         "data": "kodim01",
@@ -305,8 +305,8 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
-        "encoding time (ms)": 43.06507110595703,
-        "decoding time (ms)": 46.60606384277344
+        "encoding time (ms)": 44.42310333251953,
+        "decoding time (ms)": 47.95432090759277
     },
     {
         "data": "kodim01",
@@ -322,8 +322,8 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
-        "encoding time (ms)": 35.95781326293945,
-        "decoding time (ms)": 39.12162780761719
+        "encoding time (ms)": 43.520212173461914,
+        "decoding time (ms)": 46.83423042297363
     },
     {
         "data": "kodim01",
@@ -339,8 +339,8 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
-        "encoding time (ms)": 37.48893737792969,
-        "decoding time (ms)": 40.8940315246582
+        "encoding time (ms)": 43.09415817260742,
+        "decoding time (ms)": 46.36502265930176
     },
     {
         "data": "kodim01",
@@ -356,8 +356,8 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
-        "encoding time (ms)": 35.27688980102539,
-        "decoding time (ms)": 38.559913635253906
+        "encoding time (ms)": 42.74463653564453,
+        "decoding time (ms)": 46.04458808898926
     },
     {
         "data": "kodim01",
@@ -373,8 +373,8 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
-        "encoding time (ms)": 43.01595687866211,
-        "decoding time (ms)": 46.29397392272949
+        "encoding time (ms)": 44.18778419494629,
+        "decoding time (ms)": 47.58286476135254
     },
     {
         "data": "kodim01",
@@ -390,8 +390,8 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
-        "encoding time (ms)": 43.87092590332031,
-        "decoding time (ms)": 47.226905822753906
+        "encoding time (ms)": 42.960166931152344,
+        "decoding time (ms)": 46.304941177368164
     },
     {
         "data": "kodim01",
@@ -407,8 +407,8 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
-        "encoding time (ms)": 35.99810600280762,
-        "decoding time (ms)": 39.196014404296875
+        "encoding time (ms)": 44.06881332397461,
+        "decoding time (ms)": 47.78170585632324
     },
     {
         "data": "kodim01",
@@ -424,8 +424,8 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
-        "encoding time (ms)": 35.93111038208008,
-        "decoding time (ms)": 39.19720649719238
+        "encoding time (ms)": 44.10696029663086,
+        "decoding time (ms)": 47.59812355041504
     },
     {
         "data": "kodim01",
@@ -441,8 +441,8 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
-        "encoding time (ms)": 44.39401626586914,
-        "decoding time (ms)": 47.67584800720215
+        "encoding time (ms)": 62.5910758972168,
+        "decoding time (ms)": 66.28012657165527
     },
     {
         "data": "kodim01",
@@ -458,8 +458,8 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
-        "encoding time (ms)": 36.50975227355957,
-        "decoding time (ms)": 40.08769989013672
+        "encoding time (ms)": 49.76797103881836,
+        "decoding time (ms)": 53.85398864746094
     },
     {
         "data": "kodim01",
@@ -475,8 +475,8 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
-        "encoding time (ms)": 35.71009635925293,
-        "decoding time (ms)": 39.03698921203613
+        "encoding time (ms)": 45.93777656555176,
+        "decoding time (ms)": 49.72386360168457
     },
     {
         "data": "kodim01",
@@ -492,8 +492,8 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
-        "encoding time (ms)": 36.37409210205078,
-        "decoding time (ms)": 40.0080680847168
+        "encoding time (ms)": 45.07803916931152,
+        "decoding time (ms)": 48.60520362854004
     },
     {
         "data": "kodim01",
@@ -509,8 +509,8 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
-        "encoding time (ms)": 37.32705116271973,
-        "decoding time (ms)": 40.618181228637695
+        "encoding time (ms)": 45.56393623352051,
+        "decoding time (ms)": 49.353837966918945
     },
     {
         "data": "kodim01",
@@ -526,8 +526,8 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
-        "encoding time (ms)": 36.02194786071777,
-        "decoding time (ms)": 39.5050048828125
+        "encoding time (ms)": 44.287919998168945,
+        "decoding time (ms)": 47.74785041809082
     },
     {
         "data": "kodim01",
@@ -543,8 +543,8 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
-        "encoding time (ms)": 35.91799736022949,
-        "decoding time (ms)": 39.60371017456055
+        "encoding time (ms)": 44.82889175415039,
+        "decoding time (ms)": 48.303842544555664
     },
     {
         "data": "kodim01",
@@ -560,8 +560,8 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
-        "encoding time (ms)": 37.60528564453125,
-        "decoding time (ms)": 40.95935821533203
+        "encoding time (ms)": 47.061920166015625,
+        "decoding time (ms)": 50.79913139343262
     },
     {
         "data": "kodim01",
@@ -577,8 +577,8 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
-        "encoding time (ms)": 36.229848861694336,
-        "decoding time (ms)": 39.731740951538086
+        "encoding time (ms)": 44.99077796936035,
+        "decoding time (ms)": 48.58875274658203
     },
     {
         "data": "kodim01",
@@ -594,8 +594,8 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
-        "encoding time (ms)": 36.653995513916016,
-        "decoding time (ms)": 40.13395309448242
+        "encoding time (ms)": 45.00722885131836,
+        "decoding time (ms)": 48.90012741088867
     },
     {
         "data": "kodim01",
@@ -611,8 +611,8 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
-        "encoding time (ms)": 36.35406494140625,
-        "decoding time (ms)": 39.988040924072266
+        "encoding time (ms)": 45.21012306213379,
+        "decoding time (ms)": 48.898935317993164
     },
     {
         "data": "kodim01",
@@ -628,8 +628,8 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
-        "encoding time (ms)": 37.851810455322266,
-        "decoding time (ms)": 41.23687744140625
+        "encoding time (ms)": 45.04132270812988,
+        "decoding time (ms)": 48.87652397155762
     },
     {
         "data": "kodim01",
@@ -645,8 +645,8 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
-        "encoding time (ms)": 35.86888313293457,
-        "decoding time (ms)": 39.4747257232666
+        "encoding time (ms)": 44.24881935119629,
+        "decoding time (ms)": 48.11692237854004
     },
     {
         "data": "kodim01",
@@ -662,8 +662,8 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
-        "encoding time (ms)": 36.29493713378906,
-        "decoding time (ms)": 39.633750915527344
+        "encoding time (ms)": 35.95614433288574,
+        "decoding time (ms)": 39.23630714416504
     },
     {
         "data": "kodim01",
@@ -679,8 +679,8 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
-        "encoding time (ms)": 35.807132720947266,
-        "decoding time (ms)": 39.17121887207031
+        "encoding time (ms)": 42.68288612365723,
+        "decoding time (ms)": 46.424150466918945
     },
     {
         "data": "kodim01",
@@ -696,8 +696,8 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
-        "encoding time (ms)": 37.02092170715332,
-        "decoding time (ms)": 40.60792922973633
+        "encoding time (ms)": 44.51465606689453,
+        "decoding time (ms)": 48.345327377319336
     },
     {
         "data": "kodim01",
@@ -713,8 +713,8 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
-        "encoding time (ms)": 43.22481155395508,
-        "decoding time (ms)": 46.93293571472168
+        "encoding time (ms)": 45.114994049072266,
+        "decoding time (ms)": 49.017906188964844
     },
     {
         "data": "kodim01",
@@ -730,8 +730,8 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
-        "encoding time (ms)": 43.200016021728516,
-        "decoding time (ms)": 46.73480987548828
+        "encoding time (ms)": 45.68791389465332,
+        "decoding time (ms)": 49.44872856140137
     },
     {
         "data": "kodim01",
@@ -747,8 +747,8 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
-        "encoding time (ms)": 36.51571273803711,
-        "decoding time (ms)": 40.44365882873535
+        "encoding time (ms)": 44.54517364501953,
+        "decoding time (ms)": 48.4623908996582
     },
     {
         "data": "kodim01",
@@ -764,8 +764,8 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
-        "encoding time (ms)": 36.5140438079834,
-        "decoding time (ms)": 40.178775787353516
+        "encoding time (ms)": 44.68703269958496,
+        "decoding time (ms)": 48.54297637939453
     },
     {
         "data": "kodim01",
@@ -781,8 +781,8 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
-        "encoding time (ms)": 37.14632987976074,
-        "decoding time (ms)": 40.67730903625488
+        "encoding time (ms)": 43.853044509887695,
+        "decoding time (ms)": 47.562360763549805
     },
     {
         "data": "kodim01",
@@ -798,8 +798,8 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
-        "encoding time (ms)": 37.110090255737305,
-        "decoding time (ms)": 40.609121322631836
+        "encoding time (ms)": 44.93904113769531,
+        "decoding time (ms)": 48.970937728881836
     },
     {
         "data": "kodim01",
@@ -815,8 +815,8 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
-        "encoding time (ms)": 36.7128849029541,
-        "decoding time (ms)": 40.056705474853516
+        "encoding time (ms)": 45.217037200927734,
+        "decoding time (ms)": 48.98691177368164
     },
     {
         "data": "kodim01",
@@ -832,8 +832,8 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
-        "encoding time (ms)": 36.84830665588379,
-        "decoding time (ms)": 40.6341552734375
+        "encoding time (ms)": 36.5910530090332,
+        "decoding time (ms)": 40.15398025512695
     },
     {
         "data": "kodim01",
@@ -849,8 +849,8 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
-        "encoding time (ms)": 36.79203987121582,
-        "decoding time (ms)": 40.567874908447266
+        "encoding time (ms)": 46.08488082885742,
+        "decoding time (ms)": 50.11773109436035
     },
     {
         "data": "kodim01",
@@ -866,8 +866,8 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
-        "encoding time (ms)": 36.67306900024414,
-        "decoding time (ms)": 40.60721397399902
+        "encoding time (ms)": 44.738054275512695,
+        "decoding time (ms)": 48.63309860229492
     },
     {
         "data": "kodim01",
@@ -883,8 +883,8 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
-        "encoding time (ms)": 45.20869255065918,
-        "decoding time (ms)": 49.08490180969238
+        "encoding time (ms)": 45.56584358215332,
+        "decoding time (ms)": 49.20697212219238
     },
     {
         "data": "kodim01",
@@ -900,8 +900,8 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
-        "encoding time (ms)": 39.919137954711914,
-        "decoding time (ms)": 43.81513595581055
+        "encoding time (ms)": 46.67019844055176,
+        "decoding time (ms)": 50.65608024597168
     },
     {
         "data": "kodim01",
@@ -917,8 +917,8 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
-        "encoding time (ms)": 38.35701942443848,
-        "decoding time (ms)": 42.11592674255371
+        "encoding time (ms)": 46.75412178039551,
+        "decoding time (ms)": 50.69112777709961
     },
     {
         "data": "kodim01",
@@ -934,8 +934,8 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
-        "encoding time (ms)": 40.7099723815918,
-        "decoding time (ms)": 45.005083084106445
+        "encoding time (ms)": 46.21100425720215,
+        "decoding time (ms)": 50.36115646362305
     },
     {
         "data": "kodim01",
@@ -951,8 +951,8 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
-        "encoding time (ms)": 38.15722465515137,
-        "decoding time (ms)": 41.92495346069336
+        "encoding time (ms)": 46.476125717163086,
+        "decoding time (ms)": 50.28533935546875
     },
     {
         "data": "kodim01",
@@ -968,8 +968,8 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
-        "encoding time (ms)": 40.44485092163086,
-        "decoding time (ms)": 44.40665245056152
+        "encoding time (ms)": 47.657012939453125,
+        "decoding time (ms)": 51.53393745422363
     },
     {
         "data": "kodim01",
@@ -985,8 +985,8 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
-        "encoding time (ms)": 37.00900077819824,
-        "decoding time (ms)": 41.15414619445801
+        "encoding time (ms)": 46.159982681274414,
+        "decoding time (ms)": 50.173044204711914
     },
     {
         "data": "kodim01",
@@ -1002,8 +1002,8 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
-        "encoding time (ms)": 38.941144943237305,
-        "decoding time (ms)": 42.652130126953125
+        "encoding time (ms)": 45.59516906738281,
+        "decoding time (ms)": 49.73793029785156
     },
     {
         "data": "kodim01",
@@ -1019,8 +1019,8 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
-        "encoding time (ms)": 37.23883628845215,
-        "decoding time (ms)": 41.72182083129883
+        "encoding time (ms)": 43.78390312194824,
+        "decoding time (ms)": 48.182010650634766
     },
     {
         "data": "kodim01",
@@ -1036,8 +1036,8 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
-        "encoding time (ms)": 39.14809226989746,
-        "decoding time (ms)": 45.08090019226074
+        "encoding time (ms)": 44.82698440551758,
+        "decoding time (ms)": 51.31888389587402
     },
     {
         "data": "kodim01",
@@ -1053,8 +1053,8 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
-        "encoding time (ms)": 57.56092071533203,
-        "decoding time (ms)": 66.78605079650879
+        "encoding time (ms)": 44.91305351257324,
+        "decoding time (ms)": 49.82709884643555
     },
     {
         "data": "kodim01",
@@ -1070,8 +1070,8 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
-        "encoding time (ms)": 110.4121208190918,
-        "decoding time (ms)": 119.43817138671875
+        "encoding time (ms)": 44.33798789978027,
+        "decoding time (ms)": 48.64311218261719
     },
     {
         "data": "kodim01",
@@ -1087,8 +1087,8 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
-        "encoding time (ms)": 65.3541088104248,
-        "decoding time (ms)": 70.38211822509766
+        "encoding time (ms)": 43.914079666137695,
+        "decoding time (ms)": 48.3551025390625
     },
     {
         "data": "kodim01",
@@ -1104,8 +1104,8 @@
         "bit rate (bpp)": 0.7786865234375,
         "PSNR (dB)": 24.369361877441406,
         "SSIM": 0.6795381196687263,
-        "encoding time (ms)": 59.00216102600098,
-        "decoding time (ms)": 66.77722930908203
+        "encoding time (ms)": 44.6629524230957,
+        "decoding time (ms)": 49.15904998779297
     },
     {
         "data": "kodim01",
@@ -1121,8 +1121,8 @@
         "bit rate (bpp)": 0.7786865234375,
         "PSNR (dB)": 24.369361877441406,
         "SSIM": 0.6795381196687263,
-        "encoding time (ms)": 51.27096176147461,
-        "decoding time (ms)": 58.721065521240234
+        "encoding time (ms)": 45.892953872680664,
+        "decoding time (ms)": 50.102949142456055
     },
     {
         "data": "kodim01",
@@ -1149,8 +1149,8 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
-        "encoding time (ms)": 42.8469181060791,
-        "decoding time (ms)": 54.780006408691406
+        "encoding time (ms)": 34.184932708740234,
+        "decoding time (ms)": 40.207862854003906
     },
     {
         "data": "kodim01",
@@ -1177,8 +1177,8 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
-        "encoding time (ms)": 42.88005828857422,
-        "decoding time (ms)": 53.0848503112793
+        "encoding time (ms)": 33.25223922729492,
+        "decoding time (ms)": 38.87057304382324
     },
     {
         "data": "kodim01",
@@ -1205,8 +1205,8 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
-        "encoding time (ms)": 44.54398155212402,
-        "decoding time (ms)": 54.34298515319824
+        "encoding time (ms)": 33.4467887878418,
+        "decoding time (ms)": 39.946794509887695
     },
     {
         "data": "kodim01",
@@ -1233,8 +1233,8 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
-        "encoding time (ms)": 43.58386993408203,
-        "decoding time (ms)": 54.993629455566406
+        "encoding time (ms)": 32.17029571533203,
+        "decoding time (ms)": 38.24210166931152
     },
     {
         "data": "kodim01",
@@ -1261,8 +1261,8 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
-        "encoding time (ms)": 50.803184509277344,
-        "decoding time (ms)": 64.38136100769043
+        "encoding time (ms)": 31.756877899169922,
+        "decoding time (ms)": 37.355899810791016
     },
     {
         "data": "kodim01",
@@ -1289,8 +1289,8 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
-        "encoding time (ms)": 44.51417922973633,
-        "decoding time (ms)": 55.643320083618164
+        "encoding time (ms)": 33.23483467102051,
+        "decoding time (ms)": 39.10684585571289
     },
     {
         "data": "kodim01",
@@ -1317,8 +1317,8 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
-        "encoding time (ms)": 39.27779197692871,
-        "decoding time (ms)": 51.45668983459473
+        "encoding time (ms)": 33.59508514404297,
+        "decoding time (ms)": 39.7801399230957
     },
     {
         "data": "kodim01",
@@ -1345,8 +1345,8 @@
         "bit rate (bpp)": 0.10333251953125,
         "PSNR (dB)": 20.35201644897461,
         "SSIM": 0.3817732702088727,
-        "encoding time (ms)": 66.76506996154785,
-        "decoding time (ms)": 82.99112319946289
+        "encoding time (ms)": 44.34323310852051,
+        "decoding time (ms)": 53.08222770690918
     },
     {
         "data": "kodim01",
@@ -1373,8 +1373,8 @@
         "bit rate (bpp)": 0.10333251953125,
         "PSNR (dB)": 20.35201644897461,
         "SSIM": 0.3817732702088727,
-        "encoding time (ms)": 64.50986862182617,
-        "decoding time (ms)": 75.03581047058105
+        "encoding time (ms)": 43.18404197692871,
+        "decoding time (ms)": 51.67508125305176
     },
     {
         "data": "kodim01",
@@ -1401,8 +1401,8 @@
         "bit rate (bpp)": 0.10333251953125,
         "PSNR (dB)": 20.35201644897461,
         "SSIM": 0.3817732702088727,
-        "encoding time (ms)": 60.124874114990234,
-        "decoding time (ms)": 71.52414321899414
+        "encoding time (ms)": 45.49598693847656,
+        "decoding time (ms)": 54.170846939086914
     },
     {
         "data": "kodim01",
@@ -1429,8 +1429,8 @@
         "bit rate (bpp)": 0.10333251953125,
         "PSNR (dB)": 20.35201644897461,
         "SSIM": 0.3817732702088727,
-        "encoding time (ms)": 38.95688056945801,
-        "decoding time (ms)": 47.86562919616699
+        "encoding time (ms)": 40.45987129211426,
+        "decoding time (ms)": 48.442840576171875
     },
     {
         "data": "kodim01",
@@ -1457,8 +1457,8 @@
         "bit rate (bpp)": 0.10333251953125,
         "PSNR (dB)": 20.35201644897461,
         "SSIM": 0.3817732702088727,
-        "encoding time (ms)": 38.89298439025879,
-        "decoding time (ms)": 47.145843505859375
+        "encoding time (ms)": 43.42079162597656,
+        "decoding time (ms)": 52.02674865722656
     },
     {
         "data": "kodim01",
@@ -1485,8 +1485,8 @@
         "bit rate (bpp)": 0.14886474609375,
         "PSNR (dB)": 20.999710083007812,
         "SSIM": 0.44692420695514495,
-        "encoding time (ms)": 44.93117332458496,
-        "decoding time (ms)": 52.65212059020996
+        "encoding time (ms)": 50.92191696166992,
+        "decoding time (ms)": 58.47883224487305
     },
     {
         "data": "kodim01",
@@ -1513,8 +1513,8 @@
         "bit rate (bpp)": 0.14886474609375,
         "PSNR (dB)": 20.999710083007812,
         "SSIM": 0.44692420695514495,
-        "encoding time (ms)": 58.04109573364258,
-        "decoding time (ms)": 71.1522102355957
+        "encoding time (ms)": 50.05002021789551,
+        "decoding time (ms)": 57.58309364318848
     },
     {
         "data": "kodim01",
@@ -1541,8 +1541,8 @@
         "bit rate (bpp)": 0.166259765625,
         "PSNR (dB)": 21.30775260925293,
         "SSIM": 0.4508658952397362,
-        "encoding time (ms)": 88.8519287109375,
-        "decoding time (ms)": 103.55091094970703
+        "encoding time (ms)": 61.20705604553223,
+        "decoding time (ms)": 69.20695304870605
     },
     {
         "data": "kodim01",
@@ -1569,8 +1569,8 @@
         "bit rate (bpp)": 0.166259765625,
         "PSNR (dB)": 21.30775260925293,
         "SSIM": 0.4508658952397362,
-        "encoding time (ms)": 96.96006774902344,
-        "decoding time (ms)": 110.89920997619629
+        "encoding time (ms)": 61.30194664001465,
+        "decoding time (ms)": 68.86982917785645
     },
     {
         "data": "kodim01",
@@ -1597,8 +1597,8 @@
         "bit rate (bpp)": 0.166259765625,
         "PSNR (dB)": 21.30775260925293,
         "SSIM": 0.4508658952397362,
-        "encoding time (ms)": 99.10893440246582,
-        "decoding time (ms)": 114.38798904418945
+        "encoding time (ms)": 62.54100799560547,
+        "decoding time (ms)": 71.04206085205078
     },
     {
         "data": "kodim01",
@@ -1625,8 +1625,8 @@
         "bit rate (bpp)": 0.20505777994791666,
         "PSNR (dB)": 21.927631378173828,
         "SSIM": 0.5113270760648829,
-        "encoding time (ms)": 97.03326225280762,
-        "decoding time (ms)": 108.0782413482666
+        "encoding time (ms)": 68.21918487548828,
+        "decoding time (ms)": 76.85208320617676
     },
     {
         "data": "kodim01",
@@ -1653,8 +1653,8 @@
         "bit rate (bpp)": 0.20505777994791666,
         "PSNR (dB)": 21.927631378173828,
         "SSIM": 0.5113270760648829,
-        "encoding time (ms)": 81.21919631958008,
-        "decoding time (ms)": 90.94500541687012
+        "encoding time (ms)": 72.52311706542969,
+        "decoding time (ms)": 81.4661979675293
     },
     {
         "data": "kodim01",
@@ -1681,8 +1681,8 @@
         "bit rate (bpp)": 0.20505777994791666,
         "PSNR (dB)": 21.927631378173828,
         "SSIM": 0.5113270760648829,
-        "encoding time (ms)": 76.8892765045166,
-        "decoding time (ms)": 85.72030067443848
+        "encoding time (ms)": 69.4129467010498,
+        "decoding time (ms)": 77.86798477172852
     },
     {
         "data": "kodim01",
@@ -1709,8 +1709,8 @@
         "bit rate (bpp)": 0.20505777994791666,
         "PSNR (dB)": 21.927631378173828,
         "SSIM": 0.5113270760648829,
-        "encoding time (ms)": 62.6528263092041,
-        "decoding time (ms)": 70.79768180847168
+        "encoding time (ms)": 72.35598564147949,
+        "decoding time (ms)": 80.9788703918457
     },
     {
         "data": "kodim01",
@@ -1737,8 +1737,8 @@
         "bit rate (bpp)": 0.24186197916666666,
         "PSNR (dB)": 22.549278259277344,
         "SSIM": 0.5522776052166787,
-        "encoding time (ms)": 122.69210815429688,
-        "decoding time (ms)": 132.5218677520752
+        "encoding time (ms)": 77.01587677001953,
+        "decoding time (ms)": 85.60585975646973
     },
     {
         "data": "kodim01",
@@ -1765,8 +1765,8 @@
         "bit rate (bpp)": 0.24186197916666666,
         "PSNR (dB)": 22.549278259277344,
         "SSIM": 0.5522776052166787,
-        "encoding time (ms)": 81.86221122741699,
-        "decoding time (ms)": 90.54422378540039
+        "encoding time (ms)": 80.40595054626465,
+        "decoding time (ms)": 89.31303024291992
     },
     {
         "data": "kodim01",
@@ -1793,8 +1793,8 @@
         "bit rate (bpp)": 0.24186197916666666,
         "PSNR (dB)": 22.549278259277344,
         "SSIM": 0.5522776052166787,
-        "encoding time (ms)": 66.73908233642578,
-        "decoding time (ms)": 79.68401908874512
+        "encoding time (ms)": 78.70292663574219,
+        "decoding time (ms)": 87.53490447998047
     },
     {
         "data": "kodim01",
@@ -1821,8 +1821,8 @@
         "bit rate (bpp)": 0.259033203125,
         "PSNR (dB)": 22.62731170654297,
         "SSIM": 0.5536190297653993,
-        "encoding time (ms)": 107.49101638793945,
-        "decoding time (ms)": 123.07906150817871
+        "encoding time (ms)": 86.30704879760742,
+        "decoding time (ms)": 95.29423713684082
     },
     {
         "data": "kodim01",
@@ -1849,8 +1849,8 @@
         "bit rate (bpp)": 0.259033203125,
         "PSNR (dB)": 22.62731170654297,
         "SSIM": 0.5536190297653993,
-        "encoding time (ms)": 161.8349552154541,
-        "decoding time (ms)": 179.5809268951416
+        "encoding time (ms)": 87.62407302856445,
+        "decoding time (ms)": 96.07219696044922
     },
     {
         "data": "kodim01",
@@ -1877,8 +1877,8 @@
         "bit rate (bpp)": 0.29608154296875,
         "PSNR (dB)": 23.23711395263672,
         "SSIM": 0.6024026770375924,
-        "encoding time (ms)": 192.5048828125,
-        "decoding time (ms)": 211.70806884765625
+        "encoding time (ms)": 123.32487106323242,
+        "decoding time (ms)": 135.74600219726562
     },
     {
         "data": "kodim01",
@@ -1905,8 +1905,8 @@
         "bit rate (bpp)": 0.29608154296875,
         "PSNR (dB)": 23.23711395263672,
         "SSIM": 0.6024026770375924,
-        "encoding time (ms)": 198.286771774292,
-        "decoding time (ms)": 208.80889892578125
+        "encoding time (ms)": 103.2562255859375,
+        "decoding time (ms)": 112.18833923339844
     },
     {
         "data": "kodim01",
@@ -1933,8 +1933,8 @@
         "bit rate (bpp)": 0.29608154296875,
         "PSNR (dB)": 23.23711395263672,
         "SSIM": 0.6024026770375924,
-        "encoding time (ms)": 100.4648208618164,
-        "decoding time (ms)": 109.47871208190918
+        "encoding time (ms)": 94.89107131958008,
+        "decoding time (ms)": 103.96122932434082
     },
     {
         "data": "kodim01",
@@ -1961,8 +1961,8 @@
         "bit rate (bpp)": 0.29608154296875,
         "PSNR (dB)": 23.23711395263672,
         "SSIM": 0.6024026770375924,
-        "encoding time (ms)": 101.74942016601562,
-        "decoding time (ms)": 110.31031608581543
+        "encoding time (ms)": 94.98119354248047,
+        "decoding time (ms)": 104.49719429016113
     },
     {
         "data": "kodim01",
@@ -1989,8 +1989,8 @@
         "bit rate (bpp)": 0.29608154296875,
         "PSNR (dB)": 23.23711395263672,
         "SSIM": 0.6024026770375924,
-        "encoding time (ms)": 129.58002090454102,
-        "decoding time (ms)": 141.89624786376953
+        "encoding time (ms)": 88.25206756591797,
+        "decoding time (ms)": 97.30815887451172
     },
     {
         "data": "kodim01",
@@ -2017,8 +2017,8 @@
         "bit rate (bpp)": 0.33880615234375,
         "PSNR (dB)": 23.73995018005371,
         "SSIM": 0.628339987075981,
-        "encoding time (ms)": 139.8031711578369,
-        "decoding time (ms)": 154.53004837036133
+        "encoding time (ms)": 120.31102180480957,
+        "decoding time (ms)": 131.0710906982422
     },
     {
         "data": "kodim01",
@@ -2045,8 +2045,8 @@
         "bit rate (bpp)": 0.33880615234375,
         "PSNR (dB)": 23.73995018005371,
         "SSIM": 0.628339987075981,
-        "encoding time (ms)": 194.54002380371094,
-        "decoding time (ms)": 204.2980194091797
+        "encoding time (ms)": 101.49002075195312,
+        "decoding time (ms)": 110.47506332397461
     },
     {
         "data": "kodim01",
@@ -2073,8 +2073,8 @@
         "bit rate (bpp)": 0.3580525716145833,
         "PSNR (dB)": 23.792030334472656,
         "SSIM": 0.6300004919374095,
-        "encoding time (ms)": 157.28998184204102,
-        "decoding time (ms)": 175.66394805908203
+        "encoding time (ms)": 110.28599739074707,
+        "decoding time (ms)": 119.56286430358887
     },
     {
         "data": "kodim01",
@@ -2101,8 +2101,8 @@
         "bit rate (bpp)": 0.3580525716145833,
         "PSNR (dB)": 23.792030334472656,
         "SSIM": 0.6300004919374095,
-        "encoding time (ms)": 230.1630973815918,
-        "decoding time (ms)": 250.20408630371094
+        "encoding time (ms)": 106.63104057312012,
+        "decoding time (ms)": 115.50402641296387
     },
     {
         "data": "kodim01",
@@ -2129,8 +2129,8 @@
         "bit rate (bpp)": 0.39849853515625,
         "PSNR (dB)": 24.19992446899414,
         "SSIM": 0.6534404234846364,
-        "encoding time (ms)": 245.05305290222168,
-        "decoding time (ms)": 261.1730098724365
+        "encoding time (ms)": 114.09711837768555,
+        "decoding time (ms)": 125.25582313537598
     },
     {
         "data": "kodim01",
@@ -2157,8 +2157,8 @@
         "bit rate (bpp)": 0.39849853515625,
         "PSNR (dB)": 24.19992446899414,
         "SSIM": 0.6534404234846364,
-        "encoding time (ms)": 224.6572971343994,
-        "decoding time (ms)": 238.82699012756348
+        "encoding time (ms)": 128.91387939453125,
+        "decoding time (ms)": 139.1458511352539
     },
     {
         "data": "kodim01",
@@ -2185,8 +2185,8 @@
         "bit rate (bpp)": 0.39849853515625,
         "PSNR (dB)": 24.19992446899414,
         "SSIM": 0.6534404234846364,
-        "encoding time (ms)": 146.22902870178223,
-        "decoding time (ms)": 156.2972068786621
+        "encoding time (ms)": 117.34509468078613,
+        "decoding time (ms)": 127.64096260070801
     },
     {
         "data": "kodim01",
@@ -2213,8 +2213,8 @@
         "bit rate (bpp)": 0.39849853515625,
         "PSNR (dB)": 24.19992446899414,
         "SSIM": 0.6534404234846364,
-        "encoding time (ms)": 138.23509216308594,
-        "decoding time (ms)": 148.02312850952148
+        "encoding time (ms)": 142.06385612487793,
+        "decoding time (ms)": 151.87668800354004
     },
     {
         "data": "kodim01",
@@ -2241,8 +2241,8 @@
         "bit rate (bpp)": 0.39849853515625,
         "PSNR (dB)": 24.19992446899414,
         "SSIM": 0.6534404234846364,
-        "encoding time (ms)": 123.64697456359863,
-        "decoding time (ms)": 133.15606117248535
+        "encoding time (ms)": 126.56807899475098,
+        "decoding time (ms)": 137.01820373535156
     },
     {
         "data": "kodim01",
@@ -2269,8 +2269,8 @@
         "bit rate (bpp)": 0.4392293294270833,
         "PSNR (dB)": 24.500246047973633,
         "SSIM": 0.669971884187285,
-        "encoding time (ms)": 133.56685638427734,
-        "decoding time (ms)": 143.10789108276367
+        "encoding time (ms)": 130.5701732635498,
+        "decoding time (ms)": 139.95909690856934
     },
     {
         "data": "kodim01",
@@ -2297,8 +2297,8 @@
         "bit rate (bpp)": 0.4392293294270833,
         "PSNR (dB)": 24.500246047973633,
         "SSIM": 0.669971884187285,
-        "encoding time (ms)": 132.95483589172363,
-        "decoding time (ms)": 142.53687858581543
+        "encoding time (ms)": 133.61501693725586,
+        "decoding time (ms)": 142.78173446655273
     },
     {
         "data": "kodim01",
@@ -2325,8 +2325,8 @@
         "bit rate (bpp)": 0.45147705078125,
         "PSNR (dB)": 24.545162200927734,
         "SSIM": 0.6713290815275087,
-        "encoding time (ms)": 138.86475563049316,
-        "decoding time (ms)": 148.24175834655762
+        "encoding time (ms)": 142.40789413452148,
+        "decoding time (ms)": 152.4209976196289
     },
     {
         "data": "kodim01",
@@ -2353,8 +2353,8 @@
         "bit rate (bpp)": 0.45147705078125,
         "PSNR (dB)": 24.545162200927734,
         "SSIM": 0.6713290815275087,
-        "encoding time (ms)": 134.06682014465332,
-        "decoding time (ms)": 143.33772659301758
+        "encoding time (ms)": 152.34827995300293,
+        "decoding time (ms)": 161.44990921020508
     },
     {
         "data": "kodim01",
@@ -2381,8 +2381,8 @@
         "bit rate (bpp)": 0.4891357421875,
         "PSNR (dB)": 24.953413009643555,
         "SSIM": 0.693218787934088,
-        "encoding time (ms)": 210.88790893554688,
-        "decoding time (ms)": 220.51095962524414
+        "encoding time (ms)": 138.49496841430664,
+        "decoding time (ms)": 147.9480266571045
     },
     {
         "data": "kodim01",
@@ -2409,8 +2409,8 @@
         "bit rate (bpp)": 0.4891357421875,
         "PSNR (dB)": 24.953413009643555,
         "SSIM": 0.693218787934088,
-        "encoding time (ms)": 164.6721363067627,
-        "decoding time (ms)": 175.01425743103027
+        "encoding time (ms)": 142.92216300964355,
+        "decoding time (ms)": 152.2960662841797
     },
     {
         "data": "kodim01",
@@ -2437,8 +2437,8 @@
         "bit rate (bpp)": 0.4891357421875,
         "PSNR (dB)": 24.953413009643555,
         "SSIM": 0.693218787934088,
-        "encoding time (ms)": 162.10198402404785,
-        "decoding time (ms)": 172.0108985900879
+        "encoding time (ms)": 148.50306510925293,
+        "decoding time (ms)": 158.24222564697266
     },
     {
         "data": "kodim01",
@@ -2465,8 +2465,8 @@
         "bit rate (bpp)": 0.4891357421875,
         "PSNR (dB)": 24.953413009643555,
         "SSIM": 0.693218787934088,
-        "encoding time (ms)": 211.47584915161133,
-        "decoding time (ms)": 225.34966468811035
+        "encoding time (ms)": 140.75303077697754,
+        "decoding time (ms)": 150.01416206359863
     },
     {
         "data": "kodim01",
@@ -2493,8 +2493,8 @@
         "bit rate (bpp)": 0.4891357421875,
         "PSNR (dB)": 24.953413009643555,
         "SSIM": 0.693218787934088,
-        "encoding time (ms)": 198.5781192779541,
-        "decoding time (ms)": 211.8527889251709
+        "encoding time (ms)": 155.5776596069336,
+        "decoding time (ms)": 165.39549827575684
     },
     {
         "data": "kodim01",
@@ -2521,8 +2521,8 @@
         "bit rate (bpp)": 0.5337727864583334,
         "PSNR (dB)": 25.243045806884766,
         "SSIM": 0.7093060957138237,
-        "encoding time (ms)": 206.59399032592773,
-        "decoding time (ms)": 220.37982940673828
+        "encoding time (ms)": 161.1182689666748,
+        "decoding time (ms)": 170.76611518859863
     },
     {
         "data": "kodim01",
@@ -2549,8 +2549,8 @@
         "bit rate (bpp)": 0.5337727864583334,
         "PSNR (dB)": 25.243045806884766,
         "SSIM": 0.7093060957138237,
-        "encoding time (ms)": 200.67787170410156,
-        "decoding time (ms)": 213.91797065734863
+        "encoding time (ms)": 175.1708984375,
+        "decoding time (ms)": 186.09380722045898
     },
     {
         "data": "kodim01",
@@ -2577,8 +2577,8 @@
         "bit rate (bpp)": 0.5478515625,
         "PSNR (dB)": 25.275161743164062,
         "SSIM": 0.7106896254766292,
-        "encoding time (ms)": 222.06521034240723,
-        "decoding time (ms)": 237.09821701049805
+        "encoding time (ms)": 169.85702514648438,
+        "decoding time (ms)": 180.8609962463379
     },
     {
         "data": "kodim01",
@@ -2605,8 +2605,8 @@
         "bit rate (bpp)": 0.5478515625,
         "PSNR (dB)": 25.275161743164062,
         "SSIM": 0.7106896254766292,
-        "encoding time (ms)": 221.07601165771484,
-        "decoding time (ms)": 233.08134078979492
+        "encoding time (ms)": 164.0148162841797,
+        "decoding time (ms)": 173.9368438720703
     },
     {
         "data": "kodim01",
@@ -2633,8 +2633,8 @@
         "bit rate (bpp)": 0.5478515625,
         "PSNR (dB)": 25.275161743164062,
         "SSIM": 0.7106896254766292,
-        "encoding time (ms)": 228.56712341308594,
-        "decoding time (ms)": 242.3691749572754
+        "encoding time (ms)": 166.17894172668457,
+        "decoding time (ms)": 177.80375480651855
     },
     {
         "data": "kodim01",
@@ -2661,8 +2661,8 @@
         "bit rate (bpp)": 0.5945027669270834,
         "PSNR (dB)": 25.555049896240234,
         "SSIM": 0.7270935263461413,
-        "encoding time (ms)": 231.11295700073242,
-        "decoding time (ms)": 247.2681999206543
+        "encoding time (ms)": 167.50192642211914,
+        "decoding time (ms)": 178.71999740600586
     },
     {
         "data": "kodim01",
@@ -2689,8 +2689,8 @@
         "bit rate (bpp)": 0.5945027669270834,
         "PSNR (dB)": 25.555049896240234,
         "SSIM": 0.7270935263461413,
-        "encoding time (ms)": 224.35617446899414,
-        "decoding time (ms)": 239.98737335205078
+        "encoding time (ms)": 176.29313468933105,
+        "decoding time (ms)": 187.80922889709473
     },
     {
         "data": "kodim01",
@@ -2717,8 +2717,8 @@
         "bit rate (bpp)": 0.5945027669270834,
         "PSNR (dB)": 25.555049896240234,
         "SSIM": 0.7270935263461413,
-        "encoding time (ms)": 246.01984024047852,
-        "decoding time (ms)": 260.17284393310547
+        "encoding time (ms)": 219.98214721679688,
+        "decoding time (ms)": 238.7540340423584
     },
     {
         "data": "kodim01",
@@ -2745,8 +2745,8 @@
         "bit rate (bpp)": 0.5945027669270834,
         "PSNR (dB)": 25.555049896240234,
         "SSIM": 0.7270935263461413,
-        "encoding time (ms)": 227.01191902160645,
-        "decoding time (ms)": 242.30504035949707
+        "encoding time (ms)": 261.2729072570801,
+        "decoding time (ms)": 272.71485328674316
     },
     {
         "data": "kodim01",
@@ -2773,8 +2773,8 @@
         "bit rate (bpp)": 0.6254475911458334,
         "PSNR (dB)": 25.85019302368164,
         "SSIM": 0.7437376011838458,
-        "encoding time (ms)": 232.75995254516602,
-        "decoding time (ms)": 246.69480323791504
+        "encoding time (ms)": 225.2821922302246,
+        "decoding time (ms)": 239.0131950378418
     },
     {
         "data": "kodim01",
@@ -2801,8 +2801,8 @@
         "bit rate (bpp)": 0.6254475911458334,
         "PSNR (dB)": 25.85019302368164,
         "SSIM": 0.7437376011838458,
-        "encoding time (ms)": 253.97872924804688,
-        "decoding time (ms)": 277.3168087005615
+        "encoding time (ms)": 444.81587409973145,
+        "decoding time (ms)": 472.963809967041
     },
     {
         "data": "kodim01",
@@ -2829,8 +2829,8 @@
         "bit rate (bpp)": 0.6254475911458334,
         "PSNR (dB)": 25.85019302368164,
         "SSIM": 0.7437376011838458,
-        "encoding time (ms)": 261.05332374572754,
-        "decoding time (ms)": 272.813081741333
+        "encoding time (ms)": 566.9867992401123,
+        "decoding time (ms)": 586.6060256958008
     },
     {
         "data": "kodim01",
@@ -2857,8 +2857,8 @@
         "bit rate (bpp)": 0.6395060221354166,
         "PSNR (dB)": 25.860469818115234,
         "SSIM": 0.74394704130756,
-        "encoding time (ms)": 231.18329048156738,
-        "decoding time (ms)": 245.21446228027344
+        "encoding time (ms)": 372.23100662231445,
+        "decoding time (ms)": 385.50877571105957
     },
     {
         "data": "kodim01",
@@ -2885,8 +2885,8 @@
         "bit rate (bpp)": 0.6395060221354166,
         "PSNR (dB)": 25.860469818115234,
         "SSIM": 0.74394704130756,
-        "encoding time (ms)": 273.51903915405273,
-        "decoding time (ms)": 286.4491939544678
+        "encoding time (ms)": 238.27195167541504,
+        "decoding time (ms)": 251.2650489807129
     },
     {
         "data": "kodim01",
@@ -2913,8 +2913,8 @@
         "bit rate (bpp)": 0.6834920247395834,
         "PSNR (dB)": 26.077129364013672,
         "SSIM": 0.7557611611115718,
-        "encoding time (ms)": 209.63716506958008,
-        "decoding time (ms)": 224.41411018371582
+        "encoding time (ms)": 252.20394134521484,
+        "decoding time (ms)": 264.76478576660156
     },
     {
         "data": "kodim01",
@@ -2941,8 +2941,8 @@
         "bit rate (bpp)": 0.6834920247395834,
         "PSNR (dB)": 26.077129364013672,
         "SSIM": 0.7557611611115718,
-        "encoding time (ms)": 288.8360023498535,
-        "decoding time (ms)": 304.8102855682373
+        "encoding time (ms)": 254.71997261047363,
+        "decoding time (ms)": 267.36998558044434
     },
     {
         "data": "kodim01",
@@ -2969,8 +2969,8 @@
         "bit rate (bpp)": 0.6834920247395834,
         "PSNR (dB)": 26.077129364013672,
         "SSIM": 0.7557611611115718,
-        "encoding time (ms)": 281.2001705169678,
-        "decoding time (ms)": 294.99125480651855
+        "encoding time (ms)": 256.4129829406738,
+        "decoding time (ms)": 276.55577659606934
     },
     {
         "data": "kodim01",
@@ -2997,8 +2997,8 @@
         "bit rate (bpp)": 0.6834920247395834,
         "PSNR (dB)": 26.077129364013672,
         "SSIM": 0.7557611611115718,
-        "encoding time (ms)": 281.9371223449707,
-        "decoding time (ms)": 295.90797424316406
+        "encoding time (ms)": 548.4468936920166,
+        "decoding time (ms)": 593.0328369140625
     },
     {
         "data": "kodim01",
@@ -3025,8 +3025,8 @@
         "bit rate (bpp)": 0.6834920247395834,
         "PSNR (dB)": 26.077129364013672,
         "SSIM": 0.7557611611115718,
-        "encoding time (ms)": 294.2080497741699,
-        "decoding time (ms)": 306.37598037719727
+        "encoding time (ms)": 455.52921295166016,
+        "decoding time (ms)": 469.7864055633545
     },
     {
         "data": "kodim01",
@@ -3053,8 +3053,8 @@
         "bit rate (bpp)": 0.7291463216145834,
         "PSNR (dB)": 26.30374526977539,
         "SSIM": 0.7663504132366573,
-        "encoding time (ms)": 243.7269687652588,
-        "decoding time (ms)": 256.27899169921875
+        "encoding time (ms)": 304.61907386779785,
+        "decoding time (ms)": 319.70882415771484
     },
     {
         "data": "kodim01",
@@ -3081,8 +3081,8 @@
         "bit rate (bpp)": 0.7291463216145834,
         "PSNR (dB)": 26.30374526977539,
         "SSIM": 0.7663504132366573,
-        "encoding time (ms)": 304.51321601867676,
-        "decoding time (ms)": 318.7861442565918
+        "encoding time (ms)": 328.60493659973145,
+        "decoding time (ms)": 342.3910140991211
     },
     {
         "data": "kodim01",
@@ -3109,8 +3109,8 @@
         "bit rate (bpp)": 0.7474772135416666,
         "PSNR (dB)": 26.326202392578125,
         "SSIM": 0.7670210687425191,
-        "encoding time (ms)": 305.73487281799316,
-        "decoding time (ms)": 318.1178569793701
+        "encoding time (ms)": 331.15482330322266,
+        "decoding time (ms)": 345.9596633911133
     },
     {
         "data": "kodim01",
@@ -3137,8 +3137,8 @@
         "bit rate (bpp)": 0.7474772135416666,
         "PSNR (dB)": 26.326202392578125,
         "SSIM": 0.7670210687425191,
-        "encoding time (ms)": 257.5030326843262,
-        "decoding time (ms)": 270.1530456542969
+        "encoding time (ms)": 321.4302062988281,
+        "decoding time (ms)": 336.3842964172363
     },
     {
         "data": "kodim01",
@@ -3165,8 +3165,8 @@
         "bit rate (bpp)": 0.78790283203125,
         "PSNR (dB)": 26.5628604888916,
         "SSIM": 0.776387894932783,
-        "encoding time (ms)": 267.1380043029785,
-        "decoding time (ms)": 280.1370620727539
+        "encoding time (ms)": 346.2259769439697,
+        "decoding time (ms)": 361.7548942565918
     },
     {
         "data": "kodim01",
@@ -3193,8 +3193,8 @@
         "bit rate (bpp)": 0.78790283203125,
         "PSNR (dB)": 26.5628604888916,
         "SSIM": 0.776387894932783,
-        "encoding time (ms)": 267.0316696166992,
-        "decoding time (ms)": 280.35783767700195
+        "encoding time (ms)": 349.17688369750977,
+        "decoding time (ms)": 364.6891117095947
     },
     {
         "data": "kodim01",
@@ -3221,7 +3221,7 @@
         "bit rate (bpp)": 0.78790283203125,
         "PSNR (dB)": 26.5628604888916,
         "SSIM": 0.776387894932783,
-        "encoding time (ms)": 285.2060794830322,
-        "decoding time (ms)": 297.61195182800293
+        "encoding time (ms)": 368.9260482788086,
+        "decoding time (ms)": 385.02025604248047
     }
 ]
