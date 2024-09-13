@@ -7,8 +7,13 @@
         "bit rate (bpp)": 0.19089762369791666,
         "PSNR (dB)": 19.94636344909668,
         "SSIM": 0.42262635039805607,
+<<<<<<< HEAD
         "encoding time (ms)": 12.892007827758789,
         "decoding time (ms)": 22.886037826538086
+=======
+        "encoding time (ms)": 8.27789306640625,
+        "decoding time (ms)": 16.553878784179688
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -18,8 +23,13 @@
         "bit rate (bpp)": 0.19089762369791666,
         "PSNR (dB)": 19.94636344909668,
         "SSIM": 0.42262635039805607,
+<<<<<<< HEAD
         "encoding time (ms)": 19.849300384521484,
         "decoding time (ms)": 30.72834014892578
+=======
+        "encoding time (ms)": 9.408950805664062,
+        "decoding time (ms)": 19.557952880859375
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -29,8 +39,13 @@
         "bit rate (bpp)": 0.1910400390625,
         "PSNR (dB)": 19.94939613342285,
         "SSIM": 0.4231318633000353,
+<<<<<<< HEAD
         "encoding time (ms)": 26.619911193847656,
         "decoding time (ms)": 50.69088935852051
+=======
+        "encoding time (ms)": 6.905078887939453,
+        "decoding time (ms)": 14.41812515258789
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -40,8 +55,13 @@
         "bit rate (bpp)": 0.20668538411458334,
         "PSNR (dB)": 20.221691131591797,
         "SSIM": 0.4594738243026167,
+<<<<<<< HEAD
         "encoding time (ms)": 20.61009407043457,
         "decoding time (ms)": 37.88280487060547
+=======
+        "encoding time (ms)": 7.000923156738281,
+        "decoding time (ms)": 14.23192024230957
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -51,8 +71,13 @@
         "bit rate (bpp)": 0.2388916015625,
         "PSNR (dB)": 21.017484664916992,
         "SSIM": 0.5195702840269447,
+<<<<<<< HEAD
         "encoding time (ms)": 19.348859786987305,
         "decoding time (ms)": 37.27984428405762
+=======
+        "encoding time (ms)": 6.829977035522461,
+        "decoding time (ms)": 14.155864715576172
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -62,8 +87,13 @@
         "bit rate (bpp)": 0.2717692057291667,
         "PSNR (dB)": 22.05303382873535,
         "SSIM": 0.5709601503329043,
+<<<<<<< HEAD
         "encoding time (ms)": 9.099006652832031,
         "decoding time (ms)": 18.988609313964844
+=======
+        "encoding time (ms)": 7.22503662109375,
+        "decoding time (ms)": 14.935970306396484
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -73,8 +103,13 @@
         "bit rate (bpp)": 0.3046875,
         "PSNR (dB)": 22.886356353759766,
         "SSIM": 0.6128714952433891,
+<<<<<<< HEAD
         "encoding time (ms)": 8.839130401611328,
         "decoding time (ms)": 19.168853759765625
+=======
+        "encoding time (ms)": 9.437322616577148,
+        "decoding time (ms)": 19.397258758544922
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -84,8 +119,13 @@
         "bit rate (bpp)": 0.3388671875,
         "PSNR (dB)": 23.608266830444336,
         "SSIM": 0.6459013690941147,
+<<<<<<< HEAD
         "encoding time (ms)": 9.209156036376953,
         "decoding time (ms)": 18.630266189575195
+=======
+        "encoding time (ms)": 10.921955108642578,
+        "decoding time (ms)": 21.64602279663086
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -95,8 +135,13 @@
         "bit rate (bpp)": 0.3733723958333333,
         "PSNR (dB)": 24.065471649169922,
         "SSIM": 0.6662296479452031,
+<<<<<<< HEAD
         "encoding time (ms)": 8.862972259521484,
         "decoding time (ms)": 17.639875411987305
+=======
+        "encoding time (ms)": 9.806156158447266,
+        "decoding time (ms)": 23.1020450592041
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -106,8 +151,13 @@
         "bit rate (bpp)": 0.4073689778645833,
         "PSNR (dB)": 24.441856384277344,
         "SSIM": 0.6853048489115464,
+<<<<<<< HEAD
         "encoding time (ms)": 13.046979904174805,
         "decoding time (ms)": 23.628711700439453
+=======
+        "encoding time (ms)": 9.165048599243164,
+        "decoding time (ms)": 19.162654876708984
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -117,8 +167,13 @@
         "bit rate (bpp)": 0.4398396809895833,
         "PSNR (dB)": 24.774127960205078,
         "SSIM": 0.7066334088115788,
+<<<<<<< HEAD
         "encoding time (ms)": 9.079217910766602,
         "decoding time (ms)": 19.19841766357422
+=======
+        "encoding time (ms)": 9.369850158691406,
+        "decoding time (ms)": 19.33765411376953
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -128,8 +183,13 @@
         "bit rate (bpp)": 0.4720052083333333,
         "PSNR (dB)": 25.07839012145996,
         "SSIM": 0.7227469434910924,
+<<<<<<< HEAD
         "encoding time (ms)": 92.78106689453125,
         "decoding time (ms)": 107.84626007080078
+=======
+        "encoding time (ms)": 9.30476188659668,
+        "decoding time (ms)": 18.482685089111328
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -139,8 +199,13 @@
         "bit rate (bpp)": 0.5003255208333334,
         "PSNR (dB)": 25.30571746826172,
         "SSIM": 0.7352932459503266,
+<<<<<<< HEAD
         "encoding time (ms)": 9.307861328125,
         "decoding time (ms)": 19.441843032836914
+=======
+        "encoding time (ms)": 9.725809097290039,
+        "decoding time (ms)": 19.805908203125
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -150,8 +215,13 @@
         "bit rate (bpp)": 0.5304768880208334,
         "PSNR (dB)": 25.572988510131836,
         "SSIM": 0.7479752880927895,
+<<<<<<< HEAD
         "encoding time (ms)": 9.37199592590332,
         "decoding time (ms)": 18.591880798339844
+=======
+        "encoding time (ms)": 9.373188018798828,
+        "decoding time (ms)": 18.494129180908203
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -161,8 +231,13 @@
         "bit rate (bpp)": 0.55706787109375,
         "PSNR (dB)": 25.80256462097168,
         "SSIM": 0.758241880022498,
+<<<<<<< HEAD
         "encoding time (ms)": 9.917259216308594,
         "decoding time (ms)": 21.59738540649414
+=======
+        "encoding time (ms)": 9.486913681030273,
+        "decoding time (ms)": 18.840789794921875
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -172,8 +247,13 @@
         "bit rate (bpp)": 0.5850423177083334,
         "PSNR (dB)": 26.056211471557617,
         "SSIM": 0.7688115099445024,
+<<<<<<< HEAD
         "encoding time (ms)": 9.402990341186523,
         "decoding time (ms)": 18.690109252929688
+=======
+        "encoding time (ms)": 9.498834609985352,
+        "decoding time (ms)": 18.847942352294922
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -183,8 +263,13 @@
         "bit rate (bpp)": 0.61163330078125,
         "PSNR (dB)": 26.293733596801758,
         "SSIM": 0.7784890618145749,
+<<<<<<< HEAD
         "encoding time (ms)": 8.984804153442383,
         "decoding time (ms)": 18.440723419189453
+=======
+        "encoding time (ms)": 9.940147399902344,
+        "decoding time (ms)": 19.8061466217041
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -194,8 +279,13 @@
         "bit rate (bpp)": 0.63714599609375,
         "PSNR (dB)": 26.483552932739258,
         "SSIM": 0.7860441869862803,
+<<<<<<< HEAD
         "encoding time (ms)": 10.406017303466797,
         "decoding time (ms)": 24.36208724975586
+=======
+        "encoding time (ms)": 9.664058685302734,
+        "decoding time (ms)": 18.853187561035156
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -205,8 +295,13 @@
         "bit rate (bpp)": 0.6634724934895834,
         "PSNR (dB)": 26.67172622680664,
         "SSIM": 0.7940406519342722,
+<<<<<<< HEAD
         "encoding time (ms)": 11.301994323730469,
         "decoding time (ms)": 22.806882858276367
+=======
+        "encoding time (ms)": 9.77182388305664,
+        "decoding time (ms)": 19.46282386779785
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -216,8 +311,13 @@
         "bit rate (bpp)": 0.6865030924479166,
         "PSNR (dB)": 26.79609489440918,
         "SSIM": 0.7998227195793088,
+<<<<<<< HEAD
         "encoding time (ms)": 13.275861740112305,
         "decoding time (ms)": 24.930953979492188
+=======
+        "encoding time (ms)": 9.898185729980469,
+        "decoding time (ms)": 19.753217697143555
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -227,8 +327,13 @@
         "bit rate (bpp)": 0.70953369140625,
         "PSNR (dB)": 26.94208526611328,
         "SSIM": 0.805548830154932,
+<<<<<<< HEAD
         "encoding time (ms)": 9.318113327026367,
         "decoding time (ms)": 19.250154495239258
+=======
+        "encoding time (ms)": 9.222984313964844,
+        "decoding time (ms)": 19.282817840576172
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -238,8 +343,13 @@
         "bit rate (bpp)": 0.7361043294270834,
         "PSNR (dB)": 27.106441497802734,
         "SSIM": 0.8117724123410874,
+<<<<<<< HEAD
         "encoding time (ms)": 9.08207893371582,
         "decoding time (ms)": 20.01214027404785
+=======
+        "encoding time (ms)": 9.284019470214844,
+        "decoding time (ms)": 19.06585693359375
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -249,8 +359,13 @@
         "bit rate (bpp)": 0.7597859700520834,
         "PSNR (dB)": 27.223011016845703,
         "SSIM": 0.8162322764410804,
+<<<<<<< HEAD
         "encoding time (ms)": 9.246110916137695,
         "decoding time (ms)": 18.709897994995117
+=======
+        "encoding time (ms)": 10.16092300415039,
+        "decoding time (ms)": 20.68805694580078
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -260,8 +375,13 @@
         "bit rate (bpp)": 0.7817789713541666,
         "PSNR (dB)": 27.382938385009766,
         "SSIM": 0.8209362896256008,
+<<<<<<< HEAD
         "encoding time (ms)": 9.902238845825195,
         "decoding time (ms)": 21.440982818603516
+=======
+        "encoding time (ms)": 9.803056716918945,
+        "decoding time (ms)": 20.874977111816406
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -271,8 +391,13 @@
         "bit rate (bpp)": 0.80316162109375,
         "PSNR (dB)": 27.54450225830078,
         "SSIM": 0.8252567938133861,
+<<<<<<< HEAD
         "encoding time (ms)": 9.138107299804688,
         "decoding time (ms)": 18.236160278320312
+=======
+        "encoding time (ms)": 9.477853775024414,
+        "decoding time (ms)": 20.892620086669922
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -288,8 +413,13 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
+<<<<<<< HEAD
         "encoding time (ms)": 52.81424522399902,
         "decoding time (ms)": 57.23118782043457
+=======
+        "encoding time (ms)": 49.10707473754883,
+        "decoding time (ms)": 52.999258041381836
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -305,8 +435,13 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
+<<<<<<< HEAD
         "encoding time (ms)": 54.97908592224121,
         "decoding time (ms)": 61.63907051086426
+=======
+        "encoding time (ms)": 44.42310333251953,
+        "decoding time (ms)": 47.95432090759277
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -322,8 +457,13 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
+<<<<<<< HEAD
         "encoding time (ms)": 46.423912048339844,
         "decoding time (ms)": 52.31595039367676
+=======
+        "encoding time (ms)": 43.520212173461914,
+        "decoding time (ms)": 46.83423042297363
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -339,8 +479,13 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
+<<<<<<< HEAD
         "encoding time (ms)": 66.00117683410645,
         "decoding time (ms)": 71.22135162353516
+=======
+        "encoding time (ms)": 43.09415817260742,
+        "decoding time (ms)": 46.36502265930176
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -356,8 +501,13 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
+<<<<<<< HEAD
         "encoding time (ms)": 58.808088302612305,
         "decoding time (ms)": 63.32707405090332
+=======
+        "encoding time (ms)": 42.74463653564453,
+        "decoding time (ms)": 46.04458808898926
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -373,8 +523,13 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
+<<<<<<< HEAD
         "encoding time (ms)": 60.71901321411133,
         "decoding time (ms)": 65.24491310119629
+=======
+        "encoding time (ms)": 44.18778419494629,
+        "decoding time (ms)": 47.58286476135254
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -390,8 +545,13 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
+<<<<<<< HEAD
         "encoding time (ms)": 53.8029670715332,
         "decoding time (ms)": 58.55989456176758
+=======
+        "encoding time (ms)": 42.960166931152344,
+        "decoding time (ms)": 46.304941177368164
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -407,8 +567,13 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
+<<<<<<< HEAD
         "encoding time (ms)": 49.86715316772461,
         "decoding time (ms)": 53.98297309875488
+=======
+        "encoding time (ms)": 44.06881332397461,
+        "decoding time (ms)": 47.78170585632324
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -424,8 +589,13 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
+<<<<<<< HEAD
         "encoding time (ms)": 50.681114196777344,
         "decoding time (ms)": 54.13222312927246
+=======
+        "encoding time (ms)": 44.10696029663086,
+        "decoding time (ms)": 47.59812355041504
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -441,8 +611,13 @@
         "bit rate (bpp)": 0.12607828776041666,
         "PSNR (dB)": 19.384191513061523,
         "SSIM": 0.3175563208392344,
+<<<<<<< HEAD
         "encoding time (ms)": 64.56136703491211,
         "decoding time (ms)": 71.4712142944336
+=======
+        "encoding time (ms)": 62.5910758972168,
+        "decoding time (ms)": 66.28012657165527
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -458,8 +633,13 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
+<<<<<<< HEAD
         "encoding time (ms)": 65.19198417663574,
         "decoding time (ms)": 69.40078735351562
+=======
+        "encoding time (ms)": 49.76797103881836,
+        "decoding time (ms)": 53.85398864746094
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -475,8 +655,13 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
+<<<<<<< HEAD
         "encoding time (ms)": 68.06492805480957,
         "decoding time (ms)": 74.40304756164551
+=======
+        "encoding time (ms)": 45.93777656555176,
+        "decoding time (ms)": 49.72386360168457
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -492,8 +677,13 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
+<<<<<<< HEAD
         "encoding time (ms)": 77.57687568664551,
         "decoding time (ms)": 87.05997467041016
+=======
+        "encoding time (ms)": 45.07803916931152,
+        "decoding time (ms)": 48.60520362854004
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -509,8 +699,13 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
+<<<<<<< HEAD
         "encoding time (ms)": 86.17925643920898,
         "decoding time (ms)": 92.70715713500977
+=======
+        "encoding time (ms)": 45.56393623352051,
+        "decoding time (ms)": 49.353837966918945
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -526,8 +721,13 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
+<<<<<<< HEAD
         "encoding time (ms)": 55.773019790649414,
         "decoding time (ms)": 59.95988845825195
+=======
+        "encoding time (ms)": 44.287919998168945,
+        "decoding time (ms)": 47.74785041809082
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -543,8 +743,13 @@
         "bit rate (bpp)": 0.21783447265625,
         "PSNR (dB)": 20.235490798950195,
         "SSIM": 0.3071521464868763,
+<<<<<<< HEAD
         "encoding time (ms)": 62.04724311828613,
         "decoding time (ms)": 66.75028800964355
+=======
+        "encoding time (ms)": 44.82889175415039,
+        "decoding time (ms)": 48.303842544555664
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -560,8 +765,13 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
+<<<<<<< HEAD
         "encoding time (ms)": 52.43396759033203,
         "decoding time (ms)": 56.648969650268555
+=======
+        "encoding time (ms)": 47.061920166015625,
+        "decoding time (ms)": 50.79913139343262
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -577,8 +787,13 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
+<<<<<<< HEAD
         "encoding time (ms)": 47.25003242492676,
         "decoding time (ms)": 51.57208442687988
+=======
+        "encoding time (ms)": 44.99077796936035,
+        "decoding time (ms)": 48.58875274658203
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -594,8 +809,13 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
+<<<<<<< HEAD
         "encoding time (ms)": 43.87402534484863,
         "decoding time (ms)": 47.689199447631836
+=======
+        "encoding time (ms)": 45.00722885131836,
+        "decoding time (ms)": 48.90012741088867
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -611,8 +831,13 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
+<<<<<<< HEAD
         "encoding time (ms)": 47.86992073059082,
         "decoding time (ms)": 51.995038986206055
+=======
+        "encoding time (ms)": 45.21012306213379,
+        "decoding time (ms)": 48.898935317993164
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -628,8 +853,13 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
+<<<<<<< HEAD
         "encoding time (ms)": 44.60501670837402,
         "decoding time (ms)": 48.12502861022949
+=======
+        "encoding time (ms)": 45.04132270812988,
+        "decoding time (ms)": 48.87652397155762
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -645,8 +875,13 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
+<<<<<<< HEAD
         "encoding time (ms)": 43.62010955810547,
         "decoding time (ms)": 47.23811149597168
+=======
+        "encoding time (ms)": 44.24881935119629,
+        "decoding time (ms)": 48.11692237854004
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -662,8 +897,13 @@
         "bit rate (bpp)": 0.30859375,
         "PSNR (dB)": 20.909692764282227,
         "SSIM": 0.3924001031115245,
+<<<<<<< HEAD
         "encoding time (ms)": 43.76029968261719,
         "decoding time (ms)": 47.35851287841797
+=======
+        "encoding time (ms)": 35.95614433288574,
+        "decoding time (ms)": 39.23630714416504
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -679,8 +919,13 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
+<<<<<<< HEAD
         "encoding time (ms)": 45.08495330810547,
         "decoding time (ms)": 48.928022384643555
+=======
+        "encoding time (ms)": 42.68288612365723,
+        "decoding time (ms)": 46.424150466918945
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -696,8 +941,13 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
+<<<<<<< HEAD
         "encoding time (ms)": 44.45004463195801,
         "decoding time (ms)": 48.10810089111328
+=======
+        "encoding time (ms)": 44.51465606689453,
+        "decoding time (ms)": 48.345327377319336
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -713,8 +963,13 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
+<<<<<<< HEAD
         "encoding time (ms)": 45.04084587097168,
         "decoding time (ms)": 48.71487617492676
+=======
+        "encoding time (ms)": 45.114994049072266,
+        "decoding time (ms)": 49.017906188964844
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -730,8 +985,13 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
+<<<<<<< HEAD
         "encoding time (ms)": 44.116973876953125,
         "decoding time (ms)": 47.894954681396484
+=======
+        "encoding time (ms)": 45.68791389465332,
+        "decoding time (ms)": 49.44872856140137
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -747,8 +1007,13 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
+<<<<<<< HEAD
         "encoding time (ms)": 45.29595375061035,
         "decoding time (ms)": 49.09396171569824
+=======
+        "encoding time (ms)": 44.54517364501953,
+        "decoding time (ms)": 48.4623908996582
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -764,8 +1029,13 @@
         "bit rate (bpp)": 0.4045206705729167,
         "PSNR (dB)": 21.689559936523438,
         "SSIM": 0.4683737738447624,
+<<<<<<< HEAD
         "encoding time (ms)": 44.01993751525879,
         "decoding time (ms)": 47.74308204650879
+=======
+        "encoding time (ms)": 44.68703269958496,
+        "decoding time (ms)": 48.54297637939453
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -781,8 +1051,13 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
+<<<<<<< HEAD
         "encoding time (ms)": 44.4331169128418,
         "decoding time (ms)": 48.44784736633301
+=======
+        "encoding time (ms)": 43.853044509887695,
+        "decoding time (ms)": 47.562360763549805
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -798,8 +1073,13 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
+<<<<<<< HEAD
         "encoding time (ms)": 44.300079345703125,
         "decoding time (ms)": 48.09117317199707
+=======
+        "encoding time (ms)": 44.93904113769531,
+        "decoding time (ms)": 48.970937728881836
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -815,8 +1095,13 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
+<<<<<<< HEAD
         "encoding time (ms)": 44.92306709289551,
         "decoding time (ms)": 48.70319366455078
+=======
+        "encoding time (ms)": 45.217037200927734,
+        "decoding time (ms)": 48.98691177368164
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -832,8 +1117,13 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
+<<<<<<< HEAD
         "encoding time (ms)": 44.9831485748291,
         "decoding time (ms)": 48.661231994628906
+=======
+        "encoding time (ms)": 36.5910530090332,
+        "decoding time (ms)": 40.15398025512695
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -849,8 +1139,13 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
+<<<<<<< HEAD
         "encoding time (ms)": 44.54398155212402,
         "decoding time (ms)": 48.30598831176758
+=======
+        "encoding time (ms)": 46.08488082885742,
+        "decoding time (ms)": 50.11773109436035
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -866,8 +1161,13 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
+<<<<<<< HEAD
         "encoding time (ms)": 44.84081268310547,
         "decoding time (ms)": 48.503875732421875
+=======
+        "encoding time (ms)": 44.738054275512695,
+        "decoding time (ms)": 48.63309860229492
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -883,8 +1183,13 @@
         "bit rate (bpp)": 0.5052490234375,
         "PSNR (dB)": 22.37698745727539,
         "SSIM": 0.5368011061270488,
+<<<<<<< HEAD
         "encoding time (ms)": 45.38607597351074,
         "decoding time (ms)": 49.06105995178223
+=======
+        "encoding time (ms)": 45.56584358215332,
+        "decoding time (ms)": 49.20697212219238
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -900,8 +1205,13 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
+<<<<<<< HEAD
         "encoding time (ms)": 46.78988456726074,
         "decoding time (ms)": 50.68469047546387
+=======
+        "encoding time (ms)": 46.67019844055176,
+        "decoding time (ms)": 50.65608024597168
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -917,8 +1227,13 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
+<<<<<<< HEAD
         "encoding time (ms)": 47.36685752868652,
         "decoding time (ms)": 51.59568786621094
+=======
+        "encoding time (ms)": 46.75412178039551,
+        "decoding time (ms)": 50.69112777709961
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -934,8 +1249,13 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
+<<<<<<< HEAD
         "encoding time (ms)": 49.166202545166016,
         "decoding time (ms)": 53.99799346923828
+=======
+        "encoding time (ms)": 46.21100425720215,
+        "decoding time (ms)": 50.36115646362305
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -951,8 +1271,13 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
+<<<<<<< HEAD
         "encoding time (ms)": 50.882816314697266,
         "decoding time (ms)": 56.143999099731445
+=======
+        "encoding time (ms)": 46.476125717163086,
+        "decoding time (ms)": 50.28533935546875
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -968,8 +1293,13 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
+<<<<<<< HEAD
         "encoding time (ms)": 84.70797538757324,
         "decoding time (ms)": 94.28286552429199
+=======
+        "encoding time (ms)": 47.657012939453125,
+        "decoding time (ms)": 51.53393745422363
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -985,8 +1315,13 @@
         "bit rate (bpp)": 0.58770751953125,
         "PSNR (dB)": 23.102102279663086,
         "SSIM": 0.5906638379967762,
+<<<<<<< HEAD
         "encoding time (ms)": 57.913780212402344,
         "decoding time (ms)": 64.13888931274414
+=======
+        "encoding time (ms)": 46.159982681274414,
+        "decoding time (ms)": 50.173044204711914
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1002,8 +1337,13 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
+<<<<<<< HEAD
         "encoding time (ms)": 59.880971908569336,
         "decoding time (ms)": 67.68298149108887
+=======
+        "encoding time (ms)": 45.59516906738281,
+        "decoding time (ms)": 49.73793029785156
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1019,8 +1359,13 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
+<<<<<<< HEAD
         "encoding time (ms)": 44.95811462402344,
         "decoding time (ms)": 49.22127723693848
+=======
+        "encoding time (ms)": 43.78390312194824,
+        "decoding time (ms)": 48.182010650634766
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1036,8 +1381,13 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
+<<<<<<< HEAD
         "encoding time (ms)": 46.211957931518555,
         "decoding time (ms)": 50.67896842956543
+=======
+        "encoding time (ms)": 44.82698440551758,
+        "decoding time (ms)": 51.31888389587402
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1053,8 +1403,13 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
+<<<<<<< HEAD
         "encoding time (ms)": 45.228004455566406,
         "decoding time (ms)": 49.76987838745117
+=======
+        "encoding time (ms)": 44.91305351257324,
+        "decoding time (ms)": 49.82709884643555
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1070,8 +1425,13 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
+<<<<<<< HEAD
         "encoding time (ms)": 45.27401924133301,
         "decoding time (ms)": 49.68595504760742
+=======
+        "encoding time (ms)": 44.33798789978027,
+        "decoding time (ms)": 48.64311218261719
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1087,8 +1447,13 @@
         "bit rate (bpp)": 0.6845296223958334,
         "PSNR (dB)": 23.81778907775879,
         "SSIM": 0.6437669895768513,
+<<<<<<< HEAD
         "encoding time (ms)": 45.19915580749512,
         "decoding time (ms)": 49.533843994140625
+=======
+        "encoding time (ms)": 43.914079666137695,
+        "decoding time (ms)": 48.3551025390625
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1104,8 +1469,13 @@
         "bit rate (bpp)": 0.7786865234375,
         "PSNR (dB)": 24.369361877441406,
         "SSIM": 0.6795381196687263,
+<<<<<<< HEAD
         "encoding time (ms)": 52.42013931274414,
         "decoding time (ms)": 57.36136436462402
+=======
+        "encoding time (ms)": 44.6629524230957,
+        "decoding time (ms)": 49.15904998779297
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1121,8 +1491,13 @@
         "bit rate (bpp)": 0.7786865234375,
         "PSNR (dB)": 24.369361877441406,
         "SSIM": 0.6795381196687263,
+<<<<<<< HEAD
         "encoding time (ms)": 44.957876205444336,
         "decoding time (ms)": 49.55172538757324
+=======
+        "encoding time (ms)": 45.892953872680664,
+        "decoding time (ms)": 50.102949142456055
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1149,8 +1524,13 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
+<<<<<<< HEAD
         "encoding time (ms)": 38.865089416503906,
         "decoding time (ms)": 44.78096961975098
+=======
+        "encoding time (ms)": 34.184932708740234,
+        "decoding time (ms)": 40.207862854003906
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1177,8 +1557,13 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
+<<<<<<< HEAD
         "encoding time (ms)": 32.76491165161133,
         "decoding time (ms)": 38.39302062988281
+=======
+        "encoding time (ms)": 33.25223922729492,
+        "decoding time (ms)": 38.87057304382324
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1205,8 +1590,13 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
+<<<<<<< HEAD
         "encoding time (ms)": 37.45627403259277,
         "decoding time (ms)": 43.94340515136719
+=======
+        "encoding time (ms)": 33.4467887878418,
+        "decoding time (ms)": 39.946794509887695
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1233,8 +1623,13 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
+<<<<<<< HEAD
         "encoding time (ms)": 32.98807144165039,
         "decoding time (ms)": 38.76304626464844
+=======
+        "encoding time (ms)": 32.17029571533203,
+        "decoding time (ms)": 38.24210166931152
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1261,8 +1656,13 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
+<<<<<<< HEAD
         "encoding time (ms)": 35.272836685180664,
         "decoding time (ms)": 43.364763259887695
+=======
+        "encoding time (ms)": 31.756877899169922,
+        "decoding time (ms)": 37.355899810791016
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1289,8 +1689,13 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
+<<<<<<< HEAD
         "encoding time (ms)": 43.447017669677734,
         "decoding time (ms)": 56.49995803833008
+=======
+        "encoding time (ms)": 33.23483467102051,
+        "decoding time (ms)": 39.10684585571289
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1317,8 +1722,13 @@
         "bit rate (bpp)": 0.056498209635416664,
         "PSNR (dB)": 19.76923370361328,
         "SSIM": 0.31169533861641113,
+<<<<<<< HEAD
         "encoding time (ms)": 42.60993003845215,
         "decoding time (ms)": 50.86207389831543
+=======
+        "encoding time (ms)": 33.59508514404297,
+        "decoding time (ms)": 39.7801399230957
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1345,8 +1755,13 @@
         "bit rate (bpp)": 0.10333251953125,
         "PSNR (dB)": 20.35201644897461,
         "SSIM": 0.3817732702088727,
+<<<<<<< HEAD
         "encoding time (ms)": 46.97704315185547,
         "decoding time (ms)": 56.19621276855469
+=======
+        "encoding time (ms)": 44.34323310852051,
+        "decoding time (ms)": 53.08222770690918
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1373,8 +1788,13 @@
         "bit rate (bpp)": 0.10333251953125,
         "PSNR (dB)": 20.35201644897461,
         "SSIM": 0.3817732702088727,
+<<<<<<< HEAD
         "encoding time (ms)": 48.54702949523926,
         "decoding time (ms)": 58.02106857299805
+=======
+        "encoding time (ms)": 43.18404197692871,
+        "decoding time (ms)": 51.67508125305176
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1401,8 +1821,13 @@
         "bit rate (bpp)": 0.10333251953125,
         "PSNR (dB)": 20.35201644897461,
         "SSIM": 0.3817732702088727,
+<<<<<<< HEAD
         "encoding time (ms)": 45.09902000427246,
         "decoding time (ms)": 54.49795722961426
+=======
+        "encoding time (ms)": 45.49598693847656,
+        "decoding time (ms)": 54.170846939086914
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1429,8 +1854,13 @@
         "bit rate (bpp)": 0.10333251953125,
         "PSNR (dB)": 20.35201644897461,
         "SSIM": 0.3817732702088727,
+<<<<<<< HEAD
         "encoding time (ms)": 77.24308967590332,
         "decoding time (ms)": 93.2471752166748
+=======
+        "encoding time (ms)": 40.45987129211426,
+        "decoding time (ms)": 48.442840576171875
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1457,8 +1887,13 @@
         "bit rate (bpp)": 0.10333251953125,
         "PSNR (dB)": 20.35201644897461,
         "SSIM": 0.3817732702088727,
+<<<<<<< HEAD
         "encoding time (ms)": 43.64013671875,
         "decoding time (ms)": 51.5749454498291
+=======
+        "encoding time (ms)": 43.42079162597656,
+        "decoding time (ms)": 52.02674865722656
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1485,8 +1920,13 @@
         "bit rate (bpp)": 0.14886474609375,
         "PSNR (dB)": 20.999710083007812,
         "SSIM": 0.44692420695514495,
+<<<<<<< HEAD
         "encoding time (ms)": 54.37207221984863,
         "decoding time (ms)": 63.05098533630371
+=======
+        "encoding time (ms)": 50.92191696166992,
+        "decoding time (ms)": 58.47883224487305
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1513,8 +1953,13 @@
         "bit rate (bpp)": 0.14886474609375,
         "PSNR (dB)": 20.999710083007812,
         "SSIM": 0.44692420695514495,
+<<<<<<< HEAD
         "encoding time (ms)": 68.10402870178223,
         "decoding time (ms)": 80.02805709838867
+=======
+        "encoding time (ms)": 50.05002021789551,
+        "decoding time (ms)": 57.58309364318848
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1541,8 +1986,13 @@
         "bit rate (bpp)": 0.166259765625,
         "PSNR (dB)": 21.30775260925293,
         "SSIM": 0.4508658952397362,
+<<<<<<< HEAD
         "encoding time (ms)": 63.349008560180664,
         "decoding time (ms)": 71.32482528686523
+=======
+        "encoding time (ms)": 61.20705604553223,
+        "decoding time (ms)": 69.20695304870605
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1569,8 +2019,13 @@
         "bit rate (bpp)": 0.166259765625,
         "PSNR (dB)": 21.30775260925293,
         "SSIM": 0.4508658952397362,
+<<<<<<< HEAD
         "encoding time (ms)": 64.31889533996582,
         "decoding time (ms)": 72.21388816833496
+=======
+        "encoding time (ms)": 61.30194664001465,
+        "decoding time (ms)": 68.86982917785645
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1597,8 +2052,13 @@
         "bit rate (bpp)": 0.166259765625,
         "PSNR (dB)": 21.30775260925293,
         "SSIM": 0.4508658952397362,
+<<<<<<< HEAD
         "encoding time (ms)": 62.999725341796875,
         "decoding time (ms)": 71.2125301361084
+=======
+        "encoding time (ms)": 62.54100799560547,
+        "decoding time (ms)": 71.04206085205078
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1625,8 +2085,13 @@
         "bit rate (bpp)": 0.20505777994791666,
         "PSNR (dB)": 21.927631378173828,
         "SSIM": 0.5113270760648829,
+<<<<<<< HEAD
         "encoding time (ms)": 73.7459659576416,
         "decoding time (ms)": 82.7951431274414
+=======
+        "encoding time (ms)": 68.21918487548828,
+        "decoding time (ms)": 76.85208320617676
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1653,8 +2118,13 @@
         "bit rate (bpp)": 0.20505777994791666,
         "PSNR (dB)": 21.927631378173828,
         "SSIM": 0.5113270760648829,
+<<<<<<< HEAD
         "encoding time (ms)": 70.9989070892334,
         "decoding time (ms)": 79.03170585632324
+=======
+        "encoding time (ms)": 72.52311706542969,
+        "decoding time (ms)": 81.4661979675293
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1681,8 +2151,13 @@
         "bit rate (bpp)": 0.20505777994791666,
         "PSNR (dB)": 21.927631378173828,
         "SSIM": 0.5113270760648829,
+<<<<<<< HEAD
         "encoding time (ms)": 69.3349838256836,
         "decoding time (ms)": 77.49700546264648
+=======
+        "encoding time (ms)": 69.4129467010498,
+        "decoding time (ms)": 77.86798477172852
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1709,8 +2184,13 @@
         "bit rate (bpp)": 0.20505777994791666,
         "PSNR (dB)": 21.927631378173828,
         "SSIM": 0.5113270760648829,
+<<<<<<< HEAD
         "encoding time (ms)": 70.20211219787598,
         "decoding time (ms)": 78.31311225891113
+=======
+        "encoding time (ms)": 72.35598564147949,
+        "decoding time (ms)": 80.9788703918457
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1737,8 +2217,13 @@
         "bit rate (bpp)": 0.24186197916666666,
         "PSNR (dB)": 22.549278259277344,
         "SSIM": 0.5522776052166787,
+<<<<<<< HEAD
         "encoding time (ms)": 76.53188705444336,
         "decoding time (ms)": 84.8379135131836
+=======
+        "encoding time (ms)": 77.01587677001953,
+        "decoding time (ms)": 85.60585975646973
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1765,8 +2250,13 @@
         "bit rate (bpp)": 0.24186197916666666,
         "PSNR (dB)": 22.549278259277344,
         "SSIM": 0.5522776052166787,
+<<<<<<< HEAD
         "encoding time (ms)": 76.76410675048828,
         "decoding time (ms)": 85.3431224822998
+=======
+        "encoding time (ms)": 80.40595054626465,
+        "decoding time (ms)": 89.31303024291992
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1793,8 +2283,13 @@
         "bit rate (bpp)": 0.24186197916666666,
         "PSNR (dB)": 22.549278259277344,
         "SSIM": 0.5522776052166787,
+<<<<<<< HEAD
         "encoding time (ms)": 76.83682441711426,
         "decoding time (ms)": 84.97262001037598
+=======
+        "encoding time (ms)": 78.70292663574219,
+        "decoding time (ms)": 87.53490447998047
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1821,8 +2316,13 @@
         "bit rate (bpp)": 0.259033203125,
         "PSNR (dB)": 22.62731170654297,
         "SSIM": 0.5536190297653993,
+<<<<<<< HEAD
         "encoding time (ms)": 85.25204658508301,
         "decoding time (ms)": 93.97315979003906
+=======
+        "encoding time (ms)": 86.30704879760742,
+        "decoding time (ms)": 95.29423713684082
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1849,8 +2349,13 @@
         "bit rate (bpp)": 0.259033203125,
         "PSNR (dB)": 22.62731170654297,
         "SSIM": 0.5536190297653993,
+<<<<<<< HEAD
         "encoding time (ms)": 161.15307807922363,
         "decoding time (ms)": 180.09209632873535
+=======
+        "encoding time (ms)": 87.62407302856445,
+        "decoding time (ms)": 96.07219696044922
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1877,8 +2382,13 @@
         "bit rate (bpp)": 0.29608154296875,
         "PSNR (dB)": 23.23711395263672,
         "SSIM": 0.6024026770375924,
+<<<<<<< HEAD
         "encoding time (ms)": 94.30408477783203,
         "decoding time (ms)": 102.6151180267334
+=======
+        "encoding time (ms)": 123.32487106323242,
+        "decoding time (ms)": 135.74600219726562
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1905,8 +2415,13 @@
         "bit rate (bpp)": 0.29608154296875,
         "PSNR (dB)": 23.23711395263672,
         "SSIM": 0.6024026770375924,
+<<<<<<< HEAD
         "encoding time (ms)": 89.0500545501709,
         "decoding time (ms)": 97.88107872009277
+=======
+        "encoding time (ms)": 103.2562255859375,
+        "decoding time (ms)": 112.18833923339844
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1933,8 +2448,13 @@
         "bit rate (bpp)": 0.29608154296875,
         "PSNR (dB)": 23.23711395263672,
         "SSIM": 0.6024026770375924,
+<<<<<<< HEAD
         "encoding time (ms)": 135.0269317626953,
         "decoding time (ms)": 149.52993392944336
+=======
+        "encoding time (ms)": 94.89107131958008,
+        "decoding time (ms)": 103.96122932434082
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1961,8 +2481,13 @@
         "bit rate (bpp)": 0.29608154296875,
         "PSNR (dB)": 23.23711395263672,
         "SSIM": 0.6024026770375924,
+<<<<<<< HEAD
         "encoding time (ms)": 93.05381774902344,
         "decoding time (ms)": 101.44996643066406
+=======
+        "encoding time (ms)": 94.98119354248047,
+        "decoding time (ms)": 104.49719429016113
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -1989,8 +2514,13 @@
         "bit rate (bpp)": 0.29608154296875,
         "PSNR (dB)": 23.23711395263672,
         "SSIM": 0.6024026770375924,
+<<<<<<< HEAD
         "encoding time (ms)": 91.7971134185791,
         "decoding time (ms)": 100.43978691101074
+=======
+        "encoding time (ms)": 88.25206756591797,
+        "decoding time (ms)": 97.30815887451172
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2017,8 +2547,13 @@
         "bit rate (bpp)": 0.33880615234375,
         "PSNR (dB)": 23.73995018005371,
         "SSIM": 0.628339987075981,
+<<<<<<< HEAD
         "encoding time (ms)": 93.54019165039062,
         "decoding time (ms)": 101.7920970916748
+=======
+        "encoding time (ms)": 120.31102180480957,
+        "decoding time (ms)": 131.0710906982422
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2045,8 +2580,13 @@
         "bit rate (bpp)": 0.33880615234375,
         "PSNR (dB)": 23.73995018005371,
         "SSIM": 0.628339987075981,
+<<<<<<< HEAD
         "encoding time (ms)": 96.03309631347656,
         "decoding time (ms)": 104.44808006286621
+=======
+        "encoding time (ms)": 101.49002075195312,
+        "decoding time (ms)": 110.47506332397461
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2073,8 +2613,13 @@
         "bit rate (bpp)": 0.3580525716145833,
         "PSNR (dB)": 23.792030334472656,
         "SSIM": 0.6300004919374095,
+<<<<<<< HEAD
         "encoding time (ms)": 108.32095146179199,
         "decoding time (ms)": 118.22772026062012
+=======
+        "encoding time (ms)": 110.28599739074707,
+        "decoding time (ms)": 119.56286430358887
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2101,8 +2646,13 @@
         "bit rate (bpp)": 0.3580525716145833,
         "PSNR (dB)": 23.792030334472656,
         "SSIM": 0.6300004919374095,
+<<<<<<< HEAD
         "encoding time (ms)": 100.3420352935791,
         "decoding time (ms)": 108.60800743103027
+=======
+        "encoding time (ms)": 106.63104057312012,
+        "decoding time (ms)": 115.50402641296387
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2129,8 +2679,13 @@
         "bit rate (bpp)": 0.39849853515625,
         "PSNR (dB)": 24.19992446899414,
         "SSIM": 0.6534404234846364,
+<<<<<<< HEAD
         "encoding time (ms)": 101.15504264831543,
         "decoding time (ms)": 109.65919494628906
+=======
+        "encoding time (ms)": 114.09711837768555,
+        "decoding time (ms)": 125.25582313537598
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2157,8 +2712,13 @@
         "bit rate (bpp)": 0.39849853515625,
         "PSNR (dB)": 24.19992446899414,
         "SSIM": 0.6534404234846364,
+<<<<<<< HEAD
         "encoding time (ms)": 100.97789764404297,
         "decoding time (ms)": 109.27391052246094
+=======
+        "encoding time (ms)": 128.91387939453125,
+        "decoding time (ms)": 139.1458511352539
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2185,8 +2745,13 @@
         "bit rate (bpp)": 0.39849853515625,
         "PSNR (dB)": 24.19992446899414,
         "SSIM": 0.6534404234846364,
+<<<<<<< HEAD
         "encoding time (ms)": 104.07304763793945,
         "decoding time (ms)": 112.78009414672852
+=======
+        "encoding time (ms)": 117.34509468078613,
+        "decoding time (ms)": 127.64096260070801
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2213,8 +2778,13 @@
         "bit rate (bpp)": 0.39849853515625,
         "PSNR (dB)": 24.19992446899414,
         "SSIM": 0.6534404234846364,
+<<<<<<< HEAD
         "encoding time (ms)": 98.72102737426758,
         "decoding time (ms)": 107.28001594543457
+=======
+        "encoding time (ms)": 142.06385612487793,
+        "decoding time (ms)": 151.87668800354004
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2241,8 +2811,13 @@
         "bit rate (bpp)": 0.39849853515625,
         "PSNR (dB)": 24.19992446899414,
         "SSIM": 0.6534404234846364,
+<<<<<<< HEAD
         "encoding time (ms)": 102.63705253601074,
         "decoding time (ms)": 111.31596565246582
+=======
+        "encoding time (ms)": 126.56807899475098,
+        "decoding time (ms)": 137.01820373535156
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2269,8 +2844,13 @@
         "bit rate (bpp)": 0.4392293294270833,
         "PSNR (dB)": 24.500246047973633,
         "SSIM": 0.669971884187285,
+<<<<<<< HEAD
         "encoding time (ms)": 111.80305480957031,
         "decoding time (ms)": 120.40996551513672
+=======
+        "encoding time (ms)": 130.5701732635498,
+        "decoding time (ms)": 139.95909690856934
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2297,8 +2877,13 @@
         "bit rate (bpp)": 0.4392293294270833,
         "PSNR (dB)": 24.500246047973633,
         "SSIM": 0.669971884187285,
+<<<<<<< HEAD
         "encoding time (ms)": 114.80998992919922,
         "decoding time (ms)": 123.1992244720459
+=======
+        "encoding time (ms)": 133.61501693725586,
+        "decoding time (ms)": 142.78173446655273
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2325,8 +2910,13 @@
         "bit rate (bpp)": 0.45147705078125,
         "PSNR (dB)": 24.545162200927734,
         "SSIM": 0.6713290815275087,
+<<<<<<< HEAD
         "encoding time (ms)": 120.89180946350098,
         "decoding time (ms)": 129.5328140258789
+=======
+        "encoding time (ms)": 142.40789413452148,
+        "decoding time (ms)": 152.4209976196289
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2353,8 +2943,13 @@
         "bit rate (bpp)": 0.45147705078125,
         "PSNR (dB)": 24.545162200927734,
         "SSIM": 0.6713290815275087,
+<<<<<<< HEAD
         "encoding time (ms)": 127.2268295288086,
         "decoding time (ms)": 136.52896881103516
+=======
+        "encoding time (ms)": 152.34827995300293,
+        "decoding time (ms)": 161.44990921020508
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2381,8 +2976,13 @@
         "bit rate (bpp)": 0.4891357421875,
         "PSNR (dB)": 24.953413009643555,
         "SSIM": 0.693218787934088,
+<<<<<<< HEAD
         "encoding time (ms)": 134.9780559539795,
         "decoding time (ms)": 143.4931755065918
+=======
+        "encoding time (ms)": 138.49496841430664,
+        "decoding time (ms)": 147.9480266571045
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2409,8 +3009,13 @@
         "bit rate (bpp)": 0.4891357421875,
         "PSNR (dB)": 24.953413009643555,
         "SSIM": 0.693218787934088,
+<<<<<<< HEAD
         "encoding time (ms)": 133.64481925964355,
         "decoding time (ms)": 142.58074760437012
+=======
+        "encoding time (ms)": 142.92216300964355,
+        "decoding time (ms)": 152.2960662841797
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2437,8 +3042,13 @@
         "bit rate (bpp)": 0.4891357421875,
         "PSNR (dB)": 24.953413009643555,
         "SSIM": 0.693218787934088,
+<<<<<<< HEAD
         "encoding time (ms)": 132.99202919006348,
         "decoding time (ms)": 141.4029598236084
+=======
+        "encoding time (ms)": 148.50306510925293,
+        "decoding time (ms)": 158.24222564697266
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2465,8 +3075,13 @@
         "bit rate (bpp)": 0.4891357421875,
         "PSNR (dB)": 24.953413009643555,
         "SSIM": 0.693218787934088,
+<<<<<<< HEAD
         "encoding time (ms)": 131.16216659545898,
         "decoding time (ms)": 140.29717445373535
+=======
+        "encoding time (ms)": 140.75303077697754,
+        "decoding time (ms)": 150.01416206359863
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2493,8 +3108,13 @@
         "bit rate (bpp)": 0.4891357421875,
         "PSNR (dB)": 24.953413009643555,
         "SSIM": 0.693218787934088,
+<<<<<<< HEAD
         "encoding time (ms)": 130.20896911621094,
         "decoding time (ms)": 139.18805122375488
+=======
+        "encoding time (ms)": 155.5776596069336,
+        "decoding time (ms)": 165.39549827575684
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2521,8 +3141,13 @@
         "bit rate (bpp)": 0.5337727864583334,
         "PSNR (dB)": 25.243045806884766,
         "SSIM": 0.7093060957138237,
+<<<<<<< HEAD
         "encoding time (ms)": 142.61794090270996,
         "decoding time (ms)": 151.26776695251465
+=======
+        "encoding time (ms)": 161.1182689666748,
+        "decoding time (ms)": 170.76611518859863
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2549,8 +3174,13 @@
         "bit rate (bpp)": 0.5337727864583334,
         "PSNR (dB)": 25.243045806884766,
         "SSIM": 0.7093060957138237,
+<<<<<<< HEAD
         "encoding time (ms)": 135.43701171875,
         "decoding time (ms)": 144.78421211242676
+=======
+        "encoding time (ms)": 175.1708984375,
+        "decoding time (ms)": 186.09380722045898
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2577,8 +3207,13 @@
         "bit rate (bpp)": 0.5478515625,
         "PSNR (dB)": 25.275161743164062,
         "SSIM": 0.7106896254766292,
+<<<<<<< HEAD
         "encoding time (ms)": 146.8069553375244,
         "decoding time (ms)": 156.2652587890625
+=======
+        "encoding time (ms)": 169.85702514648438,
+        "decoding time (ms)": 180.8609962463379
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2605,8 +3240,13 @@
         "bit rate (bpp)": 0.5478515625,
         "PSNR (dB)": 25.275161743164062,
         "SSIM": 0.7106896254766292,
+<<<<<<< HEAD
         "encoding time (ms)": 138.98015022277832,
         "decoding time (ms)": 148.3023166656494
+=======
+        "encoding time (ms)": 164.0148162841797,
+        "decoding time (ms)": 173.9368438720703
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2633,8 +3273,13 @@
         "bit rate (bpp)": 0.5478515625,
         "PSNR (dB)": 25.275161743164062,
         "SSIM": 0.7106896254766292,
+<<<<<<< HEAD
         "encoding time (ms)": 142.41623878479004,
         "decoding time (ms)": 151.79133415222168
+=======
+        "encoding time (ms)": 166.17894172668457,
+        "decoding time (ms)": 177.80375480651855
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2661,8 +3306,13 @@
         "bit rate (bpp)": 0.5945027669270834,
         "PSNR (dB)": 25.555049896240234,
         "SSIM": 0.7270935263461413,
+<<<<<<< HEAD
         "encoding time (ms)": 148.6048698425293,
         "decoding time (ms)": 157.31000900268555
+=======
+        "encoding time (ms)": 167.50192642211914,
+        "decoding time (ms)": 178.71999740600586
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2689,8 +3339,13 @@
         "bit rate (bpp)": 0.5945027669270834,
         "PSNR (dB)": 25.555049896240234,
         "SSIM": 0.7270935263461413,
+<<<<<<< HEAD
         "encoding time (ms)": 150.50506591796875,
         "decoding time (ms)": 159.9421501159668
+=======
+        "encoding time (ms)": 176.29313468933105,
+        "decoding time (ms)": 187.80922889709473
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2717,8 +3372,13 @@
         "bit rate (bpp)": 0.5945027669270834,
         "PSNR (dB)": 25.555049896240234,
         "SSIM": 0.7270935263461413,
+<<<<<<< HEAD
         "encoding time (ms)": 147.28713035583496,
         "decoding time (ms)": 156.08501434326172
+=======
+        "encoding time (ms)": 219.98214721679688,
+        "decoding time (ms)": 238.7540340423584
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2745,8 +3405,13 @@
         "bit rate (bpp)": 0.5945027669270834,
         "PSNR (dB)": 25.555049896240234,
         "SSIM": 0.7270935263461413,
+<<<<<<< HEAD
         "encoding time (ms)": 147.1879482269287,
         "decoding time (ms)": 155.57003021240234
+=======
+        "encoding time (ms)": 261.2729072570801,
+        "decoding time (ms)": 272.71485328674316
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2773,8 +3438,13 @@
         "bit rate (bpp)": 0.6254475911458334,
         "PSNR (dB)": 25.85019302368164,
         "SSIM": 0.7437376011838458,
+<<<<<<< HEAD
         "encoding time (ms)": 155.92217445373535,
         "decoding time (ms)": 164.79206085205078
+=======
+        "encoding time (ms)": 225.2821922302246,
+        "decoding time (ms)": 239.0131950378418
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2801,8 +3471,13 @@
         "bit rate (bpp)": 0.6254475911458334,
         "PSNR (dB)": 25.85019302368164,
         "SSIM": 0.7437376011838458,
+<<<<<<< HEAD
         "encoding time (ms)": 156.57424926757812,
         "decoding time (ms)": 165.48418998718262
+=======
+        "encoding time (ms)": 444.81587409973145,
+        "decoding time (ms)": 472.963809967041
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2829,8 +3504,13 @@
         "bit rate (bpp)": 0.6254475911458334,
         "PSNR (dB)": 25.85019302368164,
         "SSIM": 0.7437376011838458,
+<<<<<<< HEAD
         "encoding time (ms)": 155.62891960144043,
         "decoding time (ms)": 165.0247573852539
+=======
+        "encoding time (ms)": 566.9867992401123,
+        "decoding time (ms)": 586.6060256958008
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2857,8 +3537,13 @@
         "bit rate (bpp)": 0.6395060221354166,
         "PSNR (dB)": 25.860469818115234,
         "SSIM": 0.74394704130756,
+<<<<<<< HEAD
         "encoding time (ms)": 166.68701171875,
         "decoding time (ms)": 176.15699768066406
+=======
+        "encoding time (ms)": 372.23100662231445,
+        "decoding time (ms)": 385.50877571105957
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2885,8 +3570,13 @@
         "bit rate (bpp)": 0.6395060221354166,
         "PSNR (dB)": 25.860469818115234,
         "SSIM": 0.74394704130756,
+<<<<<<< HEAD
         "encoding time (ms)": 159.81316566467285,
         "decoding time (ms)": 168.98226737976074
+=======
+        "encoding time (ms)": 238.27195167541504,
+        "decoding time (ms)": 251.2650489807129
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2913,8 +3603,13 @@
         "bit rate (bpp)": 0.6834920247395834,
         "PSNR (dB)": 26.077129364013672,
         "SSIM": 0.7557611611115718,
+<<<<<<< HEAD
         "encoding time (ms)": 172.93906211853027,
         "decoding time (ms)": 181.70809745788574
+=======
+        "encoding time (ms)": 252.20394134521484,
+        "decoding time (ms)": 264.76478576660156
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2941,8 +3636,13 @@
         "bit rate (bpp)": 0.6834920247395834,
         "PSNR (dB)": 26.077129364013672,
         "SSIM": 0.7557611611115718,
+<<<<<<< HEAD
         "encoding time (ms)": 169.36397552490234,
         "decoding time (ms)": 178.6181926727295
+=======
+        "encoding time (ms)": 254.71997261047363,
+        "decoding time (ms)": 267.36998558044434
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2969,8 +3669,13 @@
         "bit rate (bpp)": 0.6834920247395834,
         "PSNR (dB)": 26.077129364013672,
         "SSIM": 0.7557611611115718,
+<<<<<<< HEAD
         "encoding time (ms)": 167.13190078735352,
         "decoding time (ms)": 176.75065994262695
+=======
+        "encoding time (ms)": 256.4129829406738,
+        "decoding time (ms)": 276.55577659606934
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -2997,8 +3702,13 @@
         "bit rate (bpp)": 0.6834920247395834,
         "PSNR (dB)": 26.077129364013672,
         "SSIM": 0.7557611611115718,
+<<<<<<< HEAD
         "encoding time (ms)": 168.01786422729492,
         "decoding time (ms)": 177.89578437805176
+=======
+        "encoding time (ms)": 548.4468936920166,
+        "decoding time (ms)": 593.0328369140625
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -3025,8 +3735,13 @@
         "bit rate (bpp)": 0.6834920247395834,
         "PSNR (dB)": 26.077129364013672,
         "SSIM": 0.7557611611115718,
+<<<<<<< HEAD
         "encoding time (ms)": 168.7920093536377,
         "decoding time (ms)": 179.31008338928223
+=======
+        "encoding time (ms)": 455.52921295166016,
+        "decoding time (ms)": 469.7864055633545
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -3053,8 +3768,13 @@
         "bit rate (bpp)": 0.7291463216145834,
         "PSNR (dB)": 26.30374526977539,
         "SSIM": 0.7663504132366573,
+<<<<<<< HEAD
         "encoding time (ms)": 175.67729949951172,
         "decoding time (ms)": 185.24432182312012
+=======
+        "encoding time (ms)": 304.61907386779785,
+        "decoding time (ms)": 319.70882415771484
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -3081,8 +3801,13 @@
         "bit rate (bpp)": 0.7291463216145834,
         "PSNR (dB)": 26.30374526977539,
         "SSIM": 0.7663504132366573,
+<<<<<<< HEAD
         "encoding time (ms)": 174.072265625,
         "decoding time (ms)": 182.8460693359375
+=======
+        "encoding time (ms)": 328.60493659973145,
+        "decoding time (ms)": 342.3910140991211
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -3109,8 +3834,13 @@
         "bit rate (bpp)": 0.7474772135416666,
         "PSNR (dB)": 26.326202392578125,
         "SSIM": 0.7670210687425191,
+<<<<<<< HEAD
         "encoding time (ms)": 180.13906478881836,
         "decoding time (ms)": 189.78309631347656
+=======
+        "encoding time (ms)": 331.15482330322266,
+        "decoding time (ms)": 345.9596633911133
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -3137,8 +3867,13 @@
         "bit rate (bpp)": 0.7474772135416666,
         "PSNR (dB)": 26.326202392578125,
         "SSIM": 0.7670210687425191,
+<<<<<<< HEAD
         "encoding time (ms)": 180.44710159301758,
         "decoding time (ms)": 189.55206871032715
+=======
+        "encoding time (ms)": 321.4302062988281,
+        "decoding time (ms)": 336.3842964172363
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -3165,8 +3900,13 @@
         "bit rate (bpp)": 0.78790283203125,
         "PSNR (dB)": 26.5628604888916,
         "SSIM": 0.776387894932783,
+<<<<<<< HEAD
         "encoding time (ms)": 186.08617782592773,
         "decoding time (ms)": 197.11804389953613
+=======
+        "encoding time (ms)": 346.2259769439697,
+        "decoding time (ms)": 361.7548942565918
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -3193,8 +3933,13 @@
         "bit rate (bpp)": 0.78790283203125,
         "PSNR (dB)": 26.5628604888916,
         "SSIM": 0.776387894932783,
+<<<<<<< HEAD
         "encoding time (ms)": 190.88983535766602,
         "decoding time (ms)": 201.89499855041504
+=======
+        "encoding time (ms)": 349.17688369750977,
+        "decoding time (ms)": 364.6891117095947
+>>>>>>> ef335bc (polish comparison notebook)
     },
     {
         "data": "kodim01",
@@ -3221,7 +3966,12 @@
         "bit rate (bpp)": 0.78790283203125,
         "PSNR (dB)": 26.5628604888916,
         "SSIM": 0.776387894932783,
+<<<<<<< HEAD
         "encoding time (ms)": 192.42596626281738,
         "decoding time (ms)": 202.79216766357422
+=======
+        "encoding time (ms)": 368.9260482788086,
+        "decoding time (ms)": 385.02025604248047
+>>>>>>> ef335bc (polish comparison notebook)
     }
 ]
