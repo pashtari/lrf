@@ -132,12 +132,12 @@ class CoordinateDescent(nn.Module):
                 term2 = uu @ bb
                 numerator = soft_thresholding(term1 - term2, l1)
                 denominator = b[..., r : (r + 1), r : (r + 1)] + l2
-                ur_new = (numerator + self.eps) / (denominator + self.eps)
+                ur_new = numerator / (denominator + self.eps)
                 u_new[..., r : (r + 1)] = project(ur_new)
         else:
             numerator = soft_thresholding(a, l1)
             denominator = b + l2
-            u_new = (numerator + self.eps) / (denominator + self.eps)
+            u_new = numerator / (denominator + self.eps)
             u_new = project(u_new)
 
         return u_new
