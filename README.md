@@ -57,12 +57,12 @@ import torch
 import lrf
 ```
 
-**Load and Visualize the Image**
+**Load Image**
 ```python
 image = lrf.read_image("./kodim01.png")
 ```
 
-**IMF Encode the Image**
+**IMF Encode Image**
 ```python
 imf_encoded = lrf.imf_encode(
     image,
@@ -77,7 +77,7 @@ imf_encoded = lrf.imf_encode(
 )
 ```
 
-**Decode the IMF Encoded Image**
+**Decode IMF-Encoded Image**
 ```python
 image_imf = lrf.imf_decode(imf_encoded)
 ```
@@ -107,7 +107,7 @@ print(metrics)
 }
 ```
 
-**Visualize the Original and Compressed Images**
+**Visualize Original and Compressed Images**
 ```python
 lrf.vis_image(image, title="Original")
 lrf.vis_image(
