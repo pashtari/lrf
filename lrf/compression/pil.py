@@ -1,10 +1,8 @@
 import io
-from typing import Any, List
 
 import torch
 from torchvision.transforms import functional as FT
 from PIL import Image
-from lrf.compression.utils import combine_bytes, separate_bytes
 
 
 def pil_encode(image: torch.Tensor, **kwargs) -> bytes:

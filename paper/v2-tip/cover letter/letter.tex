@@ -1,0 +1,54 @@
+\documentclass[a4paper,12pt]{letter}
+\usepackage[left=1in, right=1in, top=1in, bottom=1in]{geometry}
+\usepackage{hyperref}
+
+\begin{document}
+
+\begin{letter}{
+    
+Pooya Ashtari \\
+\textit{KU Leuven} \\
+\textit{Department of Electrical Engineering (ESAT)} \\
+\textit{Kasteelpark Arenberg 10, Box 2440} \\
+\textit{3001 Leuven, Belgium} \\
+\texttt{pooya.ashtari@esat.kuleuven.be} \\
+
+\bigskip\bigskip
+
+Editor-in-Chief \\
+IEEE Transactions on Image Processing}
+
+\opening{Dear Dr. Benoit Macq,}
+
+We are pleased to submit our manuscript titled \textit{``Quantization-free Lossy Image Compression Using Integer Matrix Factorization''} for consideration for publication in \textit{IEEE Transactions on Image Processing}.
+
+This paper tackles the significant challenge of lossy image compression by presenting a novel method based on integer matrix factorization (IMF). Traditional compression techniques like JPEG and SVD-based methods rely heavily on quantization, which can significantly degrade image quality, especially at low bit rates. Our proposed IMF method eliminates the quantization step, offering a more robust solution for low bit rate image compression.
+
+The key contributions of our work include:
+
+\begin{enumerate}
+    \item \textbf{Quantization-free Compression}: We introduce a variant of IMF that enables a low-rank representation of image data as a product of two smaller factor matrices with bounded integer elements. This approach completely removes the quantization step, enhancing image quality and reducing compression artifacts.
+    \item \textbf{Efficient Algorithm}: We develop an efficient and provably convergent iterative algorithm for IMF using a block coordinate descent scheme, ensuring computational efficiency.
+    \item \textbf{Performance}: Our extensive experiments on the Kodak and CLIC 2024 datasets demonstrate that our IMF-based method significantly outperforms JPEG at low bit rates and remains competitive at higher bit rates. Additionally, our method better preserves visual semantics compared to traditional approaches, as evidenced by improved classification accuracy on compressed images using an ImageNet pre-trained classifier.
+\end{enumerate}
+
+We believe that our findings represent a substantial advancement in the field of image compression and have the potential to impact a wide range of applications where efficient storage and transmission of images are essential.
+
+We confirm that this manuscript is original and has not been published elsewhere, nor is it under consideration by any other journal. All authors have approved the manuscript and agree with its submission to \textit{IEEE Transactions on Image Processing}. We have no conflicts of interest to disclose.
+
+Thank you for considering our submission. We look forward to your positive response.
+
+\closing{Kind regards,}
+
+\vspace{-1.5cm}
+
+Pooya Ashtari (corresponding author) \\
+Pourya Behmandpoor \\
+Fateme Nateghi Haredasht \\
+Jonathan H. Chen \\
+Panagiotis Patrinos \\
+Sabine Van Huffel \\
+
+\end{letter}
+
+\end{document}

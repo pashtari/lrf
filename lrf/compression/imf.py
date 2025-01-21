@@ -186,8 +186,8 @@ def imf_encode(
                 }
             )
 
-            imf = IMF(rank=R, bounds=bounds, **kwargs)
-            u, v = imf.decompose(x.unsqueeze(0))
+            imf = IMF(rank=R, bounds=bounds, factor=(0, 1), **kwargs)
+            u, v, _ = imf.decompose(x.unsqueeze(0))
             u, v = u.squeeze(0), v.squeeze(0)
 
             factors = u.to(dtype), v.to(dtype)
@@ -205,8 +205,8 @@ def imf_encode(
 
             metadata["rank"] = R
 
-            imf = IMF(rank=R, bounds=bounds, **kwargs)
-            u, v = imf.decompose(x.unsqueeze(0))
+            imf = IMF(rank=R, bounds=bounds, factor=(0, 1), **kwargs)
+            u, v, _ = imf.decompose(x.unsqueeze(0))
             u, v = u.squeeze(0), v.squeeze(0)
 
             factors = u.to(dtype), v.to(dtype)
@@ -253,8 +253,8 @@ def imf_encode(
                 metadata["padded size"].append(padded_size)
                 metadata["rank"].append(R)
 
-                imf = IMF(rank=R, bounds=bounds, **kwargs)
-                u, v = imf.decompose(x.unsqueeze(0))
+                imf = IMF(rank=R, bounds=bounds, factor=(0, 1), **kwargs)
+                u, v, _ = imf.decompose(x.unsqueeze(0))
                 u, v = u.squeeze(0), v.squeeze(0)
 
                 u, v = u.to(dtype), v.to(dtype)
@@ -277,8 +277,8 @@ def imf_encode(
                 metadata["original size"].append(channel.shape[-2:])
                 metadata["rank"].append(R)
 
-                imf = IMF(rank=R, bounds=bounds, **kwargs)
-                u, v = imf.decompose(channel.unsqueeze(0))
+                imf = IMF(rank=R, bounds=bounds, factor=(0, 1), **kwargs)
+                u, v, _ = imf.decompose(channel.unsqueeze(0))
                 u, v = u.squeeze(0), v.squeeze(0)
 
                 u, v = u.to(dtype), v.to(dtype)
@@ -311,7 +311,7 @@ def imf_decode(encoded_image: bytes) -> torch.Tensor:
         u, v = decode_tensor(encoded_u), decode_tensor(encoded_v)
 
         u, v = u.float(), v.float()
-        x = u @ v.mT
+        x = IMF.reconstruct(u, v)
 
         if metadata["patch"]:
             image = depatchify(x, metadata["padded size"], metadata["patch size"])
@@ -330,7 +330,7 @@ def imf_decode(encoded_image: bytes) -> torch.Tensor:
             ycbcr = []
             for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
                 u, v = u.float(), v.float()
-                x = u @ v.mT
+                x = IMF.reconstruct(u, v)
                 channel = depatchify(
                     x, metadata["padded size"][i], metadata["patch size"]
                 )
@@ -340,7 +340,7 @@ def imf_decode(encoded_image: bytes) -> torch.Tensor:
             ycbcr = []
             for i, (u, v) in enumerate(((u_y, v_y), (u_cb, v_cb), (u_cr, v_cr))):
                 u, v = u.float(), v.float()
-                x = u @ v.mT
+                x = IMF.reconstruct(u, v)
                 ycbcr.append(x)
 
         image = chroma_upsampling(

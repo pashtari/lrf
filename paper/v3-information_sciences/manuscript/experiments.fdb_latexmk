@@ -1,0 +1,15 @@
+# Fdb version 3
+["pdflatex"] 1721741528 "/Users/pooya/Library/CloudStorage/OneDrive-KULeuven/research/projects/lrf/paper/v2-tip/manuscript/experiments.tex" "experiments.pdf" "experiments" 1721741528
+  "/Users/pooya/Library/CloudStorage/OneDrive-KULeuven/research/projects/lrf/paper/v2-tip/manuscript/experiments.tex" 1721741526 20397 47eafeb5b4d622c780c15a51260c97d5 ""
+  "/usr/local/texlive/2022/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
+  "/usr/local/texlive/2022/texmf-dist/fonts/tfm/public/cm/cmbx10.tfm" 1136768653 1328 c834bbb027764024c09d3d2bf908b5f0 ""
+  "/usr/local/texlive/2022/texmf-dist/fonts/tfm/public/cm/cmss10.tfm" 1136768653 1316 b636689f1933f24d1294acdf6041daaa ""
+  "/usr/local/texlive/2022/texmf-dist/web2c/texmf.cnf" 1646502317 40171 cdab547de63d26590bebb3baff566530 ""
+  "/usr/local/texlive/2022/texmf-var/web2c/pdftex/pdflatex.fmt" 1659018445 2826435 047085f9dcd6e08dcad8d43b1a07f31d ""
+  "/usr/local/texlive/2022/texmf.cnf" 1647878952 577 209b46be99c9075fd74d4c0369380e8c ""
+  "experiments.aux" 0 -1 0 ""
+  "experiments.tex" 1721741526 20397 47eafeb5b4d622c780c15a51260c97d5 ""
+  "figures/kodak_psnr.pgf" 1721741310 65656 0d8f51f15c2777b02eab075704d886e5 ""
+  (generated)
+  "experiments.log"
+  "experiments.pdf"

@@ -1,0 +1,133 @@
+\appendix
+
+\section{Proof of Theorem \ref{the:bcd_subproblem}} \label{app:monotonicity_proof}
+
+We start by proving the closed-form solution \eqref{eq:bcd_closed_form_subproblem_u}, noting that the proof for \eqref{eq:bcd_closed_form_subproblem_v} follows the same reasoning.
+The objective function in the subproblem \eqref{eq:bcd_subproblem_u} can be reformulated as follows:
+\begin{align}
+    \argmin_{\bm{u}_r \in \Z_{[\alpha,\beta]}^M} \|\bm{E}_r - \bm{u}_r \bm{v}_r^\mathsf{T}\|_{\rm F}
+    = \argmin_{\bm{u}_r \in \Z_{[\alpha,\beta]}^M}\sum_{i=1}^M \sum_{j=1}^N (e_{ij}^r - u_i^r v_j^r)^2,
+    \label{eq:bcd_subproblem_u_reformed}
+\end{align}
+where $e_{ij}^r$ denotes the element of matrix $\bm{E}_r$ in the $i$th row and $j$th column, and $u_i^r$ and $v_j^r$ are the $i$th and $j$th elements of vectors $\bm{u}_r$ and $\bm{v}_r$, respectively. Since the elements of $\bm{E}_r$ and $\bm{v}_r$ are fixed in problem \eqref{eq:bcd_subproblem_u}, the optimization \eqref{eq:bcd_subproblem_u_reformed} can be decoupled into $M$ optimizations as follows:
+\begin{align}
+    \argmin_{u^r_i \in \Z_{[\alpha,\beta]}} & ~q_i(u_i^r), \quad \forall i\in\{1,\dots,M\}, \nonumber       \\
+    \textstyle \text{where} ~~              & q_i(u_i^r) \coloneqq \sum_{j=1}^N (e_{ij}^r - u_i^r v_j^r)^2.
+    \label{eq:bcd_subproblem_u_decoupled}
+\end{align}
+The objective functions $q_i(u_i^r)$ in \eqref{eq:bcd_subproblem_u_decoupled} are single-variable quadratic problems. Hence, the global optimum in each decoupled optimization problem can be achieved by finding the minimum of each quadratic problem and then projecting it onto the set $\Z_{[\alpha,\beta]}$. The minimum of each quadratic function in \eqref{eq:bcd_subproblem_u_decoupled}, denoted by $\bar{u}_i^r$, can be simply found by
+\begin{align}
+    \textstyle \nabla_{u_i^r} q_i(u_i^r) = 0 \implies \bar{u}_i^r = \nicefrac{\sum_{j=1}^N e_{ij}^r v_j^r}{\sum_{j=1}^N v_j^{r^2}},
+    \label{eq:bcd_subproblem_u_minimum}
+\end{align}
+where $\nabla_x$ is the partial derivative with respect to $x$.
+Since $q_i$ has a constant curvature (second derivative) and $q_i(\bar{u}_i^r + d)$ is nondecreasing with increasing $|d|$, the value in the set $\Z_{[\alpha,\beta]}$ which is closest to $\bar{u}_i^r$ is the global minimizer of \eqref{eq:bcd_subproblem_u_decoupled}. This value can be reached by projecting $\bar{u}_i^r$ onto the set $\Z_{[\alpha,\beta]}$, namely $u^{r^\star}_i = \clamp_{[\alpha,\beta]}(\round(\bar{u}_i^r))$, which is presented for all $i\in\{1,...,M\}$ in a compact form in \eqref{eq:bcd_closed_form_subproblem_u}.
+
+Since $\bm{u}_r^\star \coloneqq (u^{r^\star}_1,\dots,u^{r^\star}_M)$ is the global optimum of optimization \eqref{eq:bcd_subproblem_u_reformed}, it is evident that
+\begin{equation}
+    \|\bm{E}_r - \bm{u}_r^\star \bm{v}_r^\mathsf{T}\|_{\rm F}  \leq \|\bm{E}_r - \bm{u}_r \bm{v}_r^\mathsf{T}\|_{\rm F}.
+\end{equation}
+This inequality guarantees a nonincreasing cost function over one update of $\bm u_r$. Following the same reasoning for updates of $\bm v_r$ in \eqref{eq:bcd_closed_form_subproblem_v}, it can be concluded that in each update of \eqref{eq:bcd_closed_form_subproblem_u} and \eqref{eq:bcd_closed_form_subproblem_v}, the cost function is nonincreasing. Therefore, the sequential updates over the columns of $\bm U$ and $\bm V$ in Algorithm \ref{alg:bcd_for_imf} result in a monotonically nonincreasing cost function in \eqref{eq:imf_problem}.
+
+
+\section{Proof of Theorem \ref{thm:convergence}} \label{app:convergence_proof}
+
+To study the convergence of the proposed Algorithm \ref{alg:bcd_for_imf}, we recast the optimization problem \eqref{eq:imf_problem} into the following equivalent problem:
+\begin{align}
+    \begin{split}
+        \minimize_{U_{:r} \in \R^{M}, V_{:r} \in \R^{N}, \forall r\in\{1,...,R\}} \quad \Psi(\bm U, \bm V)
+    \end{split}
+    \label{eq:imf_surrogate}
+\end{align}
+where
+\begin{align*}
+    \Psi(\bm U, \bm V) & \coloneqq f_0(\bm U, \bm V) + \sum_{r=1}^R f(U_{:r}) + \sum_{r=1}^R g(V_{:r}), \\
+    f_0(\bm U, \bm V)  & \coloneqq \|\bm X - \bm U \bm V^{\rm T} \|_{\rm F}^2,                          \\
+    f(U_{:r})          & \coloneqq \delta_{[a,b]}(U_{:r}) + \delta_\Z(U_{:r}),                          \\
+    g(V_{:r})          & \coloneqq \delta_{[a,b]}(V_{:r}) + \delta_\Z(V_{:r}),
+\end{align*}
+with $\delta_\mathcal{B}(\cdot)$ as the indicator function of the nonempty set $\mathcal{B}$ where $\delta_\mathcal{B}(\bm x) = 0$ if $\bm x \in \mathcal{B}$ and $\delta_\mathcal{B}(\bm x) = +\infty$, otherwise. By the definition of functions above, it is easy to confirm that the problems \eqref{eq:imf_problem} and \eqref{eq:imf_surrogate} are equivalent.
+
+The unconstrained optimization problem \eqref{eq:imf_surrogate} consists of the sum of a differentiable (smooth) function $f_0$ and nonsmooth functions $f$ and $g$. This problem has been extensively studied in the literature under the class of nonconvex nonsmooth minimization problems.
+In Algorithm \ref{alg:bcd_for_imf}, the blocks $U_{:r}$ and $V_{:r}$ are updated sequentially following block coordinate descent (BCD) minimization algorithms, also often called Gauss-Seidel updates or alternating optimization \cite{nesterov2012efficiency,attouch2013convergence}.
+Hence, in this convergence study, we are interested in algorithms that allow BCD-like updates for the nonconvex nonsmooth problem of \eqref{eq:imf_surrogate} \cite{beck2013convergence,bolte2014proximal}. Specifically, we focus on the proximal alternating linearized minimization (PALM) algorithm \cite{bolte2014proximal}, to relate its convergence behavior to that of Algorithm \ref{alg:bcd_for_imf}.
+To that end, we show that the updates of Algorithm \ref{alg:bcd_for_imf} are related to the updates of PALM on the recast problem of \eqref{eq:imf_surrogate}, and all the assumptions necessary for the convergence of PALM are satisfied by our problem setting.
+It is noted that, for the sake of presentation and without loss of generality, in this proof, we assume each of the matrices $\bm U$ and $\bm V$ has only one column ($R=1$); hence, we only have two blocks in the BCD updates. The iterates in PALM and the presented proof can be trivially extended for more than two blocks.
+
+The PALM algorithm can be summarized as follows:
+\begin{enumerate}
+    \item Initialize $\bm U^{\rm init} \in \R^{M\times R}$, $\bm V^{\rm init} \in \R^{N\times R}$
+    \item For each iteration $k=0,1,...$
+          \begin{align}
+              \begin{split}
+                  \mysubnumber~ \bm U^{k+1} & \in \prox^f_{c_k} \left(\bm U^k - \frac{1}{c_k} \nabla_{\bm U} f_0(\bm U^k, \bm V^k)\right),     \\
+                  \mysubnumber~ \bm V^{k+1} & \in \prox^g_{d_k} \left(\bm V^k - \frac{1}{d_k} \nabla_{\bm V} f_0(\bm U^{k+1}, \bm V^k)\right),
+              \end{split}
+              \label{eq:palm_updates}
+          \end{align}
+\end{enumerate}
+where the proximal map for an extended proper lower semicontinuous (nonsmooth) function $\func{\varphi}{\R^n}{(-\infty,+\infty]}$ and $\gamma > 0$ is defined as $\prox^\varphi_\gamma(\bm x) \coloneqq \argmin_{\bm w\in\R^n}\left\{\varphi(\bm w) + \frac{\gamma}{2} \|\bm w - \bm x\|^2_2\right\}$. In \eqref{eq:palm_updates}, $c_k > L_1(\bm V^k)$ and $d_k > L_2(\bm U^{k+1})$ where $L_1 > 0$, $L_2 > 0$ are local Lipschitz moduli, defined in the following proposition.
+
+The following proposition investigates the necessary assumptions (cf. \cite[Asm. 1 and Asm. 2]{bolte2014proximal}) for convergence of iterates in \eqref{eq:palm_updates}.
+\begin{proposition}[Meeting required assumptions]\label{prop:assumptions}
+    The assumptions necessary for the convergence of iterates in \eqref{eq:palm_updates} are satisfied by the functions involved in the problem \eqref{eq:imf_surrogate}, specifically:
+    \begin{enumerate}
+        \item The indicator functions $\delta_{[a,b]}$ and $\delta_\Z$ are proper and lower semicontinuous functions, so do the functions $f$ and $g$;
+        \item For any fixed $\bm V$, the partial gradient $\nabla_{\bm U} f_0(\bm U, \bm V)$ is globally Lipschitz continuous with modulus $L_1(\bm V) = \|\bm V^T \bm V\|_{\rm F}$. Therefore, for all $\bm U_1,\bm U_2 \in \R^{M\times R}$ the following holds
+              \begin{equation*}
+                  \|\nabla_{\bm U} f_0(\bm U_1, \bm V) - \nabla_{\bm U} f_0(\bm U_2, \bm V)\| \leq L_1(\bm V) \|\bm U_1 - \bm U_2\|,
+              \end{equation*}
+              where $\|\cdot\|$ denotes the $\ell_2$-norm of the vectorized input with the proper dimension (here, with the input in $\R^{MR\times 1}$).
+              The similar Lipschitz continuity is evident for $\nabla_{\bm V} f_0(\bm U, \bm V)$ as well with modulus $L_2(\bm U) = \|\bm U \bm U^T\|_{\rm F}$.
+        \item The sequences $\bm U^k$ and $\bm V^k$ are bounded due to the indicator functions $\delta_{[a,b]}$ with bounded $a$ and $b$. Hence the moduli $L_1(\bm V^k)$ and $L_2(\bm U^k)$ are bounded from below and from above for all $k\in\N$.
+        \item The function $f_0$ is twice differentiable, hence, its full gradient $\nabla f_0(\bm U,\bm V)$ is Lipschitz continuous on the bounded set $\bm U \in [a,b]^{M\times R}$, $\bm V \in [a,b]^{N\times R}$. Namely, with $M > 0$:
+              \begin{align*}
+                  \|\big(\nabla_{\bm U} f_0(\bm U_1, \bm V_1) - \nabla_{\bm U} & f_0(\bm U_2, \bm V_2),                             \\
+                  \nabla_{\bm V} f_0(\bm U_1, \bm V_1)                         & - \nabla_{\bm V} f_0(\bm U_2, \bm V_2)\big)\|      \\
+                                                                               & \leq M \|(\bm U_1 - \bm U_2, \bm V_1 - \bm V_2)\|,
+              \end{align*}
+              where $(\cdot,\cdot)$ denotes the concatenation of the two arguments.
+        \item The sets $[a,b]$ and integer numbers are semi-algebraic; so are their indicator functions. The function $f_0$ is also polynomial, hence it is semi-algebraic. The sum of these functions results in a semi-algebraic function $\Psi$ in \eqref{eq:imf_surrogate}, hence $\Psi$ is a Kurdyka-Łojasiewicz (KL) function.
+    \end{enumerate}
+\end{proposition}
+By Proposition \ref{prop:assumptions}, the optimization problem \eqref{eq:imf_surrogate} can be solved by the iterates in \eqref{eq:palm_updates}, due to the following proposition:
+\begin{proposition}[Global convergence \cite{bolte2014proximal}]\label{prop:convergence}
+    With the assumptions in proposition \ref{prop:assumptions} being met by the problem \eqref{eq:imf_surrogate}, let $\seq{(\bm U^k, \bm V^k)}$ be a sequence generated by the iterates in \eqref{eq:palm_updates}. Then the sequence converges to a critical point $(\bm U^\star, \bm V^\star)$ of the problem \eqref{eq:imf_surrogate}, where $0 \in \partial \Psi(\bm U^\star, \bm V^\star)$, with $\partial$ as the subdifferential of $\Psi$.
+\end{proposition}
+
+It is noted that the so-called \emph{forward} steps $\bm U^k - \frac{1}{c_k} \nabla_{\bm U} f_0(\bm U^k, \bm V^k)$ and $\bm V^k - \frac{1}{d_k} \nabla_{\bm V} f_0(\bm U^{k+1}, \bm V^k)$ in the $\prox$ operators in \eqref{eq:palm_updates} are replaced by the simple closed-form solutions $\nicefrac{\bm{E}_r \bm{v}_r}{\lVert \bm{v}_r \rVert^2}$ and $\nicefrac{\bm{E}_r^\mathsf{T} \bm{u}_r}{\lVert \bm{u}_r \rVert^2}$ in Algorithm \ref{alg:bcd_for_imf} at steps \ref{alg:step:u_update:1} and \ref{alg:step:v_update:1} (cf. \eqref{eq:bcd_closed_form_subproblem_u} and \eqref{eq:bcd_closed_form_subproblem_v}), respectively. In the case where the iterates \eqref{eq:palm_updates} are extended to multi-block updates, each block represents one column. This is thanks to the special form of the functions $f_0(\cdot, \bm V^k)$ and $f_0(\bm U^{k+1}, \cdot)$ being quadratic functions, each having a global optimal point, which ensures a descent in each forward step.
+Furthermore, the proximal operators $\prox^f_{c_k}$ and $\prox^g_{d_k}$ can efficiently be implemented by the operators $\round$ and $\clamp_{[\alpha,\beta]}$ in \eqref{eq:bcd_closed_form_subproblem_u} and \eqref{eq:bcd_closed_form_subproblem_v} (and equivalently in Algorithm \ref{alg:bcd_for_imf} at steps \ref{alg:step:u_update:2} and \ref{alg:step:v_update:2}). The equivalence of these steps is proven in the following lemma.
+
+\begin{lemma}[$\prox$ implementation]
+    Consider the operators $\round$ and $\clamp_{[\alpha,\beta]}$ defined in \eqref{eq:bcd_closed_form_subproblem_u} and \eqref{eq:bcd_closed_form_subproblem_v}.
+    Then $\prox^f_{c_k}(\bm W) = \round(\clamp_{[\alpha,\beta]}(\bm W))$ and $\prox^g_{d_k}(\bm Z) = \round(\clamp_{[\alpha,\beta]}(\bm Z))$ for any $\bm W\in \R^{M\times R}$, $\bm Z\in\R^{N\times R}$, and $\round(\clamp_{[\alpha,\beta]}(\cdot))$ being an elementwise operator on the input matrices.
+\end{lemma}
+\begin{proof}
+    Define the following norms for a given matrix $\bm W \in \R^{M\times R}$:
+    \begin{align*}
+         & \|\bm W\|_{[a,b]}^2 \coloneqq \sum_{i,j \mid a \leq \bm W_{ij} \leq b} \bm W_{ij}^2, \quad
+        \|\bm W\|_a^2 \coloneqq \sum_{i,j \mid \bm W_{ij} < a} \bm W_{ij}^2,                          \\
+         & \|\bm W\|_b^2 \coloneqq \sum_{i,j \mid \bm W_{ij} > b} \bm W_{ij}^2.
+    \end{align*}
+    Moreover, note that the $\round$ operator  can be equivalently driven by the following proximal operator:
+    \begin{equation}
+        \round(\bm W) = \argmin_{\bm U \in \Z^{M\times R}}\{\|\bm U - \bm W\|^2_F\}.
+        \label{eq:equivalence_prox_tz}
+    \end{equation}
+    The proximal operator $\prox^f_{c_k}(\bm W)$ can be rewritten as
+    \begin{align*}
+        \rm{pr} & {\rm{ox}}^f_{c_k}(\bm W) = \argmin_{\bm U \in \R^{M\times R}}\{\delta_{[a,b]}(\bm U) + \delta_{\Z}(\bm U) + \frac{c_k}{2} \|\bm U - \bm W\|^2_F\} \\
+                & = \argmin_{\bm U \in \Z_{[a,b]}^{M\times R}}\{\|\bm U - \bm W\|^2_F\}                                                                             \\
+                & = \argmin_{\bm U \in \Z_{[a,b]}^{M\times R}}\{\|\bm U - \bm W\|^2_{[a,b]} + \|\bm U - \bm A\|^2_a + \|\bm U - \bm B\|^2_b\}                       \\
+                & = \argmin_{\bm U \in \Z^{M\times R}}\{\|\bm U - \bm W\|^2_{[a,b]} + \|\bm U - \bm A\|^2_a + \|\bm U - \bm B\|^2_b\}                               \\
+                & = \argmin_{\bm U \in \Z^{M\times R}}\{\|\bm U - \clamp_{[\alpha,\beta]}(\bm W)\|^2_F\}                                                            \\
+                & = \round(\clamp_{[\alpha,\beta]}(\bm W)).
+    \end{align*}
+    The first equality is due to the definition of $\prox$ which is equivalent to the second equality.
+    In the third equality the matrices $\bm A\in\R^{M\times R}$ and $\bm B\in\R^{M\times R}$ have elements all equal to $a$ and $b$, respectively.
+    The third equality is due to the fact that replacing $\|\bm U - \bm W\|^2_a + \|\bm U - \bm W\|^2_b$ with $\|\bm U - \bm A\|^2_a + \|\bm U - \bm B\|^2_b$ has no effect on the solution of the minimization. The fourth equality is also trivial due to the involved norms in the third equality. The fifth equality can be easily confirmed by the definition of $\clamp_{[\alpha,\beta]}$.
+    Finally, in the last equality, \eqref{eq:equivalence_prox_tz} is invoked.
+    It is noted that in the implementation, $\round(\clamp_{[\alpha,\beta]}(\cdot)) = \clamp_{[\alpha,\beta]}(\round(\cdot))$ due to the integrality of the bounds $\alpha,\beta \in \Z$. A similar proof can be trivially followed for $\prox^g_{d_k}(\bm Z) = \round(\clamp_{[\alpha,\beta]}(\bm Z))$ as well.
+\end{proof}
+Now that the equivalence of iterates \eqref{eq:palm_updates} with the simple and closed-form steps in Algorithm \ref{alg:bcd_for_imf} is fully established, and the assumptions required for the convergence are verified in proposition \ref{prop:assumptions} to be met by problems \eqref{eq:imf_surrogate} and \eqref{eq:imf_problem}, proposition \ref{prop:convergence} can be trivially invoked to establish the convergence of Algorithm \ref{alg:bcd_for_imf} to a locally optimal point of problem \eqref{eq:imf_problem}.
+

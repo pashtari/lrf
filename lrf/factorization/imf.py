@@ -5,96 +5,70 @@ import torch
 from torch import Tensor
 from torch import nn
 from torch.nn.modules.utils import _pair
-from einops import rearrange
 
-from lrf.factorization.utils import relative_error, soft_thresholding
+from lrf.factorization.utils import relative_error, safe_divide, soft_thresholding
 
 
 class RandInit(nn.Module):
     def __init__(
         self,
         rank: int,
+        bounds: tuple[float, float],
     ) -> None:
         super().__init__()
         self.rank = rank
+        self.bounds = bounds
 
     def forward(self, x: Tensor) -> tuple[Tensor, Tensor]:
         (M, N), R = x.shape[-2:], self.rank
         u_shape = (*x.shape[:-2], M, R)
         v_shape = (*x.shape[:-2], N, R)
-        u = torch.randint(-128, 128, (M, R)).expand(u_shape).float()
-        v = torch.randint(-128, 128, (N, R)).expand(v_shape).float()
+        alpha, beta = self.bounds
+        u = torch.randint(alpha, beta + 1, (M, R)).expand(u_shape).float()
+        v = torch.randint(alpha, beta + 1, (N, R)).expand(v_shape).float()
         return u, v
-
-
-class DCTInit(nn.Module):
-    def __init__(
-        self,
-        rank: int,
-        project: Optional[tuple[Callable, Callable]] = None,
-    ) -> None:
-        super().__init__()
-        self.rank = rank
-        self.project = nn.Identity() if project is None else project
-        self.patch_zie = (8, 8)
-
-    def create_dct_basis(self, N, **kwargs):
-        """Create the NxN DCT basis matrix."""
-
-        # Create a tensor for the indices
-        n = torch.arange(N, **kwargs).view(1, N)
-
-        # Compute the basis matrix
-        theta = torch.pi * (2 * n + 1) * n.mT / (2 * N)
-        basis = torch.cos(theta)
-
-        # Apply the normalization factors
-        basis[0, :] *= 1 / math.sqrt(N)
-        basis[1:, :] *= math.sqrt(2 / N)
-
-        return basis
-
-    def forward(self, x: Tensor) -> tuple[Tensor, Tensor]:
-        R = self.rank
-        p, q = self.patch_zie
-        y = rearrange(x, "... n (c p q) -> ... n c p q", p=p, q=q)
-        ch, cw = self.create_dct_basis(p), self.create_dct_basis(q)
-        u = torch.einsum("... pq, pk, ql -> ... kl", y, ch, cw)
-        # (x.mT @ ch).mT @ cw
-        K, L = max(1, int(math.sqrt(R))), max(1, int(math.sqrt(R)))
-        u = u[..., :K, :L]
-        u = rearrange(u, "... c p q -> ...(c p q)")
-
-        ch, cw = ch[:, :K], cw[:, :L]
-        v = torch.einsum("pk, ql -> pqkl", ch, cw)
-        # torch.einsum("...pq, pk, ql -> ... kl", x, ch, cw)
-        v = rearrange(v, "p q k l -> (p q) (k l)")
-
-        s = u.norm(dim=-2, keepdim=True)
-        u = u / (s + 1e-8)
-        s = torch.sqrt(s)
-        u = torch.einsum("...ir, ...r -> ...ir", u, s)
-        v = torch.einsum("...jr, ...r -> ...jr", v, s)
-        u, v = u.squeeze(1), v.squeeze(1)
-        return self.project(u), self.project(v)
 
 
 class SVDInit(nn.Module):
     def __init__(
-        self, rank: int, project: Optional[tuple[Callable, Callable]] = None
+        self,
+        rank: int,
+        num_levels: Optional[float] = None,
     ) -> None:
         super().__init__()
         self.rank = rank
-        self.project = nn.Identity() if project is None else project
+        self.num_levels = num_levels
 
     def forward(self, x: Tensor) -> tuple[Tensor, Tensor]:
-        R = self.rank
+        R = min(self.rank, *x.shape[-2:])
         u, s, v = torch.linalg.svd(x, full_matrices=False)
         u, s, v = u[..., :, :R], s[..., :R], v[..., :R, :]
         s = torch.sqrt(s)
         u = torch.einsum("...ir, ...r -> ...ir", u, s)
         v = torch.einsum("...rj, ...r -> ...jr", v, s)
-        return self.project(u), self.project(v)
+
+        if self.rank > R:
+            u = torch.nn.functional.pad(u, (0, self.rank - R))
+            v = torch.nn.functional.pad(v, (0, self.rank - R))
+
+        w0, w1 = torch.zeros_like(x[..., 0:1, 0:1]), torch.ones_like(x[..., 0:1, 0:1])
+
+        if self.num_levels:
+            scale_u = (
+                u.amax(dim=(-2, -1), keepdim=True) - u.amin(dim=(-2, -1), keepdim=True)
+            ) / self.num_levels
+            scale_v = (
+                v.amax(dim=(-2, -1), keepdim=True) - v.amin(dim=(-2, -1), keepdim=True)
+            ) / self.num_levels
+        else:
+            scale_u = scale_v = 1
+
+        u = u / scale_u
+        v = v / scale_v
+        w1 = (scale_u * scale_v) * w1
+
+        w = torch.cat([w0, w1], dim=-2)
+        return u, v, w
 
 
 class CoordinateDescent(nn.Module):
@@ -102,14 +76,14 @@ class CoordinateDescent(nn.Module):
 
     def __init__(
         self,
-        factor: int | tuple[int, int] = (0, 1),
+        factor: int | tuple[int, int, int] = (0, 1, 2),
         project: Optional[Callable | tuple[Callable, Callable]] = None,
         l2: float | tuple[float, float] = 0,
         l1_ratio: float = 0,
         eps: float = 1e-16,
     ):
         super().__init__()
-        self.factor = _pair(factor)
+        self.factor = factor
         project = (nn.Identity(), nn.Identity()) if project is None else project
         self.project = _pair(project)
         self.l2 = _pair(l2)
@@ -117,9 +91,18 @@ class CoordinateDescent(nn.Module):
         self.eps = eps  # avoids division by zero
 
     def update_u(
-        self, x: Tensor, u: Tensor, v: Tensor, l1: float, l2: float, project: Callable
+        self,
+        x: Tensor,
+        u: Tensor,
+        v: Tensor,
+        w: Tensor,
+        l1: float,
+        l2: float,
+        project: Callable,
     ) -> Tensor:
-        # x ≈ u @ t(v) --> u = ?
+        # x ≈ w0 + w1 * u @ v.t --> u = ?
+        w0, w1 = w.split(split_size=1, dim=-2)
+        x = safe_divide(x - w0, w1, self.eps)
         R = u.shape[-1]
         a, b = x @ v, v.mT @ v
         if R > 1:
@@ -143,29 +126,48 @@ class CoordinateDescent(nn.Module):
         return u_new
 
     def update_v(
-        self, x: Tensor, u: Tensor, v: Tensor, l1: float, l2: float, project: Callable
+        self,
+        x: Tensor,
+        u: Tensor,
+        v: Tensor,
+        w: Tensor,
+        l1: float,
+        l2: float,
+        project: Callable,
     ) -> Tensor:
-        # x ≈ u @ t(v) --> v = ?
-        return self.update_u(x.mT, v, u, l1, l2, project)
+        # x ≈ w0 + w1 * u @ v.t --> v = ?
+        return self.update_u(x.mT, v, u, w, l1, l2, project)
 
-    def forward(self, x: Tensor, factors: tuple[Tensor, Tensor]) -> tuple[Tensor, Tensor]:
-        u, v = factors
+    def update_w(self, x: Tensor, u: Tensor, v: Tensor, w: Tensor) -> Tensor:
+        # x ≈ w0 + w1 * u @ v.t --> w = ?
+        z = (u @ v.mT).flatten(-2, -1).unsqueeze(-1)
+        a = torch.cat([torch.ones_like(z), z], dim=-1)
+        b = x.flatten(-2, -1).unsqueeze(-1)
+        w = torch.linalg.lstsq(a, b, rcond=1e-16).solution
+        return w
+
+    def forward(
+        self, x: Tensor, factors: tuple[Tensor, Tensor, Tensor]
+    ) -> tuple[Tensor, Tensor]:
+        u, v, w = factors
         *_, M, N = x.shape
         l1_u = self.l2[0] * self.l1_ratio * N
         l1_v = self.l2[1] * self.l1_ratio * M
         l2_u = self.l2[0] * (1 - self.l1_ratio) * N
         l2_v = self.l2[1] * (1 - self.l1_ratio) * M
         if 0 in self.factor:
-            u = self.update_u(x, u, v, l1_u, l2_u, self.project[0])
+            u = self.update_u(x, u, v, w, l1_u, l2_u, self.project[0])
         if 1 in self.factor:
-            v = self.update_v(x, u, v, l1_v, l2_v, self.project[1])
-        return u, v
+            v = self.update_v(x, u, v, w, l1_v, l2_v, self.project[1])
+        if 2 in self.factor:
+            w = self.update_w(x, u, v, w)
+        return u, v, w
 
 
 class IMF(nn.Module):
     """Implementation for integer matrix factorization (IMF).
 
-    X ≈ U t(V),
+    X ≈ w0 + w1 * (U @ V.T),
     U, V ∈ Z
     """
 
@@ -174,6 +176,7 @@ class IMF(nn.Module):
         rank: Optional[int],
         num_iters: int = 10,
         bounds: tuple[None | float, None | float] = (None, None),
+        num_levels: Optional[float] = None,
         verbose: bool = False,
         **kwargs,
     ) -> None:
@@ -181,7 +184,7 @@ class IMF(nn.Module):
         self.rank = rank
         self.num_iters = num_iters
         self.bounds = tuple(bounds)
-        self.init = SVDInit(rank=rank, project=self._project)
+        self.init = SVDInit(rank=rank, num_levels=num_levels)
         self.solver = CoordinateDescent(project=self._project, **kwargs)
         self.verbose = verbose
 
@@ -198,24 +201,31 @@ class IMF(nn.Module):
         x = x.float()
 
         # initialize
-        u, v = self.init(x)
+        u, v, w = self.init(x)
 
         # iterate
         for it in range(1, self.num_iters + 1):
             if self.verbose:
-                loss = self.loss(x, u, v)
+                loss = self.loss(x, u, v, w)
                 print(f"iter {it}: loss = {loss}")
 
-            u, v = self.solver(x, [u, v], *args, **kwargs)
+            u, v, w = self.solver(x, [u, v, w], *args, **kwargs)
 
-        return u, v
+        return u, v, w
 
-    def reconstruct(self, u: Tensor, v: Tensor) -> Tensor:
-        return u @ v.mT
+    @staticmethod
+    def reconstruct(u: Tensor, v: Tensor, w: Optional[Tensor] = None) -> Tensor:
+        out = u @ v.mT
+        if w is None:
+            return out
+        else:
+            w0, w1 = w.split(split_size=1, dim=-2)
+            return w0 + w1 * out
 
-    def loss(self, x: Tensor, u: Tensor, v: Tensor) -> Tensor:
-        return relative_error(x, self.reconstruct(u, v))
+    @staticmethod
+    def loss(x: Tensor, u: Tensor, v: Tensor, w: Optional[Tensor] = None) -> Tensor:
+        return relative_error(x, IMF.reconstruct(u, v, w))
 
     def forward(self, x: Tensor) -> Tensor:
-        u, v = self.decompose(x)
-        return self.reconstruct(u, v)
+        u, v, w = self.decompose(x)
+        return self.reconstruct(u, v, w)
