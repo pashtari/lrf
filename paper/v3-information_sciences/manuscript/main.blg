@@ -1,17 +1,51 @@
-[0] Config.pm:307> INFO - This is Biber 2.17
-[0] Config.pm:310> INFO - Logfile is 'main.blg'
-[97] biber-darwin:340> INFO - === Sun Aug  4, 2024, 04:07:42
-[118] Biber.pm:418> INFO - Reading 'main.bcf'
-[267] Biber.pm:972> INFO - Found 38 citekeys in bib section 0
-[290] Biber.pm:4383> INFO - Processing section 0
-[306] Biber.pm:4574> INFO - Looking for bibtex file 'ref.bib' for section 0
-[309] bibtex.pm:1713> INFO - LaTeX decoding ...
-[371] bibtex.pm:1518> INFO - Found BibTeX data source 'ref.bib'
-[665] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[665] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[665] Biber.pm:4203> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
-[665] Biber.pm:4209> INFO - No sort tailoring available for locale 'en-US'
-[693] bbl.pm:654> INFO - Writing 'main.bbl' with encoding 'UTF-8'
-[716] bbl.pm:757> INFO - Output to main.bbl
-[716] Biber.pm:130> WARN - BibTeX subsystem: /var/folders/c1/5k1w037x4tvghwk119q8z5xh0000gn/T/biber_tmp_x2Es/e800e2552f53b910154f366d4c3730d7_67227.utf8, line 303, warning: 1 characters of junk seen at toplevel
-[716] Biber.pm:132> INFO - WARNINGS: 1
+This is BibTeX, Version 0.99d (TeX Live 2021)
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+A level-1 auxiliary file: TeX/text/appendix.aux
+The style file: elsarticle-num-names.bst
+Database file #1: TeX/ref.bib
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Warning--empty pages in lee2000algorithms
+Warning--missing institution in deutsch1996zlib
+You've used 40 entries,
+            2918 wiz_defined-function locations,
+            869 strings with 11969 characters,
+and the built_in function-call counts, 25915 in all, are:
+= -- 1918
+> -- 990
+< -- 29
++ -- 372
+- -- 330
+* -- 2914
+:= -- 3646
+add.period$ -- 45
+call.type$ -- 40
+change.case$ -- 310
+chr.to.int$ -- 40
+cite$ -- 42
+duplicate$ -- 1976
+empty$ -- 1950
+format.name$ -- 447
+if$ -- 4835
+int.to.chr$ -- 1
+int.to.str$ -- 1
+missing$ -- 374
+newline$ -- 201
+num.names$ -- 162
+pop$ -- 722
+preamble$ -- 1
+purify$ -- 308
+quote$ -- 0
+skip$ -- 540
+stack$ -- 0
+substring$ -- 1240
+swap$ -- 1394
+text.length$ -- 9
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 357
+warning$ -- 2
+while$ -- 184
+width$ -- 0
+write$ -- 535
+(There were 2 warnings)
