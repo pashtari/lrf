@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.6.21)  24 JAN 2025 14:41
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2021) (preloaded format=pdflatex 2021.6.21)  24 JAN 2025 16:30
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1046,19 +1046,19 @@ LaTeX Info: Redefining \nameref on input line 71.
 LaTeX Font Info:    Font shape `OT1/txr/b/n' in size <10> not available
 (Font)              Font shape `OT1/txr/bx/n' tried instead on input line 1.
 )
-LaTeX Font Info:    Trying to load font information for U+txmia on input line 127.
+LaTeX Font Info:    Trying to load font information for U+txmia on input line 119.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/txfonts/utxmia.fd
 File: utxmia.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    Trying to load font information for U+msa on input line 127.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 119.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 127.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 119.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for U+txsyc on input line 127.
+LaTeX Font Info:    Trying to load font information for U+txsyc on input line 119.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/txfonts/utxsyc.fd
 File: utxsyc.fd 2000/12/15 v3.1
 ) (./sections/introduction.tex
@@ -1116,135 +1116,134 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 
 [1
 
-{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]) (./sections/related_work.tex [2]) (./sections/method.tex
-<figures/imf_encoder.pdf, id=68, 2882.77pt x 1407.2575pt>
-File: figures/imf_encoder.pdf Graphic file (type pdf)
-<use figures/imf_encoder.pdf>
-Package pdftex.def Info: figures/imf_encoder.pdf  used on input line 10.
-(pdftex.def)             Requested size: 384.0pt x 187.43774pt.
- [3]
-LaTeX Font Info:    Trying to load font information for OT1+txss on input line 28.
+{/usr/local/texlive/2021/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]) (./sections/related_work.tex [2]) (./sections/method.tex [3]
+<figures/qmf_encoder.pdf, id=87, 2854.665pt x 1407.2575pt>
+File: figures/qmf_encoder.pdf Graphic file (type pdf)
+<use figures/qmf_encoder.pdf>
+Package pdftex.def Info: figures/qmf_encoder.pdf  used on input line 10.
+(pdftex.def)             Requested size: 384.0pt x 189.28442pt.
+ [4 <./figures/qmf_encoder.pdf>]
+LaTeX Font Info:    Trying to load font information for OT1+txss on input line 27.
  (/usr/local/texlive/2021/texmf-dist/tex/latex/txfonts/ot1txss.fd
 File: ot1txss.fd 2000/12/15 v3.1
 )
 LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
-(Font)              scaled to size 9.49997pt on input line 28.
+(Font)              scaled to size 9.49997pt on input line 27.
 LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
-(Font)              scaled to size 6.64998pt on input line 28.
+(Font)              scaled to size 6.64998pt on input line 27.
 LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
-(Font)              scaled to size 4.74998pt on input line 28.
- [4 <./figures/imf_encoder.pdf>]
-<figures/kodim23.pdf, id=518, 447.47174pt x 298.31451pt>
+(Font)              scaled to size 4.74998pt on input line 27.
+<figures/kodim23.pdf, id=514, 447.47174pt x 298.31451pt>
 File: figures/kodim23.pdf Graphic file (type pdf)
 <use figures/kodim23.pdf>
-Package pdftex.def Info: figures/kodim23.pdf  used on input line 50.
+Package pdftex.def Info: figures/kodim23.pdf  used on input line 49.
 (pdftex.def)             Requested size: 67.58463pt x 45.05476pt.
-<figures/kodim23_Y_components.pdf, id=519, 963.6pt x 711.65875pt>
+<figures/kodim23_Y_components.pdf, id=515, 963.6pt x 711.65875pt>
 File: figures/kodim23_Y_components.pdf Graphic file (type pdf)
 <use figures/kodim23_Y_components.pdf>
-Package pdftex.def Info: figures/kodim23_Y_components.pdf  used on input line 58.
+Package pdftex.def Info: figures/kodim23_Y_components.pdf  used on input line 57.
 (pdftex.def)             Requested size: 145.9173pt x 107.76495pt.
-<figures/kodim23_cb_components.pdf, id=520, 963.6pt x 426.59375pt>
+<figures/kodim23_cb_components.pdf, id=516, 963.6pt x 426.59375pt>
 File: figures/kodim23_cb_components.pdf Graphic file (type pdf)
 <use figures/kodim23_cb_components.pdf>
-Package pdftex.def Info: figures/kodim23_cb_components.pdf  used on input line 67.
+Package pdftex.def Info: figures/kodim23_cb_components.pdf  used on input line 66.
 (pdftex.def)             Requested size: 116.7383pt x 51.67723pt.
-<figures/kodim23_cr_components.pdf, id=521, 963.6pt x 426.59375pt>
+<figures/kodim23_cr_components.pdf, id=517, 963.6pt x 426.59375pt>
 File: figures/kodim23_cr_components.pdf Graphic file (type pdf)
 <use figures/kodim23_cr_components.pdf>
-Package pdftex.def Info: figures/kodim23_cr_components.pdf  used on input line 73.
+Package pdftex.def Info: figures/kodim23_cr_components.pdf  used on input line 72.
 (pdftex.def)             Requested size: 116.7383pt x 51.67723pt.
  [5]
-Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on input line 98.
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on input line 97.
  [6 <./figures/kodim23.pdf> <./figures/kodim23_Y_components.pdf> <./figures/kodim23_cb_components.pdf> <./figures/kodim23_cr_components.pdf>] [7] [8]) (./sections/experiments.tex [9] (./figures/kodak_psnr.pgf
 LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
 (Font)              scaled to size 10.44997pt on input line 88.
 LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
 (Font)              scaled to size 11.39996pt on input line 265.
 ) (./figures/kodak_ssim.pgf) (./figures/clic2024_psnr.pgf) (./figures/clic2024_ssim.pgf) [10]
-<figures/kodim01.pdf, id=717, 358.4592pt x 238.97281pt>
+<figures/kodim01.pdf, id=715, 358.4592pt x 238.97281pt>
 File: figures/kodim01.pdf Graphic file (type pdf)
 <use figures/kodim01.pdf>
 Package pdftex.def Info: figures/kodim01.pdf  used on input line 90.
 (pdftex.def)             Requested size: 91.1997pt x 60.8005pt.
-<figures/kodim01_jpeg_bpp_0.21_psnr_20.22.pdf, id=718, 358.4592pt x 238.97281pt>
+<figures/kodim01_jpeg_bpp_0.21_psnr_20.22.pdf, id=716, 358.4592pt x 238.97281pt>
 File: figures/kodim01_jpeg_bpp_0.21_psnr_20.22.pdf Graphic file (type pdf)
 <use figures/kodim01_jpeg_bpp_0.21_psnr_20.22.pdf>
 Package pdftex.def Info: figures/kodim01_jpeg_bpp_0.21_psnr_20.22.pdf  used on input line 94.
 (pdftex.def)             Requested size: 91.1997pt x 60.8005pt.
 LaTeX Font Info:    Font shape `OT1/txss/b/n' will be
 (Font)              scaled to size 6.64998pt on input line 95.
-<figures/kodim01_svd_bpp_0.22_psnr_20.24.pdf, id=719, 358.4592pt x 238.97281pt>
+<figures/kodim01_svd_bpp_0.22_psnr_20.24.pdf, id=717, 358.4592pt x 238.97281pt>
 File: figures/kodim01_svd_bpp_0.22_psnr_20.24.pdf Graphic file (type pdf)
 <use figures/kodim01_svd_bpp_0.22_psnr_20.24.pdf>
 Package pdftex.def Info: figures/kodim01_svd_bpp_0.22_psnr_20.24.pdf  used on input line 99.
 (pdftex.def)             Requested size: 91.1997pt x 60.8005pt.
-<figures/kodim01_imf_bpp_0.21_psnr_21.93.pdf, id=720, 358.4592pt x 238.97281pt>
-File: figures/kodim01_imf_bpp_0.21_psnr_21.93.pdf Graphic file (type pdf)
-<use figures/kodim01_imf_bpp_0.21_psnr_21.93.pdf>
-Package pdftex.def Info: figures/kodim01_imf_bpp_0.21_psnr_21.93.pdf  used on input line 104.
+<figures/kodim01_qmf_bpp_0.21_psnr_21.93.pdf, id=718, 358.4592pt x 238.97281pt>
+File: figures/kodim01_qmf_bpp_0.21_psnr_21.93.pdf Graphic file (type pdf)
+<use figures/kodim01_qmf_bpp_0.21_psnr_21.93.pdf>
+Package pdftex.def Info: figures/kodim01_qmf_bpp_0.21_psnr_21.93.pdf  used on input line 104.
 (pdftex.def)             Requested size: 91.1997pt x 60.8005pt.
-<figures/kodim16.pdf, id=721, 358.4592pt x 238.97281pt>
+<figures/kodim16.pdf, id=719, 358.4592pt x 238.97281pt>
 File: figures/kodim16.pdf Graphic file (type pdf)
 <use figures/kodim16.pdf>
 Package pdftex.def Info: figures/kodim16.pdf  used on input line 110.
 (pdftex.def)             Requested size: 91.1997pt x 60.8005pt.
-<figures/kodim16_jpeg_bpp_0.27_psnr_27.69.pdf, id=722, 358.4592pt x 238.97281pt>
+<figures/kodim16_jpeg_bpp_0.27_psnr_27.69.pdf, id=720, 358.4592pt x 238.97281pt>
 File: figures/kodim16_jpeg_bpp_0.27_psnr_27.69.pdf Graphic file (type pdf)
 <use figures/kodim16_jpeg_bpp_0.27_psnr_27.69.pdf>
 Package pdftex.def Info: figures/kodim16_jpeg_bpp_0.27_psnr_27.69.pdf  used on input line 114.
 (pdftex.def)             Requested size: 91.1997pt x 60.8005pt.
-<figures/kodim16_svd_bpp_0.27_psnr_26.67.pdf, id=723, 358.4592pt x 238.97281pt>
+<figures/kodim16_svd_bpp_0.27_psnr_26.67.pdf, id=721, 358.4592pt x 238.97281pt>
 File: figures/kodim16_svd_bpp_0.27_psnr_26.67.pdf Graphic file (type pdf)
 <use figures/kodim16_svd_bpp_0.27_psnr_26.67.pdf>
 Package pdftex.def Info: figures/kodim16_svd_bpp_0.27_psnr_26.67.pdf  used on input line 119.
 (pdftex.def)             Requested size: 91.1997pt x 60.8005pt.
-<figures/kodim16_imf_bpp_0.26_psnr_28.37.pdf, id=724, 358.4592pt x 238.97281pt>
-File: figures/kodim16_imf_bpp_0.26_psnr_28.37.pdf Graphic file (type pdf)
-<use figures/kodim16_imf_bpp_0.26_psnr_28.37.pdf>
-Package pdftex.def Info: figures/kodim16_imf_bpp_0.26_psnr_28.37.pdf  used on input line 124.
+<figures/kodim16_qmf_bpp_0.26_psnr_28.37.pdf, id=722, 358.4592pt x 238.97281pt>
+File: figures/kodim16_qmf_bpp_0.26_psnr_28.37.pdf Graphic file (type pdf)
+<use figures/kodim16_qmf_bpp_0.26_psnr_28.37.pdf>
+Package pdftex.def Info: figures/kodim16_qmf_bpp_0.26_psnr_28.37.pdf  used on input line 124.
 (pdftex.def)             Requested size: 91.1997pt x 60.8005pt.
-<figures/clic_carrot.pdf, id=725, 358.4592pt x 238.91446pt>
+<figures/clic_carrot.pdf, id=723, 358.4592pt x 238.91446pt>
 File: figures/clic_carrot.pdf Graphic file (type pdf)
 <use figures/clic_carrot.pdf>
 Package pdftex.def Info: figures/clic_carrot.pdf  used on input line 130.
 (pdftex.def)             Requested size: 91.1997pt x 60.78566pt.
-<figures/clic_carrot_jpeg_bpp_0.18_psnr_21.20.pdf, id=726, 358.4592pt x 238.91446pt>
+<figures/clic_carrot_jpeg_bpp_0.18_psnr_21.20.pdf, id=724, 358.4592pt x 238.91446pt>
 File: figures/clic_carrot_jpeg_bpp_0.18_psnr_21.20.pdf Graphic file (type pdf)
 <use figures/clic_carrot_jpeg_bpp_0.18_psnr_21.20.pdf>
 Package pdftex.def Info: figures/clic_carrot_jpeg_bpp_0.18_psnr_21.20.pdf  used on input line 134.
 (pdftex.def)             Requested size: 91.1997pt x 60.78566pt.
-<figures/clic_carrot_svd_bpp_0.19_psnr_21.02.pdf, id=727, 358.4592pt x 238.91446pt>
+<figures/clic_carrot_svd_bpp_0.19_psnr_21.02.pdf, id=725, 358.4592pt x 238.91446pt>
 File: figures/clic_carrot_svd_bpp_0.19_psnr_21.02.pdf Graphic file (type pdf)
 <use figures/clic_carrot_svd_bpp_0.19_psnr_21.02.pdf>
 Package pdftex.def Info: figures/clic_carrot_svd_bpp_0.19_psnr_21.02.pdf  used on input line 139.
 (pdftex.def)             Requested size: 91.1997pt x 60.78566pt.
-<figures/clic_carrot_imf_bpp_0.17_psnr_22.63.pdf, id=728, 358.4592pt x 238.91446pt>
-File: figures/clic_carrot_imf_bpp_0.17_psnr_22.63.pdf Graphic file (type pdf)
-<use figures/clic_carrot_imf_bpp_0.17_psnr_22.63.pdf>
-Package pdftex.def Info: figures/clic_carrot_imf_bpp_0.17_psnr_22.63.pdf  used on input line 144.
+<figures/clic_carrot_qmf_bpp_0.17_psnr_22.63.pdf, id=726, 358.4592pt x 238.91446pt>
+File: figures/clic_carrot_qmf_bpp_0.17_psnr_22.63.pdf Graphic file (type pdf)
+<use figures/clic_carrot_qmf_bpp_0.17_psnr_22.63.pdf>
+Package pdftex.def Info: figures/clic_carrot_qmf_bpp_0.17_psnr_22.63.pdf  used on input line 144.
 (pdftex.def)             Requested size: 91.1997pt x 60.78566pt.
-<figures/clic_flower.pdf, id=729, 358.4592pt x 239.26451pt>
+<figures/clic_flower.pdf, id=727, 358.4592pt x 239.26451pt>
 File: figures/clic_flower.pdf Graphic file (type pdf)
 <use figures/clic_flower.pdf>
 Package pdftex.def Info: figures/clic_flower.pdf  used on input line 150.
 (pdftex.def)             Requested size: 91.1997pt x 60.87473pt.
-<figures/clic_flower_jpeg_bpp_0.14_psnr_22.66.pdf, id=730, 358.4592pt x 239.26451pt>
+<figures/clic_flower_jpeg_bpp_0.14_psnr_22.66.pdf, id=728, 358.4592pt x 239.26451pt>
 File: figures/clic_flower_jpeg_bpp_0.14_psnr_22.66.pdf Graphic file (type pdf)
 <use figures/clic_flower_jpeg_bpp_0.14_psnr_22.66.pdf>
 Package pdftex.def Info: figures/clic_flower_jpeg_bpp_0.14_psnr_22.66.pdf  used on input line 154.
 (pdftex.def)             Requested size: 91.1997pt x 60.87473pt.
-<figures/clic_flower_svd_bpp_0.12_psnr_26.90.pdf, id=731, 358.4592pt x 239.26451pt>
+<figures/clic_flower_svd_bpp_0.12_psnr_26.90.pdf, id=729, 358.4592pt x 239.26451pt>
 File: figures/clic_flower_svd_bpp_0.12_psnr_26.90.pdf Graphic file (type pdf)
 <use figures/clic_flower_svd_bpp_0.12_psnr_26.90.pdf>
 Package pdftex.def Info: figures/clic_flower_svd_bpp_0.12_psnr_26.90.pdf  used on input line 159.
 (pdftex.def)             Requested size: 91.1997pt x 60.87473pt.
-<figures/clic_flower_imf_bpp_0.12_psnr_31.63.pdf, id=732, 358.4592pt x 239.26451pt>
-File: figures/clic_flower_imf_bpp_0.12_psnr_31.63.pdf Graphic file (type pdf)
-<use figures/clic_flower_imf_bpp_0.12_psnr_31.63.pdf>
-Package pdftex.def Info: figures/clic_flower_imf_bpp_0.12_psnr_31.63.pdf  used on input line 164.
+<figures/clic_flower_qmf_bpp_0.12_psnr_31.63.pdf, id=730, 358.4592pt x 239.26451pt>
+File: figures/clic_flower_qmf_bpp_0.12_psnr_31.63.pdf Graphic file (type pdf)
+<use figures/clic_flower_qmf_bpp_0.12_psnr_31.63.pdf>
+Package pdftex.def Info: figures/clic_flower_qmf_bpp_0.12_psnr_31.63.pdf  used on input line 164.
 (pdftex.def)             Requested size: 91.1997pt x 60.87473pt.
- [11 <./figures/kodim01.pdf> <./figures/kodim01_jpeg_bpp_0.21_psnr_20.22.pdf> <./figures/kodim01_svd_bpp_0.22_psnr_20.24.pdf> <./figures/kodim01_imf_bpp_0.21_psnr_21.93.pdf> <./figures/kodim16.pdf> <./figures/kodim16_jpeg_bpp_0.27_psnr_27.69.pdf> <./figures/kodim16_svd_bpp_0.27_psnr_26.67.pdf> <./figures/kodim16_imf_bpp_0.26_psnr_28.37.pdf> <./figures/clic_carrot.pdf> <./figures/clic_carrot_jpeg_bpp_0.18_psnr_21.20.pdf> <./figures/clic_carrot_svd_bpp_0.19_psnr_21.02.pdf> <./figures/clic_carrot_imf_bpp_0.17_psnr_22.63.pdf> <./figures/clic_flower.pdf> <./figures/clic_flower_jpeg_bpp_0.14_psnr_22.66.pdf> <./figures/clic_flower_svd_bpp_0.12_psnr_26.90.pdf> <./figures/clic_flower_imf_bpp_0.12_psnr_31.63.pdf>] [12] (./figures/imagenet_top-1_accuracy.pgf) (./figures/imagenet_top-5_accuracy.pgf) [13] (./figures/ablation_bounds_psnr.pgf) (./figures/ablation_numiters_psnr.pgf) (./figures/ablation_patchsize_psnr.pgf)
+ [11 <./figures/kodim01.pdf> <./figures/kodim01_jpeg_bpp_0.21_psnr_20.22.pdf> <./figures/kodim01_svd_bpp_0.22_psnr_20.24.pdf> <./figures/kodim01_qmf_bpp_0.21_psnr_21.93.pdf> <./figures/kodim16.pdf> <./figures/kodim16_jpeg_bpp_0.27_psnr_27.69.pdf> <./figures/kodim16_svd_bpp_0.27_psnr_26.67.pdf> <./figures/kodim16_qmf_bpp_0.26_psnr_28.37.pdf> <./figures/clic_carrot.pdf> <./figures/clic_carrot_jpeg_bpp_0.18_psnr_21.20.pdf> <./figures/clic_carrot_svd_bpp_0.19_psnr_21.02.pdf> <./figures/clic_carrot_qmf_bpp_0.17_psnr_22.63.pdf> <./figures/clic_flower.pdf> <./figures/clic_flower_jpeg_bpp_0.14_psnr_22.66.pdf> <./figures/clic_flower_svd_bpp_0.12_psnr_26.90.pdf> <./figures/clic_flower_qmf_bpp_0.12_psnr_31.63.pdf>] [12] (./figures/imagenet_top-1_accuracy.pgf) (./figures/imagenet_top-5_accuracy.pgf) [13] (./figures/ablation_bounds_psnr.pgf) (./figures/ablation_numiters_psnr.pgf) (./figures/ablation_patchsize_psnr.pgf)
 LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
 (Font)              scaled to size 7.59998pt on input line 269.
 LaTeX Font Info:    Font shape `OT1/txss/m/n' will be
@@ -1266,13 +1265,13 @@ Overfull \hbox (2.4683pt too wide) detected at line 87
 Here is how much of TeX's memory you used:
  25316 strings out of 478510
  452315 string characters out of 5849579
- 1065263 words of memory out of 5000000
+ 1065286 words of memory out of 5000000
  42534 multiletter control sequences out of 15000+600000
  464120 words of font info for 160 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  72i,17n,80p,1865b,965s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/symbols/msam10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm7.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/rtxb.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/rtxi.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/rtxmi.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/rtxr.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/txbsy.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/txex.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/txsy.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/public/txfonts/txsyc.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texlive/2021/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on main.pdf (21 pages, 5975871 bytes).
+Output written on main.pdf (21 pages, 5976653 bytes).
 PDF statistics:
  1080 PDF objects out of 1200 (max. 8388607)
  755 compressed objects within 8 object streams
