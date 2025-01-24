@@ -3,10 +3,10 @@ import torch
 import lrf
 
 
-def test_imf():
+def test_qmf():
     x = torch.randint(0, 256, size=(1, 784, 192))
-    imf = lrf.IMF(rank=5, num_iters=10, verbose=True)
-    u, v = imf.decompose(x)
+    qmf = lrf.QMF(rank=5, num_iters=10, verbose=True)
+    u, v = qmf.decompose(x)
     return u, v
 
 
@@ -53,7 +53,7 @@ def test_batched_ttd():
     (x - x_hat).abs().mean()
 
 
-test_imf()
+test_qmf()
 test_hosvd()
 test_batched_hosvd()
 test_hosvd_rank_upper_bounds()

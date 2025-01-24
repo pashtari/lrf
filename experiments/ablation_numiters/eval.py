@@ -10,7 +10,7 @@ import lrf
 
 def get_args():
     parser = argparse.ArgumentParser(
-        description="Ablation study on the number of IMF iterations."
+        description="Ablation study on the number of QMF iterations."
     )
     parser.add_argument(
         "--data", type=str, default="kodak", help="dataset name (default: kodak)"
@@ -61,11 +61,11 @@ def eval_image(image):
                 "num_iters": num_iters,
                 "verbose": False,
             }
-            config = {"data": image_id, "method": "IMF", **params}
-            log = lrf.eval_compression(image, lrf.imf_encode, lrf.imf_decode, **params)
+            config = {"data": image_id, "method": "QMF", **params}
+            log = lrf.eval_compression(image, lrf.qmf_encode, lrf.qmf_decode, **params)
             results.append({**config, **log})
 
-        print(f"method IMF, # iters {num_iters}, image {image_id} done.")
+        print(f"method QMF, # iters {num_iters}, image {image_id} done.")
 
     return results
 

@@ -1,6 +1,6 @@
 ![LRF Logo](figures/logo.svg)
 
-This repository provides a PyTorch implementation of **low-rank factorization (LRF) methods for data compression**. Particularly, it includes the official implementation of [*"Quantization-free Lossy Image Compression Using Integer Matrix Factorization."*](https://arxiv.org/abs/2408.12691)
+This repository provides a PyTorch implementation of **low-rank factorization (LRF) methods for data compression**. Particularly, it includes the official implementation of [*"Quantization-aware Matrix Factorization for Low Bit Rate Image Compression."*](https://arxiv.org/abs/2408.12691)
 
 
 <table style="border-collapse: collapse; table-layout: fixed; width: 100%;">
@@ -27,8 +27,8 @@ This repository provides a PyTorch implementation of **low-rank factorization (L
     </td>
     <td style="text-align: center; border: none; width: 45%;">
       <figure style="margin: 0; padding: 0;">
-        <img src="figures/clic_flower_imf_bpp_0.12_psnr_31.63.png" alt="IMF" width="100%">
-        <figcaption><b>IMF</b><br>(bitrate: 0.12 bpp, PSNR: 31.63 dB)</figcaption>
+        <img src="figures/clic_flower_qmf_bpp_0.12_psnr_31.63.png" alt="QMF" width="100%">
+        <figcaption><b>QMF</b><br>(bitrate: 0.12 bpp, PSNR: 31.63 dB)</figcaption>
       </figure>
     </td>
   </tr>
@@ -48,7 +48,7 @@ $ pip install git+https://github.com/pashtari/lrf.git
 
 ## Quick Start
 
-This guide will help you get started with the integer matrix factorization (IMF) compression method using the `kodim01` image from the Kodak dataset. For a more detailed example comparing IMF against JPEG and SVD, check out [this notebook](experiments/examples/comparison.ipynb). To better understand each step of the IMF compression using visualizations, refer to [this notebook](experiments/examples/imf_pipeline.ipynb).
+This guide will help you get started with the quantization-aware matrix factorization (QMF) compression method using the `kodim01` image from the Kodak dataset. For a more detailed example comparing QMF against JPEG and SVD, check out [this notebook](experiments/examples/comparison.ipynb). To better understand each step of the QMF compression using visualizations, refer to [this notebook](experiments/examples/qmf_pipeline.ipynb).
 
 **Import Packages**
 ```python
@@ -62,9 +62,9 @@ import lrf
 image = lrf.read_image("./kodim01.png")
 ```
 
-**IMF Encode Image**
+**QMF Encode Image**
 ```python
-imf_encoded = lrf.imf_encode(
+qmf_encoded = lrf.qmf_encode(
     image,
     color_space="YCbCr",
     scale_factor=(0.5, 0.5),
@@ -77,17 +77,17 @@ imf_encoded = lrf.imf_encode(
 )
 ```
 
-**Decode IMF-Encoded Image**
+**Decode QMF-Encoded Image**
 ```python
-image_imf = lrf.imf_decode(imf_encoded)
+image_qmf = lrf.qmf_decode(qmf_encoded)
 ```
 
 **Calculate Compression Metrics**
 ```python
-cr_value = lrf.compression_ratio(image, imf_encoded)
-bpp_value = lrf.bits_per_pixel(image.shape[-2:], imf_encoded)
-psnr_value = lrf.psnr(image, image_imf)
-ssim_value = lrf.ssim(image, image_imf)
+cr_value = lrf.compression_ratio(image, qmf_encoded)
+bpp_value = lrf.bits_per_pixel(image.shape[-2:], qmf_encoded)
+psnr_value = lrf.psnr(image, image_qmf)
+ssim_value = lrf.ssim(image, image_qmf)
 
 metrics = {
     "compression ratio": cr_value,
@@ -111,7 +111,7 @@ print(metrics)
 ```python
 lrf.vis_image(image, title="Original")
 lrf.vis_image(
-    image_imf, title=f"IMF (bit rate = {bpp_value:.2f} bpp, PSNR = {psnr_value:.2f} dB)"
+    image_qmf, title=f"QMF (bit rate = {bpp_value:.2f} bpp, PSNR = {psnr_value:.2f} dB)"
 )
 ```
 
@@ -139,8 +139,8 @@ lrf.vis_image(
     </td>
     <td style="text-align: center; border: none; width: 45%;">
       <figure style="margin: 0; padding: 0;">
-        <img src="figures/kodim01_imf_bpp_0.21_psnr_21.93.png" alt="IMF" width="100%">
-        <figcaption><b>IMF</b><br>(bitrate: 0.21 bpp, PSNR: 21.93 dB)</figcaption>
+        <img src="figures/kodim01_qmf_bpp_0.21_psnr_21.93.png" alt="QMF" width="100%">
+        <figcaption><b>QMF</b><br>(bitrate: 0.21 bpp, PSNR: 21.93 dB)</figcaption>
       </figure>
     </td>
   </tr>
