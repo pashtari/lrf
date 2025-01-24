@@ -7,6 +7,5 @@ __pycache__/
 
 .trash/
 data/
-paper/
 experiments/hpc/
 experiments/imagenet_classification/

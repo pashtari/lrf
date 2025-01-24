@@ -1,0 +1,17 @@
+[0] Config.pm:311> INFO - This is Biber 2.16
+[0] Config.pm:314> INFO - Logfile is 'main.blg'
+[79] biber-darwin:340> INFO - === Fri Jan 24, 2025, 11:50:30
+[92] Biber.pm:415> INFO - Reading 'main.bcf'
+[186] Biber.pm:952> INFO - Found 38 citekeys in bib section 0
+[198] Biber.pm:4340> INFO - Processing section 0
+[208] Biber.pm:4531> INFO - Looking for bibtex format file 'ref.bib' for section 0
+[210] bibtex.pm:1689> INFO - LaTeX decoding ...
+[253] bibtex.pm:1494> INFO - Found BibTeX data source 'ref.bib'
+[449] Utils.pm:395> WARN - BibTeX subsystem: /var/folders/dr/glfswcs93gg3tvgtb851fbc80000gn/T/biber_tmp_0pMb/e800e2552f53b910154f366d4c3730d7_1874.utf8, line 303, warning: 1 characters of junk seen at toplevel
+[484] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[484] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[484] Biber.pm:4168> INFO - Sorting list 'none/global//global/global' of type 'entry' with template 'none' and locale 'en-US'
+[485] Biber.pm:4174> INFO - No sort tailoring available for locale 'en-US'
+[508] bbl.pm:654> INFO - Writing 'main.bbl' with encoding 'UTF-8'
+[527] bbl.pm:757> INFO - Output to main.bbl
+[527] Biber.pm:128> INFO - WARNINGS: 1
