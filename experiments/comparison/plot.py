@@ -34,7 +34,7 @@ plot.plot(
     xlim=(0.05, 0.5),
     # ylim=(15, None),  # kodak
     ylim=(16.5, 31),  # clic
-    legend_labels=["JPEG", "SVD", "IMF"],
+    legend_labels=["JPEG", "SVD", "QMF"],
 )
 
 plot.save(save_dir=results_dir, prefix=data, format="pdf")
@@ -60,7 +60,7 @@ plot.plot(
     xlim=(0.05, 0.5),
     # ylim=(0.35, None),  # kodak
     ylim=(0.42, None),  # clic
-    legend_labels=["JPEG", "SVD", "IMF"],
+    legend_labels=["JPEG", "SVD", "QMF"],
 )
 
 plot.save(save_dir=results_dir, prefix=data, format="pdf")
@@ -85,7 +85,7 @@ plot.plot(
     groupby="method",
     errorbar="se",
     dashed=True,
-    legend_labels=["JPEG", "SVD", "IMF"],
+    legend_labels=["JPEG", "SVD", "QMF"],
 )
 
 plot.save(save_dir=results_dir, prefix=data, format="pdf")
@@ -109,7 +109,7 @@ plot.plot(
     groupby="method",
     errorbar="se",
     dashed=True,
-    legend_labels=["JPEG", "SVD", "IMF"],
+    legend_labels=["JPEG", "SVD", "QMF"],
 )
 
 plot.save(save_dir=results_dir, prefix=data, format="pdf")

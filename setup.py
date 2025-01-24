@@ -26,7 +26,7 @@ setup(
         "image compression",
         "machine learning",
         "low-rank factorization",
-        "integer matrix factorization",
+        "quantization-aware matrix factorization",
         "singular value decomposition",
     ],
     packages=find_packages(),

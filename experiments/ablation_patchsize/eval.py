@@ -9,7 +9,7 @@ import lrf
 
 
 def get_args():
-    parser = argparse.ArgumentParser(description="Ablation study on IMF patch size.")
+    parser = argparse.ArgumentParser(description="Ablation study on QMF patch size.")
     parser.add_argument(
         "--data", type=str, default="kodak", help="dataset name (default: kodak)"
     )
@@ -65,12 +65,12 @@ def eval_image(image):
                 "num_iters": 10,
                 "verbose": False,
             }
-            config = {"data": image_id, "method": "IMF", **params}
-            log = lrf.eval_compression(image, lrf.imf_encode, lrf.imf_decode, **params)
+            config = {"data": image_id, "method": "QMF", **params}
+            log = lrf.eval_compression(image, lrf.qmf_encode, lrf.qmf_decode, **params)
             results.append({**config, **log})
 
         print(
-            f"method IMF, patch size {(patch_size, patch_size)}, image {config['data']} done."
+            f"method QMF, patch size {(patch_size, patch_size)}, image {config['data']} done."
         )
 
     return results

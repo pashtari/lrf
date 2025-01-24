@@ -10,7 +10,7 @@ import lrf
 
 def get_args():
     parser = argparse.ArgumentParser(
-        description="Ablation study on IMF colorspace transform."
+        description="Ablation study on QMF colorspace transform."
     )
     parser.add_argument(
         "--data", type=str, default="kodak", help="dataset name (default: kodak)"
@@ -48,7 +48,7 @@ def eval_image(image):
 
     results = []
 
-    # IMF - RGB
+    # QMF - RGB
     for quality in np.linspace(0.0, 10, 50):
         params = {
             "color_space": "RGB",
@@ -60,12 +60,12 @@ def eval_image(image):
             "num_iters": 10,
             "verbose": False,
         }
-        config = {"data": image_id, "method": "IMF", **params}
-        log = lrf.eval_compression(image, lrf.imf_encode, lrf.imf_decode, **params)
+        config = {"data": image_id, "method": "QMF", **params}
+        log = lrf.eval_compression(image, lrf.qmf_encode, lrf.qmf_decode, **params)
         results.append({**config, **log})
-        print(f"method IMF-RGB, image {image_id} done.")
+        print(f"method QMF-RGB, image {image_id} done.")
 
-    # IMF - YCbCr
+    # QMF - YCbCr
     for quality in np.linspace(0, 40, 80):
         params = {
             "color_space": "YCbCr",
@@ -78,10 +78,10 @@ def eval_image(image):
             "num_iters": 10,
             "verbose": False,
         }
-        config = {"data": image_id, "method": "IMF", **params}
-        log = lrf.eval_compression(image, lrf.imf_encode, lrf.imf_decode, **params)
+        config = {"data": image_id, "method": "QMF", **params}
+        log = lrf.eval_compression(image, lrf.qmf_encode, lrf.qmf_decode, **params)
         results.append({**config, **log})
-        print(f"method IMF-YCbCr, image {image_id} done.")
+        print(f"method QMF-YCbCr, image {image_id} done.")
 
     return results
 

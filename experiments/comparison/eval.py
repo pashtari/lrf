@@ -79,7 +79,7 @@ def eval_image(image):
             f"method {config['method']}, quality {quality}, image {config['data']} done."
         )
 
-    # IMF - YCbCr
+    # QMF - YCbCr
     for quality in np.linspace(0, 40, 80):
         params = {
             "color_space": "YCbCr",
@@ -92,8 +92,8 @@ def eval_image(image):
             "num_iters": 10,
             "verbose": False,
         }
-        config = {"data": image_id, "method": "IMF", **params}
-        log = lrf.eval_compression(image, lrf.imf_encode, lrf.imf_decode, **params)
+        config = {"data": image_id, "method": "QMF", **params}
+        log = lrf.eval_compression(image, lrf.qmf_encode, lrf.qmf_decode, **params)
         results.append({**config, **log})
         print(
             f"method {config['method']}, quality {quality}, image {config['data']} done."
