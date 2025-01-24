@@ -62,7 +62,7 @@
 \usepackage[colorlinks,bookmarks=false]{hyperref}
 
 % Custom preamble file
-\input{TeX/preamble}
+\input{preamble}
 
 
 \journal{Information Sciences}
@@ -96,7 +96,7 @@
     %% \fntext[label3]{}
 
     % \title{Quantization-free Lossy Image Compression\\ Using Integer Matrix Factorization} %% Article title
-    \title{Quantization Meets Low-Rank Approximation: \\Integer Matrix Factorization for Ultra-Low Bit Rate Image Compression} %% Article title
+    \title{Quantization-aware Matrix Factorization for\\ Low Bit Rate Image Compression} %% Article title
 
     % 1- Integer Matrix Factorization: A Fusion of Quantization and Low-Rank Approximation for Ultra-Low Bit Rate Image Compression
     % 2- Quantization Meets Low-Rank Approximation: A Method for Ultra-Low Bit Rate Image Compression via Integer Matrix Factorization
@@ -123,19 +123,19 @@
     \fntext[contr]{Pooya Ashtari and Pourya Behmandpoor contributed equally to this work.}
 
     %% Abstract
-    \input{TeX/text/abstract}
+    \input{sections/abstract}
 \end{frontmatter}
 
-\input{TeX/text/introduction.tex}
-\input{TeX/text/related_work}
-\input{TeX/text/method}
-\input{TeX/text/experiments}
-\input{TeX/text/discussion}
-\input{TeX/text/conclusion}
-\input{TeX/text/acknowledgments}
+\input{sections/introduction.tex}
+\input{sections/related_work}
+\input{sections/method}
+\input{sections/experiments}
+\input{sections/discussion}
+\input{sections/conclusion}
+\input{sections/acknowledgments}
 
 \appendix
-\include{TeX/text/appendix}
+\include{sections/appendix}
 
 \bibliographystyle{elsarticle-num-names} 
 \bibliography{TeX/ref.bib}
