@@ -1,0 +1,84 @@
+\documentclass[a4paper,11pt]{article}
+
+% Page layout and geometry
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+\usepackage[affil-it]{authblk}
+\usepackage{titlesec}
+\usepackage{parskip}
+
+% Math packages
+\usepackage{amsthm,amsmath,amsfonts,amssymb,bm,bbm} 
+\usepackage{mathtools}
+\usepackage{nicefrac}       
+
+% Algorithms
+\usepackage{algorithm}
+\usepackage{algorithmic}
+
+% Tables
+\usepackage{booktabs}
+\usepackage{multirow}
+
+% Figures
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{pgf}
+
+% URL and links
+\usepackage{url}
+\usepackage[colorlinks=true,bookmarks=false]{hyperref}
+
+% Citations and bibliography
+\usepackage[backend=biber,maxcitenames=2,mincitenames=1,sorting=none]{biblatex}
+\addbibresource{ref.bib}
+
+% Colors
+\usepackage{xcolor}
+
+% Custom commands
+\usepackage{xargs}
+
+% Journal-specific style
+\usepackage{jour}
+
+% Title
+\title{\LARGE\bfseries Quantization-free Lossy Image Compression\\ Using Integer Matrix Factorization\thanks{This research received funding from the Flemish Government (AI Research Program). Sabine Van Huffel and Pooya Ashtari are affiliated with Leuven.AI - KU Leuven institute for AI, B-3000, Leuven, Belgium.}}
+
+% Authors
+\author[1]{Pooya Ashtari\thanks{Corresponding author: Pooya Ashtari. \textit{Email:} \href{mailto:pooya.ashtari@esat.kuleuven.be}{pooya.ashtari@esat.kuleuven.be}}}
+\author[1]{Pourya Behmandpoor\thanks{Pooya Ashtari and Pourya Behmandpoor contributed equally to this work.}}
+\author[2]{Fateme Nateghi Haredasht}
+\author[2]{Jonathan H. Chen}
+\author[1]{Panagiotis Patrinos}
+\author[1]{Sabine Van Huffel}
+
+% Affiliations
+\affil[1]{Department of Electrical Engineering (ESAT), STADIUS Center, KU Leuven, Belgium}
+\affil[2]{Stanford Center for Biomedical Informatics Research, Stanford University, CA, USA}
+
+% Date
+\date{}  
+
+\begin{document}
+
+% Title
+\maketitle
+
+% Sections
+\input{abstract}
+\input{introduction}
+\input{related_work}
+\input{method}
+\input{experiments}
+\input{discussion}
+\input{conclusion}
+
+% Appendices
+\input{appendix}
+
+% Bibliography
+\clearpage
+\printbibliography
+
+\end{document}

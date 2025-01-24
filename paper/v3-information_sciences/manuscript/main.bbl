@@ -1,0 +1,316 @@
+\begin{thebibliography}{40}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\href}[2]{#2}
+\providecommand{\path}[1]{#1}
+\providecommand{\DOIprefix}{doi:}
+\providecommand{\ArXivprefix}{arXiv:}
+\providecommand{\URLprefix}{URL: }
+\providecommand{\Pubmedprefix}{pmid:}
+\providecommand{\doi}[1]{\href{http://dx.doi.org/#1}{\path{#1}}}
+\providecommand{\Pubmed}[1]{\href{pmid:#1}{\path{#1}}}
+\providecommand{\bibinfo}[2]{#2}
+\ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
+%Type = Article
+\bibitem[{Wallace(1991)}]{wallace1991jpeg}
+\bibinfo{author}{G.~K. Wallace},
+\newblock \bibinfo{title}{{The JPEG still picture compression standard}},
+\newblock \bibinfo{journal}{Communications of the ACM} \bibinfo{volume}{34}
+  (\bibinfo{year}{1991}) \bibinfo{pages}{30--44}.
+%Type = Article
+\bibitem[{Skodras et~al.(2001)Skodras, Christopoulos, and
+  Ebrahimi}]{skodras2001jpeg}
+\bibinfo{author}{A.~Skodras}, \bibinfo{author}{C.~Christopoulos},
+  \bibinfo{author}{T.~Ebrahimi},
+\newblock \bibinfo{title}{{The JPEG 2000 still image compression standard}},
+\newblock \bibinfo{journal}{IEEE Signal processing magazine}
+  \bibinfo{volume}{18} (\bibinfo{year}{2001}) \bibinfo{pages}{36--58}.
+%Type = Article
+\bibitem[{Goyal(2001)}]{goyal2001theoretical}
+\bibinfo{author}{V.~K. Goyal},
+\newblock \bibinfo{title}{{Theoretical foundations of transform coding}},
+\newblock \bibinfo{journal}{IEEE Signal Processing Magazine}
+  \bibinfo{volume}{18} (\bibinfo{year}{2001}) \bibinfo{pages}{9--21}.
+%Type = Article
+\bibitem[{Ahmed et~al.(1974)Ahmed, Natarajan, and Rao}]{ahmed1974discrete}
+\bibinfo{author}{N.~Ahmed}, \bibinfo{author}{T.~Natarajan},
+  \bibinfo{author}{K.~R. Rao},
+\newblock \bibinfo{title}{{Discrete cosine transform}},
+\newblock \bibinfo{journal}{IEEE transactions on Computers}
+  \bibinfo{volume}{100} (\bibinfo{year}{1974}) \bibinfo{pages}{90--93}.
+%Type = Article
+\bibitem[{Antonini et~al.(1992)Antonini, Barlaud, Mathieu, and
+  Daubechies}]{antonini1992image}
+\bibinfo{author}{M.~Antonini}, \bibinfo{author}{M.~Barlaud},
+  \bibinfo{author}{P.~Mathieu}, \bibinfo{author}{I.~Daubechies},
+\newblock \bibinfo{title}{{Image coding using wavelet transform.}},
+\newblock \bibinfo{journal}{IEEE Trans. Image Processing} \bibinfo{volume}{1}
+  (\bibinfo{year}{1992}) \bibinfo{pages}{20--5}.
+%Type = Article
+\bibitem[{Andrews and Patterson(1976)}]{andrews1976singular}
+\bibinfo{author}{H.~Andrews}, \bibinfo{author}{C.~Patterson},
+\newblock \bibinfo{title}{{Singular value decomposition (SVD) image coding}},
+\newblock \bibinfo{journal}{IEEE transactions on Communications}
+  \bibinfo{volume}{24} (\bibinfo{year}{1976}) \bibinfo{pages}{425--432}.
+%Type = Inproceedings
+\bibitem[{Prasantha et~al.(2007)Prasantha, Shashidhara, and
+  Murthy}]{prasantha2007image}
+\bibinfo{author}{H.~Prasantha}, \bibinfo{author}{H.~Shashidhara},
+  \bibinfo{author}{K.~B. Murthy},
+\newblock \bibinfo{title}{{Image compression using SVD}},
+\newblock in: \bibinfo{booktitle}{International conference on computational
+  intelligence and multimedia applications (ICCIMA 2007)},
+  volume~\bibinfo{volume}{3}, \bibinfo{organization}{IEEE},
+  \bibinfo{year}{2007}, pp. \bibinfo{pages}{143--145}.
+%Type = Article
+\bibitem[{Hou et~al.(2015)Hou, Chau, Magnenat-Thalmann, and He}]{hou2015sparse}
+\bibinfo{author}{J.~Hou}, \bibinfo{author}{L.-P. Chau},
+  \bibinfo{author}{N.~Magnenat-Thalmann}, \bibinfo{author}{Y.~He},
+\newblock \bibinfo{title}{{Sparse low-rank matrix approximation for data
+  compression}},
+\newblock \bibinfo{journal}{IEEE Transactions on Circuits and Systems for Video
+  Technology} \bibinfo{volume}{27} (\bibinfo{year}{2015})
+  \bibinfo{pages}{1043--1054}.
+%Type = Article
+\bibitem[{Shapiro(1993)}]{shapiro1993embedded}
+\bibinfo{author}{J.~M. Shapiro},
+\newblock \bibinfo{title}{{Embedded image coding using zerotrees of wavelet
+  coefficients}},
+\newblock \bibinfo{journal}{IEEE Transactions on signal processing}
+  \bibinfo{volume}{41} (\bibinfo{year}{1993}) \bibinfo{pages}{3445--3462}.
+%Type = Misc
+\bibitem[{Developers(2011)}]{google2011webp}
+\bibinfo{author}{G.~Developers}, \bibinfo{title}{{WebP Compression
+  Techniques}},
+  \bibinfo{howpublished}{\url{https://developers.google.com/speed/webp}},
+  \bibinfo{year}{2011}. \bibinfo{note}{Accessed: 2024-05-17}.
+%Type = Inproceedings
+\bibitem[{Lainema et~al.(2016)Lainema, Hannuksela, Vadakital, and
+  Aksu}]{lainema2016hevc}
+\bibinfo{author}{J.~Lainema}, \bibinfo{author}{M.~M. Hannuksela},
+  \bibinfo{author}{V.~K.~M. Vadakital}, \bibinfo{author}{E.~B. Aksu},
+\newblock \bibinfo{title}{{HEVC still image coding and high efficiency image
+  file format}},
+\newblock in: \bibinfo{booktitle}{2016 IEEE International Conference on Image
+  Processing (ICIP)}, \bibinfo{organization}{IEEE}, \bibinfo{year}{2016}, pp.
+  \bibinfo{pages}{71--75}.
+%Type = Article
+\bibitem[{Hannuksela et~al.(2015)Hannuksela, Lainema, and
+  Vadakital}]{hannuksela2015high}
+\bibinfo{author}{M.~M. Hannuksela}, \bibinfo{author}{J.~Lainema},
+  \bibinfo{author}{V.~K.~M. Vadakital},
+\newblock \bibinfo{title}{{The high efficiency image file format standard
+  [standards in a nutshell]}},
+\newblock \bibinfo{journal}{IEEE Signal Processing Magazine}
+  \bibinfo{volume}{32} (\bibinfo{year}{2015}) \bibinfo{pages}{150--156}.
+%Type = Article
+\bibitem[{Ball{\'e} et~al.(2018)Ball{\'e}, Minnen, Singh, Hwang, and
+  Johnston}]{balle2018variational}
+\bibinfo{author}{J.~Ball{\'e}}, \bibinfo{author}{D.~Minnen},
+  \bibinfo{author}{S.~Singh}, \bibinfo{author}{S.~J. Hwang},
+  \bibinfo{author}{N.~Johnston},
+\newblock \bibinfo{title}{{Variational image compression with a scale
+  hyperprior}},
+\newblock \bibinfo{journal}{arXiv preprint arXiv:1802.01436}
+  (\bibinfo{year}{2018}).
+%Type = Inproceedings
+\bibitem[{Cheng et~al.(2020)Cheng, Sun, Takeuchi, and Katto}]{cheng2020learned}
+\bibinfo{author}{Z.~Cheng}, \bibinfo{author}{H.~Sun},
+  \bibinfo{author}{M.~Takeuchi}, \bibinfo{author}{J.~Katto},
+\newblock \bibinfo{title}{{Learned image compression with discretized gaussian
+  mixture likelihoods and attention modules}},
+\newblock in: \bibinfo{booktitle}{Proceedings of the IEEE/CVF conference on
+  computer vision and pattern recognition}, \bibinfo{year}{2020}, pp.
+  \bibinfo{pages}{7939--7948}.
+%Type = Inproceedings
+\bibitem[{Liu et~al.(2023)Liu, Sun, and Katto}]{liu2023learned}
+\bibinfo{author}{J.~Liu}, \bibinfo{author}{H.~Sun}, \bibinfo{author}{J.~Katto},
+\newblock \bibinfo{title}{{Learned image compression with mixed transformer-CNN
+  architectures}},
+\newblock in: \bibinfo{booktitle}{Proceedings of the IEEE/CVF conference on
+  computer vision and pattern recognition}, \bibinfo{year}{2023}, pp.
+  \bibinfo{pages}{14388--14397}.
+%Type = Article
+\bibitem[{Yang and Mandt(2024)}]{yang2024lossy}
+\bibinfo{author}{R.~Yang}, \bibinfo{author}{S.~Mandt},
+\newblock \bibinfo{title}{{Lossy image compression with conditional diffusion
+  models}},
+\newblock \bibinfo{journal}{Advances in Neural Information Processing Systems}
+  \bibinfo{volume}{36} (\bibinfo{year}{2024}).
+%Type = Article
+\bibitem[{Yuan and Haimi-Cohen(2020)}]{yuan2020image}
+\bibinfo{author}{X.~Yuan}, \bibinfo{author}{R.~Haimi-Cohen},
+\newblock \bibinfo{title}{{Image compression based on compressive sensing:
+  End-to-end comparison with JPEG}},
+\newblock \bibinfo{journal}{IEEE Transactions on Multimedia}
+  \bibinfo{volume}{22} (\bibinfo{year}{2020}) \bibinfo{pages}{2889--2904}.
+%Type = Article
+\bibitem[{Lin et~al.(2005)Lin, Dong, and Chu}]{lin2005integer}
+\bibinfo{author}{M.~M. Lin}, \bibinfo{author}{B.~Dong}, \bibinfo{author}{M.~T.
+  Chu},
+\newblock \bibinfo{title}{Integer matrix factorization and its application},
+\newblock \bibinfo{journal}{Tech. Rep.}  (\bibinfo{year}{2005}).
+%Type = Article
+\bibitem[{Dong et~al.(2018)Dong, Lin, and Park}]{dong2018integer}
+\bibinfo{author}{B.~Dong}, \bibinfo{author}{M.~M. Lin},
+  \bibinfo{author}{H.~Park},
+\newblock \bibinfo{title}{{Integer matrix approximation and data mining}},
+\newblock \bibinfo{journal}{Journal of scientific computing}
+  \bibinfo{volume}{75} (\bibinfo{year}{2018}) \bibinfo{pages}{198--224}.
+%Type = Article
+\bibitem[{Miettinen et~al.(2008)Miettinen, Mielik{\"a}inen, Gionis, Das, and
+  Mannila}]{miettinen2008discrete}
+\bibinfo{author}{P.~Miettinen}, \bibinfo{author}{T.~Mielik{\"a}inen},
+  \bibinfo{author}{A.~Gionis}, \bibinfo{author}{G.~Das},
+  \bibinfo{author}{H.~Mannila},
+\newblock \bibinfo{title}{{The discrete basis problem}},
+\newblock \bibinfo{journal}{IEEE transactions on knowledge and data
+  engineering} \bibinfo{volume}{20} (\bibinfo{year}{2008})
+  \bibinfo{pages}{1348--1362}.
+%Type = Inproceedings
+\bibitem[{Ravanbakhsh et~al.(2016)Ravanbakhsh, P{\'o}czos, and
+  Greiner}]{ravanbakhsh2016boolean}
+\bibinfo{author}{S.~Ravanbakhsh}, \bibinfo{author}{B.~P{\'o}czos},
+  \bibinfo{author}{R.~Greiner},
+\newblock \bibinfo{title}{{Boolean matrix factorization and noisy completion
+  via message passing}},
+\newblock in: \bibinfo{booktitle}{International Conference on Machine
+  Learning}, \bibinfo{organization}{PMLR}, \bibinfo{year}{2016}, pp.
+  \bibinfo{pages}{945--954}.
+%Type = Article
+\bibitem[{Eckart and Young(1936)}]{eckart1936approximation}
+\bibinfo{author}{C.~Eckart}, \bibinfo{author}{G.~Young},
+\newblock \bibinfo{title}{{The approximation of one matrix by another of lower
+  rank}},
+\newblock \bibinfo{journal}{Psychometrika} \bibinfo{volume}{1}
+  (\bibinfo{year}{1936}) \bibinfo{pages}{211--218}.
+%Type = Inproceedings
+\bibitem[{Lee and Seung(2000)}]{lee2000algorithms}
+\bibinfo{author}{D.~Lee}, \bibinfo{author}{H.~S. Seung},
+\newblock \bibinfo{title}{{Algorithms for Non-negative Matrix Factorization}},
+\newblock in: \bibinfo{editor}{T.~Leen}, \bibinfo{editor}{T.~Dietterich},
+  \bibinfo{editor}{V.~Tresp} (Eds.), \bibinfo{booktitle}{Advances in Neural
+  Information Processing Systems}, volume~\bibinfo{volume}{13},
+  \bibinfo{publisher}{MIT Press}, \bibinfo{year}{2000}.
+%Type = Article
+\bibitem[{Ding et~al.(2008)Ding, Li, and Jordan}]{ding2008convex}
+\bibinfo{author}{C.~H. Ding}, \bibinfo{author}{T.~Li}, \bibinfo{author}{M.~I.
+  Jordan},
+\newblock \bibinfo{title}{{Convex and semi-nonnegative matrix factorizations}},
+\newblock \bibinfo{journal}{IEEE transactions on pattern analysis and machine
+  intelligence} \bibinfo{volume}{32} (\bibinfo{year}{2008})
+  \bibinfo{pages}{45--55}.
+%Type = Techreport
+\bibitem[{Deutsch and Gailly(1996)}]{deutsch1996zlib}
+\bibinfo{author}{P.~Deutsch}, \bibinfo{author}{J.-L. Gailly},
+  \bibinfo{title}{{Zlib compressed data format specification version 3.3}},
+  \bibinfo{type}{Technical Report}, \bibinfo{year}{1996}.
+%Type = Book
+\bibitem[{{Gillis}(2020)}]{gillis2020nonnegative}
+\bibinfo{author}{N.~{Gillis}}, \bibinfo{title}{{Nonnegative Matrix
+  Factorization}}, \bibinfo{publisher}{SIAM}, \bibinfo{year}{2020}.
+%Type = Article
+\bibitem[{van Emde~Boas(1981)}]{van1981another}
+\bibinfo{author}{P.~van Emde~Boas},
+\newblock \bibinfo{title}{{Another NP-complete problem and the complexity of
+  computing short vectors in a lattice}},
+\newblock \bibinfo{journal}{Tecnical Report, Department of Mathmatics,
+  University of Amsterdam}  (\bibinfo{year}{1981}).
+%Type = Misc
+\bibitem[{Collet and contributors(2016)}]{zstandard}
+\bibinfo{author}{Y.~Collet}, \bibinfo{author}{contributors},
+  \bibinfo{title}{Zstandard - fast real-time compression algorithm},
+  \bibinfo{year}{2016}. \URLprefix \url{https://facebook.github.io/zstd/}.
+%Type = Article
+\bibitem[{Huffman(1952)}]{huffman1952method}
+\bibinfo{author}{D.~A. Huffman},
+\newblock \bibinfo{title}{A method for the construction of minimum-redundancy
+  codes},
+\newblock \bibinfo{journal}{Proceedings of the IRE} \bibinfo{volume}{40}
+  (\bibinfo{year}{1952}) \bibinfo{pages}{1098--1101}.
+%Type = Misc
+\bibitem[{Clark(2015)}]{clark2015pillow}
+\bibinfo{author}{A.~Clark}, \bibinfo{title}{{Pillow (PIL Fork) Documentation}},
+  \bibinfo{year}{2015}. \URLprefix
+  \url{https://buildmedia.readthedocs.org/media/pdf/pillow/latest/pillow.pdf}.
+%Type = Misc
+\bibitem[{Kodak(1993)}]{kodak1993}
+\bibinfo{author}{E.~Kodak}, \bibinfo{title}{{Kodak lossless true color image
+  suite}}, \bibinfo{year}{1993}. \URLprefix
+  \url{https://r0k.us/graphics/kodak/}.
+%Type = Misc
+\bibitem[{Organizers(2024)}]{clic2024}
+\bibinfo{author}{Organizers}, \bibinfo{title}{{Challenge on Learned Image
+  Compression}}, \bibinfo{year}{2024}. \URLprefix
+  \url{https://www.compression.cc/}.
+%Type = Article
+\bibitem[{Russakovsky et~al.(2015)Russakovsky, Deng, Su, Krause, Satheesh, Ma,
+  Huang, Karpathy, Khosla, Bernstein et~al.}]{russakovsky2015imagenet}
+\bibinfo{author}{O.~Russakovsky}, \bibinfo{author}{J.~Deng},
+  \bibinfo{author}{H.~Su}, \bibinfo{author}{J.~Krause},
+  \bibinfo{author}{S.~Satheesh}, \bibinfo{author}{S.~Ma},
+  \bibinfo{author}{Z.~Huang}, \bibinfo{author}{A.~Karpathy},
+  \bibinfo{author}{A.~Khosla}, \bibinfo{author}{M.~Bernstein}, et~al.,
+\newblock \bibinfo{title}{{Imagenet large scale visual recognition challenge}},
+\newblock \bibinfo{journal}{International journal of computer vision}
+  \bibinfo{volume}{115} (\bibinfo{year}{2015}) \bibinfo{pages}{211--252}.
+%Type = Article
+\bibitem[{Cleveland and Devlin(1988)}]{cleveland1988locally}
+\bibinfo{author}{W.~S. Cleveland}, \bibinfo{author}{S.~J. Devlin},
+\newblock \bibinfo{title}{{Locally weighted regression: an approach to
+  regression analysis by local fitting}},
+\newblock \bibinfo{journal}{Journal of the American statistical association}
+  \bibinfo{volume}{83} (\bibinfo{year}{1988}) \bibinfo{pages}{596--610}.
+%Type = Inproceedings
+\bibitem[{He et~al.(2016)He, Zhang, Ren, and Sun}]{he2016deep}
+\bibinfo{author}{K.~He}, \bibinfo{author}{X.~Zhang}, \bibinfo{author}{S.~Ren},
+  \bibinfo{author}{J.~Sun},
+\newblock \bibinfo{title}{{Deep residual learning for image recognition}},
+\newblock in: \bibinfo{booktitle}{Proceedings of the IEEE conference on
+  computer vision and pattern recognition}, \bibinfo{year}{2016}, pp.
+  \bibinfo{pages}{770--778}.
+%Type = Inproceedings
+\bibitem[{Deng et~al.(2009)Deng, Dong, Socher, Li, Li, and
+  Fei-Fei}]{deng2009imagenet}
+\bibinfo{author}{J.~Deng}, \bibinfo{author}{W.~Dong},
+  \bibinfo{author}{R.~Socher}, \bibinfo{author}{L.-J. Li},
+  \bibinfo{author}{K.~Li}, \bibinfo{author}{L.~Fei-Fei},
+\newblock \bibinfo{title}{{Imagenet: A large-scale hierarchical image
+  database}},
+\newblock in: \bibinfo{booktitle}{2009 IEEE conference on computer vision and
+  pattern recognition}, \bibinfo{organization}{Ieee}, \bibinfo{year}{2009}, pp.
+  \bibinfo{pages}{248--255}.
+%Type = Article
+\bibitem[{Nesterov(2012)}]{nesterov2012efficiency}
+\bibinfo{author}{Y.~Nesterov},
+\newblock \bibinfo{title}{{Efficiency of coordinate descent methods on
+  huge-scale optimization problems}},
+\newblock \bibinfo{journal}{SIAM Journal on Optimization} \bibinfo{volume}{22}
+  (\bibinfo{year}{2012}) \bibinfo{pages}{341--362}.
+%Type = Article
+\bibitem[{Attouch et~al.(2013)Attouch, Bolte, and
+  Svaiter}]{attouch2013convergence}
+\bibinfo{author}{H.~Attouch}, \bibinfo{author}{J.~Bolte},
+  \bibinfo{author}{B.~F. Svaiter},
+\newblock \bibinfo{title}{{Convergence of descent methods for semi-algebraic
+  and tame problems: proximal algorithms, forward--backward splitting, and
+  regularized Gauss--Seidel methods}},
+\newblock \bibinfo{journal}{Mathematical Programming} \bibinfo{volume}{137}
+  (\bibinfo{year}{2013}) \bibinfo{pages}{91--129}.
+%Type = Article
+\bibitem[{Beck and Tetruashvili(2013)}]{beck2013convergence}
+\bibinfo{author}{A.~Beck}, \bibinfo{author}{L.~Tetruashvili},
+\newblock \bibinfo{title}{{On the convergence of block coordinate descent type
+  methods}},
+\newblock \bibinfo{journal}{SIAM journal on Optimization} \bibinfo{volume}{23}
+  (\bibinfo{year}{2013}) \bibinfo{pages}{2037--2060}.
+%Type = Article
+\bibitem[{Bolte et~al.(2014)Bolte, Sabach, and Teboulle}]{bolte2014proximal}
+\bibinfo{author}{J.~Bolte}, \bibinfo{author}{S.~Sabach},
+  \bibinfo{author}{M.~Teboulle},
+\newblock \bibinfo{title}{{Proximal alternating linearized minimization for
+  nonconvex and nonsmooth problems}},
+\newblock \bibinfo{journal}{Mathematical Programming} \bibinfo{volume}{146}
+  (\bibinfo{year}{2014}) \bibinfo{pages}{459--494}.
+
+\end{thebibliography}

@@ -1,0 +1,221 @@
+\begin{thebibliography}{33}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Ahmed et~al.(1974)Ahmed, Natarajan, and Rao]{ahmed1974discrete}
+Nasir Ahmed, T\_ Natarajan, and Kamisetty~R Rao.
+\newblock {Discrete cosine transform}.
+\newblock \emph{IEEE transactions on Computers}, 100\penalty0 (1):\penalty0
+  90--93, 1974.
+
+\bibitem[Andrews and Patterson(1976)]{andrews1976singular}
+H~Andrews and CLIII Patterson.
+\newblock {Singular value decomposition (SVD) image coding}.
+\newblock \emph{IEEE transactions on Communications}, 24\penalty0 (4):\penalty0
+  425--432, 1976.
+
+\bibitem[Antonini et~al.(1992)Antonini, Barlaud, Mathieu, and
+  Daubechies]{antonini1992image}
+Marc Antonini, Michel Barlaud, Pierre Mathieu, and Ingrid Daubechies.
+\newblock {Image coding using wavelet transform.}
+\newblock \emph{IEEE Trans. Image Processing}, 1:\penalty0 20--5, 1992.
+
+\bibitem[Attouch et~al.(2013)Attouch, Bolte, and
+  Svaiter]{attouch2013convergence}
+Hedy Attouch, J{\'e}r{\^o}me Bolte, and Benar~Fux Svaiter.
+\newblock {Convergence of descent methods for semi-algebraic and tame problems:
+  proximal algorithms, forward--backward splitting, and regularized
+  Gauss--Seidel methods}.
+\newblock \emph{Mathematical Programming}, 137\penalty0 (1):\penalty0 91--129,
+  2013.
+
+\bibitem[Bauschke et~al.(2017)Bauschke, Combettes, Bauschke, and
+  Combettes]{bauschke2017correction}
+Heinz~H Bauschke, Patrick~L Combettes, Heinz~H Bauschke, and Patrick~L
+  Combettes.
+\newblock \emph{{Correction to: Convex analysis and monotone operator theory in
+  hilbert spaces}}.
+\newblock Springer, 2017.
+
+\bibitem[Beck and Tetruashvili(2013)]{beck2013convergence}
+Amir Beck and Luba Tetruashvili.
+\newblock {On the convergence of block coordinate descent type methods}.
+\newblock \emph{SIAM journal on Optimization}, 23\penalty0 (4):\penalty0
+  2037--2060, 2013.
+
+\bibitem[Bolte et~al.(2014)Bolte, Sabach, and Teboulle]{bolte2014proximal}
+J{\'e}r{\^o}me Bolte, Shoham Sabach, and Marc Teboulle.
+\newblock {Proximal alternating linearized minimization for nonconvex and
+  nonsmooth problems}.
+\newblock \emph{Mathematical Programming}, 146\penalty0 (1):\penalty0 459--494,
+  2014.
+
+\bibitem[Clark(2015)]{clark2015pillow}
+Alex Clark.
+\newblock {Pillow (PIL Fork) Documentation}, 2015.
+\newblock URL
+  \url{https://buildmedia.readthedocs.org/media/pdf/pillow/latest/pillow.pdf}.
+
+\bibitem[Combettes and Pesquet(2011)]{combettes2011proximal}
+Patrick~L Combettes and Jean-Christophe Pesquet.
+\newblock {Proximal splitting methods in signal processing}.
+\newblock \emph{Fixed-point algorithms for inverse problems in science and
+  engineering}, pages 185--212, 2011.
+
+\bibitem[Deng et~al.(2009)Deng, Dong, Socher, Li, Li, and
+  Fei-Fei]{deng2009imagenet}
+Jia Deng, Wei Dong, Richard Socher, Li-Jia Li, Kai Li, and Li~Fei-Fei.
+\newblock {Imagenet: A large-scale hierarchical image database}.
+\newblock In \emph{2009 IEEE conference on computer vision and pattern
+  recognition}, pages 248--255. Ieee, 2009.
+
+\bibitem[Developers(2011)]{google2011webp}
+Google Developers.
+\newblock {WebP Compression Techniques}.
+\newblock \url{https://developers.google.com/speed/webp}, 2011.
+\newblock Accessed: 2024-05-17.
+
+\bibitem[Ding et~al.(2008)Ding, Li, and Jordan]{ding2008convex}
+Chris~HQ Ding, Tao Li, and Michael~I Jordan.
+\newblock {Convex and semi-nonnegative matrix factorizations}.
+\newblock \emph{IEEE transactions on pattern analysis and machine
+  intelligence}, 32\penalty0 (1):\penalty0 45--55, 2008.
+
+\bibitem[Dong et~al.(2018)Dong, Lin, and Park]{dong2018integer}
+Bo~Dong, Matthew~M Lin, and Haesun Park.
+\newblock {Integer matrix approximation and data mining}.
+\newblock \emph{Journal of scientific computing}, 75:\penalty0 198--224, 2018.
+
+\bibitem[Eckart and Young(1936)]{eckart1936approximation}
+Carl Eckart and Gale Young.
+\newblock {The approximation of one matrix by another of lower rank}.
+\newblock \emph{Psychometrika}, 1\penalty0 (3):\penalty0 211--218, 1936.
+
+\bibitem[{Gillis}(2020)]{gillis2020nonnegative}
+{Nicholas} {Gillis}.
+\newblock \emph{{Nonnegative Matrix Factorization}}.
+\newblock SIAM, 2020.
+
+\bibitem[Goyal(2001)]{goyal2001theoretical}
+Vivek~K Goyal.
+\newblock {Theoretical foundations of transform coding}.
+\newblock \emph{IEEE Signal Processing Magazine}, 18\penalty0 (5):\penalty0
+  9--21, 2001.
+
+\bibitem[Hannuksela et~al.(2015)Hannuksela, Lainema, and
+  Vadakital]{hannuksela2015high}
+Miska~M Hannuksela, Jani Lainema, and Vinod K~Malamal Vadakital.
+\newblock {The high efficiency image file format standard [standards in a
+  nutshell]}.
+\newblock \emph{IEEE Signal Processing Magazine}, 32\penalty0 (4):\penalty0
+  150--156, 2015.
+
+\bibitem[He et~al.(2016)He, Zhang, Ren, and Sun]{he2016deep}
+Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun.
+\newblock {Deep residual learning for image recognition}.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 770--778, 2016.
+
+\bibitem[Hou et~al.(2015)Hou, Chau, Magnenat-Thalmann, and He]{hou2015sparse}
+Junhui Hou, Lap-Pui Chau, Nadia Magnenat-Thalmann, and Ying He.
+\newblock {Sparse low-rank matrix approximation for data compression}.
+\newblock \emph{IEEE Transactions on Circuits and Systems for Video
+  Technology}, 27\penalty0 (5):\penalty0 1043--1054, 2015.
+
+\bibitem[Kodak(1993)]{kodak1993}
+Eastman Kodak.
+\newblock {Kodak lossless true color image suite}, 1993.
+\newblock URL \url{https://r0k.us/graphics/kodak/}.
+
+\bibitem[Lainema et~al.(2016)Lainema, Hannuksela, Vadakital, and
+  Aksu]{lainema2016hevc}
+Jani Lainema, Miska~M Hannuksela, Vinod K~Malamal Vadakital, and Emre~B Aksu.
+\newblock {HEVC still image coding and high efficiency image file format}.
+\newblock In \emph{2016 IEEE International Conference on Image Processing
+  (ICIP)}, pages 71--75. IEEE, 2016.
+
+\bibitem[Lee and Seung(2000)]{lee2000algorithms}
+Daniel Lee and H.~Sebastian Seung.
+\newblock {Algorithms for Non-negative Matrix Factorization}.
+\newblock In T.~Leen, T.~Dietterich, and V.~Tresp, editors, \emph{Advances in
+  Neural Information Processing Systems}, volume~13. MIT Press, 2000.
+\newblock URL
+  \url{https://proceedings.neurips.cc/paper_files/paper/2000/file/f9d1152547c0bde01830b7e8bd60024c-Paper.pdf}.
+
+\bibitem[Lin et~al.(2005)Lin, Dong, and Chu]{lin2005integer}
+Matthew~M Lin, Bo~Dong, and Moody~T Chu.
+\newblock {Integer matrix factorization and its application}.
+\newblock Technical report, 2005.
+
+\bibitem[Miettinen et~al.(2008)Miettinen, Mielik{\"a}inen, Gionis, Das, and
+  Mannila]{miettinen2008discrete}
+Pauli Miettinen, Taneli Mielik{\"a}inen, Aristides Gionis, Gautam Das, and
+  Heikki Mannila.
+\newblock {The discrete basis problem}.
+\newblock \emph{IEEE transactions on knowledge and data engineering},
+  20\penalty0 (10):\penalty0 1348--1362, 2008.
+
+\bibitem[Nesterov(2012)]{nesterov2012efficiency}
+Yu~Nesterov.
+\newblock {Efficiency of coordinate descent methods on huge-scale optimization
+  problems}.
+\newblock \emph{SIAM Journal on Optimization}, 22\penalty0 (2):\penalty0
+  341--362, 2012.
+
+\bibitem[Organizers(2024)]{clic2024}
+Organizers.
+\newblock {Challenge on Learned Image Compression}, 2024.
+\newblock URL \url{https://www.compression.cc/}.
+
+\bibitem[Prasantha et~al.(2007)Prasantha, Shashidhara, and
+  Murthy]{prasantha2007image}
+HS~Prasantha, HL~Shashidhara, and KN~Balasubramanya Murthy.
+\newblock {Image compression using SVD}.
+\newblock In \emph{International conference on computational intelligence and
+  multimedia applications (ICCIMA 2007)}, volume~3, pages 143--145. IEEE, 2007.
+
+\bibitem[Ravanbakhsh et~al.(2016)Ravanbakhsh, P{\'o}czos, and
+  Greiner]{ravanbakhsh2016boolean}
+Siamak Ravanbakhsh, Barnab{\'a}s P{\'o}czos, and Russell Greiner.
+\newblock {Boolean matrix factorization and noisy completion via message
+  passing}.
+\newblock In \emph{International Conference on Machine Learning}, pages
+  945--954. PMLR, 2016.
+
+\bibitem[Shapiro(1993)]{shapiro1993embedded}
+Jerome~M Shapiro.
+\newblock {Embedded image coding using zerotrees of wavelet coefficients}.
+\newblock \emph{IEEE Transactions on signal processing}, 41\penalty0
+  (12):\penalty0 3445--3462, 1993.
+
+\bibitem[Skodras et~al.(2001)Skodras, Christopoulos, and
+  Ebrahimi]{skodras2001jpeg}
+Athanassios Skodras, Charilaos Christopoulos, and Touradj Ebrahimi.
+\newblock {The JPEG 2000 still image compression standard}.
+\newblock \emph{IEEE Signal processing magazine}, 18\penalty0 (5):\penalty0
+  36--58, 2001.
+
+\bibitem[van Emde~Boas(1981)]{van1981another}
+Peter van Emde~Boas.
+\newblock {Another NP-complete problem and the complexity of computing short
+  vectors in a lattice}.
+\newblock \emph{Tecnical Report, Department of Mathmatics, University of
+  Amsterdam}, 1981.
+
+\bibitem[Wallace(1991)]{wallace1991jpeg}
+Gregory~K Wallace.
+\newblock {The JPEG still picture compression standard}.
+\newblock \emph{Communications of the ACM}, 34\penalty0 (4):\penalty0 30--44,
+  1991.
+
+\bibitem[Yuan and Haimi-Cohen(2020)]{yuan2020image}
+Xin Yuan and Raziel Haimi-Cohen.
+\newblock {Image compression based on compressive sensing: End-to-end
+  comparison with JPEG}.
+\newblock \emph{IEEE Transactions on Multimedia}, 22\penalty0 (11):\penalty0
+  2889--2904, 2020.
+
+\end{thebibliography}

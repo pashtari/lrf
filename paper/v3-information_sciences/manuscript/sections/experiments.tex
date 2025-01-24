@@ -1,0 +1,276 @@
+\section{Experiments} \label{sec:experiments}
+
+\subsection{Setup} \label{sec:setup}
+
+\paragraph{IMF Configuration}
+In our IMF implementation, we used a default patch size of $8 \times 8$. The default factor bounds were set to $[-16, 15]$. Unless otherwise specified, the number of BCD iterations was set to 10 although our ablation studies in Section \ref{sec:ablation_studies} suggest that even 2 iterations may suffice in practice (see Figure \ref{fig:iters_ablation_psnr}). For lossless compression of factors, we encoded and decoded each column of a factor separately using the zlib library \cite{deutsch1996zlib}. \revise{We also tested other lossless compression methods, such as zstd \cite{zstandard} and Huffman coding \cite{huffman1952method}, which demonstrated a comparable performance. However, as zlib is well-established, simple, and offers fast performance in Python, the experimental results are reported for this compression method.}
+
+\paragraph{Baseline Codecs}
+We compared our IMF method against JPEG and SVD baselines. For JPEG compression, we used the Pillow library \cite{clark2015pillow}. Our SVD baseline follows the same framework as the proposed method (described in \ref{sec:overall_framework}) but substitutes truncated SVD for IMF. This is followed by uniform quantization of the SVD factor matrices before lossless compression using zlib \cite{deutsch1996zlib}. This differs from IMF compression, which benefits from the integrality of factors by directly encoding them with zlib, eliminating the need for a separate quantization step.
+
+\paragraph{Datasets}
+To validate the effectiveness of our method, we conducted experiments using the widely-used \textbf{Kodak} dataset \cite{kodak1993}, consisting of 24 lossless images with a resolution of $768 \times 512$. To evaluate the robustness of our method in a higher-resolution setting, we also experimented with the \textbf{CLIC 2024} validation dataset \cite{clic2024}, which contains 30 high-resolution, high-quality images. Additionally, we assessed the compression methods by their ability to retain visual semantics. This was achieved by evaluating a pre-trained ImageNet classifier on compressed images from the \textbf{ImageNet} validation set \cite{russakovsky2015imagenet}, consisting of 50,000 images with a resolution of $224 \times 224$ across 1,000 classes.
+
+\paragraph{Metrics}
+To evaluate the rate-distortion performance of methods on the Kodak and CLIC 2024 datasets, we measured the bit rate in bits per pixel (bpp) and assessed the quality of the reconstructed images using peak signal-to-noise ratio (PSNR) and structural similarity index measure (SSIM). Then, these metrics were plotted as functions of bit rate for each method to illustrate their rate-distortion performance. To control the quality of the reconstructed images in IMF and SVD, similar to JPEG, we defined a quality factor $Q\in[0,1]$, where 0 represents the highest compression and 1 represents no compression. To determine the factorization rank $R$ in Algorithm \ref{alg:bcd_for_imf}, we used $R = \max\left\{\round\left(Q \times \min\{M,N\}\right), 1\right\}$.
+
+More precisely, to construct a rate-distortion curve for each method on each dataset, we evaluated various qualities $Q$ for each image. For each quality, we first measured the PSNR/SSIM values at the corresponding bit rate. Next, PSNR/SSIM values were interpolated at evenly spaced bit rates ranging from 0.05 bpp to 0.5 bpp using LOESS (locally estimated scatterplot smoothing) \cite{cleveland1988locally}. Finally, the interpolated values were averaged over all images at each of these bit rates.
+
+
+\subsection{Rate-Distortion Performance} \label{sec:rate_distortion_performance}
+
+Figure \ref{fig:rate_distortion} illustrates the rate-distortion curves comparing the performance of IMF, SVD, and JPEG compression methods.
+
+\begin{figure*}[!t]
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \resizebox{.9\textwidth}{!}{\input{TeX/figures/kodak_psnr.pgf}}
+        \caption{Kodak - PSNR}
+        \label{fig:kodak_psnr}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+        \resizebox{.9\textwidth}{!}{\input{TeX/figures/kodak_ssim.pgf}}
+        \caption{Kodak - SSIM}
+        \label{fig:kodak_ssim}
+    \end{subfigure}
+
+    \bigskip
+
+    \begin{subfigure}[t]{.5\textwidth}
+        \centering
+        \resizebox{.9\textwidth}{!}{\input{TeX/figures/clic2024_psnr.pgf}}
+        \caption{CLIC 2024 - PSNR}
+        \label{fig:clic_psnr}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.5\textwidth}
+        \centering
+        \resizebox{.9\textwidth}{!}{\input{TeX/figures/clic2024_ssim.pgf}}
+        \caption{CLIC 2024 - SSIM}
+        \label{fig:clic_ssim}
+    \end{subfigure}
+    \caption{Rate-distortion performance on the Kodak (top panels) and CLIC 2024 (bottom panels) datasets. The average PSNR (left panels) and average SSIM (right panels) for each method are plotted as functions of bit rate. Shaded areas represent standard errors. Dashed lines indicate extrapolated values predicted using LOESS \cite{cleveland1988locally} for extremely low bit rates that are otherwise unattainable.}
+    \label{fig:rate_distortion}
+\end{figure*}
+
+\paragraph{Kodak}
+On the Kodak dataset, as shown in Figures \ref{fig:kodak_psnr} and \ref{fig:kodak_ssim}, our IMF method consistently outperforms JPEG at low bit rates below 0.25 bpp and remains comparable at higher bit rates in terms of both PSNR and SSIM. Furthermore, IMF significantly surpasses the SVD-based baseline across all bit rates. \remove{This superior performance can be attributed to the high sensitivity of SVD to quantization errors during encoding and decoding, which leads to increased reconstruction errors. In contrast, the quantization-free nature of IMF allows for more accurate reconstruction.}
+
+\paragraph{CLIC 2024}
+A similar trend is observed with the CLIC 2024 dataset, as shown in Figures \ref{fig:clic_psnr} and \ref{fig:clic_ssim}. Here, the PSNR (Figure \ref{fig:clic_psnr}) and SSIM (Figure \ref{fig:clic_ssim}) results further confirm the competitive performance of IMF across all bit rates, with a particularly notable margin at bit rates lower than 0.25 bpp. Specifically, at a bit rate of 0.15 bpp, IMF achieves an PSNR of over 25 dB, compared to approximately 22 dB for both JPEG and SVD. This supports the robustness of IMF in preserving visual quality across different datasets.
+
+\subsection{Qualitative Performance}
+
+Figure \ref{fig:qualitative_comparison} compares various compression methods using images from the Kodak (top two rows) and CLIC 2024 (bottom two rows) datasets, compressed at similar bit rates.
+
+\begin{figure*}[!t]
+    \captionsetup[subfigure]{labelformat=empty,aboveskip=-1pt,belowskip=6pt}
+    \centering
+
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \textbf{Original Image}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \textbf{JPEG}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \textbf{SVD}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \textbf{IMF}
+    \end{subfigure}
+
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \drawrectangleonfigure{blue}{.95\textwidth}{TeX/figures/kodim01.pdf}{0.37}{0.62}{0.59}{0.85}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \drawrectangleonfigure{blue}{.95\textwidth}{TeX/figures/kodim01_jpeg_bpp_0.21_psnr_20.22.pdf}{0.37}{0.62}{0.59}{0.85}
+        \caption{\scriptsize\textbf{bpp: 0.21, PSNR: 20.22dB}}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \drawrectangleonfigure{blue}{.95\textwidth}{TeX/figures/kodim01_svd_bpp_0.22_psnr_20.24.pdf}{0.37}{0.62}{0.59}{0.85}
+        \caption{\scriptsize\textbf{bpp: 0.22, PSNR: 20.24dB}}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \drawrectangleonfigure{blue}{.95\textwidth}{TeX/figures/kodim01_imf_bpp_0.21_psnr_21.93.pdf}{0.37}{0.62}{0.59}{0.85}
+        \caption{\scriptsize\textbf{bpp: 0.21, PSNR: 21.93dB}}
+    \end{subfigure}
+
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \drawrectangleonfigure{purple}{.95\textwidth}{TeX/figures/kodim16.pdf}{0.42}{0.53}{0.7}{0.83}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \drawrectangleonfigure{purple}{.95\textwidth}{TeX/figures/kodim16_jpeg_bpp_0.27_psnr_27.69.pdf}{0.42}{0.53}{0.7}{0.83}
+        \caption{\scriptsize\textbf{bpp: 0.27, PSNR: 27.69dB}}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \drawrectangleonfigure{purple}{.95\textwidth}{TeX/figures/kodim16_svd_bpp_0.27_psnr_26.67.pdf}{0.42}{0.53}{0.7}{0.83}
+        \caption{\scriptsize\textbf{bpp: 0.27, PSNR: 26.67dB}}
+    \end{subfigure}%
+    \begin{subfigure}[t]{0.25\textwidth}
+        \centering
+        \drawrectangleonfigure{purple}{.95\textwidth}{TeX/figures/kodim16_imf_bpp_0.26_psnr_28.37.pdf}{0.42}{0.53}{0.7}{0.83}
+        \caption{\scriptsize\textbf{bpp: 0.26, PSNR: 28.37dB}}
+    \end{subfigure}
+
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \drawrectangleonfigure{cyan}{.95\textwidth}{TeX/figures/clic_carrot.pdf}{0.78}{0.5}{0.98}{0.9}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \drawrectangleonfigure{cyan}{.95\textwidth}{TeX/figures/clic_carrot_jpeg_bpp_0.18_psnr_21.20.pdf}{0.78}{0.5}{0.98}{0.9}
+        \caption{\scriptsize\textbf{bpp: 0.18, PSNR: 21.20dB}}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \drawrectangleonfigure{cyan}{.95\textwidth}{TeX/figures/clic_carrot_svd_bpp_0.19_psnr_21.02.pdf}{0.78}{0.5}{0.98}{0.9}
+        \caption{\scriptsize\textbf{bpp: 0.19, PSNR: 21.02dB}}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \drawrectangleonfigure{cyan}{.95\textwidth}{TeX/figures/clic_carrot_imf_bpp_0.17_psnr_22.63.pdf}{0.78}{0.5}{0.98}{0.9}
+        \caption{\scriptsize\textbf{bpp: 0.17, PSNR: 22.63dB}}
+    \end{subfigure}
+
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \drawrectangleonfigure{yellow}{.95\textwidth}{TeX/figures/clic_flower.pdf}{0.15}{0.58}{0.4}{0.88}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \drawrectangleonfigure{yellow}{.95\textwidth}{TeX/figures/clic_flower_jpeg_bpp_0.14_psnr_22.66.pdf}{0.15}{0.58}{0.4}{0.88}
+        \caption{\scriptsize\textbf{bpp: 0.14, PSNR: 22.66dB}}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \drawrectangleonfigure{yellow}{.95\textwidth}{TeX/figures/clic_flower_svd_bpp_0.12_psnr_26.90.pdf}{0.15}{0.58}{0.4}{0.88}
+        \caption{\scriptsize\textbf{bpp: 0.12, PSNR: 26.90dB}}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.25\textwidth}
+        \centering
+        \drawrectangleonfigure{yellow}{.95\textwidth}{TeX/figures/clic_flower_imf_bpp_0.12_psnr_31.63.pdf}{0.15}{0.58}{0.4}{0.88}
+        \caption{\scriptsize\textbf{bpp: 0.12, PSNR: 30.63dB}}
+    \end{subfigure}
+
+    \caption{Qualitative performance comparison on example images from the Kodak (top two rows) and the CLIC 2024 (bottom two rows) datasets. Each column shows the original image, JPEG, SVD, and IMF compression results respectively. The bit rate and PSNR values for each compressed image is reported. The colored bounding boxes highlight artifacts produced by JPEG and SVD compression.}
+    \label{fig:qualitative_comparison}
+\end{figure*}
+
+In the building image (first row), JPEG compression, with a PSNR of 20.22 dB at a bit rate of 0.21 bpp, introduces \emph{blocking artifacts} and changes the facade color, as visible in the blue boxes. SVD compression reduces these artifacts but causes blurriness. Our IMF compression, with a similar bit rate but a higher PSNR (21.93 dB), maintains both texture and sharpness with minimal artifacts.
+
+In the seascape image (second row), JPEG causes blocking and significant \emph{color bleeding artifacts}, such as the redness in the cloud area marked by the red boxes and also on the water surface (outside the red box). SVD reduces color distortion but still has blockiness and blurriness. IMF preserves the color and texture of clouds and water more effectively, resulting in a more visually pleasing image.
+
+In the vegetables image (third row), JPEG yields visible \emph{color distortion} (marked by the cyan boxes), while SVD introduces significant blurriness. IMF, however, effectively preserves the color fidelity and detail.
+
+In the flower image (fourth row), JPEG compression, with a PSNR of 20.22 dB at a bit rate of 0.14 bpp, exhibits severe \emph{color banding artifacts} around the flower boundary. SVD compression offers smoother gradients but remains blurry. Our IMF compression maintains the gradient fidelity and intricate petal distinctions, achieving a significantly higher PSNR of 30.63 dB at a lower bit rate of 0.12 bpp.
+
+
+\subsection{Run Time} \label{sec:run_time}
+
+The decoding times at bit rates of 0.15 bpp and 0.25 bpp for each method on Kodak and CLIC 2024 are reported in Table \ref{tab:run_time}. All experiments in this section were conducted on 2 Xeon Gold 6140 CPUs @ 2.3 GHz (Skylake), each with 18 cores, and with 192 GiB RAM.
+
+\begin{table}[!t]
+    \caption{Mean decoding CPU times for different compression methods at bit rates of 0.15 bpp and 0.25 bpp, measured on the Kodak and CLIC 2024 datasets.}
+    \label{tab:run_time}
+    \centering
+    \def\arraystretch{1.2}
+    \resizebox{.5\linewidth}{!}{
+        \begin{tabular}{l | c c}
+            \toprule
+            \textbf{Method}                          &  \textbf{Bit rate = 0.15 bpp} & \textbf{Bit rate = 0.25 bpp} \\
+            \midrule
+            \multicolumn{3}{c}{\textbf{Kodak}}\\
+            \midrule
+            \textbf{JPEG}                            & 4.54 ms                      & 4.23 ms           \\
+            \textbf{SVD}                             & 1.33 ms                      & 1.23 ms           \\
+            \textbf{IMF}                             & 2.82 ms                      & 2.66 ms           \\
+            \midrule
+            \multicolumn{3}{c}{\textbf{CLIC 2024}}\\
+            \midrule
+            \textbf{JPEG}                            & 26.76 ms                      & 25.75 ms          \\
+            \textbf{SVD}                             & 5.29 ms                       & 4.82 ms           \\
+            \textbf{IMF}                             & 9.91 ms                       & 9.06 ms           \\
+            \bottomrule
+        \end{tabular}
+    }
+\end{table}
+
+IMF and SVD have a significant advantage in decoding speed over JPEG, with SVD being the fastest. Specifically, IMF decodes more than twice as fast as JPEG on the CLIC 2024 dataset across all bit rates. This is due to the heavier FFT operation in the JPEG decoder compared to the lighter matrix multiplication in the IMF decoder. \revise{Overall, IMF is preferable for applications requiring high image quality at low bit rates, especially in scenarios where compressed images are frequently accessed or displayed while encoding occurs less often. Examples include web browsing, image hosting, mobile applications, satellite imagery for maps, and interactive gaming applications. These use cases often involve large numbers of images or thumbnails, where faster decoding times are essential for seamless user experiences, even if encoding takes more time or demands higher computational resources.}
+
+
+\subsection{ImageNet Classification Performance} \label{sec:imagenet_classification_performance}
+
+It is relevant to assess the ability of different compression methods in preserving the visual semantic information in images. To this end, we investigate the performance of an image classifier on images compressed using various compression methods. This is particularly crucial in scenarios where the ultimate goal is a vision task such as image classification, rather than maintaining perceived image quality, and we compress images before classification to minimize resource requirements, such as memory and communication bandwidth.
+
+In this experiment, we employed a ResNet-50 classifier \cite{he2016deep}, pre-trained on the original ImageNet \cite{deng2009imagenet} dataset, to classify compressed images from the ImageNet validation set using different compression methods. The classification performance comparison is presented in Figure \ref{fig:imagenet_classification}. Notably, the results indicate that IMF compression achieves over a 5\% improvement in top-1 accuracy compared to JPEG at bit rates under 0.25 bpp and reaches a top-5 accuracy exceeding 70\% at a bit rate of 0.2 bpp. IMF compression leads to higher classification accuracies than JPEG at bit rates up to approximately 0.30 bpp. \remove{Compared to the rate-distortion results (Figure \ref{fig:rate_distortion}), where the take-over point was around 0.25 bpp, this shift suggests that the superiority of IMF over JPEG in preserving visual semantics is even greater than its advantage in maintaining image quality.}
+
+\begin{figure*}[!t]
+    \centering
+    \begin{subfigure}[t]{.5\textwidth}
+        \centering
+        \resizebox{.9\textwidth}{!}{\input{TeX/figures/imagenet_top-1_accuracy.pgf}}
+        \caption{}
+        \label{fig:imagenet_top1}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.5\textwidth}
+        \centering
+        \resizebox{.9\textwidth}{!}{\input{TeX/figures/imagenet_top-5_accuracy.pgf}}
+        \caption{}
+        \label{fig:imagenet_top5}
+    \end{subfigure}
+    \caption{Impact of different compression methods on ImageNet classification accuracy. A ResNet-50 classifier pre-trained on the original ImageNet images is evaluated using validation images compressed by different methods. Panels (a) and (b) show top-1 and top-5 accuracy plotted as a function of bit rate, respectively. Dashed lines indicate extrapolated values predicted using LOESS \cite{cleveland1988locally} for extremely low bit rates that are otherwise unattainable.}
+    \label{fig:imagenet_classification}
+\end{figure*}
+
+
+\subsection{Ablation Studies} \label{sec:ablation_studies}
+
+We conducted ablation studies to investigate the impact of factor bounds, the number of BCD iterations, and patch size on the compression performance of our IMF method. All experiments in this section were performed using the Kodak dataset. We followed the IMF configuration described in Section \ref{sec:setup} and varied only the parameters under ablation one at a time.
+
+\paragraph{Factor Bounds}
+Figure \ref{fig:bounds_ablation_psnr} shows the average PSNR as a function of bit rate for IMF using various factor bounds $[\alpha, \beta]$ in Algorithm \ref{alg:bcd_for_imf}. The results indicate that the interval $[-16, 15]$ yields the optimal performance, showing moderate improvement over both $[-32, 31]$ and $[-128, 127]$, while significantly outperforming $[-8, 7]$. In fact, constraining the factor elements within a sufficiently narrow range can reduce the bit allocation needed, thereby leading to higher compression ratios. Note that in all these cases, the factor elements are represented as the \texttt{int8} data type.
+
+\remove{Narrowing the bounds reduces entropy, which improves the effectiveness of lossless compression in the final stage of our framework and thus reduces the bit rate. However, this more constrained feasible set and reduction in entropy come at the cost of higher reconstruction error. Our experiments showed that using the bounds [-16, 15] provides the best trade-off between entropy and reconstruction quality.}
+
+\paragraph{BCD Iterations}
+The next parameter studied is the number of BCD iterations $K$ in Algorithm \ref{alg:bcd_for_imf}, where each BCD iteration involves one complete cycle of updates across all the columns of both factors. Figure \ref{fig:bounds_ablation_psnr} shows the average PSNR plotted against the bit rate for IMF with different numbers of iterations $K \in \{0, 1, 2, 5, 10\}$. As expected, more iterations consistently resulted in higher PSNR for IMF compression. Without any BCD iterations ($K=0$) and relying solely on the SVD-based initialization given by \eqref{eq:initialization_u} and \eqref{eq:initialization_v}, the results became very poor. However, performance improved significantly after a few iterations, with more than $K=5$ iterations yielding only marginal gains. We found that $K=10$ iterations are sufficient in practice for image compression applications. This makes IMF computationally efficient, as decent compression performance can be achieved even with a limited number of BCD iterations.
+
+\paragraph{Patchification}
+Figure \ref{fig:patchsize_ablation_psnr} explores the impact of different patch sizes on IMF performance in terms of PSNR. As observed, a patch size of $(8, 8)$ yields the best performance. A patch size of $(16, 16)$ follows closely, with only marginally lower PSNR at higher bit rates. Conversely, larger patch sizes like $(32, 32)$ or omitting the patchification step altogether significantly degrade compression performance. \remove{Therefore, optimal patchification positively affects performance by effectively modeling the locality and spatial dependencies of neighboring pixels.}
+
+\begin{figure*}[!t]
+    \centering
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        \resizebox{.95\textwidth}{!}{\input{TeX/figures/ablation_bounds_psnr.pgf}}
+        \caption{}
+        \label{fig:bounds_ablation_psnr}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        \resizebox{.95\textwidth}{!}{\input{TeX/figures/ablation_numiters_psnr.pgf}}
+        \caption{}
+        \label{fig:iters_ablation_psnr}
+    \end{subfigure}%
+    \begin{subfigure}[t]{.33\textwidth}
+        \centering
+        \resizebox{.95\textwidth}{!}{\input{TeX/figures/ablation_patchsize_psnr.pgf}}
+        \caption{}
+        \label{fig:patchsize_ablation_psnr}
+    \end{subfigure}
+    \caption{Ablation studies for IMF. The average PSNR on the Kodak dataset is plotted as a function of bit rate under various experimental conditions: (a) varying the bounds $[\alpha, \beta]$ for the elements of the factor matrices, (b) changing the number of BCD iterations, and (c) adjusting the patch size.}
+    \label{fig:ablation_studies}
+\end{figure*}

@@ -1,0 +1,214 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyperFirstAtBeginDocument{\AtBeginDocument}
+\HyperFirstAtBeginDocument{\ifx\hyper@anchor\@undefined
+\global\let\oldcontentsline\contentsline
+\gdef\contentsline#1#2#3#4{\oldcontentsline{#1}{#2}{#3}}
+\global\let\oldnewlabel\newlabel
+\gdef\newlabel#1#2{\newlabelxx{#1}#2}
+\gdef\newlabelxx#1#2#3#4#5#6{\oldnewlabel{#1}{{#2}{#3}}}
+\AtEndDocument{\ifx\hyper@anchor\@undefined
+\let\contentsline\oldcontentsline
+\let\newlabel\oldnewlabel
+\fi}
+\fi}
+\global\let\hyper@last\relax 
+\gdef\HyperFirstAtBeginDocument#1{#1}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\Newlabel{cor}{1}
+\Newlabel{contr}{1}
+\citation{wallace1991jpeg}
+\citation{skodras2001jpeg}
+\citation{goyal2001theoretical}
+\citation{ahmed1974discrete}
+\citation{antonini1992image}
+\Newlabel{KUL}{a}
+\Newlabel{Std}{b}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
+\newlabel{sec:introduction}{{1}{1}{Introduction}{section.1}{}}
+\citation{andrews1976singular}
+\citation{andrews1976singular,prasantha2007image,hou2015sparse}
+\citation{ahmed1974discrete}
+\citation{wallace1991jpeg}
+\citation{antonini1992image}
+\citation{skodras2001jpeg}
+\citation{shapiro1993embedded}
+\citation{google2011webp}
+\citation{lainema2016hevc,hannuksela2015high}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Related Work}{2}{section.2}\protected@file@percent }
+\newlabel{sec:related_work}{{2}{2}{Related Work}{section.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Transform Coding}{2}{section*.1}\protected@file@percent }
+\citation{balle2018variational}
+\citation{cheng2020learned}
+\citation{liu2023learned}
+\citation{yang2024lossy}
+\citation{andrews1976singular,prasantha2007image}
+\citation{hou2015sparse}
+\citation{yuan2020image}
+\citation{lin2005integer}
+\citation{dong2018integer}
+\citation{miettinen2008discrete}
+\citation{ravanbakhsh2016boolean}
+\@writefile{toc}{\contentsline {paragraph}{Learned Image Compression (LIC)}{3}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Low-rank Techniques}{3}{section*.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Integer Matrix Factorization}{3}{section*.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Method}{3}{section.3}\protected@file@percent }
+\newlabel{sec:method}{{3}{3}{Method}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Overall Encoding Framework}{3}{subsection.3.1}\protected@file@percent }
+\newlabel{sec:overall_framework}{{3.1}{3}{Overall Encoding Framework}{subsection.3.1}{}}
+\citation{eckart1936approximation}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces An illustration of the encoder for our image compression method.\relax }}{4}{figure.caption.5}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:imf_encoder}{{1}{4}{An illustration of the encoder for our image compression method.\relax }{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {paragraph}{Color Space Transformation}{4}{section*.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Chroma Downsampling}{4}{section*.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Patchification}{4}{section*.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Low-rank Approximation}{4}{section*.9}\protected@file@percent }
+\citation{lee2000algorithms,ding2008convex,lin2005integer}
+\citation{deutsch1996zlib}
+\citation{deutsch1996zlib}
+\newlabel{eq:lra}{{1}{5}{Low-rank Approximation}{equation.3.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{Lossless Compression}{5}{section*.10}\protected@file@percent }
+\newlabel{eq:reshaped_factors}{{2}{5}{Lossless Compression}{equation.3.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Decoding}{5}{subsection.3.2}\protected@file@percent }
+\newlabel{sec:decoding}{{3.2}{5}{Decoding}{subsection.3.2}{}}
+\citation{eckart1936approximation}
+\citation{lee2000algorithms,gillis2020nonnegative}
+\citation{dong2018integer,van1981another}
+\citation{dong2018integer,lin2005integer}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The channels of IMF basis maps for the \texttt  {kodim23} image from Kodak. (a) shows the original image. The IMF basis maps corresponding to luma (b), blue-difference (c), and red-difference chroma (d) are shown. The channels of basis map with higher energy maintain the overall texture of the original image, where channels with lower energy focus more on subtle changes.\relax }}{6}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:imf_components}{{2}{6}{The channels of IMF basis maps for the \texttt {kodim23} image from Kodak. (a) shows the original image. The IMF basis maps corresponding to luma (b), blue-difference (c), and red-difference chroma (d) are shown. The channels of basis map with higher energy maintain the overall texture of the original image, where channels with lower energy focus more on subtle changes.\relax }{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Integer Matrix Factorization (IMF)}{6}{subsection.3.3}\protected@file@percent }
+\newlabel{sec:imf}{{3.3}{6}{Integer Matrix Factorization (IMF)}{subsection.3.3}{}}
+\newlabel{eq:imf_problem}{{3}{6}{Integer Matrix Factorization (IMF)}{equation.3.3}{}}
+\newlabel{alg:bcd_for_imf}{{1}{7}{The proposed block coordinate descent (BCD) algorithm for IMF. \relax }{algorithm.1}{}}
+\@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces The proposed block coordinate descent (BCD) algorithm for IMF. \relax }}{7}{algorithm.1}\protected@file@percent }
+\newlabel{alg:step:u_update:1}{{7}{7}{The proposed block coordinate descent (BCD) algorithm for IMF. \relax }{ALC@unique.7}{}}
+\newlabel{alg:step:u_update:2}{{8}{7}{The proposed block coordinate descent (BCD) algorithm for IMF. \relax }{ALC@unique.8}{}}
+\newlabel{alg:step:v_update:1}{{13}{7}{The proposed block coordinate descent (BCD) algorithm for IMF. \relax }{ALC@unique.13}{}}
+\newlabel{alg:step:v_update:2}{{14}{7}{The proposed block coordinate descent (BCD) algorithm for IMF. \relax }{ALC@unique.14}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Block Coordinate Descent Scheme for IMF}{7}{subsection.3.4}\protected@file@percent }
+\newlabel{sec:bcd}{{3.4}{7}{Block Coordinate Descent Scheme for IMF}{subsection.3.4}{}}
+\newlabel{eq:bcd_subproblem_u}{{4}{8}{Block Coordinate Descent Scheme for IMF}{equation.3.4}{}}
+\newlabel{eq:bcd_subproblem_v}{{5}{8}{Block Coordinate Descent Scheme for IMF}{equation.3.5}{}}
+\newlabel{the:bcd_subproblem}{{1}{8}{Monotonicity}{theorem.1}{}}
+\newlabel{eq:bcd_closed_form_subproblem_u}{{6}{8}{Monotonicity}{equation.3.6}{}}
+\newlabel{eq:bcd_closed_form_subproblem_v}{{7}{8}{Monotonicity}{equation.3.7}{}}
+\newlabel{thm:convergence}{{2}{8}{Convergence}{theorem.2}{}}
+\citation{deutsch1996zlib}
+\citation{zstandard}
+\citation{huffman1952method}
+\citation{clark2015pillow}
+\citation{deutsch1996zlib}
+\citation{kodak1993}
+\citation{clic2024}
+\citation{russakovsky2015imagenet}
+\citation{cleveland1988locally}
+\newlabel{eq:initialization_u}{{8}{9}{Initialization}{equation.3.8}{}}
+\newlabel{eq:initialization_v}{{9}{9}{Initialization}{equation.3.9}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Experiments}{9}{section.4}\protected@file@percent }
+\newlabel{sec:experiments}{{4}{9}{Experiments}{section.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Setup}{9}{subsection.4.1}\protected@file@percent }
+\newlabel{sec:setup}{{4.1}{9}{Setup}{subsection.4.1}{}}
+\@writefile{toc}{\contentsline {paragraph}{IMF Configuration}{9}{section*.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Baseline Codecs}{9}{section*.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Datasets}{9}{section*.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Metrics}{9}{section*.16}\protected@file@percent }
+\citation{cleveland1988locally}
+\citation{cleveland1988locally}
+\newlabel{fig:kodak_psnr}{{3a}{10}{Kodak - PSNR\relax }{figure.caption.17}{}}
+\newlabel{sub@fig:kodak_psnr}{{a}{10}{Kodak - PSNR\relax }{figure.caption.17}{}}
+\newlabel{fig:kodak_ssim}{{3b}{10}{Kodak - SSIM\relax }{figure.caption.17}{}}
+\newlabel{sub@fig:kodak_ssim}{{b}{10}{Kodak - SSIM\relax }{figure.caption.17}{}}
+\newlabel{fig:clic_psnr}{{3c}{10}{CLIC 2024 - PSNR\relax }{figure.caption.17}{}}
+\newlabel{sub@fig:clic_psnr}{{c}{10}{CLIC 2024 - PSNR\relax }{figure.caption.17}{}}
+\newlabel{fig:clic_ssim}{{3d}{10}{CLIC 2024 - SSIM\relax }{figure.caption.17}{}}
+\newlabel{sub@fig:clic_ssim}{{d}{10}{CLIC 2024 - SSIM\relax }{figure.caption.17}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Rate-distortion performance on the Kodak (top panels) and CLIC 2024 (bottom panels) datasets. The average PSNR (left panels) and average SSIM (right panels) for each method are plotted as functions of bit rate. Shaded areas represent standard errors. Dashed lines indicate extrapolated values predicted using LOESS \cite  {cleveland1988locally} for extremely low bit rates that are otherwise unattainable.\relax }}{10}{figure.caption.17}\protected@file@percent }
+\newlabel{fig:rate_distortion}{{3}{10}{Rate-distortion performance on the Kodak (top panels) and CLIC 2024 (bottom panels) datasets. The average PSNR (left panels) and average SSIM (right panels) for each method are plotted as functions of bit rate. Shaded areas represent standard errors. Dashed lines indicate extrapolated values predicted using LOESS \cite {cleveland1988locally} for extremely low bit rates that are otherwise unattainable.\relax }{figure.caption.17}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Rate-Distortion Performance}{10}{subsection.4.2}\protected@file@percent }
+\newlabel{sec:rate_distortion_performance}{{4.2}{10}{Rate-Distortion Performance}{subsection.4.2}{}}
+\@writefile{toc}{\contentsline {paragraph}{Kodak}{10}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{CLIC 2024}{10}{section*.19}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Qualitative performance comparison on example images from the Kodak (top two rows) and the CLIC 2024 (bottom two rows) datasets. Each column shows the original image, JPEG, SVD, and IMF compression results respectively. The bit rate and PSNR values for each compressed image is reported. The colored bounding boxes highlight artifacts produced by JPEG and SVD compression.\relax }}{11}{figure.caption.20}\protected@file@percent }
+\newlabel{fig:qualitative_comparison}{{4}{11}{Qualitative performance comparison on example images from the Kodak (top two rows) and the CLIC 2024 (bottom two rows) datasets. Each column shows the original image, JPEG, SVD, and IMF compression results respectively. The bit rate and PSNR values for each compressed image is reported. The colored bounding boxes highlight artifacts produced by JPEG and SVD compression.\relax }{figure.caption.20}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Qualitative Performance}{11}{subsection.4.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Mean decoding CPU times for different compression methods at bit rates of 0.15 bpp and 0.25 bpp, measured on the Kodak and CLIC 2024 datasets.\relax }}{12}{table.caption.21}\protected@file@percent }
+\newlabel{tab:run_time}{{1}{12}{Mean decoding CPU times for different compression methods at bit rates of 0.15 bpp and 0.25 bpp, measured on the Kodak and CLIC 2024 datasets.\relax }{table.caption.21}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Run Time}{12}{subsection.4.4}\protected@file@percent }
+\newlabel{sec:run_time}{{4.4}{12}{Run Time}{subsection.4.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}ImageNet Classification Performance}{12}{subsection.4.5}\protected@file@percent }
+\newlabel{sec:imagenet_classification_performance}{{4.5}{12}{ImageNet Classification Performance}{subsection.4.5}{}}
+\citation{he2016deep}
+\citation{deng2009imagenet}
+\citation{cleveland1988locally}
+\citation{cleveland1988locally}
+\newlabel{fig:imagenet_top1}{{5a}{13}{\relax }{figure.caption.22}{}}
+\newlabel{sub@fig:imagenet_top1}{{a}{13}{\relax }{figure.caption.22}{}}
+\newlabel{fig:imagenet_top5}{{5b}{13}{\relax }{figure.caption.22}{}}
+\newlabel{sub@fig:imagenet_top5}{{b}{13}{\relax }{figure.caption.22}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Impact of different compression methods on ImageNet classification accuracy. A ResNet-50 classifier pre-trained on the original ImageNet images is evaluated using validation images compressed by different methods. Panels (a) and (b) show top-1 and top-5 accuracy plotted as a function of bit rate, respectively. Dashed lines indicate extrapolated values predicted using LOESS \cite  {cleveland1988locally} for extremely low bit rates that are otherwise unattainable.\relax }}{13}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:imagenet_classification}{{5}{13}{Impact of different compression methods on ImageNet classification accuracy. A ResNet-50 classifier pre-trained on the original ImageNet images is evaluated using validation images compressed by different methods. Panels (a) and (b) show top-1 and top-5 accuracy plotted as a function of bit rate, respectively. Dashed lines indicate extrapolated values predicted using LOESS \cite {cleveland1988locally} for extremely low bit rates that are otherwise unattainable.\relax }{figure.caption.22}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Ablation Studies}{13}{subsection.4.6}\protected@file@percent }
+\newlabel{sec:ablation_studies}{{4.6}{13}{Ablation Studies}{subsection.4.6}{}}
+\@writefile{toc}{\contentsline {paragraph}{Factor Bounds}{13}{section*.23}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{BCD Iterations}{13}{section*.24}\protected@file@percent }
+\newlabel{fig:bounds_ablation_psnr}{{6a}{14}{\relax }{figure.caption.26}{}}
+\newlabel{sub@fig:bounds_ablation_psnr}{{a}{14}{\relax }{figure.caption.26}{}}
+\newlabel{fig:iters_ablation_psnr}{{6b}{14}{\relax }{figure.caption.26}{}}
+\newlabel{sub@fig:iters_ablation_psnr}{{b}{14}{\relax }{figure.caption.26}{}}
+\newlabel{fig:patchsize_ablation_psnr}{{6c}{14}{\relax }{figure.caption.26}{}}
+\newlabel{sub@fig:patchsize_ablation_psnr}{{c}{14}{\relax }{figure.caption.26}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Ablation studies for IMF. The average PSNR on the Kodak dataset is plotted as a function of bit rate under various experimental conditions: (a) varying the bounds $[\alpha , \beta ]$ for the elements of the factor matrices, (b) changing the number of BCD iterations, and (c) adjusting the patch size.\relax }}{14}{figure.caption.26}\protected@file@percent }
+\newlabel{fig:ablation_studies}{{6}{14}{Ablation studies for IMF. The average PSNR on the Kodak dataset is plotted as a function of bit rate under various experimental conditions: (a) varying the bounds $[\alpha , \beta ]$ for the elements of the factor matrices, (b) changing the number of BCD iterations, and (c) adjusting the patch size.\relax }{figure.caption.26}{}}
+\@writefile{toc}{\contentsline {paragraph}{Patchification}{14}{section*.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Discussion}{14}{section.5}\protected@file@percent }
+\newlabel{sec:discussion}{{5}{14}{Discussion}{section.5}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{15}{section.6}\protected@file@percent }
+\newlabel{sec:conclusion}{{6}{15}{Conclusion}{section.6}{}}
+\@writefile{toc}{\let\numberline\tmptocnumberline}
+\@input{TeX/text/appendix.aux}
+\bibstyle{elsarticle-num-names}
+\bibdata{TeX/ref.bib}
+\bibcite{wallace1991jpeg}{{1}{1991}{{Wallace}}{{}}}
+\bibcite{skodras2001jpeg}{{2}{2001}{{Skodras et~al.}}{{Skodras, Christopoulos, and Ebrahimi}}}
+\bibcite{goyal2001theoretical}{{3}{2001}{{Goyal}}{{}}}
+\bibcite{ahmed1974discrete}{{4}{1974}{{Ahmed et~al.}}{{Ahmed, Natarajan, and Rao}}}
+\bibcite{antonini1992image}{{5}{1992}{{Antonini et~al.}}{{Antonini, Barlaud, Mathieu, and Daubechies}}}
+\bibcite{andrews1976singular}{{6}{1976}{{Andrews and Patterson}}{{}}}
+\bibcite{prasantha2007image}{{7}{2007}{{Prasantha et~al.}}{{Prasantha, Shashidhara, and Murthy}}}
+\bibcite{hou2015sparse}{{8}{2015}{{Hou et~al.}}{{Hou, Chau, Magnenat-Thalmann, and He}}}
+\bibcite{shapiro1993embedded}{{9}{1993}{{Shapiro}}{{}}}
+\bibcite{google2011webp}{{10}{2011}{{Developers}}{{}}}
+\bibcite{lainema2016hevc}{{11}{2016}{{Lainema et~al.}}{{Lainema, Hannuksela, Vadakital, and Aksu}}}
+\bibcite{hannuksela2015high}{{12}{2015}{{Hannuksela et~al.}}{{Hannuksela, Lainema, and Vadakital}}}
+\bibcite{balle2018variational}{{13}{2018}{{Ball{\'e} et~al.}}{{Ball{\'e}, Minnen, Singh, Hwang, and Johnston}}}
+\bibcite{cheng2020learned}{{14}{2020}{{Cheng et~al.}}{{Cheng, Sun, Takeuchi, and Katto}}}
+\bibcite{liu2023learned}{{15}{2023}{{Liu et~al.}}{{Liu, Sun, and Katto}}}
+\bibcite{yang2024lossy}{{16}{2024}{{Yang and Mandt}}{{}}}
+\bibcite{yuan2020image}{{17}{2020}{{Yuan and Haimi-Cohen}}{{}}}
+\bibcite{lin2005integer}{{18}{2005}{{Lin et~al.}}{{Lin, Dong, and Chu}}}
+\bibcite{dong2018integer}{{19}{2018}{{Dong et~al.}}{{Dong, Lin, and Park}}}
+\bibcite{miettinen2008discrete}{{20}{2008}{{Miettinen et~al.}}{{Miettinen, Mielik{\"a}inen, Gionis, Das, and Mannila}}}
+\bibcite{ravanbakhsh2016boolean}{{21}{2016}{{Ravanbakhsh et~al.}}{{Ravanbakhsh, P{\'o}czos, and Greiner}}}
+\bibcite{eckart1936approximation}{{22}{1936}{{Eckart and Young}}{{}}}
+\bibcite{lee2000algorithms}{{23}{2000}{{Lee and Seung}}{{}}}
+\bibcite{ding2008convex}{{24}{2008}{{Ding et~al.}}{{Ding, Li, and Jordan}}}
+\bibcite{deutsch1996zlib}{{25}{1996}{{Deutsch and Gailly}}{{}}}
+\bibcite{gillis2020nonnegative}{{26}{2020}{{Gillis}}{{}}}
+\bibcite{van1981another}{{27}{1981}{{van Emde~Boas}}{{}}}
+\bibcite{zstandard}{{28}{2016}{{Collet and contributors}}{{}}}
+\bibcite{huffman1952method}{{29}{1952}{{Huffman}}{{}}}
+\bibcite{clark2015pillow}{{30}{2015}{{Clark}}{{}}}
+\bibcite{kodak1993}{{31}{1993}{{Kodak}}{{}}}
+\bibcite{clic2024}{{32}{2024}{{Organizers}}{{}}}
+\bibcite{russakovsky2015imagenet}{{33}{2015}{{Russakovsky et~al.}}{{Russakovsky, Deng, Su, Krause, Satheesh, Ma, Huang, Karpathy, Khosla, Bernstein et~al.}}}
+\bibcite{cleveland1988locally}{{34}{1988}{{Cleveland and Devlin}}{{}}}
+\bibcite{he2016deep}{{35}{2016}{{He et~al.}}{{He, Zhang, Ren, and Sun}}}
+\bibcite{deng2009imagenet}{{36}{2009}{{Deng et~al.}}{{Deng, Dong, Socher, Li, Li, and Fei-Fei}}}
+\bibcite{nesterov2012efficiency}{{37}{2012}{{Nesterov}}{{}}}
+\bibcite{attouch2013convergence}{{38}{2013}{{Attouch et~al.}}{{Attouch, Bolte, and Svaiter}}}
+\bibcite{beck2013convergence}{{39}{2013}{{Beck and Tetruashvili}}{{}}}
+\bibcite{bolte2014proximal}{{40}{2014}{{Bolte et~al.}}{{Bolte, Sabach, and Teboulle}}}
+\gdef \@abspage@last{21}

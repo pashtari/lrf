@@ -1,0 +1,79 @@
+%% Title Formatting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\renewcommand\Authands{ and }  % Properly format 'and' between author names
+\renewcommand\Authfont{\normalsize}  % Keep author names and affiliations in normal size
+
+%% Abstract Formatting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\renewenvironment{abstract}
+{\centerline{\large\bf Abstract}\vspace{0.5em}%
+  \bgroup\leftskip=40pt\rightskip=40pt\small\noindent\ignorespaces}%
+{\par\egroup\vskip 1em}
+
+%% Keywords Formatting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\newenvironment{keywords}
+{\bgroup\leftskip=40pt\rightskip=40pt \small\noindent{\bf Keywords:} }%
+{\par\egroup\vskip 1em}
+
+%% Section Formatting ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\titleformat{\section}{\Large\bfseries}{\thesection.}{0.5em}{}
+\titlespacing*{\section}{0pt}{*3}{*2}
+
+\titleformat{\subsection}{\large\bfseries}{\thesubsection.}{0.5em}{}
+\titlespacing*{\subsection}{0pt}{*2.5}{*1.5}
+
+\titleformat{\subsubsection}{\normalsize\bfseries}{\thesubsubsection.}{0.5em}{}
+\titlespacing*{\subsubsection}{0pt}{*2}{*1}
+
+% Consistent paragraph formatting with period after paragraph number
+\let\oldparagraph=\paragraph
+\renewcommand\paragraph[1]{\oldparagraph{#1.}}
+\titlespacing*{\paragraph}{0pt}{*1.5}{1em}
+
+%% Theorem-like Environments ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{assumption}{Assumption}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{remark}{Remark}[section]
+\newtheorem{lemma}{Lemma}[section]
+
+%% Math Symbols and Operators ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+\newcommand{\N}{\mathbb{N}}  % Natural numbers
+\newcommand{\Z}{\mathbb{Z}}  % Integers
+\newcommand{\R}{\mathbb{R}}  % Real numbers
+
+% Define a function \func{f}{A}{B} for f: A --> B
+\newcommand{\func}[3]{#1 : #2 \rightarrow #3}
+
+% Define a sequence \seq{x^k}[k=1][n] with optional arguments
+\newcommandx{\seq}[3][2=k\in\N,3={}]{(#1)_{#2}^{#3}}
+
+% Declare commonly used mathematical operators
+\DeclareMathOperator{\prox}{prox}           % Proximal mapping
+\DeclareMathOperator*{\minimize}{minimize}  % Minimize operator with proper alignment
+\DeclareMathOperator*{\argmin}{arg\,min}    % Argmin with subscript alignment
+\DeclareMathOperator*{\argmax}{arg\,max}    % Argmax with subscript alignment
+\DeclareMathOperator{\clamp}{clamp}         % Clamp function
+\DeclareMathOperator{\round}{round}         % Round function
+
+%% Additional Customizations ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+% Custom counter for subequations with alphabetical numbering
+\newcounter{mysubequations}
+\renewcommand{\themysubequations}{(\alph{mysubequations})}
+\newcommand{\mysubnumber}{\refstepcounter{mysubequations}\themysubequations}
+
+% Revision commands to highlight changes in blue, remove command for deletions
+\newcommand{\revise}[1]{{\color{blue}{#1}}}
+\newcommand{\remove}[1]{}
+
+% Command to draw rectangles over figures for annotation purposes
+\newcommand{\drawrectangleonfigure}[7]{%
+    \begin{tikzpicture}
+        \node[anchor=south west,inner sep=0] (image) at (0,0) {\includegraphics[width=#2]{#3}};
+        \begin{scope}[x={(image.south east)},y={(image.north west)}]
+            \draw[#1, very thick] (#4,#5) rectangle (#6,#7);
+        \end{scope}
+    \end{tikzpicture}
+}
+
+% Rename algorithmic require/ensure to input/output for clarity
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
