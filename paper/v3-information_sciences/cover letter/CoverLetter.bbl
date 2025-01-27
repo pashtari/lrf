@@ -1,0 +1,9 @@
+\begin{thebibliography}{1}
+
+\bibitem{mokhtari2018iqn}
+Aryan Mokhtari, Mark Eisen, and Alejandro Ribeiro.
+\newblock {IQN}: An incremental quasi-{N}ewton method with local superlinear
+  convergence rate.
+\newblock {\em SIAM Journal on Optimization}, 28(2):1670--1698, 2018.
+
+\end{thebibliography}
