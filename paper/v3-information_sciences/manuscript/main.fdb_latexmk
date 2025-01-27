@@ -1,13 +1,13 @@
 # Fdb version 3
-["bibtex main"] 1737732623 "main.aux" "main.bbl" "main" 1737735937
+["bibtex main"] 1737997013 "main.aux" "main.bbl" "main" 1737997015
   "./elsarticle-num-names.bst" 1736444230 28896 8b641a5a78ad57e6a7ef6fdfeefc773c ""
   "TeX/ref.bib" 0 -1 0 ""
-  "main.aux" 1737735936 19113 3288e8e3f6ab80071c4b1817c481dc10 "pdflatex"
-  "sections/appendix.aux" 1737735936 2751 da241b9e4d3f566fa41fc4b27a1293ca "pdflatex"
+  "main.aux" 1737997015 19113 44746922635ccbd633e72eaf238c76d7 "pdflatex"
+  "sections/appendix.aux" 1737997015 2751 da241b9e4d3f566fa41fc4b27a1293ca "pdflatex"
   (generated)
   "main.blg"
   "main.bbl"
-["pdflatex"] 1737732623 "/Users/pourya/Library/CloudStorage/git_repos/my_projects/lrf/paper/v3-information_sciences/manuscript/main.tex" "main.pdf" "main" 1737735937
+["pdflatex"] 1737997013 "/Users/pourya/Library/CloudStorage/git_repos/my_projects/lrf/paper/v3-information_sciences/manuscript/main.tex" "main.pdf" "main" 1737997015
   "/Users/pourya/Library/CloudStorage/git_repos/my_projects/lrf/paper/v3-information_sciences/manuscript/main.tex" 1737732490 4818 2b2aed8d719ef13790485d0902400ac0 ""
   "/usr/local/texlive/2021/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2021/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
@@ -269,14 +269,14 @@
   "figures/kodim23_cb_components.pdf" 1737478864 22688 29d3a452122c4dea48d48c2d69039d37 ""
   "figures/kodim23_cr_components.pdf" 1737478864 19586 2fb12fe835b7e14686a0edea24f5fb59 ""
   "figures/qmf_encoder.pdf" 1737732299 2279731 7524af456a78ec08e4476fe6af3b3ba4 ""
-  "main.aux" 1737735936 19113 3288e8e3f6ab80071c4b1817c481dc10 "pdflatex"
+  "main.aux" 1737997015 19113 44746922635ccbd633e72eaf238c76d7 "pdflatex"
   "main.bbl" 1737718763 16146 4f585434b8ea96d91022819d5515c296 "bibtex main"
-  "main.spl" 1737735841 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "main.spl" 1737997013 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
   "main.tex" 1737732490 4818 2b2aed8d719ef13790485d0902400ac0 ""
   "preamble.tex" 1737478864 1856 7b0dfd0e9f68b5cee07555773de148d1 ""
-  "sections/abstract.tex" 1737735936 1848 0bad6d397633d38b9656deb3237a5447 ""
-  "sections/acknowledgments.tex" 1737478864 228 0db879ddf0a7904113d4e64c155e0e25 ""
-  "sections/appendix.aux" 1737735936 2751 da241b9e4d3f566fa41fc4b27a1293ca "pdflatex"
+  "sections/abstract.tex" 1737997010 1668 733e4f57e9caa90dca25823db72c221e ""
+  "sections/acknowledgments.tex" 1737987754 212 5c3f3dec30ba8b42a3dd307cf2182a01 ""
+  "sections/appendix.aux" 1737997015 2751 da241b9e4d3f566fa41fc4b27a1293ca "pdflatex"
   "sections/appendix.tex" 1737735936 16587 acb8ffd5673c46f9eebf8f82bf607732 ""
   "sections/conclusion.tex" 1737735936 1506 278ee70c59d7bb2ce2837278f215563e ""
   "sections/discussion.tex" 1737735936 3313 795ec58efd995ebaf97fb024aa12816d ""
@@ -285,8 +285,8 @@
   "sections/method.tex" 1737735936 22884 f682063f79e034d74bda66de5c26be89 ""
   "sections/related_work.tex" 1737735936 4277 de34e444d6b399e70ec7b97c7a8ca6cd ""
   (generated)
-  "main.pdf"
   "main.spl"
+  "main.log"
   "main.aux"
   "sections/appendix.aux"
-  "main.log"
+  "main.pdf"
