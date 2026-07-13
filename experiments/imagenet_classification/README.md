@@ -25,12 +25,12 @@ imagenet_classification/
 │   ├── plot.py                  ← draw both panels of Figure 5
 │   └── imagenet_wnids.txt       ← the 1000 wnids in canonical label order
 ├── results/
-│   ├── results_old.csv          ← the 166 published operating points
-│   └── results.csv              ← your runs accumulate here
+│   └── results.csv              ← one row per operating point
+│                                  (method, quality, bpp, top1_accuracy, top5_accuracy)
 └── figures/                     ← output: imagenet_top-{1,5}_accuracy.pdf
 ```
 
-All result CSVs share one schema — `method, quality, bpp, top1_accuracy, top5_accuracy` — so your `results.csv` can be diffed row by row against the published `results_old.csv`.
+The committed `results/results.csv` holds the full 80-point sweep, so you can inspect the numbers or draw the figure immediately; your own runs replace these rows point by point (`--force`) or extend them.
 
 ## 1. Setup
 
@@ -101,8 +101,7 @@ python src/evaluate.py --method qmf --quality 25 --imagenet-dir /path/to/subset 
 ## 5. Plot
 
 ```bash
-bash plot.sh                  # from your results/results.csv (falls back to the reference)
-bash plot.sh --use-reference  # the published figure exactly, no GPU time needed
+bash plot.sh                  # draws the figure from results/results.csv
 ```
 
 Writes the two panels of Figure 5 to `figures/imagenet_top-{1,5}_accuracy.pdf`. As in the paper, the operating points are LOESS-interpolated onto a common bpp grid; dashed segments mark extrapolation. Methods with fewer than 3 points so far are omitted until the sweep produces more.
@@ -119,7 +118,7 @@ This package was validated with a full re-run on the 50k validation set with cur
 4. **Package.** The current `qmf`, not the pre-publication `lrf`.
 5. **Preprocessing.** Bilinear with `antialias=True`, RGB, CHW, normalization after scaling to [0, 1].
 
-To localize a discrepancy, diff your `results.csv` against `results_old.csv` at matching `(method, quality)`: a bpp shift points to the bpp measurement, an accuracy shift to the model/preprocessing, low-quality-only divergence to the compression parameters.
+To localize a discrepancy, diff your numbers against the committed `results.csv` at matching `(method, quality)`: a bpp shift points to the bpp measurement, an accuracy shift to the model/preprocessing, low-quality-only divergence to the compression parameters.
 
 ## Contact
 

@@ -1,14 +1,10 @@
 """Generate Figure 5: top-1 and top-5 ImageNet accuracy vs. bit rate.
 
-By default the figure is drawn from your own operating points in
-results/results.csv (written by src/evaluate.py). If that file is missing or
-empty — or with --use-reference — the published operating points in
-results/results_old.csv are used instead, reproducing the figure
-exactly as in the paper without any GPU time.
+The figure is drawn from the operating points in results/results.csv
+(written by src/evaluate.py).
 
 Example:
     python src/plot.py
-    python src/plot.py --use-reference
 """
 
 import argparse
@@ -31,32 +27,16 @@ def parse_args():
     parser.add_argument(
         "--results", default=os.path.join(PACKAGE_ROOT, "results", "results.csv")
     )
-    parser.add_argument(
-        "--reference", default=os.path.join(PACKAGE_ROOT, "results", "results_old.csv")
-    )
-    parser.add_argument(
-        "--use-reference", action="store_true", help="plot the published operating points"
-    )
     parser.add_argument("--output-dir", default=os.path.join(PACKAGE_ROOT, "figures"))
     return parser.parse_args()
 
 
-def load_results(args) -> pd.DataFrame:
-    if not args.use_reference and os.path.isfile(args.results):
-        try:
-            results = pd.read_csv(args.results)
-        except pd.errors.EmptyDataError:
-            results = pd.DataFrame()
-        if not results.empty:
-            print(f"Using {len(results)} operating points from {args.results}")
-            return results
-    print(f"Using published operating points from {args.reference}")
-    return pd.read_csv(args.reference)
-
-
 def main():
     args = parse_args()
-    results = load_results(args)
+    if not os.path.isfile(args.results) or os.path.getsize(args.results) == 0:
+        raise SystemExit(f"No results at {args.results} — run run.sh (or src/evaluate.py) first.")
+    results = pd.read_csv(args.results)
+    print(f"Using {len(results)} operating points from {args.results}")
 
     # To percentages, and keep the low bit rate regime shown in the figure
     results["top1_accuracy"] *= 100
@@ -84,7 +64,7 @@ def main():
     if kept.empty:
         raise SystemExit(
             "Not enough operating points to draw any method — run more sweep "
-            "points first, or use --use-reference for the published figure."
+            "points first (run.sh or src/evaluate.py)."
         )
     results = kept
 
