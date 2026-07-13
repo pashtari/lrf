@@ -1,0 +1,19 @@
+# The qmf package itself is assumed to be installed already:
+#   pip install git+https://github.com/pashtari/qmf.git
+# (it pulls in numpy, scipy, torch, torchvision, einops, opt_einsum, pillow,
+#  scikit-image, seaborn, pyinstrument)
+
+torch>=2.2
+torchvision>=0.18
+pandas
+matplotlib
+seaborn
+tqdm
+
+# Imported by qmf at import time but (in older qmf versions) not declared by it:
+torchmetrics
+sympy
+
+# Only needed for the automatic dataset download (src/download_imagenet_val.py):
+huggingface_hub
+pyarrow

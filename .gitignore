@@ -8,6 +8,6 @@ __pycache__/
 .trash/
 data/
 paper/
-paper/journal_suggestions.xlsx
-experiments/hpc/
-experiments/imagenet_classification/
+experiments/imagenet_classification_old/
+
+email_draft.md

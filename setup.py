@@ -34,8 +34,10 @@ setup(
     install_requires=[
         "numpy",
         "scipy",
+        "sympy",
         "torch",
         "torchvision",
+        "torchmetrics",
         "opt_einsum",
         "einops",
         "pillow",
